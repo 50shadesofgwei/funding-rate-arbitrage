@@ -5,17 +5,15 @@ from binance.enums import *
 
 class Binance:
     def __init__(self):
-        api_key = BinanceEnvVars.API_KEY.value()
-        api_secret = BinanceEnvVars.API_SECRET.value()
+        api_key = BinanceEnvVars.API_KEY.get_value()
+        api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(api_key, api_secret)
 
     def get_funding_rate(self, symbol: str):
-        """Fetch the latest funding rate for a given symbol."""
         futures_funding_rate = self.client.futures_funding_rate(symbol=symbol)
         return futures_funding_rate[-1]
 
     def execute_trade(self, symbol, side, quantity, order_type=ORDER_TYPE_MARKET):
-        """Execute a trade on the Binance futures market."""
         if side.lower() not in ["buy", "sell"]:
             raise ValueError("Trade side must be 'buy' or 'sell'.")
 

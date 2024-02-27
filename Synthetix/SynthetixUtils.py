@@ -16,7 +16,7 @@ class SynthetixEnvVars(Enum):
     PRIVATE_KEY = 'PRIVATE_KEY'
 
     
-    def value(self):
+    def get_value(self):
         value = os.getenv(self.value)
         if value is None:
             raise ValueError(f"Environment variable for {self.name} not found.")
@@ -26,27 +26,35 @@ class SynthetixClientHub:
     def __init__(self):
         self.clients = {
             'mainnet': Synthetix(
-                provider_rpc=SynthetixEnvVars.MAINNET_PROVIDER_RPC.value(),
-                network_id=SynthetixEnvVars.CHAIN_ID_MAINNET.value(),
-                address=SynthetixEnvVars.ADDRESS.value(),
-                private_key=SynthetixEnvVars.PRIVATE_KEY.value()
+                provider_rpc=SynthetixEnvVars.MAINNET_PROVIDER_RPC.get_value(),
+                network_id=SynthetixEnvVars.CHAIN_ID_MAINNET.get_value(),
+                address=SynthetixEnvVars.ADDRESS.get_value(),
+                private_key=SynthetixEnvVars.PRIVATE_KEY.get_value()
             ),
             'optimism': Synthetix(
-                provider_rpc=SynthetixEnvVars.OPTIMISM_PROVIDER_RPC.value(),
-                network_id=SynthetixEnvVars.CHAIN_ID_OPTIMISM.value(),
-                address=SynthetixEnvVars.ADDRESS.value(),
-                private_key=SynthetixEnvVars.PRIVATE_KEY.value()
+                provider_rpc=SynthetixEnvVars.OPTIMISM_PROVIDER_RPC.get_value(),
+                network_id=SynthetixEnvVars.CHAIN_ID_OPTIMISM.get_value(),
+                address=SynthetixEnvVars.ADDRESS.get_value(),
+                private_key=SynthetixEnvVars.PRIVATE_KEY.get_value()
             ),
             'base': Synthetix(
-                provider_rpc=SynthetixEnvVars.BASE_PROVIDER_RPC.value(),
-                network_id=SynthetixEnvVars.CHAIN_ID_BASE.value(),
-                address=SynthetixEnvVars.ADDRESS.value(),
-                private_key=SynthetixEnvVars.PRIVATE_KEY.value()
+                provider_rpc=SynthetixEnvVars.BASE_PROVIDER_RPC.get_value(),
+                network_id=SynthetixEnvVars.CHAIN_ID_BASE.get_value(),
+                address=SynthetixEnvVars.ADDRESS.get_value(),
+                private_key=SynthetixEnvVars.PRIVATE_KEY.get_value()
             )
         }
 
     def get_client(self, chain_name):
         return self.clients.get(chain_name)
 
+
+class SynthetixClients:
+    hub = SynthetixClientHub
+
+    def __init__(self, hub: SynthetixClientHub):
+        self.mainnet = hub.get_client('mainnet')
+        self.optimism = hub.get_client('optimism')
+        # self.base = hub.get_client('base')
 
 
