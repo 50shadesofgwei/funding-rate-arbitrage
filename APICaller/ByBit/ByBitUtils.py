@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from enum import Enum
 
+
 load_dotenv()
 
 class ByBitEnvVars(Enum):
@@ -22,4 +23,3 @@ def get_ByBit_client() -> HTTP:
         api_secret=ByBitEnvVars.BYBIT_API_SECRET.get_value(),
     )
     return client
-    
