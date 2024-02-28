@@ -1,10 +1,12 @@
 import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
+import json
+
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from APICaller.Binance.binanceCaller import BinanceCaller
 from APICaller.ByBit.ByBitCaller import ByBitCaller
-from MasterUtils import get_all_target_token_lists, get_target_exchanges
+from APICaller.master.MasterUtils import get_all_target_token_lists, get_target_exchanges
 
 class MasterCaller:
     def __init__(self):
@@ -15,7 +17,6 @@ class MasterCaller:
         self.target_exchanges = get_target_exchanges()
         
     def create_exchange_mapping(self):
-        """Create a mapping of exchange names to their instances and target token lists."""
         return {
             "Synthetix": (self.synthetix, self.target_token_list_by_exchange[0]),
             "Binance": (self.binance, self.target_token_list_by_exchange[1]),
@@ -33,6 +34,3 @@ class MasterCaller:
 
         print(funding_rates)
         return funding_rates
-
-test = MasterCaller()
-test.get_funding_rates()
