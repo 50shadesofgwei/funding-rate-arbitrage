@@ -1,5 +1,5 @@
 from pybit.unified_trading import HTTP
-from ByBitUtils import *
+from APICaller.ByBit.ByBitUtils import *
 
 class ByBitCaller:
     def __init__(self):

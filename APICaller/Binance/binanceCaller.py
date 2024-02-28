@@ -1,4 +1,4 @@
-from binanceUtils import BinanceEnvVars
+from APICaller.Binance.binanceUtils import BinanceEnvVars
 from binance.client import Client
 from binance.enums import *
 
@@ -35,9 +35,3 @@ class BinanceCaller:
             if parsed_data:
                 funding_rates.append(parsed_data)
         return funding_rates
-
-
-binance = BinanceCaller()
-symbols = ['BTCUSDT', 'ETHUSDT']
-funding_rates = binance.get_funding_rates(symbols)
-print(funding_rates)

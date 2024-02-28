@@ -29,11 +29,3 @@ class SynthetixCaller:
                     print(f"Error processing market data for {symbol}: {e}")
         return market_funding_rates
 
-
-test = SynthetixCaller()
-funding_rates = test.get_funding_rates()
-if funding_rates is not None:
-    print(funding_rates)
-else:
-    print("TEST: Failed to fetch funding rates.")
-
