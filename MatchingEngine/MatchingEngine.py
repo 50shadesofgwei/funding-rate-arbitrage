@@ -1,28 +1,25 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
-from APICaller.master.MasterCaller import MasterCaller
 from MatchingEngineUtils import *
 import json
 
 class matchingEngine:
     def __init__(self):
-        self.api_caller = MasterCaller()
+        pass
 
     def find_arbitrage_opportunities_for_symbol(self, sorted_rates):
-        """Identify arbitrage opportunities for a given symbol."""
         arbitrage_opportunities = []
         if len(sorted_rates) > 1:
             long_opportunity = sorted_rates[0]
             short_opportunity = sorted_rates[-1]
-            if float(short_opportunity['funding_rate']) > float(long_opportunity['funding_rate']):
+            long_rate = float(long_opportunity['funding_rate'])
+            short_rate = float(short_opportunity['funding_rate'])
+            if short_rate > long_rate:
                 arbitrage_opportunity = {
                     'long_exchange': long_opportunity['exchange'],
                     'short_exchange': short_opportunity['exchange'],
                     'symbol': normalize_symbol(long_opportunity['symbol']),
-                    'long_funding_rate': long_opportunity['funding_rate'],
-                    'short_funding_rate': short_opportunity['funding_rate'],
-                    'funding_rate_differential': float(short_opportunity['funding_rate']) - float(long_opportunity['funding_rate'])
+                    'long_funding_rate': long_rate,
+                    'short_funding_rate': short_rate,
+                    'funding_rate_differential': short_rate - long_rate
                 }
                 arbitrage_opportunities.append(arbitrage_opportunity)
         return arbitrage_opportunities

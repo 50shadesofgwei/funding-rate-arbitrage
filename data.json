@@ -3,7 +3,7 @@
         "long_exchange": "ByBit",
         "short_exchange": "Synthetix",
         "symbol": "BTC",
-        "long_funding_rate": "0.00030484",
+        "long_funding_rate": 0.00030484,
         "short_funding_rate": 0.001259963777771721,
         "funding_rate_differential": 0.0009551237777717209
     },
@@ -11,7 +11,7 @@
         "long_exchange": "ByBit",
         "short_exchange": "Synthetix",
         "symbol": "ETH",
-        "long_funding_rate": "0.0001",
+        "long_funding_rate": 0.0001,
         "short_funding_rate": 0.002199182045337673,
         "funding_rate_differential": 0.002099182045337673
     }
