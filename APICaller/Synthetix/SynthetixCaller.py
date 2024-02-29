@@ -1,5 +1,6 @@
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
+import json
 
 class SynthetixCaller:
     def __init__(self):
@@ -8,6 +9,8 @@ class SynthetixCaller:
     def get_funding_rates(self, symbols: list):
         try:
             _, markets_by_name = self.client.perps.get_markets()
+            with open('markets_by_name.json', 'w') as file:
+                json.dump(markets_by_name, file, indent=4)
             return self._filter_market_data(markets_by_name, symbols)
         except Exception as e:
             print(f"Error fetching market data: {e}")

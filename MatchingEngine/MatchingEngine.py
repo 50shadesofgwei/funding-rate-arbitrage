@@ -35,11 +35,5 @@ class matchingEngine:
             opportunities.extend(self.find_arbitrage_opportunities_for_symbol(sorted_rates))
         return opportunities
 
-funding_rates = [{'exchange': 'Synthetix', 'symbol': 'BTC', 'funding_rate': 0.001259963777771721}, {'exchange': 'Synthetix', 'symbol': 'ETH', 'funding_rate': 0.002199182045337673}, {'exchange': 'Binance', 'symbol': 'BTCUSDT', 'funding_rate': '0.00053538'}, {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'funding_rate': '0.00043581'}, {'exchange': 'ByBit', 'symbol': 'BTCPERP', 'funding_rate': '0.00030484'}, {'exchange': 'ByBit', 'symbol': 'ETHPERP', 'funding_rate': '0.0001'}]
-test = matchingEngine()
-opportunities = test.find_delta_neutral_arbitrage_opportunities(funding_rates)
-for opportunity in opportunities:
-    print(opportunity)
 
-with open('data.json', 'w') as file:
-    json.dump(opportunities, file, indent=4)
+

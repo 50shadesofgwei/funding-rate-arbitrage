@@ -79,18 +79,9 @@ class ProfitabilityChecker:
         most_profitable = None
         for opportunity in opportunities:
             profit = self.calculate_profit(opportunity, 1)
+            apy = self.calculate_effective_APY(opportunity)
+            print(f"PROFIT PER HOUR:{profit}\nAPY:{apy}")
             if profit > max_profit:
                 max_profit = profit
                 most_profitable = opportunity
         return most_profitable
-
-opportunity = {
-    "long_exchange": "ByBit",
-    "short_exchange": "Synthetix",
-    "symbol": "ETH",
-    "long_funding_rate": 0.0001,
-    "short_funding_rate": 0.002199182045337673,
-    "funding_rate_differential": 0.002099182045337673
-}
-
-checker = ProfitabilityChecker()

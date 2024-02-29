@@ -1,0 +1,22 @@
+{
+    "BTC": {
+        "market_id": 200,
+        "market_name": "BTC",
+        "skew": 0.08665970684116715,
+        "size": 0.08685970684116716,
+        "max_open_interest": 22.0,
+        "current_funding_rate": 0.001270136464148492,
+        "current_funding_velocity": 7.799373615699e-06,
+        "index_price": 60880.45439999
+    },
+    "ETH": {
+        "market_id": 100,
+        "market_name": "ETH",
+        "skew": 29.598925524929683,
+        "size": 51.564844882642596,
+        "max_open_interest": 385.0,
+        "current_funding_rate": 0.002784156699292118,
+        "current_funding_velocity": 0.000266390329724361,
+        "index_price": 3373.9
+    }
+}
