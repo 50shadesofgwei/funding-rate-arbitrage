@@ -32,5 +32,4 @@ class MasterCaller:
                 exchange, tokens = exchange_mapping[exchange_name]
                 funding_rates.extend(exchange.get_funding_rates(tokens))
 
-        print(funding_rates)
         return funding_rates

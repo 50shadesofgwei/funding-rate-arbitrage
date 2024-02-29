@@ -1,4 +1,7 @@
-from MatchingEngineUtils import *
+import sys
+sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
+
+from MatchingEngine.MatchingEngineUtils import *
 import json
 
 class matchingEngine:
@@ -25,7 +28,6 @@ class matchingEngine:
         return arbitrage_opportunities
 
     def find_delta_neutral_arbitrage_opportunities(self, funding_rates):
-        """Find delta-neutral arbitrage opportunities from a list of funding rates."""
         opportunities = []
         rates_by_symbol = group_by_symbol(funding_rates)
         for symbol, rates in rates_by_symbol.items():

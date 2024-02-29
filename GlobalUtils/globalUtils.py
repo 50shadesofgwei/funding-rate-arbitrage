@@ -32,5 +32,6 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
     transaction_cost_usd = float(gas_cost_eth) * eth_price_usd
     return transaction_cost_usd
 
-test = calculate_transaction_cost_usd()
-print(test)
+def get_total_available_capital() -> float:
+    capital = 50000.0
+    return capital

@@ -1,4 +1,4 @@
-
+from GlobalUtils.globalUtils import *
 
 class ProfitabilityChecker:
     exchange_fees = {
@@ -13,10 +13,12 @@ class ProfitabilityChecker:
     def get_exchange_fee(self, exchange: str) -> float:
         return self.exchange_fees.get(exchange, 0)
 
-    def calculate_position_cost(self, capital: float, fee_rate: float) -> float:
+    def calculate_position_cost(self, fee_rate: float) -> float:
+        capital = get_total_available_capital()
         return capital * fee_rate
 
-    def is_profitable(self, opportunity, capital: float) -> bool:
+    def is_profitable(self, opportunity) -> bool:
+        capital = get_total_available_capital()
         long_capital = capital / 2
         short_capital = capital / 2
 
@@ -32,7 +34,8 @@ class ProfitabilityChecker:
 
         return daily_funding_profit - total_cost > 0
 
-    def minimum_profitable_duration(self, opportunity, capital: float) -> float:
+    def minimum_profitable_duration(self, opportunity) -> float:
+        capital = get_total_available_capital()
         long_capital = capital / 2
         short_capital = capital / 2
 
@@ -55,7 +58,8 @@ class ProfitabilityChecker:
         days_to_profitability = total_initial_cost / daily_net_profit
         return days_to_profitability
 
-    def calculate_profit(self, opportunity, period_hours: int, capital: float):
+    def calculate_profit(self, opportunity, period_hours: int):
+        capital = get_total_available_capital()
         long_capital = capital / 2
         short_capital = capital / 2
         funding_rate_long = float(opportunity["long_funding_rate"])
@@ -64,10 +68,21 @@ class ProfitabilityChecker:
         total_profit = (long_capital * funding_rate_long + short_capital * funding_rate_short) * (period_hours / 8)
         return total_profit
 
-    def calculate_effective_APY(self, opportunity, capital: float):
+    def calculate_effective_APY(self, opportunity):
+        capital = get_total_available_capital()
         daily_profit = self.calculate_profit(opportunity, 24)
         apy = (daily_profit / capital) * 365 * 100
         return apy
+    
+    def find_most_profitable_opportunity(self, opportunities):
+        max_profit = float('-inf')
+        most_profitable = None
+        for opportunity in opportunities:
+            profit = self.calculate_profit(opportunity, 1)
+            if profit > max_profit:
+                max_profit = profit
+                most_profitable = opportunity
+        return most_profitable
 
 opportunity = {
     "long_exchange": "ByBit",
