@@ -66,14 +66,8 @@ class ProfitabilityChecker:
 
     def calculate_effective_APY(self, opportunity, capital: float):
         daily_profit = self.calculate_profit(opportunity, 24)
-        apy = (daily_profit / capital) * 365 * 100  # Convert to percentage
+        apy = (daily_profit / capital) * 365 * 100
         return apy
-
-    def print_profit_and_APR(self, opportunity):
-        print(f"Hourly profit: {self.calculate_profit(opportunity, 1)}")
-        print(f"Profit every 8 hours: {self.calculate_profit(opportunity, 8)}")
-        print(f"Daily profit: {self.calculate_profit(opportunity, 24)}")
-        print(f"Effective APR: {self.calculate_effective_APY(opportunity)}%")
 
 opportunity = {
     "long_exchange": "ByBit",
@@ -85,4 +79,3 @@ opportunity = {
 }
 
 checker = ProfitabilityChecker()
-checker.print_profit_and_APR(opportunity)
