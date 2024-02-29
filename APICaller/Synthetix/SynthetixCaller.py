@@ -19,7 +19,8 @@ class SynthetixCaller:
             if symbol in markets_by_name:
                 try:
                     market_data = markets_by_name[symbol]
-                    funding_rate = market_data['current_funding_rate']
+                    funding_rate_24 = market_data['current_funding_rate']
+                    funding_rate = funding_rate_24 / 3
                     market_funding_rates.append({
                         'exchange': 'Synthetix',
                         'symbol': symbol,

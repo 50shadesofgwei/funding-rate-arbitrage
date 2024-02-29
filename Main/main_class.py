@@ -15,7 +15,6 @@ class Main:
     def search_for_opportunities(self):
         funding_rates = self.caller.get_funding_rates()
         opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
-        print(opportunities)
         best_opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
         print(f"Best opportunity: {best_opportunity}")
     
