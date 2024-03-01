@@ -1,12 +1,25 @@
 from APICaller.Binance.binanceUtils import BinanceEnvVars
 from binance.client import Client
 from binance.enums import *
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class BinanceCaller:
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(api_key, api_secret)
+
+    def get_funding_rates(self, symbols: list):
+        funding_rates = []
+        for symbol in symbols:
+            funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
+            parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
+            if parsed_data:
+                funding_rates.append(parsed_data)
+        return funding_rates
 
     def _fetch_funding_rate_for_symbol(self, symbol: str):
         try:
@@ -26,12 +39,3 @@ class BinanceCaller:
             }
         else:
             return None
-
-    def get_funding_rates(self, symbols: list):
-        funding_rates = []
-        for symbol in symbols:
-            funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
-            parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
-            if parsed_data:
-                funding_rates.append(parsed_data)
-        return funding_rates
