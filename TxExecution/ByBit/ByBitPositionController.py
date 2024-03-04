@@ -28,7 +28,10 @@ class ByBitPositionController:
                 return True
         return False
 
-    def derive_position_to_open_from_opportunity(self, opportunity):
-        test = ''
+    def get_available_collateral(self) -> float:
+        usdt_collateral = self.client.get_coin_balance(accountType="UNIFIED",coin="USDT")
+        collateral_amount = usdt_collateral["result"]["balance"]["walletBalance"]
+        return collateral_amount
+
 
     

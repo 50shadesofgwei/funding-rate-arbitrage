@@ -20,8 +20,12 @@ class BinancePositionController:
             type=ORDER_TYPE_MARKET,
             quantity=position_to_open.quantity)
 
-    def derive_position_to_open_from_opportunity(self, opportunity):
-        test = ''
+    def get_available_collateral(self) -> float:
+        account_details = self.client.get_margin_account()
+        for asset in account_details['userAssets']:
+            if asset['asset'] == 'USDT':
+                return float(asset['free'])
+        return 0.0
 
     def is_already_position_open(self) -> bool:
         positions = self.client.futures_position_information()
