@@ -4,7 +4,14 @@ def check_other_exchange_has_adequate_collateral(collateral_amounts, exchange: s
     collateral = collateral_amounts.get(exchange, 0)
     return collateral >= desired_collateral_amount
 
-def adjust_collateral_allocation(collateral_amounts, long_exchange, short_exchange, initial_percentage=75, decrement=10, attempts=3):
+def adjust_collateral_allocation(
+        collateral_amounts, 
+        long_exchange, 
+        short_exchange, 
+        initial_percentage=75, 
+        decrement=10, 
+        attempts=3) -> float:
+        
     max_collateral = get_max_collateral_from_selected_exchanges(collateral_amounts, long_exchange, short_exchange)
     desired_collateral = max_collateral * (initial_percentage / 100)
 
