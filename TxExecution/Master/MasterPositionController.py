@@ -13,7 +13,7 @@ class MasterPositionController:
 
     def execute_trades(self, opportunity):
         if not self.is_already_position_open():
-            return 
+            return
 
     def get_trade_size(self, opportunity) -> float:
         collateral_amounts = self.get_available_collateral_by_exchange()

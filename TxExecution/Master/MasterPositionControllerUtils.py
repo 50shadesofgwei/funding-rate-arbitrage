@@ -1,4 +1,8 @@
+import sys
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def check_other_exchange_has_adequate_collateral(collateral_amounts, exchange: str, desired_collateral_amount: float) -> bool:
     collateral = collateral_amounts.get(exchange, 0)
@@ -11,7 +15,7 @@ def adjust_collateral_allocation(
         initial_percentage=75, 
         decrement=10, 
         attempts=3) -> float:
-        
+
     max_collateral = get_max_collateral_from_selected_exchanges(collateral_amounts, long_exchange, short_exchange)
     desired_collateral = max_collateral * (initial_percentage / 100)
 
@@ -22,6 +26,11 @@ def adjust_collateral_allocation(
             desired_collateral *= (1 - decrement / 100)
 
     raise ValueError(f"Not enough capital on {short_exchange} for the trade.")
+
+def apply_leverage_to_trade_amount(trade_amount: float) -> float:
+    leverage_factor = float(os.getenv('LEVERAGE_FACTOR'))
+    trade_amount_with_leverage_factor = trade_amount * leverage_factor
+    return trade_amount_with_leverage_factor
 
 def get_max_collateral_from_selected_exchanges(collateral_amounts, primary_exchange, secondary_exchange):
     return max(collateral_amounts.get(primary_exchange, 0), collateral_amounts.get(secondary_exchange, 0))

@@ -9,7 +9,7 @@ class SynthetixPositionController:
     def __init__(self):
         self.client = get_synthetix_client()
 
-    def execute_trade_from_opportunity(self, opportunity, amount: float):
+    def execute_trade_from_opportunity(self, opportunity):
         pass
 
     def get_available_collateral(self) -> float:

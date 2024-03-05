@@ -15,10 +15,10 @@ class BinancePositionController:
 
     def open_position(self, order_with_amount):
         self.client.futures_create_order(
-            symbol=order_with_amount.symbol,
-            side=SIDE_BUY,
-            type=ORDER_TYPE_MARKET,
-            quantity=order_with_amount.amount)
+            symbol=order_with_amount['symbol'],
+            side=order_with_amount['side'],
+            type=order_with_amount['type'],
+            quantity=order_with_amount['amount'])
 
     def get_order_from_opportunity(self, opportunity):
         side = SIDE_BUY if opportunity['long_exchange'] == 'Binance' else SIDE_SELL
@@ -34,8 +34,6 @@ class BinancePositionController:
         order_with_amount = order_without_amount.copy()
         order_with_amount['quantity'] = amount
         return order_with_amount
-
-
 
     def get_available_collateral(self) -> float:
         account_details = self.client.get_margin_account()
