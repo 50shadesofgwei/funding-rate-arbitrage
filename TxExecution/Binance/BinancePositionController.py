@@ -1,4 +1,5 @@
 from APICaller.Binance.binanceUtils import BinanceEnvVars
+from APICaller.master.MasterUtils import TARGET_TOKENS
 from binance.client import Client
 from binance.enums import *
 from pubsub import pub
@@ -12,16 +13,20 @@ class BinancePositionController:
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(api_key, api_secret)
+        self.leverage = int(os.getenv('TRADE_LEVERAGE'))
+        self.set_leverage_for_all_assets(self, TARGET_TOKENS)
 
-    def open_position(self, order_with_amount):
+    def execute_trade(self, opportunity, is_long: bool, trade_size: float):
+        order = self.get_order_from_opportunity(opportunity, is_long)
+        order_with_amount = self.add_amount_to_order(order, trade_size)
         self.client.futures_create_order(
             symbol=order_with_amount['symbol'],
             side=order_with_amount['side'],
             type=order_with_amount['type'],
             quantity=order_with_amount['amount'])
 
-    def get_order_from_opportunity(self, opportunity):
-        side = SIDE_BUY if opportunity['long_exchange'] == 'Binance' else SIDE_SELL
+    def get_order_from_opportunity(self, opportunity, is_long: bool):
+        side = SIDE_BUY if is_long else SIDE_SELL
         order_without_amount = {
             'symbol': opportunity['symbol'] + 'USDT',
             'side': side,
@@ -49,3 +54,11 @@ class BinancePositionController:
                 return True
         return False
 
+    def set_leverage_for_all_assets(self, tokens):
+        for token in tokens:
+            if token["is_target"]:
+                symbol = token["token"] + "USDT"
+                self.client.futures_change_leverage(
+                    symbol=symbol,
+                    leverage=self.leverage,
+                )

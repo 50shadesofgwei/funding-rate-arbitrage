@@ -80,7 +80,6 @@ class ProfitabilityChecker:
         for opportunity in opportunities:
             profit = self.calculate_profit(opportunity, 1)
             apy = self.calculate_effective_APY(opportunity)
-            print(f"PROFIT PER HOUR:{profit}\nAPY:{apy}")
             if profit > max_profit:
                 max_profit = profit
                 most_profitable = opportunity

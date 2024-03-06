@@ -3,14 +3,20 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
+from GlobalUtils.globalUtils import *
 import json
 
 class SynthetixPositionController:
     def __init__(self):
         self.client = get_synthetix_client()
 
-    def execute_trade_from_opportunity(self, opportunity):
-        pass
+    def execute_trade(self, opportunity, is_long: bool, trade_size: float):
+        full_asset_name = get_full_asset_name(opportunity['symbol'])
+        trade_size_in_asset = get_asset_amount_for_given_dollar_amount(full_asset_name, trade_size)
+        adjusted_trade_size = adjust_trade_size_for_direction(trade_size_in_asset, is_long)
+
+        self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
+
 
     def get_available_collateral(self) -> float:
         account = self.get_default_account()

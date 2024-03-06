@@ -9,11 +9,27 @@ class MasterPositionController:
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
         self.bybit = ByBitPositionController()
-        pub.subscribe('opportunity_found', )
+        pub.subscribe('opportunity_found', self.execute_trades)
 
     def execute_trades(self, opportunity):
-        if not self.is_already_position_open():
+        if self.is_already_position_open():
+            print("Position already open, skipping opportunity.")
             return
+
+        trade_size = self.get_trade_size(opportunity)
+        long_exchange, short_exchange = opportunity['long_exchange'], opportunity['short_exchange']
+        is_long_binance: bool = long_exchange == 'Binance'
+        is_long_synthetix: bool = long_exchange == 'Synthetix'
+        is_long_bybit: bool = long_exchange == 'ByBit'
+
+        if 'Binance' in [long_exchange, short_exchange]:
+            self.binance.execute_trade(opportunity, is_long=is_long_binance, trade_size=trade_size)
+
+        if 'Synthetix' in [long_exchange, short_exchange]:
+            self.synthetix.execute_trade(opportunity, is_long=is_long_synthetix, trade_size=trade_size)
+        
+        if 'ByBit' in [long_exchange, short_exchange]:
+            self.bybit.execute_trade(opportunity, is_long=is_long_bybit, trade_size=trade_size)
 
     def get_trade_size(self, opportunity) -> float:
         collateral_amounts = self.get_available_collateral_by_exchange()
