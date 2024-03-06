@@ -1,5 +1,5 @@
 from APICaller.Binance.binanceUtils import BinanceEnvVars
-from binance.client import Client
+from binance.um_futures import UMFutures as Client
 from binance.enums import *
 import os
 from dotenv import load_dotenv
@@ -23,7 +23,7 @@ class BinanceCaller:
 
     def _fetch_funding_rate_for_symbol(self, symbol: str):
         try:
-            futures_funding_rate = self.client.futures_funding_rate(symbol=symbol)
+            futures_funding_rate = self.client.funding_rate(symbol=symbol)
             if futures_funding_rate and len(futures_funding_rate) > 0:
                 return futures_funding_rate[-1]
         except Exception as e:

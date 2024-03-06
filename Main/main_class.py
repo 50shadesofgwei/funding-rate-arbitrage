@@ -7,18 +7,19 @@ from pubsub import pub
 from APICaller.master.MasterCaller import MasterCaller
 from MatchingEngine.MatchingEngine import matchingEngine
 from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityChecker
+from TxExecution.Master.MasterPositionController import MasterPositionController
 
 class Main:
     def __init__(self):
         self.caller = MasterCaller()
         self.matching_engine = matchingEngine()
         self.profitability_checker = ProfitabilityChecker()
+        self.position_controller = MasterPositionController()
     
     def search_for_opportunities(self):
         funding_rates = self.caller.get_funding_rates()
         opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
         best_opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
-        print(best_opportunity)
         pub.sendMessage('opportunity_found', opportunity = best_opportunity)
 
     

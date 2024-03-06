@@ -1,4 +1,5 @@
 from GlobalUtils.globalUtils import *
+from GlobalUtils.logger import logger
 
 class ProfitabilityChecker:
     exchange_fees = {
@@ -83,4 +84,6 @@ class ProfitabilityChecker:
             if profit > max_profit:
                 max_profit = profit
                 most_profitable = opportunity
+
+        logger.info(f"best opportunity found, details: {most_profitable}")
         return most_profitable

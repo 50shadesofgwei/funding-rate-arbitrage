@@ -5,18 +5,18 @@
         "skew": 0.03288454236421966,
         "size": 0.033084542364219656,
         "max_open_interest": 22.0,
-        "current_funding_rate": 0.001898910675728461,
+        "current_funding_rate": 0.00189896993641418,
         "current_funding_velocity": 2.959608812778e-06,
-        "index_price": 67100.42786931
+        "index_price": 66873.47749938
     },
     "ETH": {
         "market_id": 100,
         "market_name": "ETH",
-        "skew": 9.719438515056078,
-        "size": 9.894638515056078,
+        "skew": 2.2950385150560786,
+        "size": 19.95903851505608,
         "max_open_interest": 385.0,
-        "current_funding_rate": 0.003780580958411707,
-        "current_funding_velocity": 8.7474946635504e-05,
-        "index_price": 3870.1380246
+        "current_funding_rate": 0.003781825544394101,
+        "current_funding_velocity": 2.0655346635504e-05,
+        "index_price": 3852.69
     }
 }
