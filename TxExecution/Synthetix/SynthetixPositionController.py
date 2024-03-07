@@ -10,9 +10,9 @@ class SynthetixPositionController:
     def __init__(self):
         self.client = get_synthetix_client()
 
-        #######################
-        ### WRITE FUNCTIONS ###
-        #######################
+    #######################
+    ### WRITE FUNCTIONS ###
+    #######################
 
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         full_asset_name = get_full_asset_name(opportunity['symbol'])
@@ -27,16 +27,31 @@ class SynthetixPositionController:
         inverse_size = size * -1
         self.client.perps.commit_order(inverse_size, symbol, submit=True)
 
+    def test(self):
+        test = self.client.spot.atomic_order("sell", 10000, market_name='sUSDC', submit=True)
+        print(test)
+
     def add_collateral(self):
-        self.client.spot.wrap(10000, market_name='sUSDC')
+        self.client.perps.modify_collateral(
+            amount=10000, 
+            market_id=0, 
+            submit=True
+            )
 
     def create_account(self):
         self.client.perps.create_account(submit=True)
 
     def collateral_approval(self):
         perps_address = self.client.spot.market_proxy.address
-        approve_tx = self.client.spot.approve(perps_address, market_name='sUSDC', submit=True)
+        approve_tx = self.client.approve(
+            token_address='0x69980C3296416820623b3e3b30703A74e2320bC8', 
+            target_address=perps_address, 
+            amount=10000000000,
+            submit=True
+            )
+        
         print(approve_tx)
+
 
     ######################
     ### READ FUNCTIONS ###
