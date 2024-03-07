@@ -15,21 +15,26 @@ class MasterCaller:
         self.bybit = ByBitCaller()
         self.target_token_list_by_exchange = get_all_target_token_lists()
         self.target_exchanges = get_target_exchanges()
-        
-    def create_exchange_mapping(self):
-        return {
+        self.filtered_exchange_objects_and_tokens = self.filter_exchanges_and_tokens()
+
+    def filter_exchanges_and_tokens(self):
+        all_exchanges = {
             "Synthetix": (self.synthetix, self.target_token_list_by_exchange[0]),
             "Binance": (self.binance, self.target_token_list_by_exchange[1]),
             "ByBit": (self.bybit, self.target_token_list_by_exchange[2]),
         }
 
+        filtered_exchanges = {}
+        for exchange_name in self.target_exchanges:
+            if exchange_name in all_exchanges:
+                filtered_exchanges[exchange_name] = all_exchanges[exchange_name]
+
+        return filtered_exchanges
+        
     def get_funding_rates(self) -> list:
         funding_rates = []
-        exchange_mapping = self.create_exchange_mapping()
 
-        for exchange_name in self.target_exchanges:
-            if exchange_name in exchange_mapping:
-                exchange, tokens = exchange_mapping[exchange_name]
-                funding_rates.extend(exchange.get_funding_rates(tokens))
+        for exchange_name, (exchange, tokens) in self.filtered_exchange_objects_and_tokens.items():
+            funding_rates.extend(exchange.get_funding_rates(tokens))
 
         return funding_rates

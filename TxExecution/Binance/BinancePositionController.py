@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
+
 from APICaller.Binance.binanceUtils import BinanceEnvVars
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from binance.um_futures import UMFutures as Client
@@ -13,9 +16,9 @@ class BinancePositionController:
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(api_key, api_secret)
+        self.client = Client(key=api_key, secret=api_secret)
         self.leverage = int(os.getenv('TRADE_LEVERAGE'))
-        # self.set_leverage_for_all_assets(TARGET_TOKENS)
+        self.set_leverage_for_all_assets(TARGET_TOKENS)
 
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         order = get_order_from_opportunity(opportunity, is_long)
@@ -53,3 +56,10 @@ class BinancePositionController:
                     symbol=symbol,
                     leverage=self.leverage,
                 )
+
+    def get_leverage_for_token(self) -> float:
+        test = self.client.get_position_risk()
+        print(test)
+
+test = BinancePositionController()
+test.get_leverage_for_token()
