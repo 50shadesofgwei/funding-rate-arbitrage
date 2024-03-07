@@ -13,7 +13,7 @@ class MasterPositionController:
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
         self.bybit = ByBitPositionController()
-        pub.subscribe('opportunity_found', self.execute_trades())
+        pub.subscribe(self.execute_trades, 'opportunity_found')
 
     def execute_trades(self, opportunity):
         if self.is_already_position_open():

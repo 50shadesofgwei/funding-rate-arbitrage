@@ -2,6 +2,7 @@ from APICaller.Binance.binanceUtils import BinanceEnvVars
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
+from TxExecution.Binance.utils import *
 from pubsub import pub
 import os
 from dotenv import load_dotenv
@@ -17,28 +18,16 @@ class BinancePositionController:
         # self.set_leverage_for_all_assets(TARGET_TOKENS)
 
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
-        order = self.get_order_from_opportunity(opportunity, is_long)
-        order_with_amount = self.add_amount_to_order(order, trade_size)
+        order = get_order_from_opportunity(opportunity, is_long)
+        order_with_amount = add_amount_to_order(order, trade_size)
         self.client.new_order(
             symbol=order_with_amount['symbol'],
             side=order_with_amount['side'],
             type=order_with_amount['type'],
             quantity=order_with_amount['amount'])
 
-    def get_order_from_opportunity(self, opportunity, is_long: bool):
-        side = SIDE_BUY if is_long else SIDE_SELL
-        order_without_amount = {
-            'symbol': opportunity['symbol'] + 'USDT',
-            'side': side,
-            'type': ORDER_TYPE_MARKET,
-            'quantity': 0.0
-        }
-        return order_without_amount
-
-    def add_amount_to_order(self, order_without_amount, amount: float):
-        order_with_amount = order_without_amount.copy()
-        order_with_amount['quantity'] = amount
-        return order_with_amount
+    def close_all_positions_for_symbol(self, symbol: str):
+        self.client.cancel_open_orders(symbol)
 
     def get_available_collateral(self) -> float:
         account_details = self.client.balance()

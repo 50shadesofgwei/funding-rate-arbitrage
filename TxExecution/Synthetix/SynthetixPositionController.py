@@ -17,6 +17,12 @@ class SynthetixPositionController:
 
         self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
 
+    def close_position_for_symbol(self, symbol: str):
+        position = self.client.perps.get_open_position(symbol)
+        size = position['position_size']
+        inverse_size = size * -1
+        self.client.perps.commit_order(inverse_size, symbol, submit=True)
+
 
     def get_available_collateral(self) -> float:
         account = self.get_default_account()
