@@ -1,3 +1,9 @@
 2024-03-06 12:25:26,083 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Binance', 'short_exchange': 'Synthetix', 'symbol': 'ETH', 'long_funding_rate': 0.00038362, 'short_funding_rate': 0.0012606085147980337, 'funding_rate_differential': 0.0008769885147980337}
 2024-03-06 16:43:25,641 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'ByBit', 'short_exchange': 'Synthetix', 'symbol': 'ETH', 'long_funding_rate': 0.00017587, 'short_funding_rate': 0.001267781451580831, 'funding_rate_differential': 0.001091911451580831}
 2024-03-06 16:56:32,074 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'ByBit', 'short_exchange': 'Synthetix', 'symbol': 'ETH', 'long_funding_rate': 0.00017587, 'short_funding_rate': 0.0012680698328345885, 'funding_rate_differential': 0.0010921998328345885}
+2024-03-08 13:50:55,337 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-08 13:50:55,939 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-08 14:40:34,007 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 14:40:34,803 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 14:43:56,151 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 14:43:56,939 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
