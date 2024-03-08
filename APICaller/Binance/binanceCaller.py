@@ -1,4 +1,5 @@
 from APICaller.Binance.binanceUtils import BinanceEnvVars
+from GlobalUtils.logger import logger
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
 import os
@@ -14,12 +15,16 @@ class BinanceCaller:
 
     def get_funding_rates(self, symbols: list):
         funding_rates = []
-        for symbol in symbols:
-            funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
-            parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
-            if parsed_data:
-                funding_rates.append(parsed_data)
+        try:
+            for symbol in symbols:
+                funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
+                parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
+                if parsed_data:
+                    funding_rates.append(parsed_data)
+        except Exception as e:
+            logger.error(f"BinanceAPICaller - Failed to fetch or parse funding rates for symbols. Error: {e}")
         return funding_rates
+
 
     def _fetch_funding_rate_for_symbol(self, symbol: str):
         try:
@@ -27,8 +32,9 @@ class BinanceCaller:
             if futures_funding_rate and len(futures_funding_rate) > 0:
                 return futures_funding_rate[-1]
         except Exception as e:
-            print(f"Error fetching funding rate for {symbol}: {e}")
+            logger.error(f"BinanceAPICaller - Error fetching funding rate for {symbol}: {e}")
         return None
+
 
     def _parse_funding_rate_data(self, funding_rate_data, symbol: str):
         if funding_rate_data:
@@ -38,4 +44,6 @@ class BinanceCaller:
                 'funding_rate': funding_rate_data.get('fundingRate'),
             }
         else:
+            logger.info(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")
             return None
+

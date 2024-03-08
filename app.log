@@ -7,3 +7,21 @@
 2024-03-08 14:40:34,803 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
 2024-03-08 14:43:56,151 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
 2024-03-08 14:43:56,939 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:51:09,957 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 15:51:10,732 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:52:42,872 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 15:52:43,607 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:54:59,548 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 15:55:00,264 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:56:09,413 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 15:56:10,139 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:56:54,222 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 15:56:54,946 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:57:17,420 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 15:57:18,149 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:58:37,594 - GlobalUtils.logger - INFO - Binance - Leverage for BTCUSDT set to 5.
+2024-03-08 15:58:38,337 - GlobalUtils.logger - INFO - Binance - Leverage for ETHUSDT set to 5.
+2024-03-08 15:58:39,047 - GlobalUtils.logger - INFO - Binance - All open orders for symbol ETHUSDT have been cancelled.
+2024-03-08 16:26:51,865 - GlobalUtils.logger - INFO - Synthetix - Accounts checked and found successfully.
+2024-03-08 16:26:51,866 - GlobalUtils.logger - INFO - Synthetix - Successfully retrieved default account.
+2024-03-08 16:26:52,271 - GlobalUtils.logger - INFO - Synthetix - Collateral balances called successfully: {'sUSD': 9997.585786522928, 'sUSDC': 0.0}

@@ -153,6 +153,6 @@ class SynthetixPositionController:
 
 
 test = SynthetixPositionController()
-x = test.is_already_position_open()
-print(x)
+test.get_available_collateral()
+
 
