@@ -82,8 +82,6 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"Synthetix - Collateral approval failed for token {token_address} with amount {amount}. Error: {e}")
 
-
-
     ######################
     ### READ FUNCTIONS ###
     ######################
