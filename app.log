@@ -111,3 +111,6 @@
 2024-03-11 14:45:51,193 - GlobalUtils.logger - INFO - Synthetix - Accounts checked and found successfully.
 2024-03-11 14:45:51,210 - GlobalUtils.logger - INFO - Synthetix - Successfully retrieved default account.
 2024-03-11 14:45:51,561 - GlobalUtils.logger - INFO - Synthetix - Collateral balance called successfully: 10046.364581024844
+2024-03-11 14:54:57,445 - GlobalUtils.logger - INFO - Binance - All open orders for symbol ETHUSDT have been cancelled.
+2024-03-11 14:58:27,730 - GlobalUtils.logger - ERROR - Binance - Failed to close positions for symbol ETHUSDT. Error: orderId is mandatory, but received empty.
+2024-03-11 16:37:27,201 - GlobalUtils.logger - INFO - Binance - Open position for symbol ETHUSDT has been closed.

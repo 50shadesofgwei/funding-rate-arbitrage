@@ -37,19 +37,22 @@ class BinancePositionController:
                 quantity=order_with_amount['amount'])
 
             time.sleep(2)
-            if self.is_order_filled(order_id=response['order_id'], symbol=response['symbol']):
+            if self.is_order_filled(order_id=int(response['orderId']), symbol=response['symbol']):
                 pub.sendMessage('BinancePositionOpened', response)
-                logger.info(f"Binance - Trade executed: {order_with_amount['symbol']} {order_with_amount['side']}, Quantity: {order_with_amount['amount']}")
+                logger.info(f"Binance - Trade executed: {order_with_amount['symbol']} {order_with_amount['side']}, Quantity: {order_with_amount['amount']}, Order id: {response['orderId']}")
         except Exception as e:
             logger.error(f"Binance - Failed to execute trade for {order_with_amount['symbol'] if 'symbol' in order_with_amount else 'unknown'}. Error: {e}")
 
-
-    def close_all_positions_for_symbol(self, symbol: str):
+    def close_position(self, symbol: str, trade_size: float):
         try:
-            self.client.cancel_open_orders(symbol)
-            logger.info(f"Binance - All open orders for symbol {symbol} have been cancelled.")
+            self.client.new_order(
+                symbol, 
+                side=SIDE_BUY,
+                type=ORDER_TYPE_MARKET,
+                quantity=trade_size)
+            logger.info(f"Binance - Open position for symbol {symbol} has been closed.")
         except Exception as e:
-            logger.error(f"Binance - Failed to close positions for symbol {symbol}. Error: {e}")
+            logger.error(f"Binance - Failed to close position for symbol {symbol}. Error: {e}")
 
     def set_leverage_for_all_assets(self, tokens):
         try:
@@ -68,20 +71,6 @@ class BinancePositionController:
     ######################
     ### READ FUNCTIONS ###
     ######################
-
-    def set_leverage_for_all_assets(self, tokens):
-        try:
-            for token in tokens:
-                if token["is_target"]:
-                    symbol = token["token"] + "USDT"
-                    x = self.client.change_leverage(
-                        symbol=symbol,
-                        leverage=self.leverage,
-                    )
-                    print(x)
-                    logger.info(f"Binance - Leverage for {symbol} set to {self.leverage}.")
-        except Exception as e:
-            logger.error(f"Binance - Failed to set leverage for assets. Error: {e}")
 
     def is_already_position_open(self) -> bool:
         try:
@@ -119,14 +108,29 @@ class BinancePositionController:
             logger.error(f"Binance - Failed to get available collateral. Error: {e}")
             return 0.0
 
+    def get_open_position_size(self, symbol: str) -> float:
+        position = self.get_open_position(symbol)
+        position_size = position['executedQty']
+        return position_size
+
+    def get_open_position(self, symbol: str, order_id: int):
+        position = self.client.query_order(symbol, order_id)
+        return position
+
     def test(self):
-        x = self.client.new_order(
+        x=self.client.new_order(
             symbol='ETHUSDT',
-            side=SIDE_BUY,
+            side=SIDE_SELL,
             type=ORDER_TYPE_MARKET,
-            quantity='1')
-        print(x)
+            quantity=2,
+        )
+        return x['orderId']
+
+        
 
 
 test = BinancePositionController()
-x = test.close_all_positions_for_symbol(symbol='ETHUSDT')
+order_id = test.test()
+time.sleep(10)
+x=test.close_position(symbol='ETHUSDT', trade_size=2.0)
+print(x)
