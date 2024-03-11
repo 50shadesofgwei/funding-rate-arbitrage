@@ -9,6 +9,7 @@ from binance.enums import *
 from TxExecution.Binance.utils import *
 from pubsub import pub
 import os
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,12 +30,16 @@ class BinancePositionController:
         try:
             order = get_order_from_opportunity(opportunity, is_long)
             order_with_amount = add_amount_to_order(order, trade_size)
-            self.client.new_order(
+            response = self.client.new_order(
                 symbol=order_with_amount['symbol'],
                 side=order_with_amount['side'],
                 type=order_with_amount['type'],
                 quantity=order_with_amount['amount'])
-            logger.info(f"Binance - Trade executed: {order_with_amount['symbol']} {order_with_amount['side']}, Quantity: {order_with_amount['amount']}")
+
+            time.sleep(2)
+            if self.is_order_filled(order_id=response['order_id'], symbol=response['symbol']):
+                pub.sendMessage('BinancePositionOpened', response)
+                logger.info(f"Binance - Trade executed: {order_with_amount['symbol']} {order_with_amount['side']}, Quantity: {order_with_amount['amount']}")
         except Exception as e:
             logger.error(f"Binance - Failed to execute trade for {order_with_amount['symbol'] if 'symbol' in order_with_amount else 'unknown'}. Error: {e}")
 

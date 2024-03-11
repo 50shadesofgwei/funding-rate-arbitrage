@@ -1,5 +1,6 @@
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
+from GlobalUtils.logger import logger
 import json
 
 class SynthetixCaller:
@@ -9,11 +10,9 @@ class SynthetixCaller:
     def get_funding_rates(self, symbols: list):
         try:
             _, markets_by_name = self.client.perps.get_markets()
-            with open('markets_by_name.json', 'w') as file:
-                json.dump(markets_by_name, file, indent=4)
             return self._filter_market_data(markets_by_name, symbols)
         except Exception as e:
-            print(f"Error fetching market data: {e}")
+            logger.error(f"SynthetixAPICaller - Error fetching market data: {e}")
             return []
 
     def _filter_market_data(self, markets_by_name, symbols):
@@ -23,13 +22,14 @@ class SynthetixCaller:
                 try:
                     market_data = markets_by_name[symbol]
                     funding_rate_24 = market_data['current_funding_rate']
-                    funding_rate = funding_rate_24 / 3
+                    funding_rate = funding_rate_24 / 3  # Assuming this is the correct calculation
                     market_funding_rates.append({
-                        'exchange': 'Synthetix',
+                        'exchange': 'Synthetix',  # Change this to the correct exchange name if needed
                         'symbol': symbol,
                         'funding_rate': funding_rate,
                     })
                 except KeyError as e:
-                    print(f"Error processing market data for {symbol}: {e}")
+                    logger.error(f"SynthetixAPICaller - Error processing market data for {symbol}: {e}")
         return market_funding_rates
+
 

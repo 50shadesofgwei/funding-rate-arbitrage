@@ -1,0 +1,15 @@
+{
+    "position": {
+        "pnl": 0.0,
+        "accrued_funding": 0.0,
+        "position_size": 0.0
+    },
+    "margin_info": {
+        "total_collateral_value": 9990.360898198573,
+        "available_margin": 9990.360898198573,
+        "withdrawable_margin": 9990.360898198573,
+        "initial_margin_requirement": 0.0,
+        "maintenance_margin_requirement": 0.0,
+        "max_liquidation_reward": 0.0
+    }
+}

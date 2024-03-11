@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
+
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
 
@@ -67,13 +70,7 @@ class ProfitabilityChecker:
         funding_rate_short = float(opportunity["short_funding_rate"])
         
         total_profit = (long_capital * funding_rate_long + short_capital * funding_rate_short) * (period_hours / 8)
-        return total_profit
-
-    def calculate_effective_APY(self, opportunity):
-        capital = get_total_available_capital()
-        daily_profit = self.calculate_profit(opportunity, 24)
-        apy = (daily_profit / capital) * 365 * 100
-        return apy
+        return total_profit * 5
     
     def find_most_profitable_opportunity(self, opportunities):
         max_profit = float('-inf')
@@ -87,3 +84,24 @@ class ProfitabilityChecker:
 
         logger.info(f"best opportunity found, details: {most_profitable}")
         return most_profitable
+
+x = 0.21
+y = 0.00032016
+z = x-y
+a = {
+        "long_exchange": "1",
+        "short_exchange": "2",
+        "symbol": "3",
+        "long_funding_rate": x,
+        "short_funding_rate": y,
+        "funding_rate_differential": z
+    }
+
+# test=ProfitabilityChecker()
+# b = test.calculate_effective_APY(a)
+# print(b)
+
+c = (x * 3) * 365
+d = (y * 3) * 365
+e = c-d
+print(e)

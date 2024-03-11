@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
+
 from APICaller.Binance.binanceUtils import BinanceEnvVars
 from GlobalUtils.logger import logger
 from binance.um_futures import UMFutures as Client
@@ -11,7 +14,7 @@ class BinanceCaller:
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
+        self.client = Client(api_key, api_secret)
 
     def get_funding_rates(self, symbols: list):
         funding_rates = []
@@ -46,4 +49,3 @@ class BinanceCaller:
         else:
             logger.info(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")
             return None
-
