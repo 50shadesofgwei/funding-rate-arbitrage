@@ -77,31 +77,9 @@ class ProfitabilityChecker:
         most_profitable = None
         for opportunity in opportunities:
             profit = self.calculate_profit(opportunity, 1)
-            apy = self.calculate_effective_APY(opportunity)
             if profit > max_profit:
                 max_profit = profit
                 most_profitable = opportunity
 
         logger.info(f"best opportunity found, details: {most_profitable}")
         return most_profitable
-
-x = 0.21
-y = 0.00032016
-z = x-y
-a = {
-        "long_exchange": "1",
-        "short_exchange": "2",
-        "symbol": "3",
-        "long_funding_rate": x,
-        "short_funding_rate": y,
-        "funding_rate_differential": z
-    }
-
-# test=ProfitabilityChecker()
-# b = test.calculate_effective_APY(a)
-# print(b)
-
-c = (x * 3) * 365
-d = (y * 3) * 365
-e = c-d
-print(e)

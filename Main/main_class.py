@@ -8,6 +8,7 @@ from APICaller.master.MasterCaller import MasterCaller
 from MatchingEngine.MatchingEngine import matchingEngine
 from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityChecker
 from TxExecution.Master.MasterPositionController import MasterPositionController
+from PositionMonitor.Master.Master import MasterPositionMonitor
 
 class Main:
     def __init__(self):
@@ -15,6 +16,7 @@ class Main:
         self.matching_engine = matchingEngine()
         self.profitability_checker = ProfitabilityChecker()
         self.position_controller = MasterPositionController()
+        self.position_monitor = MasterPositionMonitor()
     
     def search_for_opportunities(self):
         funding_rates = self.caller.get_funding_rates()
@@ -25,7 +27,7 @@ class Main:
     
     def start_search(self):
         self.search_for_opportunities()
-        # threading.Timer(30, self.start_search).start()
+        threading.Timer(10, self.start_search).start()
 
 main = Main()
 main.start_search()

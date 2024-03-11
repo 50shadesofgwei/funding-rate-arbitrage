@@ -122,16 +122,3 @@ class ByBitPositionController:
         except Exception as e:
             logger.error(f"ByBit - Error checking if position is open. Error: {e}")
             return False
-
-    
-    def test_trade(self):
-        self.client.place_order(
-            category="linear",
-            symbol='ETHUSDT',
-            side='Buy',
-            orderType="Market",
-            qty=1.0,
-        )
-
-test = ByBitPositionController()
-test.test_trade()

@@ -104,8 +104,9 @@ class SynthetixPositionController:
         try:
             account = self.get_default_account()
             balances = self.client.perps.get_collateral_balances(account)
-            logger.info(f"Synthetix - Collateral balances called successfully: {balances}")
-            return balances
+            collateral = balances['sUSD']
+            logger.info(f"Synthetix - Collateral balance called successfully: {collateral}")
+            return collateral
         except Exception as e:
             logger.error(f"Synthetix - Failed to get available collateral. Error: {e}")
             return None
@@ -166,5 +167,4 @@ class SynthetixPositionController:
             return False
 
 test = SynthetixPositionController()
-x = test.is_already_position_open()
-print(x)
+test.get_available_collateral()

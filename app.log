@@ -46,3 +46,68 @@
 2024-03-11 11:14:09,407 - Synthetix - INFO - Committing order size -1000000000000000000 (-1.0) to ETH (id: 100) for account 170141183460469231731687303715884106093
 2024-03-11 11:14:09,408 - Synthetix - INFO - commit_order tx: 0x9524df14dc459ca44f377643c95d55930c235acddc19ef74faf2ca3f5037774c
 2024-03-11 11:14:11,733 - GlobalUtils.logger - ERROR - Synthetix - Failed to close position. Please check manually.
+2024-03-11 14:28:31,163 - GlobalUtils.logger - INFO - Binance - All open orders for symbol ETHUSDT have been cancelled.
+2024-03-11 14:28:31,889 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:28:32,480 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:30:17,652 - GlobalUtils.logger - INFO - Binance - All open orders for symbol ETHUSDT have been cancelled.
+2024-03-11 14:30:18,394 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:30:18,979 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:31:14,786 - GlobalUtils.logger - INFO - Binance - All open orders for symbol ETHUSDT have been cancelled.
+2024-03-11 14:31:27,948 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:31:28,171 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:31:34,241 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.00116886738396791, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.00183113261603209}
+2024-03-11 14:31:36,815 - GlobalUtils.logger - ERROR - ByBit - Failed to get open positions. HTTP status code: 404
+2024-03-11 14:31:36,817 - GlobalUtils.logger - INFO - Synthetix - Accounts checked and found successfully.
+2024-03-11 14:31:36,817 - GlobalUtils.logger - INFO - Synthetix - Successfully retrieved default account.
+2024-03-11 14:31:37,121 - GlobalUtils.logger - INFO - Synthetix - Collateral balances called successfully: {'sUSD': 9990.360898198573, 'sUSDC': 0.0}
+2024-03-11 14:31:38,238 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-11 14:31:38,239 - GlobalUtils.logger - ERROR - MasterPositionController - Failed to calculate trade size for opportunity. Error: '>' not supported between instances of 'float' and 'dict'
+2024-03-11 14:31:38,239 - GlobalUtils.logger - ERROR - Binance - Failed to execute trade for ETHUSDT. Error: 'amount'
+2024-03-11 14:31:39,457 - Synthetix - INFO - Simulation failed, decoding the error 0x0d4f7697
+2024-03-11 14:31:39,457 - Synthetix - ERROR - Error is not related to oracle data: 0x0d4f7697
+2024-03-11 14:31:39,457 - GlobalUtils.logger - INFO - Synthetix - An error occurred while executing a trade: 0x0d4f7697
+2024-03-11 14:31:39,457 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-11 14:31:52,670 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0011688709069538731, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001831129093046127}
+2024-03-11 14:31:55,336 - GlobalUtils.logger - ERROR - ByBit - Failed to get open positions. HTTP status code: 404
+2024-03-11 14:31:55,340 - GlobalUtils.logger - INFO - Synthetix - Accounts checked and found successfully.
+2024-03-11 14:31:55,340 - GlobalUtils.logger - INFO - Synthetix - Successfully retrieved default account.
+2024-03-11 14:31:55,633 - GlobalUtils.logger - INFO - Synthetix - Collateral balances called successfully: {'sUSD': 9990.360898198573, 'sUSDC': 0.0}
+2024-03-11 14:39:34,613 - GlobalUtils.logger - INFO - Binance - All open orders for symbol ETHUSDT have been cancelled.
+2024-03-11 14:39:43,501 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:39:44,120 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-11 14:39:50,766 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0011689551063183887, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0018310448936816113}
+2024-03-11 14:39:52,905 - GlobalUtils.logger - ERROR - ByBit - Failed to get open positions. HTTP status code: 404
+2024-03-11 14:39:52,910 - GlobalUtils.logger - INFO - Synthetix - Accounts checked and found successfully.
+2024-03-11 14:39:52,928 - GlobalUtils.logger - INFO - Synthetix - Successfully retrieved default account.
+2024-03-11 14:39:53,280 - GlobalUtils.logger - INFO - Synthetix - Collateral balance called successfully: 9990.360898198573
+2024-03-11 14:39:54,617 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-11 14:39:54,617 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 11008.2034383225
+2024-03-11 14:39:54,617 - GlobalUtils.logger - ERROR - Binance - Failed to execute trade for ETHUSDT. Error: 'amount'
+2024-03-11 14:39:56,291 - Synthetix - INFO - Simulated tx successfully: {'gas': 590220, 'maxFeePerGas': 1000764, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 16, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d000000000000000000000000000000000000000000000000bd1460ca1eb8b21000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000df8229f058b594e00053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-11 14:39:56,537 - Synthetix - INFO - Committing order size 13624621193917674000 (13.624621193917674) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-11 14:39:56,537 - Synthetix - INFO - commit_order tx: 0xe0969a60799dc2d4bfd8d6775b40def733cba776670a21386126dee5815651be
+2024-03-11 14:39:58,929 - GlobalUtils.logger - ERROR - Synthetix - No position found after order execution
+2024-03-11 14:39:58,929 - GlobalUtils.logger - INFO - Synthetix - Order executed successfully
+2024-03-11 14:39:58,929 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-11 14:40:12,581 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0011689592654492223, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0018310407345507778}
+2024-03-11 14:40:12,911 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-11 14:40:12,913 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-11 14:40:26,198 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0011689619469333497, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0018310380530666504}
+2024-03-11 14:40:26,526 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-11 14:40:26,526 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-11 14:40:39,713 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0011689650753314987, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0018310349246685013}
+2024-03-11 14:40:40,033 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-11 14:40:40,033 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-11 14:40:53,134 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0011689682037296473, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0018310317962703527}
+2024-03-11 14:40:53,480 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-11 14:40:53,481 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-11 14:41:06,092 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001168970885213775, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001831029114786225}
+2024-03-11 14:41:06,423 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-11 14:41:06,423 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-11 14:42:29,655 - Synthetix - INFO - Simulated tx successfully: {'gas': 650697, 'maxFeePerGas': 1000722, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 17, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dffffffffffffffffffffffffffffffffffffffffffffffff42eb9f35e1474df000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d657d07589fc181a0053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-11 14:42:29,864 - Synthetix - INFO - Committing order size -13624621193917674000 (-13.624621193917674) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-11 14:42:29,864 - Synthetix - INFO - commit_order tx: 0x0755aad76b2f60160c9d718602d977d146d56c149aaedf8609870d976789e7d5
+2024-03-11 14:42:32,210 - GlobalUtils.logger - ERROR - Synthetix - Failed to close position. Please check manually.
+2024-03-11 14:45:51,193 - GlobalUtils.logger - INFO - Synthetix - Accounts checked and found successfully.
+2024-03-11 14:45:51,210 - GlobalUtils.logger - INFO - Synthetix - Successfully retrieved default account.
+2024-03-11 14:45:51,561 - GlobalUtils.logger - INFO - Synthetix - Collateral balance called successfully: 10046.364581024844

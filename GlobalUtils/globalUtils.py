@@ -37,6 +37,11 @@ def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -
     asset_amount = dollar_amount / asset_price
     return asset_amount
 
+def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
+    asset_price = get_asset_price(asset)
+    dollar_amount = asset_amount * asset_price
+    return dollar_amount
+
 def get_full_asset_name(symbol: str) -> str:
     asset_mapping = {
         'btc': 'bitcoin',

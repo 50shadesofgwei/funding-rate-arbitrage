@@ -4,6 +4,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 import sys
 import os
 from dotenv import load_dotenv
+from GlobalUtils.logger import logger
 
 load_dotenv()
 
@@ -36,6 +37,8 @@ def apply_leverage_to_trade_amount(trade_amount: float) -> float:
     return trade_amount_with_leverage_factor
 
 def get_max_collateral_from_selected_exchanges(collateral_amounts, primary_exchange, secondary_exchange):
-    return max(collateral_amounts.get(primary_exchange, 0), collateral_amounts.get(secondary_exchange, 0))
+    max_collateral_amount = max(collateral_amounts.get(primary_exchange, 0), collateral_amounts.get(secondary_exchange, 0))
+    logger.info(f'max collateral amount found: {max_collateral_amount}')
+    return max_collateral_amount
 
 

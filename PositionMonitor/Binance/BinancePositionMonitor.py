@@ -14,18 +14,20 @@ class BinancePositionMonitor():
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(api_key, api_secret)
+        self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
 
-    def get_position_object_from_event(self, position) -> dict:
-        symbol = position["symbol"]
-        side = position['side']
-        order_id = position['order_id']
-        liquidation_price = self.get_liquidation_price(position["symbol"])
+    def get_position_object_from_event(self, order_confirmation_object) -> dict:
+        symbol = order_confirmation_object["symbol"]
+        side = order_confirmation_object['side']
+        size = order_confirmation_object['size']
+        order_id = order_confirmation_object['order_id']
+        liquidation_price = self.get_liquidation_price(order_confirmation_object["symbol"])
 
         return {
             'exchange': 'Binance',
             'symbol': symbol,
             'side': side,
+            'size': size,
             'order_id': order_id,
             'liquidation_price': liquidation_price
         }

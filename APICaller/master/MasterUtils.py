@@ -7,8 +7,8 @@ TARGET_TOKENS = [
 
 TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
-    {"exchange": "Binance", "is_target": False},
-    {"exchange": "ByBit", "is_target": True},
+    {"exchange": "Binance", "is_target": True},
+    {"exchange": "ByBit", "is_target": False},
 ]
 
 def get_target_exchanges() -> list:
