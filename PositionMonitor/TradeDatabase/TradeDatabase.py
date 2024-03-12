@@ -7,8 +7,8 @@ import uuid
 class TradeLogger:
     def __init__(self, db_path='trades.db'):
         self.db_path = db_path
-        pub.subscribe(self.log_trade_pair, 'positionOpened')
-        pub.subscribe(self.log_close_trade, 'positionClosed')
+        pub.subscribe(self.log_trade_pair, 'position_opened')
+        pub.subscribe(self.log_close_trade, 'position_closed')
         try:
             self.conn = self.create_or_access_database()
         except Exception as e:
@@ -81,18 +81,5 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving trades for execution id: {strategy_execution_id}, Error: {e}")
             return []
-
-
-logger = TradeLogger()
-strategy_execution_id = "execution_123"
-logger.log_open_trade(strategy_execution_id, '123', 'Binance', 'BTCUSDT', 'Buy', 1.5)
-logger.log_open_trade(strategy_execution_id, '456', 'Synthetix', 'BTCUSDT', 'Sell', 1.5)
-
-logger.log_close_trade(strategy_execution_id, '123', 100, 0, 'Take Profit')
-logger.log_close_trade(strategy_execution_id, '456', -100, 0, 'Take Profit')
-
-trade_pair = logger.get_trade_pair_by_execution_id(strategy_execution_id)
-for trade in trade_pair:
-    print(trade)
 
 

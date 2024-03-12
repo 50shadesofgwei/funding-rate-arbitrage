@@ -21,7 +21,8 @@ class MasterPositionController:
                 logger.info("MasterPositionController - Position already open, skipping opportunity.")
                 return
 
-            trade_size = self.get_trade_size(opportunity)
+            trade_size_raw = self.get_trade_size(opportunity)
+            trade_size = round(trade_size_raw, 6)
             long_exchange, short_exchange = opportunity['long_exchange'], opportunity['short_exchange']
             
             position_data_dict = {}
@@ -38,7 +39,7 @@ class MasterPositionController:
 
             # Check if trades were executed on both exchanges
             if len(position_data_dict) == 2:
-                pub.sendMessage('positionOpened', position_data=position_data_dict)
+                pub.sendMessage('position_opened', position_data_dict)
                 logger.info("MasterPositionController - Trades executed successfully for opportunity.")
             else:
     

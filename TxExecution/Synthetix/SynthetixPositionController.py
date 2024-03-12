@@ -173,3 +173,4 @@ class SynthetixPositionController:
             return False
 
 test = SynthetixPositionController()
+test.close_position(100)
