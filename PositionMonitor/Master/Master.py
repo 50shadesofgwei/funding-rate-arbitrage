@@ -9,9 +9,6 @@ from threading import Timer
 
 class MasterPositionMonitor():
     def __init__(self):
-        self.synthetix_order_details = None
-        self.binance_order_details = None
-        self.check_in_progress = False
         self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
 

@@ -26,37 +26,28 @@ class MasterPositionController:
             
             position_data_dict = {}
 
-            if 'Binance' in [long_exchange, short_exchange]:
-                binance_position_data = self.binance.execute_trade(
+            for exchange_name in [long_exchange, short_exchange]:
+                execute_trade_method = getattr(self, exchange_name.lower()).execute_trade
+                position_data = execute_trade_method(
                     opportunity, 
-                    is_long=long_exchange == 'Binance', 
+                    is_long=exchange_name == long_exchange, 
                     trade_size=trade_size
                 )
-                position_data_dict['Binance'] = binance_position_data
+                if position_data:  # Ensure the trade was executed successfully
+                    position_data_dict[exchange_name] = position_data
 
-            if 'Synthetix' in [long_exchange, short_exchange]:
-                synthetix_position_data = self.synthetix.execute_trade(
-                    opportunity, 
-                    is_long=long_exchange == 'Synthetix', 
-                    trade_size=trade_size
-                )
-                position_data_dict['Synthetix'] = synthetix_position_data
-            
-            if 'ByBit' in [long_exchange, short_exchange]:
-                bybit_position_data = self.bybit.execute_trade(
-                    opportunity, 
-                    is_long=long_exchange == 'ByBit', 
-                    trade_size=trade_size
-                )
-                position_data_dict['ByBit'] = bybit_position_data
-
-            # Publish the collected position data
-            if position_data_dict:
+            # Check if trades were executed on both exchanges
+            if len(position_data_dict) == 2:
                 pub.sendMessage('positionOpened', position_data=position_data_dict)
+                logger.info("MasterPositionController - Trades executed successfully for opportunity.")
+            else:
+    
+                self.cancel_all_trades()
+                logger.error("MasterPositionController - Failed to execute trades on both exchanges. Cancelling trades.")
 
-            logger.info("MasterPositionController - Trades executed successfully for opportunity.")
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to execute trades for opportunity. Error: {e}")
+            self.cancel_all_trades()  # Ensure all trades are cancelled in case of error
 
     def get_trade_size(self, opportunity) -> float:
         try:

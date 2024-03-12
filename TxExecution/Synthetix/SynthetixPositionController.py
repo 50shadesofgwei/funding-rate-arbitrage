@@ -31,6 +31,7 @@ class SynthetixPositionController:
                     return position_data
                 else:
                     logger.error('SynthetixPositionController - Failed to execute order')
+                    return None
             else:
                 logger.error("SynthetixPositionController - execute_trade called while position already open")
         except Exception as e:

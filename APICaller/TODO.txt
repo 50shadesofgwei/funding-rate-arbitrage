@@ -5,6 +5,8 @@ TODO.txt
 
 - fix trade_size logic: too large atm
 
+- create abort / cancel all trades logic
+
 - create the database for positions
     derive close position logic from there
 
