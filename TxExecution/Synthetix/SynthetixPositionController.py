@@ -3,6 +3,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
+from TxExecution.Synthetix.utils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
 from pubsub import pub
@@ -24,8 +25,9 @@ class SynthetixPositionController:
                 adjusted_trade_size = self.calculate_adjusted_trade_size(opportunity, is_long, trade_size)
                 self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
                 time.sleep(2)
-                self.handle_position_opened(opportunity)
+                position_data = self.handle_position_opened(opportunity)
                 logger.info("Synthetix - Order executed successfully")
+                return position_data
             else:
                 logger.error("Synthetix - SynthetixPositionController.execute_trade called while position already open")
         except Exception as e:
@@ -44,7 +46,6 @@ class SynthetixPositionController:
                 
                 if not self.is_already_position_open():
                     logger.info('Synthetix - Position successfully closed.')
-                    pub.sendMessage('SynthetixPositionClosed', )
                 else:
                     logger.error('Synthetix - Failed to close position. Please check manually.')
             else:
@@ -62,19 +63,6 @@ class SynthetixPositionController:
             logger.info(f"Synthetix - Successfully added {amount} collateral to market ID {market_id}.")
         except Exception as e:
             logger.error(f"Synthetix - An error occurred while attempting to add collateral: {e}")
-
-    def handle_position_opened(self, opportunity):
-        if self.is_already_position_open():
-            position = self.client.perps.get_open_positions(market_names=[opportunity['symbol']])
-            margin_details = self.client.perps.get_margin_info()
-            position_details = {
-                'position': position,
-                'margin_details': margin_details
-            }
-            pub.sendMessage('SynthetixPositionOpened', position_details)
-        else:
-            logger.error("Synthetix - No position found after order execution")
-
 
     def create_account(self):
         try:
@@ -100,6 +88,20 @@ class SynthetixPositionController:
     ######################
     ### READ FUNCTIONS ###
     ######################
+
+    def handle_position_opened(self, opportunity):
+        if self.is_already_position_open():
+            position = self.client.perps.get_open_positions(market_names=[opportunity['symbol']])
+            position['symbol'] = opportunity['symbol']
+            margin_details = self.client.perps.get_margin_info()
+            position_details = {
+                'position': position,
+                'margin_details': margin_details
+            }
+            trade_data = parse_trade_data_from_position_details(position_details)
+            return trade_data
+        else:
+            logger.error("Synthetix - No position found after order execution")
 
     def get_available_collateral(self):
         try:

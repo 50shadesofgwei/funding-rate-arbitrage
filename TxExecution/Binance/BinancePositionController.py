@@ -38,8 +38,10 @@ class BinancePositionController:
 
             time.sleep(2)
             if self.is_order_filled(order_id=int(response['orderId']), symbol=response['symbol']):
-                pub.sendMessage('BinancePositionOpened', response)
                 logger.info(f"Binance - Trade executed: {order_with_amount['symbol']} {order_with_amount['side']}, Quantity: {order_with_amount['amount']}, Order id: {response['orderId']}")
+                liquidation_price = self.get_liquidation_price(response['symbol'])
+                response['liquidation_price'] = liquidation_price
+                return response
         except Exception as e:
             logger.error(f"Binance - Failed to execute trade for {order_with_amount['symbol'] if 'symbol' in order_with_amount else 'unknown'}. Error: {e}")
 
@@ -95,6 +97,12 @@ class BinancePositionController:
         except Exception as e:
             logger.error(f"Binance - is_filled check for order {order_id} for symbol {symbol} failed. Error: {e}")
             return False
+
+    def get_liquidation_price(self, symbol: str) -> float:
+        response = self.client.get_position_risk(symbol)
+        liquidation_price = float(response['liquidationPrice'])
+
+        return liquidation_price
 
     def get_available_collateral(self) -> float:
         try:

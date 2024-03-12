@@ -23,23 +23,40 @@ class MasterPositionController:
 
             trade_size = self.get_trade_size(opportunity)
             long_exchange, short_exchange = opportunity['long_exchange'], opportunity['short_exchange']
-            is_long_binance: bool = long_exchange == 'Binance'
-            is_long_synthetix: bool = long_exchange == 'Synthetix'
-            is_long_bybit: bool = long_exchange == 'ByBit'
+            
+            position_data_dict = {}
 
             if 'Binance' in [long_exchange, short_exchange]:
-                self.binance.execute_trade(opportunity, is_long=is_long_binance, trade_size=trade_size)
+                binance_position_data = self.binance.execute_trade(
+                    opportunity, 
+                    is_long=long_exchange == 'Binance', 
+                    trade_size=trade_size
+                )
+                position_data_dict['Binance'] = binance_position_data
 
             if 'Synthetix' in [long_exchange, short_exchange]:
-                self.synthetix.execute_trade(opportunity, is_long=is_long_synthetix, trade_size=trade_size)
+                synthetix_position_data = self.synthetix.execute_trade(
+                    opportunity, 
+                    is_long=long_exchange == 'Synthetix', 
+                    trade_size=trade_size
+                )
+                position_data_dict['Synthetix'] = synthetix_position_data
             
             if 'ByBit' in [long_exchange, short_exchange]:
-                self.bybit.execute_trade(opportunity, is_long=is_long_bybit, trade_size=trade_size)
+                bybit_position_data = self.bybit.execute_trade(
+                    opportunity, 
+                    is_long=long_exchange == 'ByBit', 
+                    trade_size=trade_size
+                )
+                position_data_dict['ByBit'] = bybit_position_data
+
+            # Publish the collected position data
+            if position_data_dict:
+                pub.sendMessage('positionOpened', position_data=position_data_dict)
 
             logger.info("MasterPositionController - Trades executed successfully for opportunity.")
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to execute trades for opportunity. Error: {e}")
-
 
     def get_trade_size(self, opportunity) -> float:
         try:

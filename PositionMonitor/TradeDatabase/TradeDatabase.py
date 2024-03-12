@@ -2,6 +2,7 @@ import sqlite3
 from datetime import datetime
 from GlobalUtils.logger import logger
 from pubsub import pub
+import uuid
 
 class TradeLogger:
     def __init__(self, db_path='trades.db'):
@@ -37,6 +38,12 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error creating/accessing the database: {e}")
             raise e
+
+    def log_trade_pair(self, orderId1, exchange1, symbol1, side1, size1, orderId2, exchange2, symbol2, side2, size2):
+        strategy_execution_id = str(uuid.uuid4())
+        open_time = datetime.now()
+        self.log_open_trade(strategy_execution_id, orderId1, exchange1, symbol1, side1, size1, open_time)
+        self.log_open_trade(strategy_execution_id, orderId2, exchange2, symbol2, side2, size2, open_time)
 
     def log_open_trade(self, strategy_execution_id, orderId, exchange, symbol, side, size, open_time=datetime.now()):
         try:
