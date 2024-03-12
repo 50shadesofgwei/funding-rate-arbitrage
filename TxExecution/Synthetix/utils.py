@@ -1,5 +1,6 @@
 from PositionMonitor.Synthetix.utils import *
 from GlobalUtils.globalUtils import *
+import re
 
 def parse_trade_data_from_position_details(position_details) -> dict:
     side = get_side(position_details['position']['size'])
@@ -16,3 +17,8 @@ def parse_trade_data_from_position_details(position_details) -> dict:
         }
 
     return trade_data
+
+def is_transaction_hash(tx_hash) -> bool:
+    # Regular expression to match an Ethereum transaction hash
+    pattern = r'^0x[a-fA-F0-9]{64}$'
+    return re.match(pattern, tx_hash) is not None

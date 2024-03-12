@@ -3,10 +3,9 @@ TODO.txt
 - synthetix: implement check for collateral approval
     clean up the collateral deployment process 
 
-- create order executed confirmation 
-    synthetix = 1
-    bybit = 0 
-    binance = 1
+- fix order confirmation for synthetix
+
+- fix trade_size logic: too large atm
 
 - create the database for positions
     derive close position logic from there

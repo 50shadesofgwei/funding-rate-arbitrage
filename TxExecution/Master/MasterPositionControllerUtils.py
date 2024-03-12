@@ -5,40 +5,50 @@ import sys
 import os
 from dotenv import load_dotenv
 from GlobalUtils.logger import logger
+from GlobalUtils.globalUtils import *
 
 load_dotenv()
-
-def check_other_exchange_has_adequate_collateral(collateral_amounts, exchange: str, desired_collateral_amount: float) -> bool:
-    collateral = collateral_amounts.get(exchange, 0)
-    return collateral >= desired_collateral_amount
 
 def adjust_collateral_allocation(
         collateral_amounts, 
         long_exchange, 
         short_exchange, 
-        initial_percentage=75, 
-        decrement=10, 
-        attempts=3) -> float:
+        initial_percentage=75) -> float:
+    
+    if not is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange):
+        raise ValueError("Collateral on exchanges does not meet the minimum ratio requirement - collateral amounts need rebalancing across exchanges")
+    
+    # Determine the smaller of the two collateral amounts
+    long_collateral = collateral_amounts.get(long_exchange, 0)
+    short_collateral = collateral_amounts.get(short_exchange, 0)
+    smaller_collateral = min(long_collateral, short_collateral)
+    
+    # Calculate 75% of the smaller collateral amount
+    trade_amount = smaller_collateral * (initial_percentage / 100)
+    return float(trade_amount)
 
-    max_collateral = get_max_collateral_from_selected_exchanges(collateral_amounts, long_exchange, short_exchange)
-    desired_collateral = max_collateral * (initial_percentage / 100)
+def is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange, min_ratio=0.25):
+    long_collateral = collateral_amounts.get(long_exchange, 0)
+    short_collateral = collateral_amounts.get(short_exchange, 0)
+    
+    if long_collateral >= short_collateral:
+        ratio = short_collateral / long_collateral if long_collateral > 0 else 0
+    else:
+        ratio = long_collateral / short_collateral if short_collateral > 0 else 0
+    
+    logger.info(f'MasterPositionControllerUtils - collateral ratio between {long_exchange} and {short_exchange} = {ratio}')
+    return ratio >= min_ratio
 
-    for _ in range(attempts):
-        if check_other_exchange_has_adequate_collateral(collateral_amounts, short_exchange, desired_collateral):
-            return desired_collateral
-        else:
-            desired_collateral *= (1 - decrement / 100)
-
-    raise ValueError(f"Not enough capital on {short_exchange} for the trade.")
-
-def apply_leverage_to_trade_amount(trade_amount: float) -> float:
-    leverage_factor = float(os.getenv('LEVERAGE_FACTOR'))
-    trade_amount_with_leverage_factor = trade_amount * leverage_factor
-    return trade_amount_with_leverage_factor
-
-def get_max_collateral_from_selected_exchanges(collateral_amounts, primary_exchange, secondary_exchange):
-    max_collateral_amount = max(collateral_amounts.get(primary_exchange, 0), collateral_amounts.get(secondary_exchange, 0))
-    logger.info(f'max collateral amount found: {max_collateral_amount}')
-    return max_collateral_amount
+def calculate_adjusted_trade_size(self, opportunity, is_long: bool, trade_size: float) -> float:
+        try:
+            full_asset_name = get_full_asset_name(opportunity['symbol'])
+            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(full_asset_name, trade_size)
+            trade_size_with_leverage = trade_size_in_asset * self.leverage_factor
+            adjusted_trade_size = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
+            logger.info(f'MasterPositionControlerUtils - levered trade size in asset calculated at {adjusted_trade_size}')
+            return adjusted_trade_size
+        except Exception as e:
+            logger.error(f"MasterPositionControlerUtils - Failed to calculate adjusted trade size. Error: {e}")
+            raise
 
 
