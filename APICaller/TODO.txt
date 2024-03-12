@@ -3,8 +3,6 @@ TODO.txt
 - synthetix: implement check for collateral approval
     clean up the collateral deployment process 
 
-- fix order confirmation for synthetix
-
 - fix trade_size logic: too large atm
 
 - create the database for positions

@@ -39,11 +39,12 @@ def is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exch
     logger.info(f'MasterPositionControllerUtils - collateral ratio between {long_exchange} and {short_exchange} = {ratio}')
     return ratio >= min_ratio
 
-def calculate_adjusted_trade_size(self, opportunity, is_long: bool, trade_size: float) -> float:
+def calculate_adjusted_trade_size(opportunity, is_long: bool, trade_size: float) -> float:
         try:
+            leverage_factor = os.getenv('TRADE_LEVERAGE')
             full_asset_name = get_full_asset_name(opportunity['symbol'])
             trade_size_in_asset = get_asset_amount_for_given_dollar_amount(full_asset_name, trade_size)
-            trade_size_with_leverage = trade_size_in_asset * self.leverage_factor
+            trade_size_with_leverage = trade_size_in_asset * leverage_factor
             adjusted_trade_size = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             logger.info(f'MasterPositionControlerUtils - levered trade size in asset calculated at {adjusted_trade_size}')
             return adjusted_trade_size

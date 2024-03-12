@@ -9,6 +9,7 @@ from MatchingEngine.MatchingEngine import matchingEngine
 from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityChecker
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.Master import MasterPositionMonitor
+from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 
 class Main:
     def __init__(self):
@@ -17,6 +18,7 @@ class Main:
         self.profitability_checker = ProfitabilityChecker()
         self.position_controller = MasterPositionController()
         self.position_monitor = MasterPositionMonitor()
+        self.trade_logger = TradeLogger()
     
     def search_for_opportunities(self):
         funding_rates = self.caller.get_funding_rates()

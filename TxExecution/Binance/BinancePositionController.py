@@ -29,7 +29,6 @@ class BinancePositionController:
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         try:
             order = get_order_from_opportunity(opportunity, is_long)
-            adjusted_trade_amount = get_adjusted_trade_amount()
             order_with_amount = add_amount_to_order(order, trade_size)
             response = self.client.new_order(
                 symbol=order_with_amount['symbol'],

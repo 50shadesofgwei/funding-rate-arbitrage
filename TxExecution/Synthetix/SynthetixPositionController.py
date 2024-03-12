@@ -23,15 +23,18 @@ class SynthetixPositionController:
         try:
             if not self.is_already_position_open():
                 adjusted_trade_size = self.calculate_adjusted_trade_size(opportunity, is_long, trade_size)
-                self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
-                time.sleep(2)
-                position_data = self.handle_position_opened(opportunity)
-                logger.info("SynthetixPositionController - Order executed successfully")
-                return position_data
+                response = self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
+                if is_transaction_hash(response):
+                    time.sleep(2)
+                    position_data = self.handle_position_opened(opportunity)
+                    logger.info("SynthetixPositionController - Order executed successfully")
+                    return position_data
+                else:
+                    logger.error('SynthetixPositionController - Failed to execute order')
             else:
                 logger.error("SynthetixPositionController - execute_trade called while position already open")
         except Exception as e:
-            logger.info(f"SynthetixPositionController - An error occurred while executing a trade: {e}")
+            logger.error(f"SynthetixPositionController - An error occurred while executing a trade: {e}")
 
 
     def close_position(self, market_id: int):
@@ -152,7 +155,7 @@ class SynthetixPositionController:
             return adjusted_trade_size
         except Exception as e:
             logger.error(f"SynthetixPositionController - Failed to calculate adjusted trade size. Error: {e}")
-            raise
+            return None
 
 
     def is_already_position_open(self) -> bool:
