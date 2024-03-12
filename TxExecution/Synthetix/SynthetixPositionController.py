@@ -39,11 +39,12 @@ class SynthetixPositionController:
                 size = position['position_size']
                 inverse_size = size * -1
                 self.client.perps.commit_order(size=inverse_size, market_id=market_id, submit=True)
-                time.sleep(2)
+                time.sleep(3)
                 
                 
                 if not self.is_already_position_open():
                     logger.info('Synthetix - Position successfully closed.')
+                    pub.sendMessage('SynthetixPositionClosed', )
                 else:
                     logger.error('Synthetix - Failed to close position. Please check manually.')
             else:
