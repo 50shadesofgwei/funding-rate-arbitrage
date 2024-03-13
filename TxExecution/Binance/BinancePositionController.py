@@ -2,6 +2,7 @@ import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from GlobalUtils.logger import logger
+from GlobalUtils.globalUtils import *
 from APICaller.Binance.binanceUtils import BinanceEnvVars
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from binance.um_futures import UMFutures as Client
@@ -27,35 +28,81 @@ class BinancePositionController:
     #######################
 
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
+        order_with_amount = {}  # Define outside try for access in except
+        print(f"TRADE SIZE = {trade_size}")
         try:
+
             order = get_order_from_opportunity(opportunity, is_long)
-            order_with_amount = add_amount_to_order(order, trade_size)
+            amount = calculate_adjusted_trade_size(opportunity, is_long, trade_size)
+            order_with_amount = add_amount_to_order(order, amount)
+            print(order_with_amount)
+
             response = self.client.new_order(
                 symbol=order_with_amount['symbol'],
                 side=order_with_amount['side'],
                 type=order_with_amount['type'],
                 quantity=order_with_amount['quantity'])
+            
+            logger.info(f"BinancePositionController - placing order w/ amount: {order_with_amount['quantity']}")
+            print(f"BinancePositionController - placing order w/ amount: {order_with_amount['quantity']}")
+
+            if not isinstance(response, dict) or 'orderId' not in response or 'symbol' not in response:
+                logger.error("BinancePositionController - Invalid response structure from new_order.")
+                return None
 
             time.sleep(2)
             if self.is_order_filled(order_id=int(response['orderId']), symbol=response['symbol']):
-                logger.info(f"Binance - Trade executed: {order_with_amount['symbol']} {order_with_amount['side']}, Quantity: {order_with_amount['quantity']}, Order id: {response['orderId']}")
-                symbol = response['symbol']
-                liquidation_price = self.get_liquidation_price(symbol=symbol)
-                response['liquidation_price'] = liquidation_price
+                logger.info(f"BinancePositionController - Trade executed: {order_with_amount['symbol']} {order_with_amount['side']}, Quantity: {order_with_amount['quantity']}, Order id: {response['orderId']}")
+                try:
+                    liquidation_price = self.get_liquidation_price(symbol=response['symbol'])
+                    response['liquidation_price'] = liquidation_price
+                except Exception as e:
+                    logger.error(f"BinancePositionController - Failed to obtain liquidation price for {response['symbol']}. Error: {e}")
+                    return response 
+
                 return response
+            else:
+                logger.info("BinancePositionController - Order not filled.")
+                return None
         except Exception as e:
             logger.error(f"BinancePositionController - Failed to execute trade for {order_with_amount.get('symbol', 'unknown')}. Error: {e}")
+            return None
 
-    def close_position(self, symbol: str, trade_size: float):
+    def close_all_positions(self):
+        for market in ALL_MARKETS:
+            self.close_position(market)
+
+    def close_position(self, symbol: str):
         try:
+            # Fetch the current open position for the symbol
+            position_info = self.client.get_position_risk(symbol=symbol)
+            
+            if not position_info or 'positionSide' not in position_info or 'positionAmt' not in position_info:
+                logger.error(f"BinancePositionController - No open position found for {symbol}, or missing required fields.")
+                return
+            
+            position_side = position_info['positionSide']
+            position_amount = float(position_info['positionAmt'])
+
+            if position_amount == 0:
+                logger.info(f"BinancePositionController - No open position to close for {symbol}.")
+                return
+
+            close_side = "BUY" if position_side == "SHORT" else "SELL"
+            close_quantity_raw = abs(position_amount)
+            close_quantity = round(close_quantity_raw, 4)
+
+            # Submit the new order to close the position
             self.client.new_order(
-                symbol, 
-                side=SIDE_BUY,
+                symbol=symbol, 
+                side=close_side,
                 type=ORDER_TYPE_MARKET,
-                quantity=trade_size)
-            logger.info(f"BinancePositionController - Open position for symbol {symbol} has been closed.")
+                quantity=close_quantity)
+            
+            logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed.")
         except Exception as e:
             logger.error(f"BinancePositionController - Failed to close position for symbol {symbol}. Error: {e}")
+
 
     def set_leverage_for_all_assets(self, tokens):
         try:
@@ -101,9 +148,19 @@ class BinancePositionController:
 
     def get_liquidation_price(self, symbol: str) -> float:
         response = self.client.get_position_risk(symbol=symbol)
-        liquidation_price = float(response['liquidationPrice'])
+        
+        if isinstance(response, list) and len(response) > 0:
+            position_risk = response[0]
+            
+            if 'liquidationPrice' in position_risk:
+                return float(position_risk['liquidationPrice'])
+            else:
+                logger.error(f"No liquidationPrice found in position risk for {symbol}.")
+                return 0.0 
+        else:
+            logger.error(f"Unexpected response structure or empty response for position risk of {symbol}.")
+            return 0.0 
 
-        return liquidation_price
 
     def get_available_collateral(self) -> float:
         try:
@@ -117,7 +174,6 @@ class BinancePositionController:
             logger.error(f"BinancePositionController - Failed to get available collateral. Error: {e}")
             return 0.0
 
-
 x = {
         "long_exchange": "Binance",
         "short_exchange": "Synthetix",
@@ -126,6 +182,3 @@ x = {
         "short_funding_rate": 0.0009280522330973726,
         "funding_rate_differential": 0.0006209622330973726
     }
-
-test = BinancePositionController()
-test.execute_trade(x, True, 2.111)

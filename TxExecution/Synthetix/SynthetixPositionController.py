@@ -25,11 +25,12 @@ class SynthetixPositionController:
                 adjusted_trade_size = self.calculate_adjusted_trade_size(opportunity, is_long, trade_size)
                 response = self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
                 if is_transaction_hash(response):
-                    time.sleep(2)
+                    time.sleep(3)
                     position_data = self.handle_position_opened(opportunity)
                     logger.info("SynthetixPositionController - Order executed successfully")
                     return position_data
                 else:
+                    print('MADE IT TO HERE 2')
                     logger.error('SynthetixPositionController - Failed to execute order')
                     return None
             else:
@@ -37,6 +38,9 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while executing a trade: {e}")
 
+    def close_all_positions(self):
+        for market in ALL_MARKET_IDS:
+            self.close_position(market)
 
     def close_position(self, market_id: int):
         try:
@@ -48,10 +52,9 @@ class SynthetixPositionController:
                 
                 if is_transaction_hash(response):
                     logger.info('SynthetixPositionController - Position successfully closed.')
+                    return
                 else:
                     logger.error('SynthetixPositionController - Failed to close position. Please check manually.')
-            else:
-                logger.error("SynthetixPositionController - No open position to close.")
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while trying to close a position: {e}")
 
@@ -92,18 +95,15 @@ class SynthetixPositionController:
     ######################
 
     def handle_position_opened(self, opportunity):
-        if self.is_already_position_open():
-            position = self.client.perps.get_open_positions(market_names=[opportunity['symbol']])
-            position['symbol'] = opportunity['symbol']
-            margin_details = self.client.perps.get_margin_info()
-            position_details = {
-                'position': position,
-                'margin_details': margin_details
-            }
-            trade_data = parse_trade_data_from_position_details(position_details)
-            return trade_data
-        else:
-            logger.error("SynthetixPositionController - No position found after order execution")
+        position = self.client.perps.get_open_position(market_name=opportunity['symbol'])
+        position['symbol'] = opportunity['symbol']
+        margin_details = self.client.perps.get_margin_info()
+        position_details = {
+            'position': position,
+            'margin_details': margin_details
+        }
+        trade_data = parse_trade_data_from_position_details(position_details)
+        return trade_data
 
     def get_available_collateral(self):
         try:
@@ -151,7 +151,8 @@ class SynthetixPositionController:
             full_asset_name = get_full_asset_name(opportunity['symbol'])
             trade_size_in_asset = get_asset_amount_for_given_dollar_amount(full_asset_name, trade_size)
             trade_size_with_leverage = trade_size_in_asset * self.leverage_factor
-            adjusted_trade_size = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
+            adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
+            adjusted_trade_size = round(adjusted_trade_size_raw, 3)
             logger.info(f'SynthetixPositionController - levered trade size in asset calculated at {adjusted_trade_size}')
             return adjusted_trade_size
         except Exception as e:
@@ -172,5 +173,16 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
 
+x = {
+        "long_exchange": "Binance",
+        "short_exchange": "Synthetix",
+        "symbol": "ETH",
+        "long_funding_rate": 0.00030709,
+        "short_funding_rate": 0.0009280522330973726,
+        "funding_rate_differential": 0.0006209622330973726
+    }
+
 test = SynthetixPositionController()
-test.close_position(100)
+test.execute_trade(x, True, 100.0)
+time.sleep(10)
+test.close_all_positions()

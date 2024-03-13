@@ -10,6 +10,7 @@ from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityC
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.Master import MasterPositionMonitor
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
+import time
 
 class Main:
     def __init__(self):
@@ -29,7 +30,9 @@ class Main:
     
     def start_search(self):
         self.search_for_opportunities()
-        threading.Timer(10, self.start_search).start()
+        # threading.Timer(10, self.start_search).start()
 
 main = Main()
 main.start_search()
+time.sleep(10)
+main.position_controller.cancel_all_trades()

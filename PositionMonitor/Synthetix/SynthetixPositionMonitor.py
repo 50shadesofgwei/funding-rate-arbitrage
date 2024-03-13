@@ -20,7 +20,7 @@ class SynthetixPositionMonitor():
         side = get_side(order_confirmation_object['position']['position_size'])
         size_in_asset = order_confirmation_object['position']['position_size']
         size_in_dollars = get_dollar_amount_for_given_asset_amount(symbol, size_in_asset)
-        liquidation_price = calculate_liquidation_price(order_confirmation_object['position']["symbol"], current_asset_price)
+        liquidation_price = calculate_liquidation_price(order_confirmation_object['position']['symbol'], current_asset_price)
 
         return {
             'exchange': 'Synthetix',

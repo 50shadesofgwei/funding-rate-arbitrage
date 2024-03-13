@@ -24,9 +24,10 @@ class MasterPositionController:
             trade_size_raw = self.get_trade_size(opportunity)
             trade_size = round(trade_size_raw, 6)
             long_exchange, short_exchange = opportunity['long_exchange'], opportunity['short_exchange']
-            
+
             position_data_dict = {}
 
+            # Attempt to execute trades on specified exchanges
             for exchange_name in [long_exchange, short_exchange]:
                 execute_trade_method = getattr(self, exchange_name.lower()).execute_trade
                 position_data = execute_trade_method(
@@ -34,21 +35,29 @@ class MasterPositionController:
                     is_long=exchange_name == long_exchange, 
                     trade_size=trade_size
                 )
+                
+                # Debugging: Log response from each trade execution
+                logger.debug(f"{exchange_name} trade execution response: {position_data}")
+
                 if position_data:  # Ensure the trade was executed successfully
                     position_data_dict[exchange_name] = position_data
 
-            # Check if trades were executed on both exchanges
+            # Ensure trades were executed on both exchanges
             if len(position_data_dict) == 2:
-                pub.sendMessage('position_opened', position_data_dict)
+                pub.sendMessage('position_opened', position_data=position_data_dict)
                 logger.info("MasterPositionController - Trades executed successfully for opportunity.")
             else:
-    
-                self.cancel_all_trades()
-                logger.error("MasterPositionController - Failed to execute trades on both exchanges. Cancelling trades.")
+                self.cancel_all_trades()  # Ensure this method properly cancels any partially executed trades
+                missing_exchanges = set([long_exchange, short_exchange]) - set(position_data_dict.keys())
+                logger.error(f"MasterPositionController - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
 
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to execute trades for opportunity. Error: {e}")
-            self.cancel_all_trades()  # Ensure all trades are cancelled in case of error
+            self.cancel_all_trades()
+
+    def cancel_all_trades(self):
+        self.synthetix.close_all_positions()
+        self.binance.close_all_positions()
 
     def get_trade_size(self, opportunity) -> float:
         try:
