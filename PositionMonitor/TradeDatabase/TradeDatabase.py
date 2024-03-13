@@ -44,6 +44,7 @@ class TradeLogger:
         open_time = datetime.now()
 
         for exchange, data in position_data.items():
+            print(data)
             order_id = data.get('order_id')
             symbol = data.get('symbol')
             side = data.get('side')

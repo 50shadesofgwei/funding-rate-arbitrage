@@ -5,9 +5,11 @@ TODO.txt
 
 - fix binance close position logic
 
+- bifrucate database errors from trade errors
+
 - create abort / cancel all trades logic
 
 - create the database for positions
     derive close position logic from there
-    
+
 - remove tests in binance position controller

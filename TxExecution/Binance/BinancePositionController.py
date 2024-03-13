@@ -64,7 +64,7 @@ class BinancePositionController:
                 logger.info("BinancePositionController - Order not filled.")
                 return None
         except Exception as e:
-            logger.error(f"BinancePositionController - Failed to execute trade for {order_with_amount.get('symbol', 'unknown')}. Error: {e}")
+            logger.error(f"BinancePositionController - Failed to format database object for {order_with_amount.get('symbol', 'unknown')}. Error: {e}")
             return None
 
     def close_all_positions(self):
@@ -90,7 +90,7 @@ class BinancePositionController:
             close_side = "BUY" if position_side == "SHORT" else "SELL"
             close_quantity_raw = abs(position_amount)
             close_quantity = round(close_quantity_raw, 4)
-            
+
             self.client.new_order(
                 symbol=symbol, 
                 side=close_side,

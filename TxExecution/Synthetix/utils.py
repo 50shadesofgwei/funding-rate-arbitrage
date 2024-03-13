@@ -1,6 +1,7 @@
 from PositionMonitor.Synthetix.utils import *
 from GlobalUtils.globalUtils import *
 import re
+import uuid
 
 def parse_trade_data_from_position_details(position_details) -> dict:
     try:
@@ -8,18 +9,17 @@ def parse_trade_data_from_position_details(position_details) -> dict:
         full_asset_name = get_full_asset_name(position_details['position']['symbol'])
         asset_price = get_asset_price(full_asset_name)
         liquidation_price = calculate_liquidation_price(position_details, asset_price)
+        order_id_hash = uuid.uuid4()
+        order_id = order_id_hash.int % (10**18)
 
         trade_data = {
             "exchange": "Synthetix",
             "symbol": position_details['position']['symbol'],
             "side": side,
             "size": position_details['position']['position_size'],
+            "order_id": order_id,
             "liquidation_price": liquidation_price
         }
-
-        logger.info(f"Trade Data: {trade_data}")
-        logger.info(f"Type checks - Side: {type(side)}, Symbol: {type(position_details['position']['symbol'])}, Size: {type(position_details['position']['position_size'])}, Liquidation Price: {type(liquidation_price)}")
-
         return trade_data
 
     except KeyError as e:

@@ -1,3 +1,5 @@
 venv/
 *.pyc
 .env
+trades.db
+test.csv

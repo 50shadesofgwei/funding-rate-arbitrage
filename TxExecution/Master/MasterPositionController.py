@@ -52,7 +52,7 @@ class MasterPositionController:
                 logger.error(f"MasterPositionController - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
 
         except Exception as e:
-            logger.error(f"MasterPositionController - Failed to execute trades for opportunity. Error: {e}")
+            logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
             self.cancel_all_trades()
 
     def cancel_all_trades(self):

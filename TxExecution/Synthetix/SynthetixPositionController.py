@@ -27,6 +27,7 @@ class SynthetixPositionController:
                 if is_transaction_hash(response):
                     time.sleep(15)
                     position_data = self.handle_position_opened(opportunity)
+                    print(position_data)
                     logger.info("SynthetixPositionController - Order executed successfully")
                     return position_data
                 else:

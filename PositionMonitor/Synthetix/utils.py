@@ -13,8 +13,6 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
         maintenance_margin_requirement = Decimal(str(margin_details['maintenance_margin_requirement']))
         initial_margin_requirement = Decimal(str(margin_details['initial_margin_requirement']))
 
-        print(f'position_size: {position_size}, available_margin: {available_margin}, maintenance_margin_requirement: {maintenance_margin_requirement}, initial_margin_requirement: {initial_margin_requirement}')
-
         # Ensure position_size, maintenance_margin_requirement, and current_asset_price are not zero to avoid DivisionByZero error
         if initial_margin_requirement <= 0 or position_size == 0 or current_asset_price == 0:
             logger.error("Initial margin requirement, position size, or current asset price is zero, cannot calculate liquidation price.")
