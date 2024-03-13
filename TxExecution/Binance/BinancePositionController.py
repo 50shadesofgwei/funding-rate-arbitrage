@@ -56,11 +56,10 @@ class BinancePositionController:
                 try:
                     liquidation_price = self.get_liquidation_price(symbol=response['symbol'])
                     response['liquidation_price'] = liquidation_price
+                    return response
                 except Exception as e:
                     logger.error(f"BinancePositionController - Failed to obtain liquidation price for {response['symbol']}. Error: {e}")
                     return response 
-
-                return response
             else:
                 logger.info("BinancePositionController - Order not filled.")
                 return None
@@ -91,8 +90,7 @@ class BinancePositionController:
             close_side = "BUY" if position_side == "SHORT" else "SELL"
             close_quantity_raw = abs(position_amount)
             close_quantity = round(close_quantity_raw, 4)
-
-            # Submit the new order to close the position
+            
             self.client.new_order(
                 symbol=symbol, 
                 side=close_side,

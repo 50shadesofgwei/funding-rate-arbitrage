@@ -8,7 +8,7 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
 from pubsub import pub
 import time
-import json
+import uuid
 
 class SynthetixPositionController:
     def __init__(self):
@@ -25,12 +25,11 @@ class SynthetixPositionController:
                 adjusted_trade_size = self.calculate_adjusted_trade_size(opportunity, is_long, trade_size)
                 response = self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
                 if is_transaction_hash(response):
-                    time.sleep(3)
+                    time.sleep(15)
                     position_data = self.handle_position_opened(opportunity)
                     logger.info("SynthetixPositionController - Order executed successfully")
                     return position_data
                 else:
-                    print('MADE IT TO HERE 2')
                     logger.error('SynthetixPositionController - Failed to execute order')
                     return None
             else:
@@ -173,16 +172,3 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
 
-x = {
-        "long_exchange": "Binance",
-        "short_exchange": "Synthetix",
-        "symbol": "ETH",
-        "long_funding_rate": 0.00030709,
-        "short_funding_rate": 0.0009280522330973726,
-        "funding_rate_differential": 0.0006209622330973726
-    }
-
-test = SynthetixPositionController()
-test.execute_trade(x, True, 100.0)
-time.sleep(10)
-test.close_all_positions()

@@ -3,7 +3,6 @@ from GlobalUtils.globalUtils import *
 import re
 
 def parse_trade_data_from_position_details(position_details) -> dict:
-    print('MADE IT TO HERE')
     try:
         side = get_side(position_details['position']['position_size'])
         full_asset_name = get_full_asset_name(position_details['position']['symbol'])

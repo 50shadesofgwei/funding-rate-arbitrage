@@ -3,14 +3,11 @@ TODO.txt
 - synthetix: implement check for collateral approval
     clean up the collateral deployment process 
 
-- fix trade_size logic: too large atm
+- fix binance close position logic
 
 - create abort / cancel all trades logic
 
 - create the database for positions
     derive close position logic from there
-
-- implement checks for position AND gate 
-    both orders must be successful or cancel all.
-
+    
 - remove tests in binance position controller

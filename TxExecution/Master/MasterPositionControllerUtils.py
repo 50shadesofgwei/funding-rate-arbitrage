@@ -13,7 +13,7 @@ def adjust_collateral_allocation(
         collateral_amounts, 
         long_exchange, 
         short_exchange, 
-        initial_percentage=75) -> float:
+        initial_percentage=10) -> float:
     
     if not is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange):
         raise ValueError("Collateral on exchanges does not meet the minimum ratio requirement - collateral amounts need rebalancing across exchanges")
