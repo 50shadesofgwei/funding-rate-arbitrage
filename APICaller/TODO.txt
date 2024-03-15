@@ -5,6 +5,8 @@ TODO.txt
 
 - fix binance close position logic
 
+- format binance execute_trade response into db format before sending
+
 - bifrucate database errors from trade errors
 
 - create abort / cancel all trades logic

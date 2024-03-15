@@ -37,7 +37,7 @@ class MasterPositionController:
                 )
                 
                 # Debugging: Log response from each trade execution
-                logger.info(f"{exchange_name} trade execution response: {position_data}")
+                logger.info(f"MasterPositionController - {exchange_name} trade execution response: {position_data}")
 
                 if position_data:  # Ensure the trade was executed successfully
                     position_data_dict[exchange_name] = position_data

@@ -3,3 +3,4 @@ venv/
 .env
 trades.db
 test.csv
+app.log
