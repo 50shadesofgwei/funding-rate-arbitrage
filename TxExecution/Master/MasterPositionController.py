@@ -15,6 +15,10 @@ class MasterPositionController:
         self.bybit = ByBitPositionController()
         pub.subscribe(self.execute_trades, 'opportunity_found')
 
+    #######################
+    ### WRITE FUNCTIONS ###
+    #######################
+
     def execute_trades(self, opportunity):
         try:
             if self.is_already_position_open():
@@ -58,6 +62,11 @@ class MasterPositionController:
     def cancel_all_trades(self):
         self.synthetix.close_all_positions()
         self.binance.close_all_positions()
+        pub.sendMessage('position_closed')
+
+    ######################
+    ### READ FUNCTIONS ###
+    ######################
 
     def get_trade_size(self, opportunity) -> float:
         try:

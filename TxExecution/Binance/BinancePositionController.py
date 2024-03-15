@@ -129,7 +129,7 @@ class BinancePositionController:
     def get_position_object_from_response(self, response) -> dict:
         symbol = response['symbol']
         order_id = response['orderId']
-        side = response['side']
+        side = get_side(response['side'])
         size = response['origQty']
         liquidation_price = self.get_liquidation_price(response['symbol'])
 

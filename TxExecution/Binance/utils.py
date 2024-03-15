@@ -46,3 +46,12 @@ def calculate_adjusted_trade_size(opportunity, is_long: bool, trade_size: float)
         except Exception as e:
             logger.error(f"BinancePositionController - Failed to calculate adjusted trade size. Error: {e}")
             return None
+
+def get_side(side: str) -> str:
+    if side == "SELL":
+        return "Short"
+    elif side == "BUY":
+        return "Long"
+    else:
+        logger.error(f"BinancePositionControllerUtils - get_side given invalid argument: {side}")
+        return 

@@ -3,15 +3,11 @@ TODO.txt
 - synthetix: implement check for collateral approval
     clean up the collateral deployment process 
 
-- fix binance close position logic
+- DATABASE 
+    implement close position logic
+    pnl, close reason, etc
+    Add liquidation price to database schema
 
-- format binance execute_trade response into db format before sending
-
-- bifrucate database errors from trade errors
-
-- create abort / cancel all trades logic
-
-- create the database for positions
-    derive close position logic from there
-
-- remove tests in binance position controller
+- POSITION MONITOR
+    define close reasons
+    logic for detecting close reasons
