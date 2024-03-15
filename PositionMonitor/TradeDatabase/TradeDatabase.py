@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
+
 import sqlite3
 from datetime import datetime
 from GlobalUtils.logger import logger
@@ -26,6 +29,7 @@ class TradeLogger:
                         symbol TEXT NOT NULL,
                         side TEXT NOT NULL,
                         size REAL NOT NULL,
+                        liquidation_price REAL NOT NULL,
                         open_close TEXT NOT NULL,
                         open_time DATETIME,
                         close_time DATETIME,
@@ -83,4 +87,15 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error retrieving trades for execution id: {strategy_execution_id}, Error: {e}")
             return []
 
+    def clear_database(self):
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("DROP TABLE IF EXISTS trade_log")
+            conn.commit()
+            self.create_or_access_database()
+        except sqlite3.Error as e:
+            logger.error(f"TradeLogger - Error clearing the database: {e}")
 
+x = TradeLogger()
+x.clear_database()

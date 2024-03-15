@@ -1,8 +1,4 @@
-
-
-def normalize_symbol(symbol):
-        """Normalize the symbol to a common format without exchange-specific suffixes."""
-        return symbol.replace('USDT', '').replace('PERP', '')
+from GlobalUtils.globalUtils import *
 
 def group_by_symbol(funding_rates):
     """Group funding rates by normalized symbol."""

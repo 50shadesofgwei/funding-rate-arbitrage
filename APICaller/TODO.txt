@@ -3,6 +3,9 @@ TODO.txt
 - synthetix: implement check for collateral approval
     clean up the collateral deployment process 
 
+- CLEANUP
+    remove local sys imports
+
 - DATABASE 
     implement close position logic
     pnl, close reason, etc

@@ -14,6 +14,7 @@ class MasterPositionController:
         self.binance = BinancePositionController()
         self.bybit = ByBitPositionController()
         pub.subscribe(self.execute_trades, 'opportunity_found')
+        pub.subscribe(self.cancel_all_trades, 'close_positions')
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -31,7 +32,6 @@ class MasterPositionController:
 
             position_data_dict = {}
 
-            # Attempt to execute trades on specified exchanges
             for exchange_name in [long_exchange, short_exchange]:
                 execute_trade_method = getattr(self, exchange_name.lower()).execute_trade
                 position_data = execute_trade_method(
@@ -39,27 +39,26 @@ class MasterPositionController:
                     is_long=exchange_name == long_exchange, 
                     trade_size=trade_size
                 )
-                
-                # Debugging: Log response from each trade execution
+
                 logger.info(f"MasterPositionController - {exchange_name} trade execution response: {position_data}")
 
-                if position_data:  # Ensure the trade was executed successfully
+                if position_data:
                     position_data_dict[exchange_name] = position_data
 
-            # Ensure trades were executed on both exchanges
+ 
             if len(position_data_dict) == 2:
                 pub.sendMessage('position_opened', position_data=position_data_dict)
                 logger.info("MasterPositionController - Trades executed successfully for opportunity.")
             else:
-                self.cancel_all_trades()  # Ensure this method properly cancels any partially executed trades
+                self.close_all_positions()
                 missing_exchanges = set([long_exchange, short_exchange]) - set(position_data_dict.keys())
                 logger.error(f"MasterPositionController - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
 
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
-            self.cancel_all_trades()
+            self.close_all_positions()
 
-    def cancel_all_trades(self):
+    def close_all_positions(self):
         self.synthetix.close_all_positions()
         self.binance.close_all_positions()
         pub.sendMessage('position_closed')

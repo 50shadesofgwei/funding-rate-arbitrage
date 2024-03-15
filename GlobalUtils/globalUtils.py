@@ -42,16 +42,15 @@ def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) ->
     dollar_amount = asset_amount * asset_price
     return dollar_amount
 
+def normalize_symbol(symbol):
+        return symbol.replace('USDT', '').replace('PERP', '')
+
 def get_full_asset_name(symbol: str) -> str:
     asset_mapping = {
         'btc': 'bitcoin',
         'eth': 'ethereum'
     }
     return asset_mapping.get(symbol.lower(), symbol)
-
-def get_total_available_capital() -> float:
-    capital = 50000.0
-    return capital
 
 def adjust_trade_size_for_direction(trade_size: float, is_long: bool) -> float:
     return trade_size if is_long else -trade_size

@@ -2088,3 +2088,7 @@
 2024-03-15 11:01:06,903 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
 2024-03-15 11:01:12,398 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
 2024-03-15 11:01:13,122 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-15 13:44:17,390 - GlobalUtils.logger - ERROR - TradeLogger - Error creating/accessing the database: near "open_close": syntax error
+2024-03-15 13:44:17,391 - GlobalUtils.logger - ERROR - TradeLogger - Error accessing the database: near "open_close": syntax error
+2024-03-15 13:45:45,096 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-15 13:45:45,103 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
