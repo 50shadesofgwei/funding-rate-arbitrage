@@ -7,14 +7,15 @@ from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionC
 from TxExecution.Master.MasterPositionControllerUtils import *
 from pubsub import pub
 from GlobalUtils.logger import logger
+from GlobalUtils.globalUtils import *
 
 class MasterPositionController:
     def __init__(self):
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
         self.bybit = ByBitPositionController()
-        pub.subscribe(self.execute_trades, 'opportunity_found')
-        pub.subscribe(self.close_all_positions, 'close_positions')
+        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND)
+        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS)
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -58,10 +59,10 @@ class MasterPositionController:
             logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
             self.close_all_positions()
 
-    def close_all_positions(self):
+    def close_all_positions(self, reason: str):
         self.synthetix.close_all_positions()
         self.binance.close_all_positions()
-        pub.sendMessage('position_closed')
+        pub.sendMessage(eventsDirectory.POSITION_CLOSED, reason)
 
     ######################
     ### READ FUNCTIONS ###

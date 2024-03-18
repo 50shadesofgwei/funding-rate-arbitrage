@@ -4,14 +4,15 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 import sqlite3
 from datetime import datetime
 from GlobalUtils.logger import logger
+from GlobalUtils.globalUtils import *
 from pubsub import pub
 import uuid
 
 class TradeLogger:
     def __init__(self, db_path='trades.db'):
         self.db_path = db_path
-        pub.subscribe(self.log_trade_pair, 'position_opened')
-        pub.subscribe(self.log_close_trade, 'position_closed')
+        pub.subscribe(self.log_trade_pair, eventsDirectory.POSITION_OPENED)
+        pub.subscribe(self.log_close_trade, eventsDirectory.POSITION_CLOSED)
         try:
             self.conn = self.create_or_access_database()
         except Exception as e:
@@ -96,6 +97,3 @@ class TradeLogger:
             self.create_or_access_database()
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error clearing the database: {e}")
-
-x = TradeLogger()
-x.clear_database()
