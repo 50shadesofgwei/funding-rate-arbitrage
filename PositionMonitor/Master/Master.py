@@ -18,6 +18,17 @@ class MasterPositionMonitor():
     def position_health_check(self):
         is_liquidation_risk = self.check_liquidation_risk()
         is_profitable = self.check_profitability_for_open_position()
+        is_delta_within_bounds = self.is_position_delta_within_bounds()
+
+        if is_liquidation_risk:
+            reason = PositionCloseReason.LIQUIDATION_RISK
+            pub.sendMessage('close_positions', reason)
+        elif not is_profitable:
+            reason = PositionCloseReason.NO_LONGER_PROFITABLE
+            pub.sendMessage('close_positions', reason)
+        elif not is_delta_within_bounds:
+            reason = PositionCloseReason.DELTA_ABOVE_BOUND
+            pub.sendMessage('close_positions', reason)
 
     def check_liquidation_risk(self) -> bool:
         try:
@@ -54,7 +65,7 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
             return False
 
-    def check_position_pair_delta(self):
+    def is_position_delta_within_bounds(self):
         try:
             delta_bound = float(os.getenv('DELTA_BOUND'))
             synthetix_position = self.synthetix.get_open_position()
@@ -64,17 +75,19 @@ class MasterPositionMonitor():
             full_symbol = get_full_asset_name(symbol)
             asset_price = get_asset_price(full_symbol)
 
-            synthetix_notional_value = synthetix_position['size'] * asset_price
-            binance_notional_value = binance_position['size'] * asset_price
+            synthetix_notional_value = float(synthetix_position['size'] * asset_price)
+            binance_notional_value = float(binance_position['size'] * asset_price)
 
             synthetix_notional_value = synthetix_notional_value if synthetix_position['side'].upper() == 'LONG' else -synthetix_notional_value
             binance_notional_value = binance_notional_value if binance_position['side'].upper() == 'LONG' else -binance_notional_value
 
             # Calculate delta as the difference in notional values
-            delta = abs(synthetix_notional_value - binance_notional_value)
+            total_notional_value = float(abs(synthetix_notional_value) + abs(binance_notional_value))
+            delta_in_usd = abs(synthetix_notional_value - binance_notional_value)
+            delta = (delta_in_usd / total_notional_value) if total_notional_value != 0 else 0
 
             # Check if delta is above the specified bound
-            return delta > delta_bound
+            return delta < delta_bound
         except KeyError as e:
             logger.error(f"Missing key in position details: {e}")
         except Exception as e:

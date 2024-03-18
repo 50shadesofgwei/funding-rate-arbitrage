@@ -14,7 +14,7 @@ class MasterPositionController:
         self.binance = BinancePositionController()
         self.bybit = ByBitPositionController()
         pub.subscribe(self.execute_trades, 'opportunity_found')
-        pub.subscribe(self.cancel_all_trades, 'close_positions')
+        pub.subscribe(self.close_all_positions, 'close_positions')
 
     #######################
     ### WRITE FUNCTIONS ###
