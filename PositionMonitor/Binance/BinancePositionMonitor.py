@@ -19,7 +19,6 @@ class BinancePositionMonitor():
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
-        self.close_reason = PositionCloseReason()
         self.db_path = db_path
         try:
             self.conn = sqlite3.connect(self.db_path)

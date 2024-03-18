@@ -15,7 +15,6 @@ import uuid
 class SynthetixPositionMonitor():
     def __init__(self, db_path='trades.db'):
         self.client = get_synthetix_client()
-        self.close_reason = PositionCloseReason()
         self.db_path = db_path
         try:
             self.conn = sqlite3.connect(self.db_path)
@@ -28,7 +27,7 @@ class SynthetixPositionMonitor():
             if self.is_open_position():
                 position = self.get_open_position()
                 if self.is_near_liquidation_price(position):
-                    reason = self.close_reason.LIQUIDATION_RISK.value
+                    reason = PositionCloseReason.LIQUIDATION_RISK.value
                     pub.sendMessage('close_positions', reason)
                 else:
                     return

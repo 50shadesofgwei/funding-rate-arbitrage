@@ -35,5 +35,5 @@ class Main:
 
 main = Main()
 main.start_search()
-time.sleep(10)
-main.position_controller.cancel_all_trades()
+time.sleep(15)
+main.position_controller.close_all_positions()

@@ -7,6 +7,9 @@ TODO.txt
     remove local sys imports
     remove (temporarily, at least - version control) bybit integration
 
+- CHECK PROFITABILITY
+    whole class needs a cleanup
+
 - DATABASE 
     add parser for positon close object on POSITION_CLOSED event handler
 

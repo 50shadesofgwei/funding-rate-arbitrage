@@ -3,7 +3,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
-from TxExecution.Master.MasterPositionControllerUtils import calculate_adjusted_trade_size
+from TxExecution.Master.MasterPositionController import MasterPositionController
 
 class ProfitabilityChecker:
     exchange_fees = {
@@ -13,17 +13,21 @@ class ProfitabilityChecker:
     }
 
     def __init__(self):
-        pass
+        self.position_controller = MasterPositionController()
+
+    def get_capital_amount(self, opportunity) -> float:
+        capital = self.position_controller.get_trade_size(opportunity)
+        return capital
 
     def get_exchange_fee(self, exchange: str) -> float:
         return self.exchange_fees.get(exchange, 0)
 
-    def calculate_position_cost(self, fee_rate: float) -> float:
-        capital = calculate_adjusted_trade_size()
+    def calculate_position_cost(self, fee_rate: float, opportunity) -> float:
+        capital = self.get_capital_amount()
         return capital * fee_rate
 
     def is_profitable(self, opportunity) -> bool:
-        capital = calculate_adjusted_trade_size()
+        capital = self.position_controller.get_trade_size()
         long_capital = capital
         short_capital = capital
 
@@ -40,7 +44,7 @@ class ProfitabilityChecker:
         return daily_funding_profit - total_cost > 0
 
     def minimum_profitable_duration(self, opportunity) -> float:
-        capital = calculate_adjusted_trade_size()
+        capital = self.position_controller.get_trade_size(opportunity)
         long_capital = capital
         short_capital = capital
 
@@ -64,7 +68,7 @@ class ProfitabilityChecker:
         return days_to_profitability
 
     def calculate_profit(self, opportunity, period_hours: int):
-        capital = calculate_adjusted_trade_size()
+        capital = self.position_controller.get_trade_size(opportunity)
         long_capital = capital
         short_capital = capital
         funding_rate_long = float(opportunity["long_funding_rate"])

@@ -7,13 +7,37 @@ from PositionMonitor.Master.utils import *
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
 from pubsub import pub
-from threading import Timer
+from threading import Thread, Event
+import time
 
 
 class MasterPositionMonitor():
     def __init__(self):
         self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
+        self.health_check_thread = None
+        self.stop_health_check = Event()
+        
+        pub.subscribe(self.on_position_opened, eventsDirectory.POSITION_OPENED.value)
+        pub.subscribe(self.on_position_closed, eventsDirectory.POSITION_CLOSED.value)
+
+    def on_position_opened(self, position_data):
+        if self.health_check_thread is None or not self.health_check_thread.is_alive():
+            self.stop_health_check.clear()
+            self.health_check_thread = Thread(target=self.start_health_check)
+            self.health_check_thread.start()
+        else:
+            logger.info('MasterPositionMonitor - Health check already running.')
+
+    def on_position_closed(self, position_report):
+        self.stop_health_check.set()
+        if self.health_check_thread is not None:
+            self.health_check_thread.join()
+
+    def start_health_check(self):
+        while not self.stop_health_check.is_set():
+            self.position_health_check()
+            time.sleep(10)
 
     def position_health_check(self):
         is_liquidation_risk = self.check_liquidation_risk()
@@ -29,6 +53,8 @@ class MasterPositionMonitor():
         elif not is_delta_within_bounds:
             reason = PositionCloseReason.DELTA_ABOVE_BOUND.value
             pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason)
+        else:
+            logger.info('MasterPositionMonitor - no threat detected for open position')
 
     def check_liquidation_risk(self) -> bool:
         try:
@@ -89,9 +115,9 @@ class MasterPositionMonitor():
             # Check if delta is above the specified bound
             return delta < delta_bound
         except KeyError as e:
-            logger.error(f"Missing key in position details: {e}")
+            logger.error(f"MasterPositionMonitor - Missing key in position details: {e}")
         except Exception as e:
-            logger.error(f"Error calculating position pair delta: {e}")
+            logger.error(f"MasterPositionMonitor - Error calculating position pair delta: {e}")
 
         return False
 

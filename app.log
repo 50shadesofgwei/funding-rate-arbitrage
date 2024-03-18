@@ -2094,3 +2094,43 @@
 2024-03-15 13:45:45,103 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
 2024-03-18 20:36:14,927 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
 2024-03-18 20:36:14,932 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 20:53:54,250 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 20:53:54,256 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 20:54:04,023 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for BTCUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 20:54:04).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=BTCUSDT.
+2024-03-18 20:54:04,025 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 20:54:04,291 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for ETHUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 20:54:04).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
+2024-03-18 20:54:04,291 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 20:58:23,829 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 20:58:23,835 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 20:58:35,471 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for BTCUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 20:58:35).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=BTCUSDT.
+2024-03-18 20:58:35,473 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 20:58:36,120 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for ETHUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 20:58:36).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
+2024-03-18 20:58:36,120 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 21:03:11,992 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 21:03:12,000 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 21:03:22,318 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for BTCUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 21:03:22).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=BTCUSDT.
+2024-03-18 21:03:22,318 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 21:03:22,571 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for ETHUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 21:03:22).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
+2024-03-18 21:03:22,571 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 21:03:26,798 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 21:10:58,472 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 21:10:58,476 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 21:11:08,532 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for BTCUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 21:11:08).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=BTCUSDT.
+2024-03-18 21:11:08,532 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 21:11:09,146 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for ETHUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 21:11:09).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
+2024-03-18 21:11:09,146 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 21:11:13,486 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for BTCUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 21:11:13).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=BTCUSDT.
+2024-03-18 21:11:13,486 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 21:11:14,162 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for ETHUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 21:11:14).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
+2024-03-18 21:11:14,162 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-18 21:11:18,278 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
