@@ -39,20 +39,30 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - An error occurred while executing a trade: {e}")
 
     def close_all_positions(self):
+        positions = []
         for market in ALL_MARKET_IDS:
-            self.close_position(market)
+            close_details = self.close_position(market)
+            positions.append(close_details)
+        
+        return positions[0]
 
     def close_position(self, market_id: int):
         try:
             position = self.client.perps.get_open_position(market_id=market_id)
             if position and position['position_size'] != 0:
+                close_position_details = {
+                    'exchange': 'Synthetix',
+                    'pnl': position['pnl'],
+                    'accrued_funding': position['accrued_funding']
+                }
+
                 size = position['position_size']
                 inverse_size = size * -1
                 response = self.client.perps.commit_order(size=inverse_size, market_id=market_id, submit=True)         
                 
                 if is_transaction_hash(response):
                     logger.info('SynthetixPositionController - Position successfully closed.')
-                    return
+                    return close_position_details
                 else:
                     logger.error('SynthetixPositionController - Failed to close position. Please check manually.')
         except Exception as e:

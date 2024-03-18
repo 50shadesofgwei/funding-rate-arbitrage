@@ -8,9 +8,7 @@ TODO.txt
     remove (temporarily, at least - version control) bybit integration
 
 - DATABASE 
-    implement close position logic
-    pnl, close reason, etc
-    Add liquidation price to database schema
+    add parser for positon close object on POSITION_CLOSED event handler
 
 - POSITION MONITOR
     define close reasons

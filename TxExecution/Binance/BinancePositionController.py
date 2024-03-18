@@ -65,8 +65,12 @@ class BinancePositionController:
             return None
 
     def close_all_positions(self):
+        positions = []
         for market in ALL_MARKETS:
-            self.close_position(market)
+            close_details = self.close_position(market)
+            positions.append(close_details)
+        
+        return positions[0]
 
     def close_position(self, symbol: str):
         try:
@@ -100,7 +104,13 @@ class BinancePositionController:
 
             time.sleep(3)
             if self.is_order_filled(x['orderId'], symbol):
+                close_position_details = {
+                    'exchange': 'Binance',
+                    'pnl': float(position_info['unRealizedProfit']),
+                    'accrued_fees': 0.0
+                }
                 logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed.")
+                return close_position_details
             else:
                 logger.error(f"BinancePositionController - Failed to close the open position for symbol {symbol}.")
 

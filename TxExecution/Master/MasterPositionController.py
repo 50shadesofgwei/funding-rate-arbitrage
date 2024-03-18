@@ -60,9 +60,14 @@ class MasterPositionController:
             self.close_all_positions()
 
     def close_all_positions(self, reason: str):
-        self.synthetix.close_all_positions()
-        self.binance.close_all_positions()
-        pub.sendMessage(eventsDirectory.POSITION_CLOSED, reason)
+        synthetix_position_report = self.synthetix.close_all_positions()
+        binance_position_report = self.binance.close_all_positions()
+        position_report = {
+            'Synthetix': synthetix_position_report,
+            'Binance': binance_position_report,
+            'close_reason': reason
+        }
+        pub.sendMessage(eventsDirectory.POSITION_CLOSED, position_report)
 
     ######################
     ### READ FUNCTIONS ###
