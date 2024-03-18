@@ -11,8 +11,8 @@ import uuid
 class TradeLogger:
     def __init__(self, db_path='trades.db'):
         self.db_path = db_path
-        pub.subscribe(self.log_trade_pair, eventsDirectory.POSITION_OPENED)
-        pub.subscribe(self.log_close_trade, eventsDirectory.POSITION_CLOSED)
+        pub.subscribe(self.log_trade_pair, eventsDirectory.POSITION_OPENED.value)
+        pub.subscribe(self.log_close_trade, eventsDirectory.POSITION_CLOSED.value)
         try:
             self.conn = self.create_or_access_database()
         except Exception as e:
@@ -39,7 +39,7 @@ class TradeLogger:
                         open_time DATETIME,
                         close_time DATETIME,
                         pnl REAL,
-                        position_delta REAL,
+                        accrued_funding REAL,
                         close_reason TEXT
                     );''')
             logger.info("TradeLogger - Database accessed successfully.")
@@ -69,14 +69,16 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
 
-    def log_close_trade(self, reason: str):
+    def log_close_trade(self, position_report: dict):
         try:
             execution_id = self.get_open_execution_id()
-            self.log_close_trade_pair(reason, execution_id)
+            reason = position_report['close_reason']
+            self.log_close_trade_pair(reason, execution_id, position_report)
         except sqlite3.Error as e:
-            logger.error(f"TradeLogger - Error closing trades on the database:  Error: {e}")
+            logger.error(f"TradeLogger - Error closing trades on the database: Error: {e}")
 
-    def log_close_trade_pair(self, close_reason, strategy_execution_id):
+
+    def log_close_trade_pair(self, close_reason, strategy_execution_id, position_report: dict):
         try:
             trades = self.get_trade_pair_by_execution_id(strategy_execution_id)
             if not trades:
@@ -86,19 +88,27 @@ class TradeLogger:
             if len(trades) != 2:
                 logger.error(f"Expected two trades for strategy_execution_id: {strategy_execution_id}, found: {len(trades)}")
                 return
+            
+            synthetix_details = position_report['Synthetix']
+            binance_details = position_report['Binance']
 
-            pnl, position_delta = self.calculate_pnl_and_delta(trades)
+            # Extract and combine PnL and accrued funding details for each trade
+            synthetix_accrued_funding = synthetix_details['accrued_funding']
+            binance_accrued_funding = binance_details['accrued_funding']
+            synthetix_pnl = synthetix_details['pnl']
+            binance_pnl = binance_details['pnl']
 
             close_time = datetime.now()
-            # Update both trades with closing details
-            for trade in trades:
-                order_id = trade[2]  # Assuming order_id is the third column in your trade log
+            # Update both trades with closing details, including calculated PnL
+            for i, trade in enumerate(trades):
+                accrued_funding = synthetix_accrued_funding if i == 0 else binance_accrued_funding
+                pnl = synthetix_pnl if i == 0 else binance_pnl  # First trade is Synthetix, second is Binance
                 with self.conn:
                     self.conn.execute('''UPDATE trade_log 
-                                        SET close_time = ?, pnl = ?, position_delta = ?, close_reason = ?, open_close = 'Close' 
-                                        WHERE strategy_execution_id = ? AND order_id = ?;''', 
-                                        (close_time, pnl, position_delta, close_reason, strategy_execution_id, order_id))
-                    logger.info(f"TradeLogger - Logged close trade for strategy_execution_id: {strategy_execution_id}, order_id: {order_id}")
+                                        SET close_time = ?, pnl = ?, accrued_funding = ?, close_reason = ?, open_close = 'Close' 
+                                        WHERE strategy_execution_id = ?;''', 
+                                        (close_time, pnl, accrued_funding, close_reason, strategy_execution_id))
+                    logger.info(f"TradeLogger - Logged close trade for strategy_execution_id: {strategy_execution_id}")
 
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging close trade for strategy_execution_id: {strategy_execution_id}. Error: {e}")
@@ -144,3 +154,6 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving execution ID for open trades. Error: {e}")
             return None
+
+x = TradeLogger()
+x.clear_database()

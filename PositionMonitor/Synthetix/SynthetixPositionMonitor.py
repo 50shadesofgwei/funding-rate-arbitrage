@@ -28,7 +28,7 @@ class SynthetixPositionMonitor():
             if self.is_open_position():
                 position = self.get_open_position()
                 if self.is_near_liquidation_price(position):
-                    reason = self.close_reason.LIQUIDATION_RISK
+                    reason = self.close_reason.LIQUIDATION_RISK.value
                     pub.sendMessage('close_positions', reason)
                 else:
                     return

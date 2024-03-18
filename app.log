@@ -2092,3 +2092,5 @@
 2024-03-15 13:44:17,391 - GlobalUtils.logger - ERROR - TradeLogger - Error accessing the database: near "open_close": syntax error
 2024-03-15 13:45:45,096 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
 2024-03-15 13:45:45,103 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 20:36:14,927 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-18 20:36:14,932 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.

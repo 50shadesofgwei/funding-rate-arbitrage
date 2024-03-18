@@ -10,6 +10,7 @@ from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityC
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.Master import MasterPositionMonitor
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
+from GlobalUtils.globalUtils import *
 import time
 
 class Main:
@@ -25,7 +26,7 @@ class Main:
         funding_rates = self.caller.get_funding_rates()
         opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
         best_opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
-        pub.sendMessage('opportunity_found', opportunity = best_opportunity)
+        pub.sendMessage(eventsDirectory.OPPORTUNITY_FOUND.value, opportunity = best_opportunity)
 
     
     def start_search(self):

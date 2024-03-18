@@ -21,14 +21,14 @@ class MasterPositionMonitor():
         is_delta_within_bounds = self.is_position_delta_within_bounds()
 
         if is_liquidation_risk:
-            reason = PositionCloseReason.LIQUIDATION_RISK
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS, reason)
+            reason = PositionCloseReason.LIQUIDATION_RISK.value
+            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason)
         elif not is_profitable:
-            reason = PositionCloseReason.NO_LONGER_PROFITABLE
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS, reason)
+            reason = PositionCloseReason.NO_LONGER_PROFITABLE.value
+            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason)
         elif not is_delta_within_bounds:
-            reason = PositionCloseReason.DELTA_ABOVE_BOUND
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS, reason)
+            reason = PositionCloseReason.DELTA_ABOVE_BOUND.value
+            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason)
 
     def check_liquidation_risk(self) -> bool:
         try:

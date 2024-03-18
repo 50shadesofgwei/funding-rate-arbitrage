@@ -14,8 +14,8 @@ class MasterPositionController:
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
         self.bybit = ByBitPositionController()
-        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND)
-        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS)
+        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND.value)
+        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS.value)
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -67,7 +67,7 @@ class MasterPositionController:
             'Binance': binance_position_report,
             'close_reason': reason
         }
-        pub.sendMessage(eventsDirectory.POSITION_CLOSED, position_report)
+        pub.sendMessage(eventsDirectory.POSITION_CLOSED.value, position_report)
 
     ######################
     ### READ FUNCTIONS ###
