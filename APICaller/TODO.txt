@@ -5,6 +5,7 @@ TODO.txt
 
 - CLEANUP
     remove local sys imports
+    remove (temporarily, at least - version control) bybit integration
 
 - DATABASE 
     implement close position logic

@@ -27,22 +27,6 @@ class BinancePositionMonitor():
             logger.error(f"BinancePositionMonitor - Error accessing the database: {e}")
             raise e
 
-    def position_health_check(self):
-        try:
-            if self.is_open_position():
-                position = self.get_open_position()
-                if self.is_near_liquidation_price(position):
-                    reason = self.close_reason.LIQUIDATION_RISK
-                    pub.sendMessage('close_positions', reason)
-                else:
-                    return
-            else:
-                return
-        except Exception as e:
-            logger.error(f"BinancePositionMonitor - Error checking position health: {e}")
-            raise e
-
-
     def get_open_position(self):
         try:
             cursor = self.conn.cursor()
@@ -63,23 +47,31 @@ class BinancePositionMonitor():
             liquidation_price = float(position['liquidation_price'])
             symbol = position['symbol']
             
-            # Assume these functions are defined elsewhere in your code
             normalized_symbol = normalize_symbol(symbol)
             full_symbol = get_full_asset_name(normalized_symbol)
             asset_price = get_asset_price(full_symbol)
 
-            # Calculate the 10% threshold range
             lower_bound = liquidation_price * 0.9
             upper_bound = liquidation_price * 1.1
 
-            # Check if the asset price is within 10% of the liquidation price
             if lower_bound <= asset_price <= upper_bound:
                 return True
             else:
                 return False
         except Exception as e:
-            logger.error(f"Error checking if near liquidation price for {symbol}: {e}")
+            logger.error(f"BinancePositionMonitor - Error checking if near liquidation price for {symbol}: {e}")
             return False
+
+    def get_funding_rate(self, position) -> float:
+        try:
+            symbol = position['symbol']
+            funding_rate = self.client.funding_rate(symbol=symbol)
+            if funding_rate and len(funding_rate) > 0:
+                return float(funding_rate[-1])
+
+        except Exception as e:
+            logger.error(f"BinancePositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
+            return 0.0
 
     def is_open_position(self) -> bool:
         try:
