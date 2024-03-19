@@ -7,7 +7,7 @@ from PositionMonitor.Master.utils import *
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
 from pubsub import pub
-from threading import Thread, Event
+import threading
 import time
 
 
@@ -16,7 +16,7 @@ class MasterPositionMonitor():
         self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
         self.health_check_thread = None
-        self.stop_health_check = Event()
+        self.stop_health_check = threading.Event()
         
         pub.subscribe(self.on_position_opened, eventsDirectory.POSITION_OPENED.value)
         pub.subscribe(self.on_position_closed, eventsDirectory.POSITION_CLOSED.value)
@@ -24,14 +24,14 @@ class MasterPositionMonitor():
     def on_position_opened(self, position_data):
         if self.health_check_thread is None or not self.health_check_thread.is_alive():
             self.stop_health_check.clear()
-            self.health_check_thread = Thread(target=self.start_health_check)
+            self.health_check_thread = threading.Thread(target=self.start_health_check)
             self.health_check_thread.start()
         else:
             logger.info('MasterPositionMonitor - Health check already running.')
 
     def on_position_closed(self, position_report):
         self.stop_health_check.set()
-        if self.health_check_thread is not None:
+        if self.health_check_thread and self.health_check_thread != threading.current_thread():
             self.health_check_thread.join()
 
     def start_health_check(self):

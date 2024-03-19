@@ -90,15 +90,12 @@ class TradeLogger:
             if len(trades) != 2:
                 logger.error(f"Expected two trades for strategy_execution_id: {strategy_execution_id}, found: {len(trades)}")
                 return
-            
-            synthetix_details = position_report['Synthetix']
-            binance_details = position_report['Binance']
 
             # Extract and combine PnL and accrued funding details for each trade
-            synthetix_accrued_funding = synthetix_details['accrued_funding']
-            binance_accrued_funding = binance_details['accrued_funding']
-            synthetix_pnl = synthetix_details['pnl']
-            binance_pnl = binance_details['pnl']
+            synthetix_accrued_funding = position_report['Synthetix']['accrued_funding']
+            binance_accrued_funding = position_report['Binance']['accrued_funding']
+            synthetix_pnl = position_report['Synthetix']['pnl']
+            binance_pnl = position_report['Binance']['pnl']
 
             close_time = datetime.now()
             # Update both trades with closing details, including calculated PnL
