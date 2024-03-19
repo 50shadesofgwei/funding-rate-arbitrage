@@ -4,6 +4,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 from TxExecution.Binance.BinancePositionController import BinancePositionController
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
+from PositionMonitor.Master.utils import *
 from pubsub import pub
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
@@ -46,16 +47,17 @@ class MasterPositionController:
 
  
             if len(position_data_dict) == 2:
+                logger.info(f"Publishing POSITION_OPENED with position_data: {position_data_dict}")
                 pub.sendMessage(eventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
                 logger.info("MasterPositionController - Trades executed successfully for opportunity.")
             else:
-                self.close_all_positions()
+                self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
                 missing_exchanges = set([long_exchange, short_exchange]) - set(position_data_dict.keys())
                 logger.error(f"MasterPositionController - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
 
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
-            self.close_all_positions()
+            self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
 
     def close_all_positions(self, reason: str):
         synthetix_position_report = self.synthetix.close_all_positions()

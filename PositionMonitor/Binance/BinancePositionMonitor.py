@@ -66,8 +66,10 @@ class BinancePositionMonitor():
         try:
             symbol = position['symbol']
             funding_rate = self.client.funding_rate(symbol=symbol)
+            latest_funding_data = funding_rate[-1]
+            latest_funding_data_as_float = float(latest_funding_data.get('fundingRate'))
             if funding_rate and len(funding_rate) > 0:
-                return float(funding_rate[-1])
+                return latest_funding_data_as_float
 
         except Exception as e:
             logger.error(f"BinancePositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")

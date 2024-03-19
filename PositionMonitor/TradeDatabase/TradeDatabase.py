@@ -51,6 +51,7 @@ class TradeLogger:
     def log_trade_pair(self, position_data):
         strategy_execution_id = str(uuid.uuid4())
         open_time = datetime.now()
+        logger.info(f"Logging trade pair with ID: {strategy_execution_id}, data: {position_data}")
 
         for exchange, data in position_data.items():
             print(data)
@@ -89,8 +90,6 @@ class TradeLogger:
             if len(trades) != 2:
                 logger.error(f"Expected two trades for strategy_execution_id: {strategy_execution_id}, found: {len(trades)}")
                 return
-
-            logger.info(f"POSITION REPORT: {position_report}")
             
             synthetix_details = position_report['Synthetix']
             binance_details = position_report['Binance']
@@ -145,7 +144,7 @@ class TradeLogger:
     def get_open_execution_id(self) -> str:
         try:
             with sqlite3.connect(self.db_path) as conn:
-                cursor = self.conn.cursor()
+                cursor = conn.cursor()
                 cursor.execute('''SELECT strategy_execution_id FROM trade_log WHERE open_close = 'Open' GROUP BY strategy_execution_id HAVING COUNT(*) = 2;''')
                 execution_ids = cursor.fetchall()
 
@@ -159,6 +158,3 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving execution ID for open trades. Error: {e}")
             return None
-
-x = TradeLogger()
-x.clear_database()

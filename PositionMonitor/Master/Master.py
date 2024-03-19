@@ -60,6 +60,7 @@ class MasterPositionMonitor():
         try:
             synthetix_position = self.synthetix.get_open_position()
             binance_position = self.binance.get_open_position()
+            logger.info(f'DEBUGGING: SNX Position: {synthetix_position}, Binance Position: {binance_position}')
 
             is_synthetix_risk = self.synthetix.is_near_liquidation_price(synthetix_position)
             is_binance_risk = self.binance.is_near_liquidation_price(binance_position)
@@ -93,40 +94,46 @@ class MasterPositionMonitor():
 
     def is_position_delta_within_bounds(self):
         try:
-            delta_bound = float(os.getenv('DELTA_BOUND'))
+            delta_bound = float(os.getenv('DELTA_BOUND', '0.02'))
             synthetix_position = self.synthetix.get_open_position()
             binance_position = self.binance.get_open_position()
 
-            symbol = normalize_symbol(synthetix_position['symbol'])
-            full_symbol = get_full_asset_name(symbol)
-            asset_price = get_asset_price(full_symbol)
+            if not synthetix_position:
+                logger.error("MasterPositionMonitor - Synthetix position is missing when trying to calculate delta.")
+                return False
+            elif not binance_position:
+                logger.error("MasterPositionMonitor - Binance position is missing when trying to calculate delta.")
+                return False
 
-            synthetix_notional_value = float(synthetix_position['size'] * asset_price)
-            binance_notional_value = float(binance_position['size'] * asset_price)
+            try:
+                symbol = normalize_symbol(synthetix_position['symbol'])
+            except KeyError as e:
+                logger.error(f"MasterPositionMonitor - Missing 'symbol' key in Synthetix position details: {e}")
+                return False
+
+            try:
+                full_symbol = get_full_asset_name(symbol)
+            except Exception as e:
+                logger.error(f"MasterPositionMonitor - Error retrieving full symbol name for {symbol}: {e}")
+                return False
+
+            try:
+                asset_price = get_asset_price(asset=full_symbol)
+            except Exception as e:
+                logger.error(f"MasterPositionMonitor - Error retrieving asset price for {full_symbol}: {e}")
+                return False
+
+            synthetix_notional_value = float(synthetix_position['size']) * asset_price
+            binance_notional_value = float(binance_position['size']) * asset_price
 
             synthetix_notional_value = synthetix_notional_value if synthetix_position['side'].upper() == 'LONG' else -synthetix_notional_value
             binance_notional_value = binance_notional_value if binance_position['side'].upper() == 'LONG' else -binance_notional_value
 
-            # Calculate delta as the difference in notional values
-            total_notional_value = float(abs(synthetix_notional_value) + abs(binance_notional_value))
+            total_notional_value = abs(synthetix_notional_value) + abs(binance_notional_value)
             delta_in_usd = abs(synthetix_notional_value - binance_notional_value)
-            delta = (delta_in_usd / total_notional_value) if total_notional_value != 0 else 0
+            delta = (delta_in_usd / total_notional_value) if total_notional_value else 0
 
-            # Check if delta is above the specified bound
             return delta < delta_bound
-        except KeyError as e:
-            logger.error(f"MasterPositionMonitor - Missing key in position details: {e}")
         except Exception as e:
-            logger.error(f"MasterPositionMonitor - Error calculating position pair delta: {e}")
-
-        return False
-
-    
-
-
-
-        
-
-
-            
-
+            logger.error(f"Unexpected error in checking position delta: {e}")
+            return False
