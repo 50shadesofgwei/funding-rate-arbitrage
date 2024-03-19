@@ -28,15 +28,16 @@ class BinancePositionMonitor():
 
     def get_open_position(self):
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT * FROM trade_log WHERE status = 'OPEN' AND exchange = 'Binance';''')
-            open_positions = cursor.fetchall()
-            if open_positions:
-                position_dict = get_dict_from_database_response(open_positions[0])
-                return position_dict
-            else:
-                logger.info(f"BinancePositionMonitor - No open Binance positions found")
-                return None
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Binance';''')
+                open_positions = cursor.fetchall()
+                if open_positions:
+                    position_dict = get_dict_from_database_response(open_positions[0])
+                    return position_dict
+                else:
+                    logger.info(f"BinancePositionMonitor - No open Binance positions found")
+                    return None
         except Exception as e:
             logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions:", {e})
             raise e
@@ -74,13 +75,14 @@ class BinancePositionMonitor():
 
     def is_open_position(self) -> bool:
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT * FROM trade_log WHERE status = 'OPEN' AND exchange = 'Binance';''')
-            open_positions = cursor.fetchall()
-            if open_positions:
-                return True
-            else:
-                 return False
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Binance';''')
+                open_positions = cursor.fetchall()
+                if open_positions:
+                    return True
+                else:
+                    return False
         except Exception as e:
             logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions:", {e})
             raise e

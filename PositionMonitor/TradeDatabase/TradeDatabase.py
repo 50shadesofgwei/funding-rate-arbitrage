@@ -58,13 +58,14 @@ class TradeLogger:
             symbol = data.get('symbol')
             side = data.get('side')
             size = data.get('size')
-            self.log_open_trade(strategy_execution_id, order_id, exchange, symbol, side, size, open_time)
+            liquidation_price = data.get('liquidation_price')
+            self.log_open_trade(strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time)
 
-    def log_open_trade(self, strategy_execution_id, order_id, exchange, symbol, side, size, open_time=datetime.now()):
+    def log_open_trade(self, strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time=datetime.now()):
         try:
             with self.conn:
-                self.conn.execute('''INSERT INTO trade_log (strategy_execution_id, order_id, exchange, symbol, side, size, open_close, open_time)
-                                  VALUES (?, ?, ?, ?, ?, ?, 'Open', ?);''', (strategy_execution_id, order_id, exchange, symbol, side, size, open_time))
+                self.conn.execute('''INSERT INTO trade_log (strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_close, open_time)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, 'Open', ?);''', (strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time))
                 logger.info(f"TradeLogger - Logged open trade for strategy_execution_id: {strategy_execution_id} on exchange: {exchange}")
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
@@ -88,6 +89,8 @@ class TradeLogger:
             if len(trades) != 2:
                 logger.error(f"Expected two trades for strategy_execution_id: {strategy_execution_id}, found: {len(trades)}")
                 return
+
+            logger.info(f"POSITION REPORT: {position_report}")
             
             synthetix_details = position_report['Synthetix']
             binance_details = position_report['Binance']
@@ -129,28 +132,30 @@ class TradeLogger:
 
     def get_trade_pair_by_execution_id(self, strategy_execution_id):
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT * FROM trade_log WHERE strategy_execution_id = ?;''', (strategy_execution_id,))
-            trades = cursor.fetchall()
-            logger.info(f"TradeLogger - Retrieved trades for execution id: {strategy_execution_id}")
-            return trades
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''SELECT * FROM trade_log WHERE strategy_execution_id = ?;''', (strategy_execution_id,))
+                trades = cursor.fetchall()
+                logger.info(f"TradeLogger - Retrieved trades for execution id: {strategy_execution_id}")
+                return trades
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving trades for execution id: {strategy_execution_id}, Error: {e}")
             return []
 
     def get_open_execution_id(self) -> str:
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT strategy_execution_id FROM trade_log WHERE open_close = 'Open' GROUP BY strategy_execution_id HAVING COUNT(*) = 2;''')
-            execution_ids = cursor.fetchall()
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = self.conn.cursor()
+                cursor.execute('''SELECT strategy_execution_id FROM trade_log WHERE open_close = 'Open' GROUP BY strategy_execution_id HAVING COUNT(*) = 2;''')
+                execution_ids = cursor.fetchall()
 
-            if execution_ids:
-                strategy_execution_id = execution_ids[0][0]
-                logger.info(f"TradeLogger - Found open strategy execution ID: {strategy_execution_id}")
-                return str(strategy_execution_id)
-            else:
-                logger.info("TradeLogger - No open trade pairs found.")
-                return None
+                if execution_ids:
+                    strategy_execution_id = execution_ids[0][0]
+                    logger.info(f"TradeLogger - Found open strategy execution ID: {strategy_execution_id}")
+                    return str(strategy_execution_id)
+                else:
+                    logger.info("TradeLogger - No open trade pairs found.")
+                    return None
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving execution ID for open trades. Error: {e}")
             return None

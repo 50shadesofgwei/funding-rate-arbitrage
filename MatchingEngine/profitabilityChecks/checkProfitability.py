@@ -8,7 +8,6 @@ from TxExecution.Master.MasterPositionController import MasterPositionController
 class ProfitabilityChecker:
     exchange_fees = {
         "Binance": 0.0004,  # 0.04% fee
-        "ByBit": 0.00055,   # 0.055% fee
         "Synthetix": 0    # gas fees handled elsewhere
     }
 
@@ -23,11 +22,11 @@ class ProfitabilityChecker:
         return self.exchange_fees.get(exchange, 0)
 
     def calculate_position_cost(self, fee_rate: float, opportunity) -> float:
-        capital = self.get_capital_amount()
+        capital = self.get_capital_amount(opportunity)
         return capital * fee_rate
 
     def is_profitable(self, opportunity) -> bool:
-        capital = self.position_controller.get_trade_size()
+        capital = self.get_capital_amount(opportunity)
         long_capital = capital
         short_capital = capital
 
@@ -44,7 +43,7 @@ class ProfitabilityChecker:
         return daily_funding_profit - total_cost > 0
 
     def minimum_profitable_duration(self, opportunity) -> float:
-        capital = self.position_controller.get_trade_size(opportunity)
+        capital = self.get_capital_amount(opportunity)
         long_capital = capital
         short_capital = capital
 
@@ -68,7 +67,7 @@ class ProfitabilityChecker:
         return days_to_profitability
 
     def calculate_profit(self, opportunity, period_hours: int):
-        capital = self.position_controller.get_trade_size(opportunity)
+        capital = self.get_capital_amount(opportunity)
         long_capital = capital
         short_capital = capital
         funding_rate_long = float(opportunity["long_funding_rate"])

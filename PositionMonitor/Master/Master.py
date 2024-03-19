@@ -46,13 +46,13 @@ class MasterPositionMonitor():
 
         if is_liquidation_risk:
             reason = PositionCloseReason.LIQUIDATION_RISK.value
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason)
+            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
         elif not is_profitable:
             reason = PositionCloseReason.NO_LONGER_PROFITABLE.value
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason)
+            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
         elif not is_delta_within_bounds:
             reason = PositionCloseReason.DELTA_ABOVE_BOUND.value
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason)
+            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
         else:
             logger.info('MasterPositionMonitor - no threat detected for open position')
 

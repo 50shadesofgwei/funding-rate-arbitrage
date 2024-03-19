@@ -40,17 +40,18 @@ class SynthetixPositionMonitor():
 
     def get_open_position(self) -> dict:
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT * FROM trade_log WHERE status = 'OPEN' AND exchange = 'Synthetix';''')
-            open_positions = cursor.fetchall()
-            if open_positions:
-                position_dict = get_dict_from_database_response(open_positions[0])
-                return position_dict
-            else:
-                logger.info(f"SynthetixPositionMonitor - No open Synthetix positions found")
-                return None
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Synthetix';''')
+                open_positions = cursor.fetchall()
+                if open_positions:
+                    position_dict = get_dict_from_database_response(open_positions[0])
+                    return position_dict
+                else:
+                    logger.info("SynthetixPositionMonitor - No open Synthetix positions found")
+                    return None
         except Exception as e:
-            logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions:", {e})
+            logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")
             raise e
 
     def is_near_liquidation_price(self, position) -> bool:
@@ -91,13 +92,14 @@ class SynthetixPositionMonitor():
 
     def is_open_position(self) -> bool:
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT * FROM trade_log WHERE status = 'OPEN' AND exchange = 'Synthetix';''')
-            open_positions = cursor.fetchall()
-            if open_positions:
-                return True
-            else:
-                 return False
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Synthetix';''')
+                open_positions = cursor.fetchall()
+                if open_positions:
+                    return True
+                else:
+                    return False
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions:", {e})
             raise e

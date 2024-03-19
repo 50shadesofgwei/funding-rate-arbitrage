@@ -9,6 +9,7 @@ from MatchingEngine.MatchingEngine import matchingEngine
 from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityChecker
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.Master import MasterPositionMonitor
+from PositionMonitor.Master.utils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
 import time
@@ -36,4 +37,4 @@ class Main:
 main = Main()
 main.start_search()
 time.sleep(15)
-main.position_controller.close_all_positions()
+main.position_controller.close_all_positions(PositionCloseReason.NO_LONGER_PROFITABLE.value)

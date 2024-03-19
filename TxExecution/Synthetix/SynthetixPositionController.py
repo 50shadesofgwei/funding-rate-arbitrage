@@ -183,3 +183,5 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
 
+x = SynthetixPositionController()
+x.close_all_positions()

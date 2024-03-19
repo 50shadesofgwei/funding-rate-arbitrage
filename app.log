@@ -2134,3 +2134,607 @@ Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=B
 Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
 2024-03-18 21:11:14,162 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
 2024-03-18 21:11:18,278 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:05:01,394 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:05:01,400 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:05:10,827 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for BTCUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 12:05:10).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=BTCUSDT.
+2024-03-19 12:05:10,827 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-19 12:05:11,083 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for ETHUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 12:05:11).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
+2024-03-19 12:05:11,084 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-19 12:05:15,564 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for BTCUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 12:05:15).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=BTCUSDT.
+2024-03-19 12:05:15,565 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for BTCUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-19 12:05:15,818 - GlobalUtils.logger - ERROR - ByBit - Error retrieving leverage factor for ETHUSDT. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 12:05:15).
+Request → GET https://api.bybit.com/v5/position/list: category=linear&symbol=ETHUSDT.
+2024-03-19 12:05:15,818 - GlobalUtils.logger - ERROR - ByBit - Failed to set leverage for ETHUSDT. Error: is_leverage_already_correct() takes 1 positional argument but 2 were given
+2024-03-19 12:05:19,839 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:05:22,605 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:05:22,605 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:05:23,834 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9404.437768303571
+2024-03-19 12:05:25,061 - GlobalUtils.logger - ERROR - ByBit - Error retrieving available USDT collateral. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 12:05:25).
+Request → GET https://api.bybit.com/v5/asset/transfer/query-account-coin-balance: accountType=UNIFIED&coin=USDT.
+2024-03-19 12:05:25,061 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:05:25,061 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.39537456054650727
+2024-03-19 12:05:25,061 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 371.82754498300005
+2024-03-19 12:05:25,061 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:05:25,061 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:05:25,456 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9404.437768303571
+2024-03-19 12:05:26,582 - GlobalUtils.logger - ERROR - ByBit - Error retrieving available USDT collateral. Error: Unmatched IP, please check your API key's bound IP addresses. (ErrCode: 10010) (ErrTime: 12:05:26).
+Request → GET https://api.bybit.com/v5/asset/transfer/query-account-coin-balance: accountType=UNIFIED&coin=USDT.
+2024-03-19 12:05:26,583 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:05:26,583 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.39537456054650727
+2024-03-19 12:05:26,583 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 371.82754498300005
+2024-03-19 12:05:26,583 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012457891810122256, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017542108189877745}
+2024-03-19 12:05:26,960 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:05:26,961 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:05:27,339 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:05:27,339 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:17:19,086 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:17:19,093 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:17:37,105 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:17:39,641 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:17:39,641 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:17:39,978 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9404.437768303571
+2024-03-19 12:17:40,562 - GlobalUtils.logger - ERROR - MasterPositionController - Failed to get available collateral by exchange. Error: 'MasterPositionController' object has no attribute 'bybit'
+2024-03-19 12:17:40,562 - GlobalUtils.logger - ERROR - MasterPositionController - Failed to calculate trade size for opportunity. Error: 'NoneType' object has no attribute 'get'
+2024-03-19 12:17:40,562 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:17:40,562 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:17:40,885 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9404.437768303571
+2024-03-19 12:17:41,179 - GlobalUtils.logger - ERROR - MasterPositionController - Failed to get available collateral by exchange. Error: 'MasterPositionController' object has no attribute 'bybit'
+2024-03-19 12:17:41,180 - GlobalUtils.logger - ERROR - MasterPositionController - Failed to calculate trade size for opportunity. Error: 'NoneType' object has no attribute 'get'
+2024-03-19 12:17:41,180 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'BTC', 'long_funding_rate': 9.702922398257733e-05, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0029029707760174226}
+2024-03-19 12:17:41,577 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:17:41,577 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:17:41,972 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:17:41,972 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:23:36,222 - Synthetix - INFO - Simulated tx successfully: {'gas': 632015, 'maxFeePerGas': 102082168, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 135, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffff8e502b67300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ada1198e87f17fb00053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:23:36,468 - Synthetix - INFO - Committing order size -512000000000000000 (-0.512) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:23:36,468 - Synthetix - INFO - commit_order tx: 0xb56173635e36947973aaf30ec3356c7199407e5637a4c2d54159e8c928d34f02
+2024-03-19 12:23:36,469 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 12:24:09,397 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:24:09,402 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:24:25,179 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:24:27,713 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:24:27,713 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:24:28,102 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9170.382511638341
+2024-03-19 12:24:28,520 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:24:28,520 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.40546568751205875
+2024-03-19 12:24:28,520 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 371.82754498300005
+2024-03-19 12:24:28,520 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:24:28,521 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:24:28,909 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9170.382511638341
+2024-03-19 12:24:29,202 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:24:29,202 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.40546568751205875
+2024-03-19 12:24:29,202 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 371.82754498300005
+2024-03-19 12:24:29,203 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.00124560153426702, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.00175439846573298}
+2024-03-19 12:24:30,148 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:24:30,148 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:24:30,510 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9170.382511638341
+2024-03-19 12:24:31,279 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:24:31,280 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.40546568751205875
+2024-03-19 12:24:31,280 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 371.82754498300005
+2024-03-19 12:24:31,948 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.57
+2024-03-19 12:24:33,174 - Synthetix - INFO - Simulated tx successfully: {'gas': 590239, 'maxFeePerGas': 101892322, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 136, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d00000000000000000000000000000000000000000000000007e90bfae1f9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b5085f63d405b8ec0053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:24:33,423 - Synthetix - INFO - Committing order size 570000000000000000 (0.57) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:24:33,424 - Synthetix - INFO - commit_order tx: 0x4f1a1b5b43185e04fc1453243663fdcd6e347f91d11808506d6582d4cfd3c834
+2024-03-19 12:24:50,818 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 12:24:50,820 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.57, 'order_id': 246563093508232370, 'liquidation_price': 161.91461165297318}
+2024-03-19 12:24:51,038 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.57
+2024-03-19 12:24:51,379 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.57
+2024-03-19 12:24:54,142 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.57, Order id: 1321837362
+2024-03-19 12:24:54,887 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.570', 'order_id': 1321837362, 'liquidation_price': 9637.1340641}
+2024-03-19 12:24:54,890 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: a2f9157a-5aa3-45ee-970a-2321683ce783, exchange: Synthetix. Error: NOT NULL constraint failed: trade_log.liquidation_price
+2024-03-19 12:24:54,890 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: a2f9157a-5aa3-45ee-970a-2321683ce783, exchange: Binance. Error: NOT NULL constraint failed: trade_log.liquidation_price
+2024-03-19 12:24:54,907 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145452982272.
+2024-03-19 12:24:54,910 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145452982272.
+2024-03-19 12:24:54,922 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145452982272.
+2024-03-19 12:24:54,892 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: e93cec62-8f25-47c8-bb73-43036cd444a3, exchange: Synthetix. Error: NOT NULL constraint failed: trade_log.liquidation_price
+2024-03-19 12:24:54,925 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: e93cec62-8f25-47c8-bb73-43036cd444a3, exchange: Binance. Error: NOT NULL constraint failed: trade_log.liquidation_price
+2024-03-19 12:24:54,925 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 12:24:55,350 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:24:55,351 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:25:12,419 - Synthetix - INFO - Simulated tx successfully: {'gas': 650702, 'maxFeePerGas': 102772820, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 136, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffff816f4051e07000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000adb744519c19df9e8053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:25:12,656 - GlobalUtils.logger - ERROR - SynthetixPositionController - An error occurred while trying to close a position: {'code': -32000, 'message': 'nonce too low: next nonce 137, tx nonce 136'}
+2024-03-19 12:25:17,051 - GlobalUtils.logger - ERROR - BinancePositionController - Failed to close position for symbol ETHUSDT. Error: list indices must be integers or slices, not str
+2024-03-19 12:25:17,809 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 12:37:20,744 - Synthetix - INFO - Simulated tx successfully: {'gas': 650688, 'maxFeePerGas': 102276122, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 137, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffff816f4051e07000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aec494d53a5763a00053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:37:20,969 - Synthetix - INFO - Committing order size -570000000000000000 (-0.57) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:37:20,969 - Synthetix - INFO - commit_order tx: 0x15ab1586dbdaeec9046f6efcc218599f34e926c7e04fa18e532afac28cc6f5ab
+2024-03-19 12:37:20,970 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 12:37:21,405 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:37:21,415 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:37:37,255 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:37:39,225 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:37:39,226 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:37:39,621 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9176.596184239092
+2024-03-19 12:37:40,148 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:37:40,148 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3844198262498251
+2024-03-19 12:37:40,148 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 352.76655107100004
+2024-03-19 12:37:40,149 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:37:40,149 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:37:40,504 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9176.596184239092
+2024-03-19 12:37:41,372 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:37:41,372 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3844198262498251
+2024-03-19 12:37:41,372 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 352.76655107100004
+2024-03-19 12:37:41,372 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012454716635208207, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017545283364791794}
+2024-03-19 12:37:42,275 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:37:42,276 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:37:42,622 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9176.596184239092
+2024-03-19 12:37:42,915 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:37:42,916 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3844198262498251
+2024-03-19 12:37:42,916 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 352.76655107100004
+2024-03-19 12:37:43,495 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.54
+2024-03-19 12:37:44,888 - Synthetix - INFO - Simulated tx successfully: {'gas': 590239, 'maxFeePerGas': 102797100, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 138, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d000000000000000000000000000000000000000000000000077e772392b6000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b5eb663a827802c00053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:37:45,104 - Synthetix - INFO - Committing order size 540000000000000000 (0.54) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:37:45,105 - Synthetix - INFO - commit_order tx: 0x0b1f95239ce1b58cfb483b8fad11c55f54e5382101f0237778f382b8414bc6d7
+2024-03-19 12:38:02,145 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 12:38:02,146 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.54, 'order_id': 560840344910882344, 'liquidation_price': 162.3025133136408}
+2024-03-19 12:38:02,421 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.54
+2024-03-19 12:38:02,720 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.54
+2024-03-19 12:38:05,013 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.54, Order id: 1321846709
+2024-03-19 12:38:05,302 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.540', 'order_id': 1321846709, 'liquidation_price': 9587.73356092}
+2024-03-19 12:38:05,305 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 48bf1afe-2703-471a-a8fd-3f504bb981f1, exchange: Synthetix. Error: 8 values for 9 columns
+2024-03-19 12:38:05,305 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 48bf1afe-2703-471a-a8fd-3f504bb981f1, exchange: Binance. Error: 8 values for 9 columns
+2024-03-19 12:38:05,321 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145434488832.
+2024-03-19 12:38:05,339 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145434488832.
+2024-03-19 12:38:05,342 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145434488832.
+2024-03-19 12:38:05,307 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 0194931f-15fd-4c57-9344-95f4c79e9ba7, exchange: Synthetix. Error: 8 values for 9 columns
+2024-03-19 12:38:05,348 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 0194931f-15fd-4c57-9344-95f4c79e9ba7, exchange: Binance. Error: 8 values for 9 columns
+2024-03-19 12:38:05,348 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 12:38:05,766 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:38:05,766 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:38:07,364 - Synthetix - INFO - Simulated tx successfully: {'gas': 650702, 'maxFeePerGas': 101781844, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 139, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffff88188dc6d4a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aeb8fe648faec253e053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:38:07,582 - Synthetix - INFO - Committing order size -540000000000000000 (-0.54) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:38:07,582 - Synthetix - INFO - commit_order tx: 0x2055e488b31763a76a28c5678b71b93ed2bda090b07d51dd011be4fd390c9d1d
+2024-03-19 12:38:07,583 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 12:38:12,550 - GlobalUtils.logger - ERROR - BinancePositionController - Failed to close position for symbol ETHUSDT. Error: list indices must be integers or slices, not str
+2024-03-19 12:38:12,844 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 12:38:22,227 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 12:38:22,511 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 12:39:56,482 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:39:56,490 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:40:11,940 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:40:13,789 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:40:13,790 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:40:14,123 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9171.523348938932
+2024-03-19 12:40:14,641 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:40:14,641 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.35953087136952955
+2024-03-19 12:40:14,642 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 329.744578143
+2024-03-19 12:40:14,642 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:40:14,642 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:40:14,992 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9171.523348938932
+2024-03-19 12:40:15,291 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:40:15,292 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.35953087136952955
+2024-03-19 12:40:15,292 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 329.744578143
+2024-03-19 12:40:15,292 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012454458213763994, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017545541786236007}
+2024-03-19 12:40:16,303 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:40:16,304 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:40:16,666 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9171.523348938932
+2024-03-19 12:40:17,422 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:40:17,422 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.35953087136952955
+2024-03-19 12:40:17,422 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 329.744578143
+2024-03-19 12:40:18,076 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.503
+2024-03-19 12:40:19,323 - Synthetix - INFO - Simulated tx successfully: {'gas': 590255, 'maxFeePerGas': 100937754, 'maxPriorityFeePerGas': 1100000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 140, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d00000000000000000000000000000000000000000000000006fb03d5c205800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b5ec0b936e6099560053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:40:19,567 - Synthetix - INFO - Committing order size 503000000000000000 (0.503) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:40:19,567 - Synthetix - INFO - commit_order tx: 0x438c64deafb51a7c97175c485264e871e210bba4af83ab74aefa483aa513c9df
+2024-03-19 12:40:37,077 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 12:40:37,078 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.503, 'order_id': 788541190919199873, 'liquidation_price': 163.29334113683802}
+2024-03-19 12:40:37,295 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.503
+2024-03-19 12:40:37,665 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.503
+2024-03-19 12:40:40,465 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.503, Order id: 1321848544
+2024-03-19 12:40:41,382 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.503', 'order_id': 1321848544, 'liquidation_price': 9610.46421252}
+2024-03-19 12:40:41,384 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: dd516f9f-e7d2-448b-9b2b-553f95edcb2b, exchange: Synthetix. Error: 8 values for 9 columns
+2024-03-19 12:40:41,384 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: dd516f9f-e7d2-448b-9b2b-553f95edcb2b, exchange: Binance. Error: 8 values for 9 columns
+2024-03-19 12:40:41,397 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145513185280.
+2024-03-19 12:40:41,402 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145513185280.
+2024-03-19 12:40:41,413 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145513185280.
+2024-03-19 12:40:41,386 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 519d6e82-37d2-4d38-9196-783cea324c15, exchange: Synthetix. Error: 8 values for 9 columns
+2024-03-19 12:40:41,419 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 519d6e82-37d2-4d38-9196-783cea324c15, exchange: Binance. Error: 8 values for 9 columns
+2024-03-19 12:40:41,419 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 12:40:41,815 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:40:41,815 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:40:43,498 - Synthetix - INFO - Simulated tx successfully: {'gas': 650702, 'maxFeePerGas': 102009728, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 141, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffff904fc2a3dfa800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aed9499022a133420053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:40:43,753 - Synthetix - INFO - Committing order size -503000000000000000 (-0.503) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:40:43,753 - Synthetix - INFO - commit_order tx: 0x7668590b3959f7807cea4cb3054c587ee7853fdb4cf9cda57a9b2d32fcd96067
+2024-03-19 12:40:43,754 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 12:40:49,018 - GlobalUtils.logger - ERROR - BinancePositionController - Failed to close position for symbol ETHUSDT. Error: list indices must be integers or slices, not str
+2024-03-19 12:40:49,771 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 12:40:57,953 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 12:40:58,680 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 12:49:21,871 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:49:21,880 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:49:40,332 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 12:49:42,249 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:49:42,249 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:49:42,984 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9164.359718319563
+2024-03-19 12:49:43,477 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:49:43,477 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3415891381088235
+2024-03-19 12:49:43,478 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 313.04457375000004
+2024-03-19 12:49:43,478 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:49:43,478 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:49:43,803 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9164.359718319563
+2024-03-19 12:49:44,103 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:49:44,104 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3415891381088235
+2024-03-19 12:49:44,104 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 313.04457375000004
+2024-03-19 12:49:44,104 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012453516211902993, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017546483788097008}
+2024-03-19 12:49:45,532 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 12:49:45,533 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 12:49:45,860 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9164.359718319563
+2024-03-19 12:49:46,976 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 12:49:46,976 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3415891381088235
+2024-03-19 12:49:46,976 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 313.04457375000004
+2024-03-19 12:49:47,598 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.475
+2024-03-19 12:49:49,277 - Synthetix - INFO - Simulated tx successfully: {'gas': 590255, 'maxFeePerGas': 102568064, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 142, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d000000000000000000000000000000000000000000000000069789fbbc4f800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b5db4d1822df887e0053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:49:49,493 - Synthetix - INFO - Committing order size 475000000000000000 (0.475) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:49:49,494 - Synthetix - INFO - commit_order tx: 0xf8c25b25945ffbca78a44541078856aea3bef5ddfa491122b97773c5d6b11761
+2024-03-19 12:50:06,843 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 12:50:06,844 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.475, 'order_id': 874285997918492392, 'liquidation_price': 164.46737165565196}
+2024-03-19 12:50:07,093 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.475
+2024-03-19 12:50:07,437 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.475
+2024-03-19 12:50:09,753 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.475, Order id: 1321855250
+2024-03-19 12:50:10,042 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.475', 'order_id': 1321855250, 'liquidation_price': 9641.14627559}
+2024-03-19 12:50:10,044 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 9eee7816-0a49-4277-b577-675da16825ad, exchange: Synthetix. Error: 8 values for 9 columns
+2024-03-19 12:50:10,044 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 9eee7816-0a49-4277-b577-675da16825ad, exchange: Binance. Error: 8 values for 9 columns
+2024-03-19 12:50:10,059 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145490391040.
+2024-03-19 12:50:10,072 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145490391040.
+2024-03-19 12:50:10,091 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145490391040.
+2024-03-19 12:50:10,046 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 2b340143-42fb-413d-8b10-3bda7f3741d7, exchange: Synthetix. Error: 8 values for 9 columns
+2024-03-19 12:50:10,099 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 2b340143-42fb-413d-8b10-3bda7f3741d7, exchange: Binance. Error: 8 values for 9 columns
+2024-03-19 12:50:10,099 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 12:50:10,449 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 12:50:10,449 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 12:50:12,107 - Synthetix - INFO - Simulated tx successfully: {'gas': 650688, 'maxFeePerGas': 101912594, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 143, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffff968760443b0800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aef8e88479c53d000053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 12:50:12,380 - Synthetix - INFO - Committing order size -475000000000000000 (-0.475) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 12:50:12,381 - Synthetix - INFO - commit_order tx: 0x4c891c9fc717d8715122efab75daecbb2231c362b53dbd2b5e0989b3c6f9de19
+2024-03-19 12:50:12,382 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 12:50:17,145 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
+2024-03-19 12:50:18,000 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 12:50:18,001 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving execution ID for open trades. Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145490391040.
+2024-03-19 12:50:18,001 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving trades for execution id: None, Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145490391040.
+2024-03-19 12:50:18,001 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 12:50:26,607 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 12:50:27,523 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 12:50:27,528 - GlobalUtils.logger - INFO - TradeLogger - No open trade pairs found.
+2024-03-19 12:50:27,528 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 12:50:27,528 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 12:50:27,528 - GlobalUtils.logger - INFO - TradeLogger - No open trade pairs found.
+2024-03-19 12:50:27,529 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 12:50:27,529 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 13:04:51,660 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:04:51,676 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:05:08,067 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:05:10,413 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:05:10,413 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:05:10,799 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9161.752111347954
+2024-03-19 13:05:11,337 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:05:11,337 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3193832252769264
+2024-03-19 13:05:11,337 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 292.61099385100005
+2024-03-19 13:05:11,338 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:05:11,338 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:05:11,705 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9161.752111347954
+2024-03-19 13:05:12,007 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:05:12,007 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3193832252769264
+2024-03-19 13:05:12,007 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 292.61099385100005
+2024-03-19 13:05:12,007 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.00124519768446205, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017548023155379501}
+2024-03-19 13:05:13,473 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:05:13,473 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:05:13,827 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9161.752111347954
+2024-03-19 13:05:14,112 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:05:14,113 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.3193832252769264
+2024-03-19 13:05:14,113 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 292.61099385100005
+2024-03-19 13:05:14,860 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.444
+2024-03-19 13:05:16,104 - Synthetix - INFO - Simulated tx successfully: {'gas': 590239, 'maxFeePerGas': 213812117, 'maxPriorityFeePerGas': 113859541, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 144, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d000000000000000000000000000000000000000000000000062967a5c846000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b565b348856dc1340053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:05:16,347 - Synthetix - INFO - Committing order size 444000000000000000 (0.444) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:05:16,348 - Synthetix - INFO - commit_order tx: 0xf6d86b6cc53e4c7fdf71ce44192a108ebabb733f3a0be4b4d5af4fd39ea13855
+2024-03-19 13:05:33,846 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 13:05:33,856 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.444, 'order_id': 222092222035459190, 'liquidation_price': 164.85400246142157}
+2024-03-19 13:05:34,127 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.444
+2024-03-19 13:05:34,472 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.444
+2024-03-19 13:05:37,233 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.444, Order id: 1321866908
+2024-03-19 13:05:37,515 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.444', 'order_id': 1321866908, 'liquidation_price': 9561.32308393}
+2024-03-19 13:05:37,520 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 8121b567-6243-47e5-8b32-b944d1b7a4ef on exchange: Synthetix
+2024-03-19 13:05:37,522 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 8121b567-6243-47e5-8b32-b944d1b7a4ef on exchange: Binance
+2024-03-19 13:05:37,538 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145403768832.
+2024-03-19 13:05:37,543 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145403768832.
+2024-03-19 13:05:37,547 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145403768832.
+2024-03-19 13:05:37,527 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 0109990e-e19b-4c60-b6cb-33de57882bfe on exchange: Synthetix
+2024-03-19 13:05:37,553 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 0109990e-e19b-4c60-b6cb-33de57882bfe on exchange: Binance
+2024-03-19 13:05:37,555 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 13:05:37,909 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 13:05:37,909 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 13:05:40,383 - Synthetix - INFO - Simulated tx successfully: {'gas': 650688, 'maxFeePerGas': 101329760, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 145, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffff9d6985a37ba000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ae67ffb92cc71c5c0053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:05:40,596 - Synthetix - INFO - Committing order size -444000000000000000 (-0.444) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:05:40,597 - Synthetix - INFO - commit_order tx: 0x22d560c478c34eccac4fc5cc1891a027112fedbdbf8455c3980a7ecbb6751aac
+2024-03-19 13:05:40,597 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 13:05:45,377 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
+2024-03-19 13:05:46,102 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:05:46,103 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving execution ID for open trades. Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145403768832.
+2024-03-19 13:05:46,104 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 13:05:46,104 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 13:05:54,199 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 13:05:54,951 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:05:54,956 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 0109990e-e19b-4c60-b6cb-33de57882bfe
+2024-03-19 13:05:54,956 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 0109990e-e19b-4c60-b6cb-33de57882bfe
+2024-03-19 13:19:14,126 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:19:14,134 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:19:30,576 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:19:32,421 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:19:32,422 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:19:32,763 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9155.044672132155
+2024-03-19 13:19:33,188 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:19:33,188 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.29490687446762753
+2024-03-19 13:19:33,188 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 269.98856098699997
+2024-03-19 13:19:33,188 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:19:33,188 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:19:33,529 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9155.044672132155
+2024-03-19 13:19:34,270 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:19:34,271 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.29490687446762753
+2024-03-19 13:19:34,271 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 269.98856098699997
+2024-03-19 13:19:34,271 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001245054699115949, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017549453008840511}
+2024-03-19 13:19:35,300 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:19:35,301 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:19:35,684 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9155.044672132155
+2024-03-19 13:19:36,431 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:19:36,432 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.29490687446762753
+2024-03-19 13:19:36,432 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 269.98856098699997
+2024-03-19 13:19:36,982 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.412
+2024-03-19 13:19:38,200 - Synthetix - INFO - Simulated tx successfully: {'gas': 590239, 'maxFeePerGas': 111633222, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 146, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d00000000000000000000000000000000000000000000000005b7b7d12f76000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b4eb73d803d985b00053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:19:38,449 - Synthetix - INFO - Committing order size 412000000000000000 (0.412) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:19:38,449 - Synthetix - INFO - commit_order tx: 0xa7df7bbc38986031641d4bd7395402ff64c0ca41ecc2ecd435411c29e8d09cdc
+2024-03-19 13:19:55,392 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 13:19:55,392 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.412, 'order_id': 688048585597877313, 'liquidation_price': 164.3433935949139}
+2024-03-19 13:19:55,622 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.412
+2024-03-19 13:19:55,975 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.412
+2024-03-19 13:19:58,284 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.412, Order id: 1321877899
+2024-03-19 13:19:58,581 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.412', 'order_id': 1321877899, 'liquidation_price': 9791.07972171}
+2024-03-19 13:19:58,583 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 2f07afe8-23ed-4b2d-ab01-051b2869f914 on exchange: Synthetix
+2024-03-19 13:19:58,586 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 2f07afe8-23ed-4b2d-ab01-051b2869f914 on exchange: Binance
+2024-03-19 13:19:58,590 - GlobalUtils.logger - ERROR - SynthetixPositionMonitor - Error while searching for open Synthetix positions: no such column: status
+2024-03-19 13:19:58,590 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: no such column: status
+2024-03-19 13:19:58,591 - GlobalUtils.logger - ERROR - SynthetixPositionMonitor - Error while searching for open Synthetix positions: no such column: status
+2024-03-19 13:19:58,591 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: no such column: status
+2024-03-19 13:19:58,591 - GlobalUtils.logger - ERROR - SynthetixPositionMonitor - Error while searching for open Synthetix positions: no such column: status
+2024-03-19 13:19:58,592 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: no such column: status
+2024-03-19 13:19:58,598 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: b1abc9f2-e162-49ff-873d-fdfa2738134f on exchange: Synthetix
+2024-03-19 13:19:58,600 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: b1abc9f2-e162-49ff-873d-fdfa2738134f on exchange: Binance
+2024-03-19 13:19:58,601 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 13:19:58,960 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 13:19:58,960 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 13:20:00,966 - Synthetix - INFO - Simulated tx successfully: {'gas': 650688, 'maxFeePerGas': 111944008, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 147, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffffa48482ed08a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ade1045c001412f58053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:20:01,200 - Synthetix - INFO - Committing order size -412000000000000000 (-0.412) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:20:01,200 - Synthetix - INFO - commit_order tx: 0xc042097d8be0e5537cf5795d491c29a21b709b548b8e09fb203cbc47832472db
+2024-03-19 13:20:01,201 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 13:20:06,123 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
+2024-03-19 13:20:06,421 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:20:06,421 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving execution ID for open trades. Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145533591552.
+2024-03-19 13:20:06,421 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 13:20:06,421 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 13:20:15,694 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 13:20:16,613 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:20:16,617 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 2f07afe8-23ed-4b2d-ab01-051b2869f914
+2024-03-19 13:20:16,618 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 2f07afe8-23ed-4b2d-ab01-051b2869f914
+2024-03-19 13:20:16,618 - GlobalUtils.logger - INFO - POSITION REPORT: {'Synthetix': None, 'Binance': None, 'close_reason': 'NO_LONGER_PROFITABLE'}
+2024-03-19 13:23:43,796 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:23:43,804 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:23:59,650 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:24:02,081 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:24:02,082 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:24:02,442 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9150.446976827005
+2024-03-19 13:24:03,071 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:24:03,071 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2854401966608303
+2024-03-19 13:24:03,071 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 261.19053846
+2024-03-19 13:24:03,071 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:24:03,072 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:24:03,437 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9150.446976827005
+2024-03-19 13:24:03,730 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:24:03,730 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2854401966608303
+2024-03-19 13:24:03,730 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 261.19053846
+2024-03-19 13:24:03,730 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012450099324055183, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017549900675944818}
+2024-03-19 13:24:05,220 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:24:05,221 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:24:05,605 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9150.446976827005
+2024-03-19 13:24:05,892 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:24:05,892 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2854401966608303
+2024-03-19 13:24:05,893 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 261.19053846
+2024-03-19 13:24:07,042 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.398
+2024-03-19 13:24:08,344 - Synthetix - INFO - Simulated tx successfully: {'gas': 590239, 'maxFeePerGas': 102741672, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 148, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d0000000000000000000000000000000000000000000000000585fae42c9b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b605c627fb058aca0053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:24:08,562 - Synthetix - INFO - Committing order size 398000000000000000 (0.398) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:24:08,562 - Synthetix - INFO - commit_order tx: 0x22607523da05b7ebae82b9fc85f77d1cb257259607697267e41570218a146065
+2024-03-19 13:24:25,909 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 13:24:25,909 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.398, 'order_id': 667452051568039022, 'liquidation_price': 164.77570196629082}
+2024-03-19 13:24:26,148 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.398
+2024-03-19 13:24:26,464 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.398
+2024-03-19 13:24:28,757 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.398, Order id: 1321881469
+2024-03-19 13:24:29,484 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.398', 'order_id': 1321881469, 'liquidation_price': 9947.69338431}
+2024-03-19 13:24:29,488 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 1dfa2faa-b355-42e8-ba31-1951820c8010 on exchange: Synthetix
+2024-03-19 13:24:29,490 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 1dfa2faa-b355-42e8-ba31-1951820c8010 on exchange: Binance
+2024-03-19 13:24:29,508 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145533874176.
+2024-03-19 13:24:29,515 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145533874176.
+2024-03-19 13:24:29,529 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145533874176.
+2024-03-19 13:24:29,495 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 161bf418-f1f7-47f6-a97c-9162e4fecc8c on exchange: Synthetix
+2024-03-19 13:24:29,540 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 161bf418-f1f7-47f6-a97c-9162e4fecc8c on exchange: Binance
+2024-03-19 13:24:29,541 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 13:24:29,960 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 13:24:29,961 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 13:24:31,536 - Synthetix - INFO - Simulated tx successfully: {'gas': 650688, 'maxFeePerGas': 101191748, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 149, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffffa7a051bd365000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000af240560b510575e0053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:24:31,767 - Synthetix - INFO - Committing order size -398000000000000000 (-0.398) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:24:31,767 - Synthetix - INFO - commit_order tx: 0x2854f1b3c4c1b9620130a892fc78362f216523559111269c91f59c38d91d4f0f
+2024-03-19 13:24:31,768 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 13:24:36,483 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
+2024-03-19 13:24:37,212 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:24:37,213 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving execution ID for open trades. Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145533874176.
+2024-03-19 13:24:37,214 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 13:24:37,214 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 13:24:46,102 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 13:24:46,390 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:24:46,394 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 161bf418-f1f7-47f6-a97c-9162e4fecc8c
+2024-03-19 13:24:46,395 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 161bf418-f1f7-47f6-a97c-9162e4fecc8c
+2024-03-19 13:24:46,395 - GlobalUtils.logger - INFO - POSITION REPORT: {'Synthetix': None, 'Binance': None, 'close_reason': 'NO_LONGER_PROFITABLE'}
+2024-03-19 13:31:45,109 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:31:45,118 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:32:02,018 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:32:04,297 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:32:04,298 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:32:04,643 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9146.523697813642
+2024-03-19 13:32:05,133 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:32:05,133 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2817597082502533
+2024-03-19 13:32:05,133 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 257.71218486
+2024-03-19 13:32:05,134 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:32:05,134 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:32:05,740 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9146.523697813642
+2024-03-19 13:32:06,031 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:32:06,031 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2817597082502533
+2024-03-19 13:32:06,031 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 257.71218486
+2024-03-19 13:32:06,031 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012449299952840783, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017550700047159217}
+2024-03-19 13:32:07,613 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:32:07,613 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:32:08,046 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9146.523697813642
+2024-03-19 13:32:08,771 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:32:08,771 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2817597082502533
+2024-03-19 13:32:08,771 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 257.71218486
+2024-03-19 13:32:09,415 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.391
+2024-03-19 13:32:10,718 - Synthetix - INFO - Simulated tx successfully: {'gas': 590269, 'maxFeePerGas': 101833984, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 150, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d000000000000000000000000000000000000000000000000056d1c6dab2d800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b5eecf1c989b438fe053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:32:10,959 - Synthetix - INFO - Committing order size 391000000000000000 (0.391) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:32:10,959 - Synthetix - INFO - commit_order tx: 0x80f71c12d7fda9e354706121b284632785bcecdd2e4ef405fd471a35e6044b1a
+2024-03-19 13:32:28,927 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 13:32:28,928 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.391, 'order_id': 885226521162361880, 'liquidation_price': 165.76164694904293}
+2024-03-19 13:32:29,136 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.391
+2024-03-19 13:32:29,481 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.391
+2024-03-19 13:32:32,246 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.391, Order id: 1321887579
+2024-03-19 13:32:32,691 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.391', 'order_id': 1321887579, 'liquidation_price': 9562.08604191}
+2024-03-19 13:32:32,693 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: bbf9814d-7332-4bd0-8b85-d7c57451097f on exchange: Synthetix
+2024-03-19 13:32:32,696 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: bbf9814d-7332-4bd0-8b85-d7c57451097f on exchange: Binance
+2024-03-19 13:32:32,710 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145573482496.
+2024-03-19 13:32:32,701 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 23e4a89f-dec8-4de1-b3e5-df359794128b on exchange: Synthetix
+2024-03-19 13:32:32,713 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 23e4a89f-dec8-4de1-b3e5-df359794128b on exchange: Binance
+2024-03-19 13:32:32,714 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 13:32:32,727 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145573482496.
+2024-03-19 13:32:32,735 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145573482496.
+2024-03-19 13:32:33,366 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 13:32:33,366 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 13:32:35,082 - Synthetix - INFO - Simulated tx successfully: {'gas': 650702, 'maxFeePerGas': 102220066, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 151, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffffa92e39254d2800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aeb393d17e9f86200053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:32:35,340 - Synthetix - INFO - Committing order size -391000000000000000 (-0.391) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:32:35,341 - Synthetix - INFO - commit_order tx: 0xabb5c1a89fc6161f7a16176de45ecc436902879f694adb728845f2042795512a
+2024-03-19 13:32:35,342 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 13:32:40,616 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
+2024-03-19 13:32:40,896 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:32:40,897 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving execution ID for open trades. Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145573482496.
+2024-03-19 13:32:40,898 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 13:32:40,898 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 13:32:49,590 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 13:32:49,878 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:32:49,883 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 23e4a89f-dec8-4de1-b3e5-df359794128b
+2024-03-19 13:32:49,885 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 23e4a89f-dec8-4de1-b3e5-df359794128b
+2024-03-19 13:32:49,885 - GlobalUtils.logger - INFO - POSITION REPORT: {'Synthetix': None, 'Binance': None, 'close_reason': 'NO_LONGER_PROFITABLE'}
+2024-03-19 13:36:07,313 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:36:07,319 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:36:24,993 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:36:28,004 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:36:28,005 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:36:28,381 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9141.640608332287
+2024-03-19 13:36:29,253 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:36:29,253 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2600746363703013
+2024-03-19 13:36:29,253 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 237.75088570399998
+2024-03-19 13:36:29,253 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:36:29,253 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:36:29,624 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9141.640608332287
+2024-03-19 13:36:29,928 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:36:29,928 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2600746363703013
+2024-03-19 13:36:29,928 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 237.75088570399998
+2024-03-19 13:36:29,928 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012448865543230414, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017551134456769586}
+2024-03-19 13:36:31,360 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:36:31,361 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:36:31,712 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9141.640608332287
+2024-03-19 13:36:32,003 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:36:32,004 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2600746363703013
+2024-03-19 13:36:32,004 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 237.75088570399998
+2024-03-19 13:36:32,634 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.361
+2024-03-19 13:36:33,963 - Synthetix - INFO - Simulated tx successfully: {'gas': 590255, 'maxFeePerGas': 101027882, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 152, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d000000000000000000000000000000000000000000000000050287965bea800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b67e540a15a2a0140053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:36:34,214 - Synthetix - INFO - Committing order size 361000000000000000 (0.361) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:36:34,215 - Synthetix - INFO - commit_order tx: 0x2da6edf09fb58b6f696cbce4e229c6b581748da12f8be11e0d2a78c6d0c2e855
+2024-03-19 13:36:51,265 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 13:36:51,265 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.361, 'order_id': 456498470015167699, 'liquidation_price': 166.33420223831675}
+2024-03-19 13:36:51,486 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.361
+2024-03-19 13:36:51,806 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.361
+2024-03-19 13:36:54,109 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.361, Order id: 1321890837
+2024-03-19 13:36:55,036 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.361', 'order_id': 1321890837, 'liquidation_price': 9697.75840983}
+2024-03-19 13:36:55,038 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: e7f8b365-0884-4e73-b1bd-3183a7a80654 on exchange: Synthetix
+2024-03-19 13:36:55,041 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: e7f8b365-0884-4e73-b1bd-3183a7a80654 on exchange: Binance
+2024-03-19 13:36:55,059 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: no such column: status
+2024-03-19 13:36:55,046 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 987acbab-0612-4319-b939-2387f30f0002 on exchange: Synthetix
+2024-03-19 13:36:55,065 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 987acbab-0612-4319-b939-2387f30f0002 on exchange: Binance
+2024-03-19 13:36:55,066 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 13:36:55,079 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error checking overall profitability for open positions: no such column: status
+2024-03-19 13:36:55,083 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error calculating position pair delta: no such column: status
+2024-03-19 13:36:55,439 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 13:36:55,439 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 13:36:57,166 - Synthetix - INFO - Simulated tx successfully: {'gas': 650702, 'maxFeePerGas': 101673512, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 153, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffffafd7869a415800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000af3d05f9b7ce0d4e0053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:36:57,409 - Synthetix - INFO - Committing order size -361000000000000000 (-0.361) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:36:57,410 - Synthetix - INFO - commit_order tx: 0x4ccc440a37273f3c65e1cdb6142de3526413ce2c60e20b1e59878cb7e2eff7a5
+2024-03-19 13:36:57,411 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 13:37:01,726 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
+2024-03-19 13:37:02,018 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:37:02,019 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving execution ID for open trades. Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145397288960.
+2024-03-19 13:37:02,020 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 13:37:02,020 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 13:37:11,845 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 13:37:12,122 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:37:12,126 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 987acbab-0612-4319-b939-2387f30f0002
+2024-03-19 13:37:12,128 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 987acbab-0612-4319-b939-2387f30f0002
+2024-03-19 13:37:12,128 - GlobalUtils.logger - INFO - POSITION REPORT: {'Synthetix': None, 'Binance': None, 'close_reason': 'NO_LONGER_PROFITABLE'}
+2024-03-19 13:39:09,322 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:39:09,329 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:39:26,138 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-19 13:39:28,456 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:39:28,457 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:39:28,795 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9136.124554972186
+2024-03-19 13:39:29,446 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:39:29,446 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2501980244792053
+2024-03-19 13:39:29,447 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 228.58403150499998
+2024-03-19 13:39:29,447 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:39:29,447 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:39:29,785 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9136.124554972186
+2024-03-19 13:39:30,076 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:39:30,076 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2501980244792053
+2024-03-19 13:39:30,076 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 228.58403150499998
+2024-03-19 13:39:30,076 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012448563795920493, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017551436204079507}
+2024-03-19 13:39:31,685 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-19 13:39:31,685 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-19 13:39:32,049 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9136.124554972186
+2024-03-19 13:39:32,340 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-19 13:39:32,341 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.2501980244792053
+2024-03-19 13:39:32,341 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 228.58403150499998
+2024-03-19 13:39:32,957 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.347
+2024-03-19 13:39:34,251 - Synthetix - INFO - Simulated tx successfully: {'gas': 590269, 'maxFeePerGas': 101034732, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 154, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016d00000000000000000000000000000000000000000000000004d0caa9590f800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b6382516377e64cb4053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:39:34,527 - Synthetix - INFO - Committing order size 347000000000000000 (0.347) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:39:34,528 - Synthetix - INFO - commit_order tx: 0x021be61da6adfb1b04410f13a466d357ba8f41549f4c8ebe6c40e159a090d77a
+2024-03-19 13:39:51,553 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-19 13:39:51,553 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.347, 'order_id': 850172635546526955, 'liquidation_price': 166.29131355910246}
+2024-03-19 13:39:51,765 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.347
+2024-03-19 13:39:52,094 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.347
+2024-03-19 13:39:54,510 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.347, Order id: 1321893382
+2024-03-19 13:39:55,251 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.347', 'order_id': 1321893382, 'liquidation_price': 9558.43588699}
+2024-03-19 13:39:55,254 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 75b55b2c-33e8-4be1-8638-ee51aad63313 on exchange: Synthetix
+2024-03-19 13:39:55,256 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 75b55b2c-33e8-4be1-8638-ee51aad63313 on exchange: Binance
+2024-03-19 13:39:55,261 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: fe26ee20-8b83-401a-b698-ed75c0e6da6e on exchange: Synthetix
+2024-03-19 13:39:55,263 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: fe26ee20-8b83-401a-b698-ed75c0e6da6e on exchange: Binance
+2024-03-19 13:39:55,265 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-19 13:39:55,275 - GlobalUtils.logger - ERROR - MasterPositionMonitor - Error while checking liquidation risk for positions: cannot access local variable 'symbol' where it is not associated with a value
+2024-03-19 13:39:55,632 - GlobalUtils.logger - INFO - MasterPositionController - Posotion already open
+2024-03-19 13:39:55,632 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-19 13:39:56,274 - GlobalUtils.logger - ERROR - BinancePositionMonitor - Error fetching funding rate for symbol ETHUSDT: float() argument must be a string or a real number, not 'dict'
+2024-03-19 13:39:58,514 - Synthetix - INFO - Simulated tx successfully: {'gas': 650702, 'maxFeePerGas': 102368582, 'maxPriorityFeePerGas': 1000000, 'from': '0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66', 'chainId': 84532, 'value': 0, 'nonce': 155, 'to': '0xE2C5658cC5C448B48141168f3e475dF8f65A1e3e', 'data': '0x174dea71000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e6c5f05c415126e6b81fcc3619f65db2fcad58d000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000e49f9788600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000008000000000000000000000000000016dfffffffffffffffffffffffffffffffffffffffffffffffffb2f3556a6f0800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000af10787e0e1922a00053594e5448455449585f53444b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'}
+2024-03-19 13:39:58,752 - Synthetix - INFO - Committing order size -347000000000000000 (-0.347) to ETH (id: 100) for account 170141183460469231731687303715884106093
+2024-03-19 13:39:58,753 - Synthetix - INFO - commit_order tx: 0x854e3d646ea7bbc79717aa57e24445b45b5c223970d71550718a6422cbe6bb6a
+2024-03-19 13:39:58,753 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed.
+2024-03-19 13:40:03,650 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed.
+2024-03-19 13:40:04,569 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:40:04,570 - GlobalUtils.logger - ERROR - TradeLogger - Error retrieving execution ID for open trades. Error: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140704479185792 and this is thread id 123145586450432.
+2024-03-19 13:40:04,571 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: None
+2024-03-19 13:40:04,571 - GlobalUtils.logger - ERROR - TradeLogger - No trades found for strategy_execution_id: None
+2024-03-19 13:40:12,561 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-19 13:40:12,846 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-19 13:40:12,851 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 75b55b2c-33e8-4be1-8638-ee51aad63313
+2024-03-19 13:40:12,852 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 75b55b2c-33e8-4be1-8638-ee51aad63313
+2024-03-19 13:40:12,852 - GlobalUtils.logger - INFO - POSITION REPORT: {'Synthetix': None, 'Binance': None, 'close_reason': 'NO_LONGER_PROFITABLE'}

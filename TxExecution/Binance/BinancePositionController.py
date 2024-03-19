@@ -106,7 +106,7 @@ class BinancePositionController:
             if self.is_order_filled(x['orderId'], symbol):
                 close_position_details = {
                     'exchange': 'Binance',
-                    'pnl': float(position_info['unRealizedProfit']),
+                    'pnl': float(position_info[0]['unRealizedProfit']),
                     'accrued_fees': 0.0
                 }
                 logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed.")
