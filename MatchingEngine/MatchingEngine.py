@@ -2,12 +2,13 @@ import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from MatchingEngine.MatchingEngineUtils import *
-import json
+from GlobalUtils.logger import *
 
 class matchingEngine:
     def __init__(self):
         pass
 
+    @log_function_call
     def find_arbitrage_opportunities_for_symbol(self, sorted_rates):
         arbitrage_opportunities = []
         if len(sorted_rates) > 1:
@@ -27,6 +28,7 @@ class matchingEngine:
                 arbitrage_opportunities.append(arbitrage_opportunity)
         return arbitrage_opportunities
 
+    @log_function_call
     def find_delta_neutral_arbitrage_opportunities(self, funding_rates):
         opportunities = []
         rates_by_symbol = group_by_symbol(funding_rates)

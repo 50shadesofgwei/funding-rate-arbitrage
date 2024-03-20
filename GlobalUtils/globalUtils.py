@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import requests
 from decimal import Decimal, InvalidOperation
 from enum import Enum
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 
 load_dotenv()
 
@@ -34,6 +34,7 @@ def get_gas_price() -> float:
             logger.info(f"GlobalUtils - Error fetching gas price: {e}")
     return 0.0
 
+@log_function_call
 def get_asset_price(asset: str) -> float:
     api_key = os.getenv('COINGECKO_API_KEY')
     url = f'https://api.coingecko.com/api/v3/simple/price?ids={asset}&vs_currencies=usd&x_cg_demo_api_key={api_key}'
@@ -60,6 +61,7 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
         logger.info(f"GlobalUtils - Error calculating transaction cost: {e}")
     return 0.0
 
+@log_function_call
 def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
     try:
         asset_price = get_asset_price(asset)
@@ -69,6 +71,7 @@ def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -
         logger.info(f"GlobalUtils - Error calculating asset amount for {asset}: Price is zero")
     return 0.0
 
+@log_function_call
 def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
     try:
         asset_price = get_asset_price(asset)
@@ -78,9 +81,11 @@ def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) ->
         logger.info(f"GlobalUtils - Error converting asset amount to dollar amount for {asset}: {e}")
     return 0.0
 
+@log_function_call
 def normalize_symbol(symbol: str) -> str:
     return symbol.replace('USDT', '').replace('PERP', '')
 
+@log_function_call
 def get_full_asset_name(symbol: str) -> str:
     asset_mapping = {
         'btc': 'bitcoin',
@@ -88,5 +93,6 @@ def get_full_asset_name(symbol: str) -> str:
     }
     return asset_mapping.get(symbol.lower(), symbol)
 
+@log_function_call
 def adjust_trade_size_for_direction(trade_size: float, is_long: bool) -> float:
     return trade_size if is_long else -trade_size

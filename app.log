@@ -4284,3 +4284,59 @@ Request → GET https://api.bybit.com/v5/asset/transfer/query-account-coin-balan
 2024-03-20 14:43:48,716 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.18223956312557188
 2024-03-20 14:43:48,716 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 165.017821999
 2024-03-20 14:43:48,717 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001231365486935634, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001768634513064366}
+2024-03-20 14:49:19,104 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 14:49:21,487 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 14:49:21,487 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 14:49:21,843 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9054.994380407657
+2024-03-20 14:49:22,386 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 14:49:22,387 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.18223956312557188
+2024-03-20 14:49:22,387 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 165.017821999
+2024-03-20 14:49:22,388 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 14:49:22,388 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 14:49:22,775 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9054.994380407657
+2024-03-20 14:49:23,513 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 14:49:23,514 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.18223956312557188
+2024-03-20 14:49:23,514 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 165.017821999
+2024-03-20 14:49:23,514 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.00123136653411551, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.00176863346588449}
+2024-03-20 14:54:13,424 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 14:54:15,778 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 14:54:15,778 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 14:54:16,168 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9054.994380407657
+2024-03-20 14:54:16,605 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 14:54:16,605 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.18223956312557188
+2024-03-20 14:54:16,605 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 165.017821999
+2024-03-20 14:54:16,606 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 14:54:16,606 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 14:54:17,018 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9054.994380407657
+2024-03-20 14:54:17,768 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 14:54:17,768 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.18223956312557188
+2024-03-20 14:54:17,768 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 165.017821999
+2024-03-20 14:54:17,769 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012313674530498994, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017686325469501007}
+2024-03-20 14:59:18,828 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 14:59:20,789 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 14:59:20,790 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 14:59:21,138 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9054.994380407657
+2024-03-20 14:59:21,595 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 14:59:21,596 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.18223956312557188
+2024-03-20 14:59:21,596 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 165.017821999
+2024-03-20 14:59:21,596 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 14:59:21,596 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 14:59:22,044 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9054.994380407657
+2024-03-20 14:59:22,795 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 14:59:22,795 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.18223956312557188
+2024-03-20 14:59:22,795 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 165.017821999
+2024-03-20 14:59:22,796 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012313684124422408, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017686315875577593}
+2024-03-20 14:59:22,796 - GlobalUtils.logger - ERROR - MainClass - An error occurred during search_for_opportunities: Some optional args unknown in call to sendMessage('('opportunity_found',)', opportunity): opportunity
+Traceback (most recent call last):
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/Main/main_class.py", line 32, in search_for_opportunities
+    pub.sendMessage(eventsDirectory.OPPORTUNITY_FOUND.value, opportunity=best_opportunity)
+  File "/usr/local/lib/python3.11/site-packages/pubsub/core/publisher.py", line 216, in sendMessage
+    topicObj.publish(**msgData)
+  File "/usr/local/lib/python3.11/site-packages/pubsub/core/topicobj.py", line 433, in publish
+    self._getListenerSpec().check(msgData)
+  File "/usr/local/lib/python3.11/site-packages/pubsub/core/topicargspec.py", line 229, in check
+    raise SenderUnknownMsgDataError(self.topicNameTuple,
+pubsub.core.topicargspec.SenderUnknownMsgDataError: Some optional args unknown in call to sendMessage('('opportunity_found',)', opportunity): opportunity
+2024-03-20 14:59:39,799 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for ETHUSDT.
+2024-03-20 14:59:40,094 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 14:59:40,094 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': None, 'Binance': None, 'close_reason': 'NO_LONGER_PROFITABLE'}

@@ -24,10 +24,17 @@ class Main:
     
     @log_function_call
     def search_for_opportunities(self):
-        funding_rates = self.caller.get_funding_rates()
-        opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
-        best_opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
-        pub.sendMessage(eventsDirectory.OPPORTUNITY_FOUND.value, opportunity=best_opportunity)
+        try:
+            funding_rates = self.caller.get_funding_rates()
+            opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
+            best_opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
+            if best_opportunity is not None:
+                pub.sendMessage(eventsDirectory.OPPORTUNITY_FOUND.value, opportunity=best_opportunity)
+            else:
+                logger.info("MainClass - Error while searching for opportunity.")
+        except Exception as e:
+            logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)
+            
 
     @log_function_call
     def start_search(self):
@@ -36,5 +43,5 @@ class Main:
 
 main = Main()
 main.start_search()
-time.sleep(15)
+time.sleep(25)
 main.position_controller.close_all_positions(PositionCloseReason.NO_LONGER_PROFITABLE.value)

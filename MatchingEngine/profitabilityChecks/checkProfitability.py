@@ -2,7 +2,7 @@ import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from GlobalUtils.globalUtils import *
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 
 class ProfitabilityChecker:
@@ -14,17 +14,21 @@ class ProfitabilityChecker:
     def __init__(self):
         self.position_controller = MasterPositionController()
 
+    @log_function_call
     def get_capital_amount(self, opportunity) -> float:
         capital = self.position_controller.get_trade_size(opportunity)
         return capital
 
+    @log_function_call
     def get_exchange_fee(self, exchange: str) -> float:
         return self.exchange_fees.get(exchange, 0)
 
+    @log_function_call
     def calculate_position_cost(self, fee_rate: float, opportunity) -> float:
         capital = self.get_capital_amount(opportunity)
         return capital * fee_rate
 
+    @log_function_call
     def is_profitable(self, opportunity) -> bool:
         capital = self.get_capital_amount(opportunity)
         long_capital = capital
@@ -42,6 +46,7 @@ class ProfitabilityChecker:
 
         return daily_funding_profit - total_cost > 0
 
+    @log_function_call
     def minimum_profitable_duration(self, opportunity) -> float:
         capital = self.get_capital_amount(opportunity)
         long_capital = capital
@@ -66,6 +71,7 @@ class ProfitabilityChecker:
         days_to_profitability = total_initial_cost / daily_net_profit
         return days_to_profitability
 
+    @log_function_call
     def calculate_profit(self, opportunity, period_hours: int):
         capital = self.get_capital_amount(opportunity)
         long_capital = capital
@@ -76,6 +82,7 @@ class ProfitabilityChecker:
         total_profit = (long_capital * funding_rate_long + short_capital * funding_rate_short) * (period_hours / 8)
         return total_profit * 5
     
+    @log_function_call
     def find_most_profitable_opportunity(self, opportunities):
         max_profit = float('-inf')
         most_profitable = None
