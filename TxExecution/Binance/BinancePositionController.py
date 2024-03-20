@@ -1,7 +1,7 @@
 import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 from APICaller.Binance.binanceUtils import BinanceEnvVars
 from APICaller.master.MasterUtils import TARGET_TOKENS
@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class BinancePositionController:
+    @log_function_call
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
@@ -109,7 +110,7 @@ class BinancePositionController:
                     'pnl': float(position_info[0]['unRealizedProfit']),
                     'accrued_fees': 0.0
                 }
-                logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed.")
+                logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed: {close_position_details}")
                 return close_position_details
             else:
                 logger.error(f"BinancePositionController - Failed to close the open position for symbol {symbol}.")

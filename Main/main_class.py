@@ -1,8 +1,7 @@
 import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
-import threading
-import json
+from GlobalUtils.logger import *
 from pubsub import pub
 from APICaller.master.MasterCaller import MasterCaller
 from MatchingEngine.MatchingEngine import matchingEngine
@@ -23,13 +22,14 @@ class Main:
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
     
+    @log_function_call
     def search_for_opportunities(self):
         funding_rates = self.caller.get_funding_rates()
         opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
         best_opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
-        pub.sendMessage(eventsDirectory.OPPORTUNITY_FOUND.value, opportunity = best_opportunity)
+        pub.sendMessage(eventsDirectory.OPPORTUNITY_FOUND.value, opportunity=best_opportunity)
 
-    
+    @log_function_call
     def start_search(self):
         self.search_for_opportunities()
         # threading.Timer(10, self.start_search).start()

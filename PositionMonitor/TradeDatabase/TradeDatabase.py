@@ -3,7 +3,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 import sqlite3
 from datetime import datetime
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 from pubsub import pub
 import uuid
@@ -23,6 +23,7 @@ class TradeLogger:
     ### WRITE FUNCTIONS ###
     #######################
 
+    @log_function_call
     def create_or_access_database(self):
         try:
             conn = sqlite3.connect(self.db_path)
@@ -48,6 +49,7 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error creating/accessing the database: {e}")
             raise e
 
+    @log_function_call
     def log_trade_pair(self, position_data):
         strategy_execution_id = str(uuid.uuid4())
         open_time = datetime.now()
@@ -62,6 +64,7 @@ class TradeLogger:
             liquidation_price = data.get('liquidation_price')
             self.log_open_trade(strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time)
 
+    @log_function_call
     def log_open_trade(self, strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time=datetime.now()):
         try:
             with self.conn:
@@ -71,6 +74,7 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
 
+    @log_function_call
     def log_close_trade(self, position_report: dict):
         try:
             execution_id = self.get_open_execution_id()
@@ -79,7 +83,7 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error closing trades on the database: Error: {e}")
 
-
+    @log_function_call
     def log_close_trade_pair(self, close_reason, strategy_execution_id, position_report: dict):
         try:
             trades = self.get_trade_pair_by_execution_id(strategy_execution_id)
@@ -91,11 +95,10 @@ class TradeLogger:
                 logger.error(f"Expected two trades for strategy_execution_id: {strategy_execution_id}, found: {len(trades)}")
                 return
 
-            # Extract and combine PnL and accrued funding details for each trade
-            synthetix_accrued_funding = position_report['Synthetix']['accrued_funding']
-            binance_accrued_funding = position_report['Binance']['accrued_funding']
-            synthetix_pnl = position_report['Synthetix']['pnl']
-            binance_pnl = position_report['Binance']['pnl']
+            synthetix_accrued_funding = position_report.get('Synthetix', {}).get('accrued_funding', 0)
+            binance_accrued_funding = position_report.get('Binance', {}).get('accrued_funding', 0)
+            synthetix_pnl = position_report.get('Synthetix', {}).get('pnl', 0)
+            binance_pnl = position_report.get('Binance', {}).get('pnl', 0)
 
             close_time = datetime.now()
             # Update both trades with closing details, including calculated PnL
@@ -111,7 +114,8 @@ class TradeLogger:
 
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging close trade for strategy_execution_id: {strategy_execution_id}. Error: {e}")
-
+        
+    @log_function_call    
     def clear_database(self):
         try:
             conn = sqlite3.connect(self.db_path)
@@ -126,6 +130,7 @@ class TradeLogger:
     ### READ FUNCTIONS ###
     ######################
 
+    @log_function_call
     def get_trade_pair_by_execution_id(self, strategy_execution_id):
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -138,6 +143,7 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error retrieving trades for execution id: {strategy_execution_id}, Error: {e}")
             return []
 
+    @log_function_call
     def get_open_execution_id(self) -> str:
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -155,3 +161,6 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving execution ID for open trades. Error: {e}")
             return None
+
+# x = TradeLogger()
+# x.clear_database()

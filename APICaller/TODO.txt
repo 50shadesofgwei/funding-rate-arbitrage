@@ -3,6 +3,9 @@ TODO.txt
 - synthetix: implement check for collateral approval
     clean up the collateral deployment process 
 
+- DEBUG
+    add log statements for all relevant function calls, try isolate issue
+
 - CLEANUP
     remove local sys imports
     remove (temporarily, at least - version control) bybit integration

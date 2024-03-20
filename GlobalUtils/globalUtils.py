@@ -35,13 +35,18 @@ def get_gas_price() -> float:
     return 0.0
 
 def get_asset_price(asset: str) -> float:
+    api_key = os.getenv('COINGECKO_API_KEY')
+    url = f'https://api.coingecko.com/api/v3/simple/price?ids={asset}&vs_currencies=usd&x_cg_demo_api_key={api_key}'
     try:
-        url = f'https://api.coingecko.com/api/v3/simple/price?ids={asset}&vs_currencies=usd'
         response = requests.get(url)
-        data = response.json()
-        return data[asset]['usd']
+        if response.status_code == 200:
+            data = response.json()
+            logger.debug(f"API response data for {asset}: {data}")
+            return data[asset]['usd']
+        else:
+            logger.info(f"API call for {asset} returned non-200 status code: {response.status_code}")
     except Exception as e:
-        logger.info(f"GlobalUtils - Error fetching asset price for {asset}: {e}")
+        logger.info(f"Error fetching asset price for {asset}: {e}, URL: {url}")
     return 0.0
 
 def calculate_transaction_cost_usd(total_gas: int) -> float:
