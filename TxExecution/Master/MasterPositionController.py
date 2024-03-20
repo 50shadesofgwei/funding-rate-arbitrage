@@ -4,7 +4,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 from TxExecution.Binance.BinancePositionController import BinancePositionController
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
-from PositionMonitor.Master.utils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from pubsub import pub
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
@@ -13,8 +13,6 @@ class MasterPositionController:
     def __init__(self):
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
-        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND.value)
-        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS.value)
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -72,6 +70,11 @@ class MasterPositionController:
         logger.info(f'MasterPositionController - Position report esta asi: {position_report}')
         pub.sendMessage(eventsDirectory.POSITION_CLOSED.value, position_report=position_report)
 
+    @log_function_call
+    def subscribe_to_events(self):
+        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND.value)
+        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS.value)
+
     ######################
     ### READ FUNCTIONS ###
     ######################
@@ -110,8 +113,6 @@ class MasterPositionController:
     @log_function_call
     def is_already_position_open(self) -> bool:
         if self.synthetix.is_already_position_open() or self.binance.is_already_position_open():
-            logger.info("MasterPositionController - Posotion already open")
+            logger.info("MasterPositionController - Position already open")
             return True
         return False
-
-

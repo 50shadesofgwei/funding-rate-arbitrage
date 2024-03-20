@@ -3,7 +3,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from APICaller.Binance.binanceUtils import BinanceEnvVars
 from PositionMonitor.Binance.utils import *
-from PositionMonitor.Master.utils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 from binance.um_futures import UMFutures as Client

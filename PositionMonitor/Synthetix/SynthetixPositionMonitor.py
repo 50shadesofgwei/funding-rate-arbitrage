@@ -7,8 +7,8 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from pubsub import pub
 from decimal import Decimal
-from PositionMonitor.Synthetix.utils import *
-from PositionMonitor.Master.utils import *
+from PositionMonitor.Synthetix.SynthetixPositionMonitorUtils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import *
 import sqlite3
 import uuid
 

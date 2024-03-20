@@ -3,7 +3,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import SynthetixPositionMonitor
 from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonitor
-from PositionMonitor.Master.utils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 from pubsub import pub
@@ -98,7 +98,7 @@ class MasterPositionMonitor():
     @log_function_call
     def is_position_delta_within_bounds(self):
         try:
-            delta_bound = float(os.getenv('DELTA_BOUND', '0.02'))
+            delta_bound = float(os.getenv('DELTA_BOUND', '0.075'))
             synthetix_position = self.synthetix.get_open_position()
             binance_position = self.binance.get_open_position()
 
