@@ -7,7 +7,7 @@ from APICaller.Binance.binanceUtils import BinanceEnvVars
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
-from TxExecution.Binance.utils import *
+from TxExecution.Binance.BinancePositionControllerUtils import *
 from pubsub import pub
 import os
 import time

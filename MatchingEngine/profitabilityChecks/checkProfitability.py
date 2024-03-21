@@ -30,24 +30,18 @@ class ProfitabilityChecker:
     
     @log_function_call
     def find_most_profitable_opportunity(self, opportunities):
-        max_funding_rate = float('-inf')
+        max_profit = float('-inf')
         most_profitable = None
         for opportunity in opportunities:
-            if opportunity["long_exchange"] == "Synthetix":
-                funding_rate = float(opportunity["long_funding_rate"])
-            elif opportunity["short_exchange"] == "Synthetix":
-                funding_rate = float(opportunity["short_funding_rate"])
-            else:
-                continue
-
-            # Use the absolute value of the funding rate for comparison
-            abs_funding_rate = abs(funding_rate)
-            if abs_funding_rate > max_funding_rate:
-                max_funding_rate = abs_funding_rate
+            funding_rate = float(opportunity["funding_rate"])
+            
+            if funding_rate > max_profit:
+                max_profit = funding_rate
                 most_profitable = opportunity
 
         if most_profitable:
-            logger.info(f"Best opportunity found, details: {most_profitable}")
+            position = "short" if most_profitable["funding_rate"] > 0 else "long"
+            logger.info(f"Best opportunity found, suggested position: {position}, details: {most_profitable}")
         else:
             logger.info("No profitable opportunities found.")
 

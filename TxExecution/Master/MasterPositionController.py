@@ -67,7 +67,7 @@ class MasterPositionController:
             'Binance': binance_position_report,
             'close_reason': reason
         }
-        logger.info(f'MasterPositionController - Position report esta asi: {position_report}')
+        logger.info(f'MasterPositionController - Closing positions with position report: {position_report}')
         pub.sendMessage(eventsDirectory.POSITION_CLOSED.value, position_report=position_report)
 
     @log_function_call
@@ -117,5 +117,5 @@ class MasterPositionController:
             return True
         return False
 
-x = MasterPositionController()
-x.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
+# x = MasterPositionController()
+# x.close_all_positions(PositionCloseReason.TEST.value)

@@ -161,6 +161,3 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving execution ID for open trades. Error: {e}")
             return None
-
-# x = TradeLogger()
-# x.clear_database()
