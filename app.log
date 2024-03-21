@@ -4585,3 +4585,876 @@ pubsub.core.topicargspec.SenderUnknownMsgDataError: Some optional args unknown i
 2024-03-20 16:24:58,447 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 31de7bc3-cbc2-412a-973c-cbebbd0f3c18
 2024-03-20 16:24:58,449 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 31de7bc3-cbc2-412a-973c-cbebbd0f3c18
 2024-03-20 16:24:58,449 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 31de7bc3-cbc2-412a-973c-cbebbd0f3c18
+2024-03-20 16:32:45,296 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 16:32:47,277 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:32:47,277 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:32:47,640 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9046.856089644127
+2024-03-20 16:32:48,096 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:32:48,096 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.17707952097124802
+2024-03-20 16:32:48,096 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 160.201294265
+2024-03-20 16:32:48,097 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:32:48,097 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:32:48,442 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9046.856089644127
+2024-03-20 16:32:48,741 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:32:48,742 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.17707952097124802
+2024-03-20 16:32:48,742 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 160.201294265
+2024-03-20 16:32:48,742 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012316994808422416, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017683005191577584}
+2024-03-20 16:32:50,369 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:32:50,369 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:32:50,760 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9046.856089644127
+2024-03-20 16:32:51,507 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:32:51,508 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.17707952097124802
+2024-03-20 16:32:51,508 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 160.201294265
+2024-03-20 16:32:52,335 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.248
+2024-03-20 16:33:11,207 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 16:33:11,208 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.248, 'order_id': 312332459813875118, 'liquidation_price': 166.6383486064574}
+2024-03-20 16:33:11,444 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.248
+2024-03-20 16:33:12,228 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.248
+2024-03-20 16:33:14,977 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.248, Order id: 1323693381
+2024-03-20 16:33:15,705 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.248', 'order_id': 1323693381, 'liquidation_price': 9690.96239548}
+2024-03-20 16:33:15,706 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.248, 'order_id': 312332459813875118, 'liquidation_price': 166.6383486064574}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.248', 'order_id': 1323693381, 'liquidation_price': 9690.96239548}}
+2024-03-20 16:33:15,711 - GlobalUtils.logger - INFO - Logging trade pair with ID: f3098c1c-905d-4063-859f-cc483a4dc97a, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.248, 'order_id': 312332459813875118, 'liquidation_price': 166.6383486064574}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.248', 'order_id': 1323693381, 'liquidation_price': 9690.96239548}}
+2024-03-20 16:33:15,714 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 16:33:15,719 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: f3098c1c-905d-4063-859f-cc483a4dc97a on exchange: Synthetix
+2024-03-20 16:33:15,723 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: f3098c1c-905d-4063-859f-cc483a4dc97a on exchange: Binance
+2024-03-20 16:33:15,725 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 16:33:19,531 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed: {'exchange': 'Synthetix', 'pnl': -0.004669628098644264, 'accrued_funding': -0.000335198448311441}
+2024-03-20 16:33:24,390 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': 29.44618927, 'accrued_fees': 0.0}
+2024-03-20 16:33:25,129 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 16:33:25,130 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': {'exchange': 'Synthetix', 'pnl': -0.004669628098644264, 'accrued_funding': -0.000335198448311441}, 'Binance': {'exchange': 'Binance', 'pnl': 29.44618927, 'accrued_fees': 0.0}, 'close_reason': 'DELTA_ABOVE_BOUND'}
+2024-03-20 16:33:25,134 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 54b84339-6f10-4d38-bb78-385a8e58f85f
+2024-03-20 16:33:25,136 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 54b84339-6f10-4d38-bb78-385a8e58f85f
+2024-03-20 16:33:25,137 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 54b84339-6f10-4d38-bb78-385a8e58f85f
+2024-03-20 16:33:25,137 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 54b84339-6f10-4d38-bb78-385a8e58f85f
+2024-03-20 16:33:38,384 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:33:38,384 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:33:38,777 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.926980805025
+2024-03-20 16:33:39,061 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:33:39,062 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1725408720988365
+2024-03-20 16:33:39,062 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 155.992942585
+2024-03-20 16:33:39,062 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:33:39,062 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:33:39,479 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.926980805025
+2024-03-20 16:33:40,231 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:33:40,231 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1725408720988365
+2024-03-20 16:33:40,231 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 155.992942585
+2024-03-20 16:33:40,232 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012317089884839522, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017682910115160478}
+2024-03-20 16:33:41,647 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:33:41,648 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:33:42,037 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.926980805025
+2024-03-20 16:33:43,085 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:33:43,085 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1725408720988365
+2024-03-20 16:33:43,085 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 155.992942585
+2024-03-20 16:33:43,695 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.241
+2024-03-20 16:34:02,429 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 16:34:02,429 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.241, 'order_id': 653864303595190467, 'liquidation_price': 166.94819170541632}
+2024-03-20 16:34:02,657 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.241
+2024-03-20 16:34:03,071 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.241
+2024-03-20 16:34:05,399 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.241, Order id: 1323694466
+2024-03-20 16:34:05,694 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.241', 'order_id': 1323694466, 'liquidation_price': 9703.90428542}
+2024-03-20 16:34:05,694 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.241, 'order_id': 653864303595190467, 'liquidation_price': 166.94819170541632}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.241', 'order_id': 1323694466, 'liquidation_price': 9703.90428542}}
+2024-03-20 16:34:05,697 - GlobalUtils.logger - INFO - Logging trade pair with ID: 56bb422f-c455-4bf4-9f0f-a64eeca024f1, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.241, 'order_id': 653864303595190467, 'liquidation_price': 166.94819170541632}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.241', 'order_id': 1323694466, 'liquidation_price': 9703.90428542}}
+2024-03-20 16:34:05,699 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 16:34:05,702 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 56bb422f-c455-4bf4-9f0f-a64eeca024f1 on exchange: Synthetix
+2024-03-20 16:34:05,705 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 56bb422f-c455-4bf4-9f0f-a64eeca024f1 on exchange: Binance
+2024-03-20 16:34:05,707 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 16:34:09,650 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed: {'exchange': 'Synthetix', 'pnl': -0.004532375978416818, 'accrued_funding': -0.00032539388255149}
+2024-03-20 16:34:15,238 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': 25.48370003, 'accrued_fees': 0.0}
+2024-03-20 16:34:15,977 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 16:34:15,977 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': {'exchange': 'Synthetix', 'pnl': -0.004532375978416818, 'accrued_funding': -0.00032539388255149}, 'Binance': {'exchange': 'Binance', 'pnl': 25.48370003, 'accrued_fees': 0.0}, 'close_reason': 'DELTA_ABOVE_BOUND'}
+2024-03-20 16:34:15,980 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 56bb422f-c455-4bf4-9f0f-a64eeca024f1
+2024-03-20 16:34:15,982 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 56bb422f-c455-4bf4-9f0f-a64eeca024f1
+2024-03-20 16:34:15,984 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 56bb422f-c455-4bf4-9f0f-a64eeca024f1
+2024-03-20 16:34:15,985 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 56bb422f-c455-4bf4-9f0f-a64eeca024f1
+2024-03-20 16:42:47,780 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 16:42:50,749 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:42:50,749 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:42:51,132 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 16:42:51,645 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:42:51,646 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.16802768033299145
+2024-03-20 16:42:51,646 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 151.903375025
+2024-03-20 16:42:51,647 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:42:51,647 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:42:52,012 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 16:42:52,770 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:42:52,770 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.16802768033299145
+2024-03-20 16:42:52,771 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 151.903375025
+2024-03-20 16:42:52,771 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012318097164562207, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017681902835437794}
+2024-03-20 16:42:53,858 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:42:53,858 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:42:54,232 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 16:42:54,518 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:42:54,518 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.16802768033299145
+2024-03-20 16:42:54,518 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 151.903375025
+2024-03-20 16:42:55,346 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.236
+2024-03-20 16:43:15,195 - GlobalUtils.logger - ERROR - SynthetixPositionControllerUtils - Initial margin requirement is zero or negative, cannot calculate liquidation price.
+2024-03-20 16:43:15,196 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 16:43:15,196 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 926670729272733203, 'liquidation_price': nan}
+2024-03-20 16:43:15,456 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.236
+2024-03-20 16:43:15,780 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.236
+2024-03-20 16:43:18,576 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.236, Order id: 1323706341
+2024-03-20 16:43:19,393 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.236', 'order_id': 1323706341, 'liquidation_price': 9667.93162935}
+2024-03-20 16:43:19,393 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 926670729272733203, 'liquidation_price': nan}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.236', 'order_id': 1323706341, 'liquidation_price': 9667.93162935}}
+2024-03-20 16:43:19,397 - GlobalUtils.logger - INFO - Logging trade pair with ID: fca487e0-a6f7-4baf-9890-cfc61fa3b127, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 926670729272733203, 'liquidation_price': nan}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.236', 'order_id': 1323706341, 'liquidation_price': 9667.93162935}}
+2024-03-20 16:43:19,398 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: fca487e0-a6f7-4baf-9890-cfc61fa3b127, exchange: Synthetix. Error: NOT NULL constraint failed: trade_log.side
+2024-03-20 16:43:19,401 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 16:43:19,402 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: fca487e0-a6f7-4baf-9890-cfc61fa3b127 on exchange: Binance
+2024-03-20 16:43:19,407 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 16:43:27,790 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': 9.14796948, 'accrued_fees': 0.0}
+2024-03-20 16:43:28,081 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 16:43:28,081 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': None, 'Binance': {'exchange': 'Binance', 'pnl': 9.14796948, 'accrued_fees': 0.0}, 'close_reason': 'DELTA_ABOVE_BOUND'}
+2024-03-20 16:43:28,083 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 16:43:28,085 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 16:55:51,017 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 16:55:53,553 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:55:53,553 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:55:54,238 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 16:55:54,675 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:55:54,676 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1635978636325193
+2024-03-20 16:55:54,676 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 147.898653266
+2024-03-20 16:55:54,677 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:55:54,677 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:55:55,075 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 16:55:55,828 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:55:55,828 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1635978636325193
+2024-03-20 16:55:55,829 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 147.898653266
+2024-03-20 16:55:55,829 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001231952385965546, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017680476140344542}
+2024-03-20 16:55:57,008 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 16:55:57,008 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 16:55:57,374 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 16:55:58,125 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 16:55:58,125 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1635978636325193
+2024-03-20 16:55:58,125 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 147.898653266
+2024-03-20 16:55:58,891 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.229
+2024-03-20 16:56:17,507 - GlobalUtils.logger - ERROR - SynthetixPositionControllerUtils - Initial margin requirement is zero or negative, cannot calculate liquidation price.
+2024-03-20 16:56:17,508 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 16:56:17,508 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 406362274069395807, 'liquidation_price': nan}
+2024-03-20 16:56:17,721 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.229
+2024-03-20 16:56:18,086 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.229
+2024-03-20 16:56:20,888 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.229, Order id: 1323722887
+2024-03-20 16:56:21,621 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.229', 'order_id': 1323722887, 'liquidation_price': 9688.70096965}
+2024-03-20 16:56:21,621 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 406362274069395807, 'liquidation_price': nan}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.229', 'order_id': 1323722887, 'liquidation_price': 9688.70096965}}
+2024-03-20 16:56:21,623 - GlobalUtils.logger - INFO - Logging trade pair with ID: 25f25cc9-61e2-45bb-ae88-575bb8503cee, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 406362274069395807, 'liquidation_price': nan}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.229', 'order_id': 1323722887, 'liquidation_price': 9688.70096965}}
+2024-03-20 16:56:21,628 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 16:56:21,629 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 25f25cc9-61e2-45bb-ae88-575bb8503cee, exchange: Synthetix. Error: NOT NULL constraint failed: trade_log.side
+2024-03-20 16:56:21,631 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 25f25cc9-61e2-45bb-ae88-575bb8503cee on exchange: Binance
+2024-03-20 16:56:21,635 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 16:56:29,798 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': 1.86618503, 'accrued_fees': 0.0}
+2024-03-20 16:56:30,096 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 16:56:30,096 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': None, 'Binance': {'exchange': 'Binance', 'pnl': 1.86618503, 'accrued_fees': 0.0}, 'close_reason': 'DELTA_ABOVE_BOUND'}
+2024-03-20 16:56:30,098 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 16:56:30,100 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 17:06:38,100 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 17:06:40,518 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 17:06:40,518 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 17:06:40,884 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 17:06:41,296 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 17:06:41,296 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1595997501015023
+2024-03-20 17:06:41,297 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 144.284207492
+2024-03-20 17:06:41,298 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 17:06:41,298 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 17:06:41,661 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 17:06:41,945 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 17:06:41,946 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1595997501015023
+2024-03-20 17:06:41,946 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 144.284207492
+2024-03-20 17:06:41,947 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012320706082699486, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017679293917300515}
+2024-03-20 17:06:43,711 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 17:06:43,711 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 17:06:44,116 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 17:06:44,898 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 17:06:44,899 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1595997501015023
+2024-03-20 17:06:44,899 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 144.284207492
+2024-03-20 17:06:45,645 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.223
+2024-03-20 17:07:04,536 - GlobalUtils.logger - ERROR - SynthetixPositionControllerUtils - Initial margin requirement is zero or negative, cannot calculate liquidation price.
+2024-03-20 17:07:04,538 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 17:07:04,538 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 256778846095327171, 'liquidation_price': nan}
+2024-03-20 17:07:04,778 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.223
+2024-03-20 17:07:05,096 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.223
+2024-03-20 17:07:07,388 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.223, Order id: 1323736082
+2024-03-20 17:07:07,687 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.223', 'order_id': 1323736082, 'liquidation_price': 9700.33018281}
+2024-03-20 17:07:07,688 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 256778846095327171, 'liquidation_price': nan}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.223', 'order_id': 1323736082, 'liquidation_price': 9700.33018281}}
+2024-03-20 17:07:07,690 - GlobalUtils.logger - INFO - Logging trade pair with ID: 50751909-1c6a-40aa-96d9-54f4ac792916, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': None, 'size': 0.0, 'order_id': 256778846095327171, 'liquidation_price': nan}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.223', 'order_id': 1323736082, 'liquidation_price': 9700.33018281}}
+2024-03-20 17:07:07,695 - GlobalUtils.logger - ERROR - TradeLogger - Error logging open trade for strategy_execution_id: 50751909-1c6a-40aa-96d9-54f4ac792916, exchange: Synthetix. Error: NOT NULL constraint failed: trade_log.side
+2024-03-20 17:07:07,697 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 17:07:07,704 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 50751909-1c6a-40aa-96d9-54f4ac792916 on exchange: Binance
+2024-03-20 17:07:07,707 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 17:07:16,012 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': 3.4705468, 'accrued_fees': 0.0}
+2024-03-20 17:07:16,867 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 17:07:16,867 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': None, 'Binance': {'exchange': 'Binance', 'pnl': 3.4705468, 'accrued_fees': 0.0}, 'close_reason': 'DELTA_ABOVE_BOUND'}
+2024-03-20 17:07:16,871 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 17:07:16,872 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 17:07:30,341 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 17:07:30,343 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 17:07:30,733 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 17:07:31,045 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 17:07:31,046 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15538929148348202
+2024-03-20 17:07:31,046 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 140.477793732
+2024-03-20 17:07:31,046 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 17:07:31,047 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 17:07:31,417 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 17:07:31,712 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 17:07:31,712 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15538929148348202
+2024-03-20 17:07:31,713 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 140.477793732
+2024-03-20 17:07:31,713 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012320797303613377, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017679202696386624}
+2024-03-20 17:07:32,699 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 17:07:32,699 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 17:07:33,157 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 19:21:39,435 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 19:21:43,240 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:21:43,241 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:21:43,628 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 19:21:44,117 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:21:44,119 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15538929148348202
+2024-03-20 19:21:44,119 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 140.477793732
+2024-03-20 19:21:44,121 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:21:44,121 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:21:44,490 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 19:21:45,247 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:21:45,247 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15538929148348202
+2024-03-20 19:21:45,248 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 140.477793732
+2024-03-20 19:21:45,248 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012335487964683586, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017664512035316415}
+2024-03-20 19:21:47,908 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:21:47,908 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:21:48,399 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9040.378033188528
+2024-03-20 19:21:48,686 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:21:48,686 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15538929148348202
+2024-03-20 19:21:48,686 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 140.477793732
+2024-03-20 19:21:50,881 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.208
+2024-03-20 19:22:14,952 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 19:22:14,953 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.208, 'order_id': 57052358303656061, 'liquidation_price': 174.8570411313778}
+2024-03-20 19:22:15,170 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.208
+2024-03-20 19:22:15,515 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.208
+2024-03-20 19:22:17,832 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.208, Order id: 1323916557
+2024-03-20 19:22:18,577 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.208', 'order_id': 1323916557, 'liquidation_price': 10040.23877152}
+2024-03-20 19:22:18,577 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.208, 'order_id': 57052358303656061, 'liquidation_price': 174.8570411313778}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.208', 'order_id': 1323916557, 'liquidation_price': 10040.23877152}}
+2024-03-20 19:22:18,582 - GlobalUtils.logger - INFO - Logging trade pair with ID: ba6d5469-c4fe-47fa-98ab-9fa9085937bf, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.208, 'order_id': 57052358303656061, 'liquidation_price': 174.8570411313778}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.208', 'order_id': 1323916557, 'liquidation_price': 10040.23877152}}
+2024-03-20 19:22:18,589 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:22:18,591 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: ba6d5469-c4fe-47fa-98ab-9fa9085937bf on exchange: Synthetix
+2024-03-20 19:22:18,594 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: ba6d5469-c4fe-47fa-98ab-9fa9085937bf on exchange: Binance
+2024-03-20 19:22:18,596 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 19:22:23,382 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed: {'exchange': 'Synthetix', 'pnl': -0.004488279310238261, 'accrued_funding': -0.000479714037620251}
+2024-03-20 19:22:27,284 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': -6.14143822, 'accrued_fees': 0.0}
+2024-03-20 19:22:28,014 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 19:22:28,014 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': {'exchange': 'Synthetix', 'pnl': -0.004488279310238261, 'accrued_funding': -0.000479714037620251}, 'Binance': {'exchange': 'Binance', 'pnl': -6.14143822, 'accrued_fees': 0.0}, 'close_reason': 'DELTA_ABOVE_BOUND'}
+2024-03-20 19:22:28,018 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 19:22:28,021 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 19:22:28,022 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 19:22:28,022 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 9305e35f-6f21-4496-84a9-cfb06048cacc
+2024-03-20 19:22:42,793 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:22:42,793 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:22:43,390 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9036.502981137623
+2024-03-20 19:22:43,675 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:22:43,675 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15317384255272454
+2024-03-20 19:22:43,675 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.41558848600002
+2024-03-20 19:22:43,675 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:22:43,675 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:22:44,555 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9036.502981137623
+2024-03-20 19:22:44,847 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:22:44,848 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15317384255272454
+2024-03-20 19:22:44,849 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.41558848600002
+2024-03-20 19:22:44,849 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001233559765394692, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001766440234605308}
+2024-03-20 19:22:46,680 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:22:46,680 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:22:47,586 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9036.502981137623
+2024-03-20 19:22:48,322 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:22:48,323 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15317384255272454
+2024-03-20 19:22:48,323 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.41558848600002
+2024-03-20 19:22:49,206 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.205
+2024-03-20 19:23:09,170 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 19:23:09,172 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.205, 'order_id': 611168823264175555, 'liquidation_price': 175.03189865492578}
+2024-03-20 19:23:09,380 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.205
+2024-03-20 19:23:09,719 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.205
+2024-03-20 19:23:12,040 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.205, Order id: 1323917922
+2024-03-20 19:23:12,784 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.205', 'order_id': 1323917922, 'liquidation_price': 10114.76023696}
+2024-03-20 19:23:12,784 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.205, 'order_id': 611168823264175555, 'liquidation_price': 175.03189865492578}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.205', 'order_id': 1323917922, 'liquidation_price': 10114.76023696}}
+2024-03-20 19:23:12,799 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:23:12,801 - GlobalUtils.logger - INFO - Logging trade pair with ID: 3feec953-c18b-44b3-82c4-689ff31e01c9, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.205, 'order_id': 611168823264175555, 'liquidation_price': 175.03189865492578}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.205', 'order_id': 1323917922, 'liquidation_price': 10114.76023696}}
+2024-03-20 19:23:12,802 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 3feec953-c18b-44b3-82c4-689ff31e01c9 on exchange: Synthetix
+2024-03-20 19:23:12,804 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 3feec953-c18b-44b3-82c4-689ff31e01c9 on exchange: Binance
+2024-03-20 19:23:12,806 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 19:23:18,934 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed: {'exchange': 'Synthetix', 'pnl': -0.004323634599481329, 'accrued_funding': -0.000413621873324649}
+2024-03-20 19:23:24,282 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': 9.834597, 'accrued_fees': 0.0}
+2024-03-20 19:23:24,583 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-20 19:23:24,584 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': {'exchange': 'Synthetix', 'pnl': -0.004323634599481329, 'accrued_funding': -0.000413621873324649}, 'Binance': {'exchange': 'Binance', 'pnl': 9.834597, 'accrued_fees': 0.0}, 'close_reason': 'DELTA_ABOVE_BOUND'}
+2024-03-20 19:23:24,586 - GlobalUtils.logger - INFO - TradeLogger - Found open strategy execution ID: 3feec953-c18b-44b3-82c4-689ff31e01c9
+2024-03-20 19:23:24,587 - GlobalUtils.logger - INFO - TradeLogger - Retrieved trades for execution id: 3feec953-c18b-44b3-82c4-689ff31e01c9
+2024-03-20 19:23:24,588 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 3feec953-c18b-44b3-82c4-689ff31e01c9
+2024-03-20 19:23:24,589 - GlobalUtils.logger - INFO - TradeLogger - Logged close trade for strategy_execution_id: 3feec953-c18b-44b3-82c4-689ff31e01c9
+2024-03-20 19:28:45,560 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 19:28:47,932 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:28:47,932 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:28:48,336 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9032.875592635697
+2024-03-20 19:28:48,852 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:28:48,852 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1530882828340278
+2024-03-20 19:28:48,852 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.282741353
+2024-03-20 19:28:48,854 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:28:48,854 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:28:49,252 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9032.875592635697
+2024-03-20 19:28:49,552 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:28:49,553 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1530882828340278
+2024-03-20 19:28:49,553 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.282741353
+2024-03-20 19:28:49,554 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012336261987005597, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017663738012994403}
+2024-03-20 19:28:50,613 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:28:50,613 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:28:51,010 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9032.875592635697
+2024-03-20 19:28:51,820 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:28:51,820 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1530882828340278
+2024-03-20 19:28:51,820 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.282741353
+2024-03-20 19:28:52,649 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.205
+2024-03-20 19:29:47,935 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 19:29:47,935 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.205, 'order_id': 949028501011376409, 'liquidation_price': 174.93590769202683}
+2024-03-20 19:29:48,164 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.205
+2024-03-20 19:29:48,549 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.205
+2024-03-20 19:29:50,860 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.205, Order id: 1323927688
+2024-03-20 19:29:51,617 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.205', 'order_id': 1323927688, 'liquidation_price': 10069.02233064}
+2024-03-20 19:29:51,617 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.205, 'order_id': 949028501011376409, 'liquidation_price': 174.93590769202683}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.205', 'order_id': 1323927688, 'liquidation_price': 10069.02233064}}
+2024-03-20 19:29:51,620 - GlobalUtils.logger - INFO - Logging trade pair with ID: 039c9924-762a-4302-959d-2c5c99fb42e4, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.205, 'order_id': 949028501011376409, 'liquidation_price': 174.93590769202683}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.205', 'order_id': 1323927688, 'liquidation_price': 10069.02233064}}
+2024-03-20 19:29:51,625 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:29:51,627 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 039c9924-762a-4302-959d-2c5c99fb42e4 on exchange: Synthetix
+2024-03-20 19:29:51,636 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 039c9924-762a-4302-959d-2c5c99fb42e4 on exchange: Binance
+2024-03-20 19:29:51,642 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 19:30:04,487 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:04,487 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:04,490 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:11,136 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:11,136 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:11,140 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:14,696 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:30:14,696 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:30:15,618 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9031.190594541771
+2024-03-20 19:30:15,907 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:30:15,907 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15308619956549024
+2024-03-20 19:30:15,907 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.255064567
+2024-03-20 19:30:15,908 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:30:15,908 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:30:16,612 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9031.190594541771
+2024-03-20 19:30:17,422 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:30:17,422 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15308619956549024
+2024-03-20 19:30:17,422 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.255064567
+2024-03-20 19:30:17,423 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012336419168213597, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017663580831786404}
+2024-03-20 19:30:18,448 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-20 19:30:18,448 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-20 19:30:22,992 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:22,992 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:22,993 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:25,124 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:25,124 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:25,127 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:26,627 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:26,628 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:26,630 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:28,965 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:28,965 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:28,967 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:30,578 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:30,578 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:30,580 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:32,463 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:32,464 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:32,466 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:34,672 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:34,672 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:34,675 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:36,578 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:36,578 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:36,581 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:38,743 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:38,743 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:38,746 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:40,091 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:40,091 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:40,094 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:41,891 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:30:41,891 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:30:42,214 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:42,215 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:42,217 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:42,762 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9031.190594541771
+2024-03-20 19:30:43,054 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:30:43,055 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15308619956549024
+2024-03-20 19:30:43,055 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.255064567
+2024-03-20 19:30:43,056 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:30:43,056 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:30:43,674 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9031.190594541771
+2024-03-20 19:30:44,404 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:30:44,405 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15308619956549024
+2024-03-20 19:30:44,405 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 138.255064567
+2024-03-20 19:30:44,406 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012336474118053596, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017663525881946405}
+2024-03-20 19:30:44,599 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:44,599 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:44,602 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:45,014 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-20 19:30:45,015 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-20 19:30:47,063 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:47,063 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:47,066 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:49,147 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:49,147 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:49,150 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:51,649 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:51,649 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:51,655 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:53,654 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:53,654 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:53,657 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:30:55,550 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:30:55,550 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:30:55,553 - GlobalUtils.logger - INFO - DEBUGGING: SNX Position: {'id': 1, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '592105044693580313', 'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.253, 'liquidation_price': 171.3311299034091, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}, Binance Position: {'id': 2, 'strategy_execution_id': 'ba5cc40e-3895-4b38-b634-7569f759a444', 'order_id': '1323439148', 'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': 0.253, 'liquidation_price': 9982.47198218, 'open_close': 'Open', 'open_time': '2024-03-20 12:45:39.795540', 'close_time': None, 'pnl': None, 'accrued_funding': None, 'close_reason': None}
+2024-03-20 19:34:05,426 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed: {'exchange': 'Synthetix', 'pnl': -0.017011628859783003, 'accrued_funding': -0.007988415100003912}
+2024-03-20 19:43:23,847 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-20 19:43:26,572 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:43:26,572 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:43:27,264 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9030.016449019959
+2024-03-20 19:43:27,806 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:43:27,807 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15228551503239465
+2024-03-20 19:43:27,807 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.514070569
+2024-03-20 19:43:27,808 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:43:27,808 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:43:28,201 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9030.016449019959
+2024-03-20 19:43:28,512 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:43:28,513 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15228551503239465
+2024-03-20 19:43:28,513 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.514070569
+2024-03-20 19:43:28,514 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001233786959238174, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001766213040761826}
+2024-03-20 19:43:29,736 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:43:29,736 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:43:30,676 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9030.016449019959
+2024-03-20 19:43:31,427 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:43:31,428 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.15228551503239465
+2024-03-20 19:43:31,428 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.514070569
+2024-03-20 19:43:32,776 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.204
+2024-03-20 19:43:53,784 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-20 19:43:53,785 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.204, 'order_id': 391374596764747485, 'liquidation_price': 175.29200302611696}
+2024-03-20 19:43:54,054 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.204
+2024-03-20 19:43:54,442 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.204
+2024-03-20 19:43:56,739 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.204, Order id: 1323948859
+2024-03-20 19:43:57,475 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.204', 'order_id': 1323948859, 'liquidation_price': 10018.58359828}
+2024-03-20 19:43:57,475 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.204, 'order_id': 391374596764747485, 'liquidation_price': 175.29200302611696}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.204', 'order_id': 1323948859, 'liquidation_price': 10018.58359828}}
+2024-03-20 19:43:57,478 - GlobalUtils.logger - INFO - Logging trade pair with ID: 2cf41662-61a5-4b60-b250-d48469be862e, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.204, 'order_id': 391374596764747485, 'liquidation_price': 175.29200302611696}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.204', 'order_id': 1323948859, 'liquidation_price': 10018.58359828}}
+2024-03-20 19:43:57,487 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 2cf41662-61a5-4b60-b250-d48469be862e on exchange: Synthetix
+2024-03-20 19:43:57,498 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: 2cf41662-61a5-4b60-b250-d48469be862e on exchange: Binance
+2024-03-20 19:43:57,505 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-20 19:43:59,928 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:43:59,929 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:44:20,237 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:44:20,239 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:44:20,941 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9028.311917747673
+2024-03-20 19:44:21,228 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:44:21,228 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1522841769143255
+2024-03-20 19:44:21,229 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.486904932
+2024-03-20 19:44:21,230 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:44:21,230 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:44:21,669 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9028.311917747673
+2024-03-20 19:44:21,972 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:44:21,973 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1522841769143255
+2024-03-20 19:44:21,973 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.486904932
+2024-03-20 19:44:21,974 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001233796833021874, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001766203166978126}
+2024-03-20 19:44:22,364 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-20 19:44:22,364 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-20 19:44:32,043 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:44:32,044 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:44:46,243 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:44:46,243 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:44:47,011 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9028.311917747673
+2024-03-20 19:44:47,313 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:44:47,314 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1522841769143255
+2024-03-20 19:44:47,314 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.486904932
+2024-03-20 19:44:47,315 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:44:47,316 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:44:47,751 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9028.311917747673
+2024-03-20 19:44:48,494 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:44:48,495 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1522841769143255
+2024-03-20 19:44:48,495 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.486904932
+2024-03-20 19:44:48,496 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001233801595251063, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017661984047489371}
+2024-03-20 19:44:49,417 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-20 19:44:49,418 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-20 19:45:04,305 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-20 19:45:04,308 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-20 19:45:13,095 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:45:13,101 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:45:14,141 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9028.311917747673
+2024-03-20 19:45:14,444 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:45:14,446 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1522841769143255
+2024-03-20 19:45:14,447 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.486904932
+2024-03-20 19:45:14,455 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-20 19:45:14,456 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-20 19:45:14,951 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9028.311917747673
+2024-03-20 19:45:15,711 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-20 19:45:15,712 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.1522841769143255
+2024-03-20 19:45:15,712 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 137.486904932
+2024-03-20 19:45:15,720 - GlobalUtils.logger - INFO - best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001233806357480252, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001766193642519748}
+2024-03-20 19:45:16,144 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-20 19:45:16,145 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-20 19:46:00,495 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed: {'exchange': 'Synthetix', 'pnl': -0.0100386824912591, 'accrued_funding': -0.003831041408054203}
+2024-03-21 10:56:54,709 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-21 10:56:57,133 - GlobalUtils.logger - ERROR - MainClass - An error occurred during search_for_opportunities: 'synthetix_funding_rate'
+Traceback (most recent call last):
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/Main/main_class.py", line 32, in search_for_opportunities
+    opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/GlobalUtils/logger.py", line 41, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/MatchingEngine/profitabilityChecks/checkProfitability.py", line 37, in find_most_profitable_opportunity
+    abs_funding_rate = abs(float(opportunity["synthetix_funding_rate"]))
+                                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'synthetix_funding_rate'
+2024-03-21 10:57:30,446 - GlobalUtils.logger - ERROR - MainClass - An error occurred during search_for_opportunities: 'synthetix_funding_rate'
+Traceback (most recent call last):
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/Main/main_class.py", line 32, in search_for_opportunities
+    opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/GlobalUtils/logger.py", line 41, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/MatchingEngine/profitabilityChecks/checkProfitability.py", line 37, in find_most_profitable_opportunity
+    abs_funding_rate = abs(float(opportunity["synthetix_funding_rate"]))
+                                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'synthetix_funding_rate'
+2024-03-21 10:59:53,978 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-21 10:59:55,970 - GlobalUtils.logger - INFO - OPPORTUNITY: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'BTC', 'long_funding_rate': 9.543986337822933e-05, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.002904560136621771}
+2024-03-21 10:59:55,970 - GlobalUtils.logger - ERROR - MainClass - An error occurred during search_for_opportunities: 'synthetix_funding_rate'
+Traceback (most recent call last):
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/Main/main_class.py", line 32, in search_for_opportunities
+    opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/GlobalUtils/logger.py", line 41, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jfeasby/SynthetixFundingRateArbitrage/MatchingEngine/profitabilityChecks/checkProfitability.py", line 38, in find_most_profitable_opportunity
+    abs_funding_rate = abs(float(opportunity["synthetix_funding_rate"]))
+                                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'synthetix_funding_rate'
+2024-03-21 11:03:07,865 - GlobalUtils.logger - INFO - TradeLogger - Database accessed successfully.
+2024-03-21 11:03:10,551 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012439419225981662, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017560580774018339}
+2024-03-21 11:03:12,579 - GlobalUtils.logger - INFO - SynthetixPositionController - Accounts checked and found successfully.
+2024-03-21 11:03:12,580 - GlobalUtils.logger - INFO - SynthetixPositionController - Successfully retrieved default account.
+2024-03-21 11:03:12,976 - GlobalUtils.logger - INFO - SynthetixPositionController - Collateral balance called successfully: 9026.541465197784
+2024-03-21 11:03:13,792 - GlobalUtils.logger - INFO - MasterPositionController - Successfully retrieved available collateral from all exchanges.
+2024-03-21 11:03:13,792 - GlobalUtils.logger - INFO - MasterPositionControllerUtils - collateral ratio between Synthetix and Binance = 0.14977711126045068
+2024-03-21 11:03:13,793 - GlobalUtils.logger - INFO - MasterPositionController - Trade size calculated: 135.196930533
+2024-03-21 11:03:14,574 - GlobalUtils.logger - INFO - SynthetixPositionController - levered trade size in asset calculated at 0.191
+2024-03-21 11:03:36,489 - GlobalUtils.logger - INFO - SynthetixPositionController - Order executed successfully
+2024-03-21 11:03:36,491 - GlobalUtils.logger - INFO - MasterPositionController - Synthetix trade execution response: {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.191, 'order_id': 22729864046787233, 'liquidation_price': 183.51113324462838}
+2024-03-21 11:03:37,138 - GlobalUtils.logger - INFO - BinancePositionController - levered trade size in asset calculated at -0.191
+2024-03-21 11:03:37,981 - GlobalUtils.logger - INFO - BinancePositionController - placing order w/ amount: 0.191
+2024-03-21 11:03:40,583 - GlobalUtils.logger - INFO - BinancePositionController - Trade executed: ETHUSDT SELL, Quantity: 0.191, Order id: 1325106748
+2024-03-21 11:03:41,754 - GlobalUtils.logger - INFO - MasterPositionController - Binance trade execution response: {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.191', 'order_id': 1325106748, 'liquidation_price': 10625.83334761}
+2024-03-21 11:03:41,755 - GlobalUtils.logger - INFO - Publishing POSITION_OPENED with position_data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.191, 'order_id': 22729864046787233, 'liquidation_price': 183.51113324462838}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.191', 'order_id': 1325106748, 'liquidation_price': 10625.83334761}}
+2024-03-21 11:03:41,770 - GlobalUtils.logger - INFO - Logging trade pair with ID: f231e8c7-5e51-40a0-9ac1-d08e61e9c7a6, data: {'Synthetix': {'exchange': 'Synthetix', 'symbol': 'ETH', 'side': 'Long', 'size': 0.191, 'order_id': 22729864046787233, 'liquidation_price': 183.51113324462838}, 'Binance': {'exchange': 'Binance', 'symbol': 'ETHUSDT', 'side': 'Short', 'size': '0.191', 'order_id': 1325106748, 'liquidation_price': 10625.83334761}}
+2024-03-21 11:03:41,777 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: f231e8c7-5e51-40a0-9ac1-d08e61e9c7a6 on exchange: Synthetix
+2024-03-21 11:03:41,780 - GlobalUtils.logger - INFO - TradeLogger - Logged open trade for strategy_execution_id: f231e8c7-5e51-40a0-9ac1-d08e61e9c7a6 on exchange: Binance
+2024-03-21 11:03:41,781 - GlobalUtils.logger - INFO - MasterPositionController - Trades executed successfully for opportunity.
+2024-03-21 11:03:45,204 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:03:45,205 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:04:15,774 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012439542336235424, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017560457663764577}
+2024-03-21 11:04:16,430 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:04:16,430 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:04:18,067 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:04:18,067 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:04:51,157 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012439611652901603, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017560388347098398}
+2024-03-21 11:04:51,602 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:04:51,602 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:04:54,356 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:04:54,357 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:05:23,678 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:05:23,680 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:05:28,070 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001243968482049368, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017560315179506322}
+2024-03-21 11:05:28,434 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:05:28,434 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:05:55,649 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:05:55,649 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:06:01,361 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001243975028623396, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001756024971376604}
+2024-03-21 11:06:02,277 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:06:02,277 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:06:28,139 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:06:28,139 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:06:35,691 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012439811901048343, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017560188098951657}
+2024-03-21 11:06:36,297 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:06:36,297 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:07:00,195 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:07:00,196 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:07:09,939 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012439881217714522, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017560118782285479}
+2024-03-21 11:07:10,646 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:07:10,647 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:07:32,263 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:07:32,264 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:07:44,143 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012439942832528903, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017560057167471097}
+2024-03-21 11:07:45,195 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:07:45,196 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:08:08,541 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:08:08,542 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:08:18,402 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440012149195084, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559987850804917}
+2024-03-21 11:08:19,035 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:08:19,035 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:08:40,484 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:08:40,485 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:08:52,463 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440077614935363, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559922385064638}
+2024-03-21 11:08:53,342 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:08:53,342 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:09:12,623 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:09:12,625 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:09:26,673 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440143080675644, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559856919324357}
+2024-03-21 11:09:27,294 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:09:27,296 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:09:46,808 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:09:46,809 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:10:01,316 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440208546415927, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559791453584073}
+2024-03-21 11:10:01,762 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:10:01,762 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:10:19,967 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:10:19,968 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:10:35,822 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440277863082106, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559722136917895}
+2024-03-21 11:10:36,687 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:10:36,687 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:10:52,993 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:10:52,993 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:11:11,267 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440343328822387, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559656671177614}
+2024-03-21 11:11:12,148 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:11:12,148 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:11:25,887 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:11:25,889 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:11:47,549 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440412645488565, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559587354511435}
+2024-03-21 11:11:49,214 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:11:49,229 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:12:01,761 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:12:01,762 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:12:23,796 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440481962154744, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559518037845257}
+2024-03-21 11:12:25,122 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:12:25,123 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:12:33,959 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:12:33,959 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:12:58,785 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440551278820923, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559448721179078}
+2024-03-21 11:12:59,647 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:12:59,648 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:13:10,134 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:13:10,134 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:13:33,653 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440616744561208, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559383255438793}
+2024-03-21 11:13:34,677 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:13:34,677 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:13:42,192 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:13:42,192 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:14:07,723 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440682210301487, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559317789698514}
+2024-03-21 11:14:08,885 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:14:08,885 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:14:16,320 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:14:16,320 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:14:43,572 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440751526967668, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559248473032333}
+2024-03-21 11:14:44,614 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:14:44,614 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:14:49,435 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:14:49,435 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:15:18,392 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440820843633842, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559179156366159}
+2024-03-21 11:15:19,419 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:15:19,420 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:15:22,239 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:15:22,240 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:15:52,505 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440886309374127, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559113690625873}
+2024-03-21 11:15:53,548 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:15:53,548 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:15:55,148 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:15:55,149 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:16:28,583 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012440955626040304, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017559044373959697}
+2024-03-21 11:16:28,867 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:16:28,868 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:16:29,807 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:16:29,807 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:17:01,381 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:17:01,384 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:17:02,332 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441021091780587, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558978908219414}
+2024-03-21 11:17:03,169 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:17:03,170 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:17:33,772 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:17:33,776 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:17:36,297 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441086557520868, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558913442479133}
+2024-03-21 11:17:36,930 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:17:36,931 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:18:07,696 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:18:07,697 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:18:11,506 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441152023261147, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558847976738854}
+2024-03-21 11:18:12,182 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:18:12,182 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:18:40,364 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:18:40,364 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:18:45,108 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441217489001426, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558782510998575}
+2024-03-21 11:18:45,501 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:18:45,502 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:19:12,180 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:19:12,181 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:19:18,133 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441282954741711, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755871704525829}
+2024-03-21 11:19:18,770 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:19:18,770 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:19:43,898 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:19:43,898 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:19:52,831 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244134842048199, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755865157951801}
+2024-03-21 11:19:53,679 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:19:53,679 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:20:16,002 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:20:16,003 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:20:27,544 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441413886222269, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558586113777732}
+2024-03-21 11:20:28,392 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:20:28,394 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:20:47,923 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:20:47,923 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:21:01,328 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244148320288845, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755851679711155}
+2024-03-21 11:21:02,327 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:21:02,327 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:21:19,670 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:21:19,671 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:21:35,771 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244154866862873, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755845133137127}
+2024-03-21 11:21:36,404 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:21:36,404 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:21:51,714 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:21:51,715 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:22:09,400 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244161413436901, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755838586563099}
+2024-03-21 11:22:09,796 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:22:09,796 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:22:23,374 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:22:23,374 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:22:43,941 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441675749183393, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558324250816608}
+2024-03-21 11:22:44,862 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:22:44,863 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:22:55,103 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:22:55,103 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:23:18,740 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441745065849574, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558254934150427}
+2024-03-21 11:23:19,739 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:23:19,739 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:23:26,651 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:23:26,651 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:23:53,596 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244181438251575, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755818561748425}
+2024-03-21 11:23:53,983 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:23:53,983 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:23:58,023 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:23:58,023 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:24:27,057 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441879848256033, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558120151743967}
+2024-03-21 11:24:27,513 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:24:27,513 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:24:29,979 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:24:29,979 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:25:00,168 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012441941463070415, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017558058536929586}
+2024-03-21 11:25:00,764 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:25:00,764 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:25:01,939 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:25:01,939 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:25:33,881 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:25:33,883 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:25:34,517 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442006928810694, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557993071189307}
+2024-03-21 11:25:35,490 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:25:35,491 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:26:05,767 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:26:05,768 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:26:08,453 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442072394550977, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557927605449024}
+2024-03-21 11:26:09,323 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:26:09,323 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:26:37,456 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:26:37,458 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:26:42,531 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442137860291258, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557862139708743}
+2024-03-21 11:26:42,924 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:26:42,925 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:27:09,872 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:27:09,873 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:27:15,460 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442203326031537, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557796673968464}
+2024-03-21 11:27:15,854 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:27:15,854 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:27:41,940 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:27:41,941 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:27:49,291 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244226494084592, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755773505915408}
+2024-03-21 11:27:50,315 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:27:50,315 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:28:13,426 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:28:13,427 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:28:23,681 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442334257512096, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557665742487904}
+2024-03-21 11:28:24,296 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:28:24,296 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:28:45,454 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:28:45,455 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:28:56,953 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244239587232648, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755760412767352}
+2024-03-21 11:28:57,590 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:28:57,591 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:29:16,813 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:29:16,813 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:29:31,213 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244246133806676, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755753866193324}
+2024-03-21 11:29:32,137 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:29:32,137 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:29:48,937 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:29:48,942 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:30:05,496 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244252680380704, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755747319619296}
+2024-03-21 11:30:06,428 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:30:06,429 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:30:20,673 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:30:20,674 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:30:39,889 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244259612047322, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755740387952678}
+2024-03-21 11:30:40,907 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:30:40,908 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:30:52,733 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:30:52,736 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:31:13,876 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.00124426615862135, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557338413786501}
+2024-03-21 11:31:14,536 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:31:14,537 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:31:24,743 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:31:24,745 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:32:08,009 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442738602981473, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557261397018527}
+2024-03-21 11:32:16,062 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:32:16,063 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:32:23,068 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:32:23,068 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:32:49,497 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442846421906644, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557153578093357}
+2024-03-21 11:32:50,542 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:32:50,543 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:32:55,052 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:32:55,052 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:33:24,027 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012442911884473307, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017557088115526694}
+2024-03-21 11:33:27,332 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:33:27,333 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:33:30,177 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:33:30,177 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:33:59,544 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:33:59,546 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:34:03,864 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244298891951906, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755701108048094}
+2024-03-21 11:34:04,756 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:34:04,757 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:34:31,719 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:34:31,720 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:34:37,915 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012443054399307954, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017556945600692047}
+2024-03-21 11:34:38,729 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:34:38,729 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:35:03,567 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:35:03,567 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:35:11,388 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012443119879096843, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017556880120903158}
+2024-03-21 11:35:12,290 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:35:12,292 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:35:27,983 - GlobalUtils.logger - INFO - open position = {'ETH': {'market_id': 100, 'market_name': 'ETH', 'pnl': -1.1696740217139834, 'accrued_funding': -0.05581114861426994, 'position_size': 0.191}}
+2024-03-21 11:35:35,625 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:35:35,625 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:35:44,721 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012443181507133451, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755681849286655}
+2024-03-21 11:35:45,062 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:35:45,063 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:36:07,534 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:36:07,535 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:36:17,837 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.001244324698692234, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.001755675301307766}
+2024-03-21 11:36:18,480 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:36:18,480 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:36:39,247 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:36:39,247 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:36:50,819 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012443308614958945, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017556691385041056}
+2024-03-21 11:36:51,712 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:36:51,712 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:37:11,241 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:37:11,242 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:37:25,074 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012443374094747836, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017556625905252165}
+2024-03-21 11:37:25,790 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:37:25,790 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:37:43,405 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:37:43,405 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:37:59,271 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012443439574536727, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017556560425463273}
+2024-03-21 11:38:00,134 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:38:00,134 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:38:15,356 - GlobalUtils.logger - INFO - MasterPositionMonitor - Position delta calculated at 1.0
+2024-03-21 11:38:15,358 - GlobalUtils.logger - INFO - MasterPositionMonitor - no threat detected for open position
+2024-03-21 11:38:33,883 - GlobalUtils.logger - INFO - Best opportunity found, details: {'long_exchange': 'Synthetix', 'short_exchange': 'Binance', 'symbol': 'ETH', 'long_funding_rate': 0.0012443505054325619, 'short_funding_rate': 0.003, 'funding_rate_differential': 0.0017556494945674382}
+2024-03-21 11:38:34,510 - GlobalUtils.logger - INFO - MasterPositionController - Position already open
+2024-03-21 11:38:34,514 - GlobalUtils.logger - INFO - MasterPositionController - Position already open, skipping opportunity.
+2024-03-21 11:39:30,509 - GlobalUtils.logger - INFO - open position = {'ETH': {'market_id': 100, 'market_name': 'ETH', 'pnl': -1.763210113118134, 'accrued_funding': -0.06292767927381226, 'position_size': 0.191}}
+2024-03-21 11:42:08,980 - GlobalUtils.logger - INFO - SynthetixPositionController - Position successfully closed: {'exchange': 'Synthetix', 'pnl': -1.7714212024513394, 'accrued_funding': -0.06747975445713066}
+2024-03-21 11:42:13,762 - GlobalUtils.logger - INFO - BinancePositionController - Open position for symbol ETHUSDT has been successfully closed: {'exchange': 'Binance', 'pnl': 12.36589982, 'accrued_fees': 0.0}
+2024-03-21 11:42:14,514 - GlobalUtils.logger - INFO - BinancePositionController - No open position to close for BTCUSDT.
+2024-03-21 11:42:14,514 - GlobalUtils.logger - INFO - MasterPositionController - Position report esta asi: {'Synthetix': {'exchange': 'Synthetix', 'pnl': -1.7714212024513394, 'accrued_funding': -0.06747975445713066}, 'Binance': {'exchange': 'Binance', 'pnl': 12.36589982, 'accrued_fees': 0.0}, 'close_reason': 'POSITION_OPEN_ERROR'}

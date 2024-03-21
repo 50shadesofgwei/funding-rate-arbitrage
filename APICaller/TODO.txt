@@ -12,10 +12,4 @@ TODO.txt
 
 - CHECK PROFITABILITY
     whole class needs a cleanup
-
-- DATABASE 
-    add parser for positon close object on POSITION_CLOSED event handler
-
-- POSITION MONITOR
-    define close reasons
-    logic for detecting close reasons
+    binance should always be the hedge (i.e. the snx position should always be getting paid from the fr)

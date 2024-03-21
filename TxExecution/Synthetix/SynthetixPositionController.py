@@ -3,7 +3,7 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
-from TxExecution.Synthetix.utils import *
+from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from pubsub import pub
@@ -196,4 +196,5 @@ class SynthetixPositionController:
             return False
 
 x = SynthetixPositionController()
-x.close_all_positions()
+y = x.client.perps.get_open_positions()
+print(f'open position = {y}')

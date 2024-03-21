@@ -38,6 +38,7 @@ class MasterPositionMonitor():
     def start_health_check(self):
         while not self.stop_health_check.is_set():
             self.position_health_check()
+            time.sleep(30)
 
     @log_function_call
     def position_health_check(self):
@@ -62,7 +63,6 @@ class MasterPositionMonitor():
         try:
             synthetix_position = self.synthetix.get_open_position()
             binance_position = self.binance.get_open_position()
-            logger.info(f'DEBUGGING: SNX Position: {synthetix_position}, Binance Position: {binance_position}')
 
             is_synthetix_risk = self.synthetix.is_near_liquidation_price(synthetix_position)
             is_binance_risk = self.binance.is_near_liquidation_price(binance_position)
@@ -98,7 +98,7 @@ class MasterPositionMonitor():
     @log_function_call
     def is_position_delta_within_bounds(self):
         try:
-            delta_bound = float(os.getenv('DELTA_BOUND', '0.075'))
+            delta_bound = float(os.getenv('DELTA_BOUND'))
             synthetix_position = self.synthetix.get_open_position()
             binance_position = self.binance.get_open_position()
 
@@ -137,7 +137,9 @@ class MasterPositionMonitor():
             delta_in_usd = abs(synthetix_notional_value - binance_notional_value)
             delta = (delta_in_usd / total_notional_value) if total_notional_value else 0
 
-            return delta < delta_bound
+            logger.info(f'MasterPositionMonitor - Position delta calculated at {delta}')
+
+            return delta > delta_bound
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
             return False

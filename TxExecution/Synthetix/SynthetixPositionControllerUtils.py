@@ -1,5 +1,6 @@
 from PositionMonitor.Synthetix.SynthetixPositionMonitorUtils import *
 from GlobalUtils.globalUtils import *
+from GlobalUtils.logger import *
 import re
 import uuid
 
@@ -8,6 +9,7 @@ ALL_MARKET_IDS = [
     200
 ]
 
+@log_function_call
 def parse_trade_data_from_position_details(position_details) -> dict:
     try:
         side = get_side(position_details['position']['position_size'])
@@ -34,12 +36,13 @@ def parse_trade_data_from_position_details(position_details) -> dict:
         logger.error(f"SynthetixPositionControllerUtils - An unexpected error occurred in parse_trade_data_from_position_details: {e}")
         return {}
 
-
+@log_function_call
 def is_transaction_hash(tx_hash) -> bool:
     # Regular expression to match an Ethereum transaction hash
     pattern = r'^0x[a-fA-F0-9]{64}$'
     return re.match(pattern, tx_hash) is not None
 
+@log_function_call
 def calculate_liquidation_price(position_data, asset_price: float) -> float:
     try:
         position = position_data['position']
@@ -87,7 +90,7 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
 
     return float('nan')
 
-
+@log_function_call
 def get_side(size: float) -> str:
     try:
         if size > 0:

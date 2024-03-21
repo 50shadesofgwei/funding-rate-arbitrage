@@ -41,7 +41,7 @@ class Main:
     @log_function_call
     def start_search(self):
         self.search_for_opportunities()
-        threading.Timer(60, self.start_search).start()
+        threading.Timer(30, self.start_search).start()
 
 main = Main()
 main.start_search()

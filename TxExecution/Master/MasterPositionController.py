@@ -116,3 +116,6 @@ class MasterPositionController:
             logger.info("MasterPositionController - Position already open")
             return True
         return False
+
+x = MasterPositionController()
+x.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
