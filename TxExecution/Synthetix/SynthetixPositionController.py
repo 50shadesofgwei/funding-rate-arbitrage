@@ -3,14 +3,15 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
-from TxExecution.Synthetix.utils import *
+from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 from pubsub import pub
 import time
 import uuid
 
 class SynthetixPositionController:
+    @log_function_call
     def __init__(self):
         self.client = get_synthetix_client()
         self.leverage_factor = float(os.getenv('TRADE_LEVERAGE'))
@@ -39,34 +40,45 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - An error occurred while executing a trade: {e}")
 
     def close_all_positions(self):
-        positions = []
         for market in ALL_MARKET_IDS:
             close_details = self.close_position(market)
-            positions.append(close_details)
-        
-        return positions[0]
+            if close_details:
+                return close_details 
+
+        return None 
 
     def close_position(self, market_id: int):
-        try:
-            position = self.client.perps.get_open_position(market_id=market_id)
-            if position and position['position_size'] != 0:
-                close_position_details = {
-                    'exchange': 'Synthetix',
-                    'pnl': position['pnl'],
-                    'accrued_funding': position['accrued_funding']
-                }
+        max_retries = 2  # Total attempts: 1 initial + 1 retry
+        retry_delay = 3  # Seconds to wait before retrying
+        
+        for attempt in range(max_retries):
+            try:
+                position = self.client.perps.get_open_position(market_id=market_id)
+                if position and position['position_size'] != 0:
+                    close_position_details = {
+                        'exchange': 'Synthetix',
+                        'pnl': position['pnl'],
+                        'accrued_funding': position['accrued_funding']
+                    }
 
-                size = position['position_size']
-                inverse_size = size * -1
-                response = self.client.perps.commit_order(size=inverse_size, market_id=market_id, submit=True)         
-                
-                if is_transaction_hash(response):
-                    logger.info('SynthetixPositionController - Position successfully closed.')
-                    return close_position_details
+                    size = position['position_size']
+                    inverse_size = size * -1
+                    response = self.client.perps.commit_order(size=inverse_size, market_id=market_id, submit=True)
+
+                    if is_transaction_hash(response):
+                        logger.info(f'SynthetixPositionController - Position successfully closed: {close_position_details}')
+                        return close_position_details
+                    else:
+                        logger.error('SynthetixPositionController - Failed to close position. Please check manually.')
+                        raise Exception('SynthetixPositionController - Commit order failed, no transaction hash returned.')
+
+            except Exception as e:
+                logger.error(f"SynthetixPositionController - An error occurred while trying to close a position: {e}")
+                if attempt < max_retries - 1:
+                    logger.info("SynthetixPositionController - Attempting to retry closing position after delay...")
+                    time.sleep(retry_delay)
                 else:
-                    logger.error('SynthetixPositionController - Failed to close position. Please check manually.')
-        except Exception as e:
-            logger.error(f"SynthetixPositionController - An error occurred while trying to close a position: {e}")
+                    raise e
 
     def add_collateral(self, market_id: int, amount: float):
         try:
@@ -183,3 +195,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
 
+x = SynthetixPositionController()
+y = x.client.perps.get_open_positions()
+print(f'open position = {y}')

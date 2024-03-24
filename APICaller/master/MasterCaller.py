@@ -5,25 +5,23 @@ import json
 
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from APICaller.Binance.binanceCaller import BinanceCaller
-from APICaller.ByBit.ByBitCaller import ByBitCaller
 from APICaller.master.MasterUtils import get_all_target_token_lists, get_target_exchanges
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 
 class MasterCaller:
     def __init__(self):
         self.synthetix = SynthetixCaller()
         self.binance = BinanceCaller()
-        self.bybit = ByBitCaller()
         self.target_token_list_by_exchange = get_all_target_token_lists()
         self.target_exchanges = get_target_exchanges()
         self.filtered_exchange_objects_and_tokens = self.filter_exchanges_and_tokens()
 
+    @log_function_call
     def filter_exchanges_and_tokens(self):
         try:
             all_exchanges = {
                 "Synthetix": (self.synthetix, self.target_token_list_by_exchange[0]),
                 "Binance": (self.binance, self.target_token_list_by_exchange[1]),
-                "ByBit": (self.bybit, self.target_token_list_by_exchange[2]),
             }
 
             filtered_exchanges = {}
@@ -36,7 +34,7 @@ class MasterCaller:
             logger.error(f"MasterAPICaller - Error filtering exchanges and tokens: {e}")
             return {}
 
-        
+    @log_function_call    
     def get_funding_rates(self) -> list:
         try:
             funding_rates = []

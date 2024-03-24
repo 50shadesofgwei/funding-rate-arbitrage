@@ -4,11 +4,11 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
 from GlobalUtils.globalUtils import *
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 from pubsub import pub
 from decimal import Decimal
-from PositionMonitor.Synthetix.utils import *
-from PositionMonitor.Master.utils import *
+from PositionMonitor.Synthetix.SynthetixPositionMonitorUtils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import *
 import sqlite3
 import uuid
 
@@ -22,6 +22,7 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error accessing the database: {e}")
             raise e
 
+    @log_function_call
     def position_health_check(self):
         try:
             if self.is_open_position():
@@ -37,22 +38,25 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error checking position health: {e}")
             raise e
 
-
+    @log_function_call
     def get_open_position(self) -> dict:
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT * FROM trade_log WHERE status = 'OPEN' AND exchange = 'Synthetix';''')
-            open_positions = cursor.fetchall()
-            if open_positions:
-                position_dict = get_dict_from_database_response(open_positions[0])
-                return position_dict
-            else:
-                logger.info(f"SynthetixPositionMonitor - No open Synthetix positions found")
-                return None
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Synthetix';''')
+                open_positions = cursor.fetchall()
+                if open_positions:
+                    position_dict = get_dict_from_database_response(open_positions[0])
+                    logger.info(f'SynthetixPositionMonitor - Open trade pulled from database: {position_dict}')
+                    return position_dict
+                else:
+                    logger.info("SynthetixPositionMonitor - No open Synthetix positions found")
+                    return None
         except Exception as e:
-            logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions:", {e})
+            logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")
             raise e
 
+    @log_function_call
     def is_near_liquidation_price(self, position) -> bool:
         try:
             liquidation_price = float(position['liquidation_price'])
@@ -73,6 +77,7 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error checking if near liquidation price for {symbol}: {e}")
             return False
 
+    @log_function_call
     def get_funding_rate(self, position) -> float:
         try:
             symbol = position['symbol']
@@ -89,15 +94,17 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
             return 0.0
 
+    @log_function_call
     def is_open_position(self) -> bool:
         try:
-            cursor = self.conn.cursor()
-            cursor.execute('''SELECT * FROM trade_log WHERE status = 'OPEN' AND exchange = 'Synthetix';''')
-            open_positions = cursor.fetchall()
-            if open_positions:
-                return True
-            else:
-                 return False
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Synthetix';''')
+                open_positions = cursor.fetchall()
+                if open_positions:
+                    return True
+                else:
+                    return False
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions:", {e})
             raise e
