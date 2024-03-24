@@ -27,7 +27,7 @@ def adjust_collateral_allocation(
     trade_amount = smaller_collateral * (initial_percentage / 100)
     return float(trade_amount)
 
-def is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange, min_ratio=0.25):
+def is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange, min_ratio=0.01):
     long_collateral = collateral_amounts.get(long_exchange, 0)
     short_collateral = collateral_amounts.get(short_exchange, 0)
     

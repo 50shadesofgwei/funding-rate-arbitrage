@@ -2,25 +2,23 @@ import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from TxExecution.Binance.BinancePositionController import BinancePositionController
-from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from pubsub import pub
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 
 class MasterPositionController:
     def __init__(self):
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
-        self.bybit = ByBitPositionController()
-        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND.value)
-        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS.value)
 
     #######################
     ### WRITE FUNCTIONS ###
     #######################
 
+    @log_function_call
     def execute_trades(self, opportunity):
         try:
             if self.is_already_position_open():
@@ -48,17 +46,19 @@ class MasterPositionController:
 
  
             if len(position_data_dict) == 2:
-                pub.sendMessage('position_opened', position_data=position_data_dict)
+                logger.info(f"Publishing POSITION_OPENED with position_data: {position_data_dict}")
+                pub.sendMessage(eventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
                 logger.info("MasterPositionController - Trades executed successfully for opportunity.")
             else:
-                self.close_all_positions()
+                self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
                 missing_exchanges = set([long_exchange, short_exchange]) - set(position_data_dict.keys())
                 logger.error(f"MasterPositionController - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
 
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
-            self.close_all_positions()
+            self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
 
+    @log_function_call
     def close_all_positions(self, reason: str):
         synthetix_position_report = self.synthetix.close_all_positions()
         binance_position_report = self.binance.close_all_positions()
@@ -67,12 +67,19 @@ class MasterPositionController:
             'Binance': binance_position_report,
             'close_reason': reason
         }
-        pub.sendMessage(eventsDirectory.POSITION_CLOSED.value, position_report)
+        logger.info(f'MasterPositionController - Closing positions with position report: {position_report}')
+        pub.sendMessage(eventsDirectory.POSITION_CLOSED.value, position_report=position_report)
+
+    @log_function_call
+    def subscribe_to_events(self):
+        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND.value)
+        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS.value)
 
     ######################
     ### READ FUNCTIONS ###
     ######################
 
+    @log_function_call
     def get_trade_size(self, opportunity) -> float:
         try:
             collateral_amounts = self.get_available_collateral_by_exchange()
@@ -87,17 +94,15 @@ class MasterPositionController:
             logger.error(f"MasterPositionController - Failed to calculate trade size for opportunity. Error: {e}")
             return 0.0
 
-
+    @log_function_call
     def get_available_collateral_by_exchange(self):
         try:
             synthetix_collateral = self.synthetix.get_available_collateral()
             binance_collateral = self.binance.get_available_collateral()
-            bybit_collateral = self.bybit.get_available_collateral()
             
             collateral = {
                 "Synthetix": synthetix_collateral,
-                "Binance": binance_collateral,
-                "Bybit": bybit_collateral
+                "Binance": binance_collateral
             }
             logger.info("MasterPositionController - Successfully retrieved available collateral from all exchanges.")
             return collateral
@@ -105,10 +110,12 @@ class MasterPositionController:
             logger.error(f"MasterPositionController - Failed to get available collateral by exchange. Error: {e}")
             return None
 
+    @log_function_call
     def is_already_position_open(self) -> bool:
-        if self.synthetix.is_already_position_open() or self.binance.is_already_position_open() or self.bybit.is_already_position_open():
-            logger.info("MasterPositionController - Posotion already open")
+        if self.synthetix.is_already_position_open() or self.binance.is_already_position_open():
+            logger.info("MasterPositionController - Position already open")
             return True
         return False
 
-
+# x = MasterPositionController()
+# x.close_all_positions(PositionCloseReason.TEST.value)

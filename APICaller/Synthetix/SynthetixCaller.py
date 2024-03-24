@@ -1,12 +1,13 @@
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 import json
 
 class SynthetixCaller:
     def __init__(self):
         self.client = get_synthetix_client()
 
+    @log_function_call
     def get_funding_rates(self, symbols: list):
         try:
             _, markets_by_name = self.client.perps.get_markets()
@@ -15,6 +16,7 @@ class SynthetixCaller:
             logger.error(f"SynthetixAPICaller - Error fetching market data: {e}")
             return []
 
+    @log_function_call
     def _filter_market_data(self, markets_by_name, symbols):
         market_funding_rates = []
         for symbol in symbols:

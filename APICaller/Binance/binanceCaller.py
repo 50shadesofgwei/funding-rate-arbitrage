@@ -2,7 +2,7 @@ import sys
 sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 
 from APICaller.Binance.binanceUtils import BinanceEnvVars
-from GlobalUtils.logger import logger
+from GlobalUtils.logger import *
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
 import os
@@ -16,6 +16,7 @@ class BinanceCaller:
         api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
 
+    @log_function_call
     def get_funding_rates(self, symbols: list):
         funding_rates = []
         try:
@@ -28,7 +29,7 @@ class BinanceCaller:
             logger.error(f"BinanceAPICaller - Failed to fetch or parse funding rates for symbols. Error: {e}")
         return funding_rates
 
-
+    @log_function_call
     def _fetch_funding_rate_for_symbol(self, symbol: str):
         try:
             futures_funding_rate = self.client.funding_rate(symbol=symbol)
@@ -38,7 +39,7 @@ class BinanceCaller:
             logger.error(f"BinanceAPICaller - Error fetching funding rate for {symbol}: {e}")
         return None
 
-
+    @log_function_call
     def _parse_funding_rate_data(self, funding_rate_data, symbol: str):
         if funding_rate_data:
             return {

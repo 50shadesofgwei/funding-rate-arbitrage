@@ -3,16 +3,13 @@ TODO.txt
 - synthetix: implement check for collateral approval
     clean up the collateral deployment process 
 
+- DEBUG
+    add log statements for all relevant function calls, try isolate issue
+
 - CLEANUP
     remove local sys imports
     remove (temporarily, at least - version control) bybit integration
 
 - CHECK PROFITABILITY
     whole class needs a cleanup
-
-- DATABASE 
-    add parser for positon close object on POSITION_CLOSED event handler
-
-- POSITION MONITOR
-    define close reasons
-    logic for detecting close reasons
+    binance should always be the hedge (i.e. the snx position should always be getting paid from the fr)

@@ -1,5 +1,6 @@
-from PositionMonitor.Synthetix.utils import *
+from PositionMonitor.Synthetix.SynthetixPositionMonitorUtils import *
 from GlobalUtils.globalUtils import *
+from GlobalUtils.logger import *
 import re
 import uuid
 
@@ -8,6 +9,7 @@ ALL_MARKET_IDS = [
     200
 ]
 
+@log_function_call
 def parse_trade_data_from_position_details(position_details) -> dict:
     try:
         side = get_side(position_details['position']['position_size'])
@@ -28,18 +30,19 @@ def parse_trade_data_from_position_details(position_details) -> dict:
         return trade_data
 
     except KeyError as e:
-        logger.error(f"KeyError in parse_trade_data_from_position_details: {e}")
+        logger.error(f"SynthetixPositionControllerUtils - KeyError in parse_trade_data_from_position_details: {e}")
         return {}
     except Exception as e:
-        logger.error(f"An unexpected error occurred in parse_trade_data_from_position_details: {e}")
+        logger.error(f"SynthetixPositionControllerUtils - An unexpected error occurred in parse_trade_data_from_position_details: {e}")
         return {}
 
-
+@log_function_call
 def is_transaction_hash(tx_hash) -> bool:
     # Regular expression to match an Ethereum transaction hash
     pattern = r'^0x[a-fA-F0-9]{64}$'
     return re.match(pattern, tx_hash) is not None
 
+@log_function_call
 def calculate_liquidation_price(position_data, asset_price: float) -> float:
     try:
         position = position_data['position']
@@ -53,17 +56,17 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
 
         # Ensure position_size, maintenance_margin_requirement, and current_asset_price are not zero to avoid DivisionByZero error
         if initial_margin_requirement <= 0:
-            logger.error("Initial margin requirement is zero or negative, cannot calculate liquidation price.")
+            logger.error("SynthetixPositionControllerUtils - Initial margin requirement is zero or negative, cannot calculate liquidation price.")
             return float('nan')
 
         # Check position size
         if position_size == 0:
-            logger.error("Position size is zero, cannot calculate liquidation price.")
+            logger.error("SynthetixPositionControllerUtils - Position size is zero, cannot calculate liquidation price.")
             return float('nan')
 
         # Check current asset price
         if current_asset_price == 0:
-            logger.error("Current asset price is zero, cannot calculate liquidation price.")
+            logger.error("SynthetixPositionControllerUtils - Current asset price is zero, cannot calculate liquidation price.")
             return float('nan')
 
         maintenance_margin_ratio = maintenance_margin_requirement / initial_margin_requirement if initial_margin_requirement > 0 else Decimal('0.5')
@@ -71,7 +74,7 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
         # Calculate bankruptcy price, ensuring divisor is not zero
         divisor = (position_size * maintenance_margin_ratio * current_asset_price)
         if divisor == 0:
-            logger.error("Division by zero encountered in bankruptcy price calculation.")
+            logger.error("SynthetixPositionControllerUtils - Division by zero encountered in bankruptcy price calculation.")
             return float('nan')
 
         bankruptcy_price = available_margin / divisor
@@ -79,15 +82,15 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
 
         return float(liquidation_price)
     except KeyError as e:
-        logger.error(f"SynthetixPositionMonitorUtils - Key error in calculating liquidation price: {e}")
+        logger.error(f"SynthetixPositionControllerUtils - Key error in calculating liquidation price: {e}")
     except DecimalException as e:
-        logger.error(f"SynthetixPositionMonitorUtils - Decimal operation error in calculating liquidation price: {e}")
+        logger.error(f"SynthetixPositionControllerUtils - Decimal operation error in calculating liquidation price: {e}")
     except Exception as e:
-        logger.error(f"SynthetixPositionMonitorUtils - Unexpected error in calculating liquidation price: {e}")
+        logger.error(f"SynthetixPositionControllerUtils - Unexpected error in calculating liquidation price: {e}")
 
     return float('nan')
 
-
+@log_function_call
 def get_side(size: float) -> str:
     try:
         if size > 0:
@@ -95,5 +98,5 @@ def get_side(size: float) -> str:
         elif size < 0:
             return 'Short'
     except Exception as e:
-        logger.error(f"SynthetixPositionMonitorUtils - Error determining side from size {size}: {e}")
+        logger.error(f"SynthetixPositionControllerUtils - Error determining side from size {size}: {e}")
         return 'Error'
