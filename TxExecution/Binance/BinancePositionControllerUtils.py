@@ -28,7 +28,7 @@ def parse_trade_data_from_response(response) -> dict:
         "symbol": response['symbol'],
         "side": response['side'],
         "size": response['executedQty'],
-        "liquidation_price": response['liquidation_price']
+        "liquidation_price": response['liquidationPrice']
     }
 
     return trade_data

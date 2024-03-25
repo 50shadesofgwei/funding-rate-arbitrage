@@ -117,5 +117,5 @@ class MasterPositionController:
             return True
         return False
 
-# x = MasterPositionController()
-# x.close_all_positions(PositionCloseReason.TEST.value)
+x = MasterPositionController()
+x.close_all_positions(PositionCloseReason.TEST.value)
