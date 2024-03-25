@@ -20,6 +20,7 @@ class SynthetixPositionController:
     ### WRITE FUNCTIONS ###
     #######################
 
+    @log_function_call
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         try:
             if not self.is_already_position_open():
@@ -80,14 +81,25 @@ class SynthetixPositionController:
                 else:
                     raise e
 
+    def approve_and_deposit_collateral(self, token_address: str, amount: int):
+        try:
+            self.collateral_approval(token_address, amount)
+            time.sleep(2)
+            self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
+            time.sleep(2)
+            self.add_collateral(market_id=100, amount=amount)
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
+
     def add_collateral(self, market_id: int, amount: float):
         try:
-            self.client.perps.modify_collateral(
+            tx = self.client.perps.modify_collateral(
                 amount=amount, 
                 market_id=market_id, 
                 submit=True
             )
-            logger.info(f"SynthetixPositionController - Successfully added {amount} collateral to market ID {market_id}.")
+            if is_transaction_hash(tx):
+                logger.info(f"SynthetixPositionController - Successfully added {amount} collateral to market ID {market_id}.")
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
 
@@ -108,7 +120,8 @@ class SynthetixPositionController:
                 amount=amount,
                 submit=True
             )
-            logger.info(f"SynthetixPositionController - Collateral approval transaction successful. Transaction ID: {approve_tx}")
+            if is_transaction_hash(approve_tx):
+                logger.info(f"SynthetixPositionController - Collateral approval transaction successful. Transaction ID: {approve_tx}")
         except Exception as e:
             logger.error(f"SynthetixPositionController - Collateral approval failed for token {token_address} with amount {amount}. Error: {e}")
 
@@ -195,6 +208,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
 
-x = SynthetixPositionController()
-y = x.client.perps.get_open_positions()
-print(f'open position = {y}')
+# x = SynthetixPositionController()
+# y = x.client.perps.get_open_positions()
+# print(f'open position = {y}')
