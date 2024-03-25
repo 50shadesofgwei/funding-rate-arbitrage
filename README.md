@@ -56,3 +56,6 @@ This inheritance structure is repeated with the Master modules, an instance of e
 
 Cross-module communication is handled via event emitters and listeners, a directory of which can be found in GlobalUtils.py.
 Upon confirmation of execution, trades are logged to a database with each side (SNX/Binance) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
+
+### Tech Support 
+Any further questions please join the telegram chat at https://t.me/+ualID7ueKuJjMWJk
