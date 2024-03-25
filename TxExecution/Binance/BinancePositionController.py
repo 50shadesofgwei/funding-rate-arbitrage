@@ -28,6 +28,7 @@ class BinancePositionController:
     ### WRITE FUNCTIONS ###
     #######################
 
+    @log_function_call
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         order_with_amount = {} 
         try:
@@ -35,7 +36,6 @@ class BinancePositionController:
             order = get_order_from_opportunity(opportunity, is_long)
             amount = calculate_adjusted_trade_size(opportunity, is_long, trade_size)
             order_with_amount = add_amount_to_order(order, amount)
-            print(order_with_amount)
 
             response = self.client.new_order(
                 symbol=order_with_amount['symbol'],
@@ -128,7 +128,6 @@ class BinancePositionController:
                         symbol=symbol,
                         leverage=self.leverage,
                     )
-                    print(x)
                     logger.info(f"BinancePositionController - Leverage for {symbol} set to {self.leverage}.")
         except Exception as e:
             logger.error(f"BinancePositionController - Failed to set leverage for assets. Error: {e}")
@@ -141,7 +140,7 @@ class BinancePositionController:
         symbol = response['symbol']
         order_id = response['orderId']
         side = get_side(response['side'])
-        size = response['origQty']
+        size = float(response['origQty'])
         liquidation_price = self.get_liquidation_price(response['symbol'])
 
         return {
@@ -181,6 +180,7 @@ class BinancePositionController:
         
         if isinstance(response, list) and len(response) > 0:
             position_risk = response[0]
+            logger.info(f"BinancePositionController - position_risk object = {position_risk}")
             
             if 'liquidationPrice' in position_risk:
                 return float(position_risk['liquidationPrice'])
