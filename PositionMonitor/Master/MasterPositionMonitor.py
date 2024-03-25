@@ -80,17 +80,22 @@ class MasterPositionMonitor():
     def check_profitability_for_open_position(self):
         try:
             synthetix_position = self.synthetix.get_open_position()
-            binance_position = self.binance.get_open_position()
-
             synthetix_funding_rate = self.synthetix.get_funding_rate(synthetix_position)
-            binance_funding_rate = self.binance.get_funding_rate(binance_position)
+            size = float(synthetix_position['size'])
+            if size > 0:
+                is_long = True
+            elif size < 0:
+                is_long = False
 
-            synthetix_funding_impact = calculate_funding_impact(synthetix_position, synthetix_funding_rate) if synthetix_position else 0
-            binance_funding_impact = calculate_funding_impact(binance_position, binance_funding_rate) if binance_position else 0
 
-            net_funding_impact = synthetix_funding_impact + binance_funding_impact
+            if not synthetix_position:
+                return False
 
-            is_profitable = net_funding_impact > 0
+            if is_long:
+                is_profitable = synthetix_funding_rate < 0
+            elif not is_long:
+                is_profitable = synthetix_funding_rate > 0
+
             return is_profitable
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
@@ -138,9 +143,9 @@ class MasterPositionMonitor():
             delta_in_usd = abs(synthetix_notional_value - binance_notional_value)
             delta = (delta_in_usd / total_notional_value) if total_notional_value else 0
 
-            logger.info(f'MasterPositionMonitor - Position delta calculated at {delta}')
+            logger.info(f'MasterPositionMonitor - Position delta calculated at {delta}. delta_in_usd: {delta_in_usd}, total_notional_value: {total_notional_value}, asset price: {asset_price}')
 
-            return delta > delta_bound
+            return not delta > delta_bound
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
             return False

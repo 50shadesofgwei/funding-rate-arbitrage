@@ -12,12 +12,12 @@ load_dotenv()
 def adjust_collateral_allocation(
         collateral_amounts, 
         long_exchange, 
-        short_exchange, 
-        initial_percentage=10) -> float:
+        short_exchange) -> float:
     
     if not is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange):
         raise ValueError("Collateral on exchanges does not meet the minimum ratio requirement - collateral amounts need rebalancing across exchanges")
     
+    initial_percentage = int(os.getenv('PERCENTAGE_CAPITAL_PER_TRADE'))
     # Determine the smaller of the two collateral amounts
     long_collateral = collateral_amounts.get(long_exchange, 0)
     short_collateral = collateral_amounts.get(short_exchange, 0)
