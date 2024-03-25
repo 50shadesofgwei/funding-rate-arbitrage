@@ -1,4 +1,5 @@
 # Synthetix Funding Rate Arbitrage
+![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
 *Version 0.1.0, Alpha*
 
 This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between CEX/DEX perps platforms. Current version focuses on Synthetix vs Binance pairs, opening funding-accruing positions on Synthetix and hedging on Binance. 
@@ -9,6 +10,7 @@ Given that the repo is under active development, it is recommended that you run 
 
 To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
 after this, navigate to the .env file and input the necessary values. You will need:
+
 - An Alchemy API key
 - The relevant chainId (Base Mainnet: 8453, Base Testnet: 84532)
 - Your wallet address and Private Key (For security reasons you should create a new wallet to use here)
