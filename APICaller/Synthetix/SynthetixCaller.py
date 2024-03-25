@@ -1,7 +1,6 @@
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
 from GlobalUtils.logger import *
-import json
 
 class SynthetixCaller:
     def __init__(self):

@@ -1,8 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
-import json
-
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from APICaller.Binance.binanceCaller import BinanceCaller
 from APICaller.master.MasterUtils import get_all_target_token_lists, get_target_exchanges

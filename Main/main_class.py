@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from GlobalUtils.logger import *
 from pubsub import pub
 from APICaller.master.MasterCaller import MasterCaller

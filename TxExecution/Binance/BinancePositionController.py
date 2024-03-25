@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 from APICaller.Binance.binanceUtils import BinanceEnvVars

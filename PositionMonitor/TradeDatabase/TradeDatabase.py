@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 import sqlite3
 from datetime import datetime
 from GlobalUtils.logger import *
