@@ -1,7 +1,4 @@
 import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
-import sys
 import os
 from dotenv import load_dotenv
 from GlobalUtils.logger import logger

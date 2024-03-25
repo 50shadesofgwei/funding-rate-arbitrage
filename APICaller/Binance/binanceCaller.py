@@ -1,11 +1,8 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from APICaller.Binance.binanceUtils import BinanceEnvVars
 from GlobalUtils.logger import *
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
-import os
+
 from dotenv import load_dotenv
 
 load_dotenv()

@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from TxExecution.Binance.BinancePositionController import BinancePositionController
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
@@ -116,6 +113,3 @@ class MasterPositionController:
             logger.info("MasterPositionController - Position already open")
             return True
         return False
-
-x = MasterPositionController()
-x.close_all_positions(PositionCloseReason.TEST.value)

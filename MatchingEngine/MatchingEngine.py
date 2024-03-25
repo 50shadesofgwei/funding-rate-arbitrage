@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from MatchingEngine.MatchingEngineUtils import *
 from GlobalUtils.logger import *
 

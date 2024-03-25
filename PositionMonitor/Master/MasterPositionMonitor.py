@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import SynthetixPositionMonitor
 from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *

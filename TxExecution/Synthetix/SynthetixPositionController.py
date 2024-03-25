@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
 from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
