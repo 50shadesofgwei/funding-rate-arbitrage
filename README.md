@@ -6,6 +6,13 @@ This project serves as a template to help newer developers/traders start taking 
 
 Given that the repo is under active development, it is recommended that you run the bot on testnet for a while first to ensure that the configuration is correct before putting any capital at stake.
 
+### Prerequisites
+
+Install dependenceies via navigating to the project directory 
+`cd SynthetixFundingRateArbitrage` 
+and running:
+`pip install -r requirements.txt`
+
 ## Getting Started
 
 To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
@@ -36,13 +43,6 @@ amount = 100000000 # example, 100 fUSDC
 x.approve_and_deposit_collateral(token_address, amount)
 ```
 And then running the script by entering `python3 TxExecution/Synthetix/SynthetixPositionController.py` into the CLI and clicking enter (this assumes you are in the root project directory already)
-
-### Prerequisites
-
-Install dependenceies via navigating to the project directory 
-`cd SynthetixFundingRateArbitrage` 
-and running:
-`pip install -r requirements.txt`
 
 ### Architecture
 
