@@ -205,12 +205,8 @@ class SynthetixPositionController:
             return False
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
-<<<<<<< HEAD
             return False
 
 # x = SynthetixPositionController()
 # y = x.client.perps.get_open_positions()
 # print(f'open position = {y}')
-=======
-            return False
->>>>>>> 47e07419d9e75f3ad142b0c4a6ea096f45174d61

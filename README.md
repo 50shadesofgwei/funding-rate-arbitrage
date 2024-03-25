@@ -24,6 +24,16 @@ Trade Leverage specifies the leverage applied to the collateral amount on each t
 Delta Bound calculates the maximum delta on a trade pair before it will be cancelled by the health checker. The delta between positions will in most cases be 0.0, so this is mostly a failsafe.
 Percentage Capital Per Trade specifies the amount of available capital to be used on each trade that is executed. This is derived by checking how much available collateral there is on each exchange, then taking the smaller value and calculating `(smallerValue/100)*PERCANTAGE_CAPITAL_PER_TRADE`. Higher values for this will of course make the trade sizes larger, and therefore will mean having to rebalance the collateral between exchanges more frequently.
 
+## Testnet config
+To start executing some test trades, first you will need to mint some fUSDC on Base sepolia (you can do that [here](https://sepolia.basescan.org/address/0xa1ae612e07511a947783c629295678c07748bc7a#writeContract) by calling `deposit_eth` with some testnet Eth and '0x69980C3296416820623b3e3b30703A74e2320bC8' as the token_address argument). 
+After you have some fUSDC, you can call the collateral deposit function by navigating to the SynthetixPositionController script and copy pasting this code to the bottom of the file:
+```python
+x = SynthetixPositionController()
+token_address = '0x69980C3296416820623b3e3b30703A74e2320bC8' #fUSDC contract address
+amount = 100000000 # example, 100 fUSDC
+x.approve_and_deposit_collateral(token_address, amount)
+```
+And then running the script by entering `python3 TxExecution/Synthetix/SynthetixPositionController.py` into the CLI and clicking enter (this assumes you are in the root project directory already)
 
 ### Prerequisites
 
