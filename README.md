@@ -8,7 +8,7 @@ This project serves as a template to help newer developers/traders start taking 
 
 Given that the repo is under active development, it is recommended that you run the bot on testnet for a while first to ensure that the configuration is correct before putting any capital at stake.
 
-### Contributions
+## Contributions
 This repo is designed to be open source and as such we welcome any who is interested in contributing to the codebase. To reach out, join the Telegram chat linked at the bottom of the README.
 
 ## Getting Started
@@ -31,7 +31,7 @@ Trade Leverage specifies the leverage applied to the collateral amount on each t
 Delta Bound calculates the maximum delta on a trade pair before it will be cancelled by the health checker. The delta between positions will in most cases be 0.0, so this is mostly a failsafe.
 Percentage Capital Per Trade specifies the amount of available capital to be used on each trade that is executed. This is derived by checking how much available collateral there is on each exchange, then taking the smaller value and calculating `(smallerValue/100)*PERCANTAGE_CAPITAL_PER_TRADE`. Higher values for this will of course make the trade sizes larger, and therefore will mean having to rebalance the collateral between exchanges more frequently.
 
-### Dependenceies
+## Dependenceies
 
 Install dependenceies via navigating to the project directory 
 `cd SynthetixFundingRateArbitrage` 
@@ -51,7 +51,7 @@ And then running the script by entering `python3 TxExecution/Synthetix/Synthetix
 
 For the Binance side, you will have to create an account and set of API keys [here](https://testnet.binancefuture.com/en/futures/BTCUSDT), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined by 
 
-### Architecture
+## Architecture
 
 The project is designed according to a modular, event-driven architecture where functionality is grouped together into like kind sub-classes, instances of which are then contained in a master class which itself is contained within the main class. To illustrate, let's look at the APICaller module contains all logic for calling funding rate data from the relevant APIs. This module contains two sub-classes `SynthetixCaller` and `BinanceCaller`, where all the logic for interacting with the respective APIs is stored in the corresponding sub-class. Then an instance of each class is stored within the `MasterCaller` class, which contains all functions that require access to both of these APIs, an example being reading and identifying funding rate discrepancies between the two.
 This inheritance structure is repeated with the Master modules, an instance of each being created in the Main class. The Main class therefore contains instances of the following:
@@ -64,8 +64,8 @@ This inheritance structure is repeated with the Master modules, an instance of e
 Cross-module communication is handled via event emitters and listeners, a directory of which can be found in GlobalUtils.py.
 Upon confirmation of execution, trades are logged to a database with each side (SNX/Binance) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
 
-### Open Issues / Potential Improvements
-**Version 0.1.0**
+## Open Issues / Potential Improvements
+### Version 0.1.0
 
 **Shutdown** 
 
@@ -80,5 +80,5 @@ on the main class.
 
 In its current form, the bot uses market orders for both sides of each trade. For Synthetix this is mandated by the smart contracts but for the Binance side, there is a possibility that one could tighten the profit margins on each trade by using limit orders instead of market orders. The slippage is especially pronounced on Binance testnet because there's such little liquidity and therefore the bid/ask spread is very large, which also makes backtesting and + test PnL calculations harder to run off of testnet data.
 
-### Tech Support 
+## Tech Support 
 Any further questions please join the telegram chat at https://t.me/+ualID7ueKuJjMWJk
