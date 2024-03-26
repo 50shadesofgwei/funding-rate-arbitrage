@@ -1,8 +1,8 @@
 # Synthetix Funding Rate Arbitrage
 ![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
-*Version 0.1.0, Alpha*
+**Version 0.1.0, Alpha**
 
-![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk)![Static Badge](https://img.shields.io/badge/License-MIT-green)
+![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk) ![Static Badge](https://img.shields.io/badge/License-MIT-green)
 
 This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between CEX/DEX perps platforms. Current version focuses on Synthetix vs Binance pairs, opening funding-accruing positions on Synthetix and hedging on Binance. 
 
@@ -65,9 +65,10 @@ Cross-module communication is handled via event emitters and listeners, a direct
 Upon confirmation of execution, trades are logged to a database with each side (SNX/Binance) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
 
 ### Open Issues / Potential Improvements
-*Version 0.1.0*
+**Version 0.1.0**
 
 **Shutdown** 
+
 If you're running an instance of the bot and shut it down mid-trade, the positions won't close automatically; you'll have to close them manually either via a UI or by using 
 ```python
 x = Main()
@@ -76,6 +77,7 @@ x.MasterPositionController.close_all_positions()
 on the main class.
 
 **Slippage**
+
 In its current form, the bot uses market orders for both sides of each trade. For Synthetix this is mandated by the smart contracts but for the Binance side, there is a possibility that one could tighten the profit margins on each trade by using limit orders instead of market orders. The slippage is especially pronounced on Binance testnet because there's such little liquidity and therefore the bid/ask spread is very large, which also makes backtesting and + test PnL calculations harder to run off of testnet data.
 
 ### Tech Support 
