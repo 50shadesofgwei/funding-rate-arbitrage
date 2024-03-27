@@ -1,12 +1,14 @@
 # Synthetix Funding Rate Arbitrage
 ![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
-**Version 0.1.0, Alpha**
+> **Version 0.1.0, Alpha**
 
 ![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk) ![Static Badge](https://img.shields.io/badge/License-MIT-green)
 
 This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between CEX/DEX perps platforms. Current version focuses on Synthetix vs Binance pairs, opening funding-accruing positions on Synthetix and hedging on Binance. 
 
 Given that the repo is under active development, it is recommended that you run the bot on testnet for a while first to ensure that the configuration is correct before putting any capital at stake.
+
+> *All code contained within this repository is distrubuted freely under the MIT License*
 
 ## Contributions
 This repo is designed to be open source and as such we welcome any who is interested in contributing to the codebase. To reach out, join the Telegram chat linked at the bottom of the README.
@@ -65,7 +67,7 @@ Cross-module communication is handled via event emitters and listeners, a direct
 Upon confirmation of execution, trades are logged to a database with each side (SNX/Binance) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
 
 ## Open Issues / Potential Improvements
-### Version 0.1.0
+> **Version 0.1.0**
 
 **Shutdown** 
 
