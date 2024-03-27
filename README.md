@@ -16,7 +16,7 @@ This repo is designed to be open source and as such we welcome any who is intere
 ## Getting Started
 
 To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
-after this, navigate to the .env file and input the necessary values. You will need:
+After this, navigate to the .env file and input the necessary values. You will need:
 
 - An Alchemy API key
 - The relevant chainId (Base Mainnet: 8453, Base Testnet: 84532)
