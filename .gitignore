@@ -4,4 +4,4 @@ venv/
 trades.db
 test.csv
 app.log
-SynthetixFundingRateArbitrage.egg-info
+SynthetixFundingRateArbitrage.egg-info/
