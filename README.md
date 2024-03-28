@@ -16,7 +16,9 @@ This repo is designed to be open source and as such we welcome any who is intere
 ## Getting Started
 
 To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
-Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, and then create a virtual environment with `python3 -m venv venv && source venv/bin/activate`. Install project dependencies with `pip install -r requirements.txt`.
+
+Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, and then create a virtual environment with `python3 -m venv venv && source venv/bin/activate`. 
+Install project dependencies with `pip install -r requirements.txt`.
 After this, navigate to the .env file and input the necessary values. You will need:
 
 - An Alchemy API key
@@ -54,23 +56,20 @@ Note that some additional steps are required before executing trades, namely tha
 
 ## Testnet config
 To start executing some test trades, first you will need to mint some fUSDC on Base sepolia (you can do that [here](https://sepolia.basescan.org/address/0xa1ae612e07511a947783c629295678c07748bc7a#writeContract) by calling `deposit_eth` with some testnet Eth and '0x69980C3296416820623b3e3b30703A74e2320bC8' as the token_address argument). 
-After you have some fUSDC, you can call the collateral deposit function by navigating to the SynthetixPositionController script and copy pasting this code to the bottom of the file:
-```python
-x = SynthetixPositionController()
-token_address = '0x69980C3296416820623b3e3b30703A74e2320bC8' #fUSDC contract address
-amount = 100000000 # example, 100 fUSDC
-x.approve_and_deposit_collateral(token_address, amount)
-```
-And then running the script by entering `python3 SynthetixPositionController.py` into the CLI and clicking enter.
+After you have some fUSDC, you can call the collateral deposit function by running the `deploy-collateral` command in the CLI. Once you click enter it will ask you for two variables, firstly the token address (which for fUSDC is 0x69980C3296416820623b3e3b30703A74e2320bC8), and the amount to deposit. Amount is denominated in the lowest decimal value of the given token, so to deposit 100 fUSDC the argument would be 100 concatenated by 6 decimal places - i.e. 100000000.
 
 For the Binance side, you will have to create an account and set of API keys [here](https://testnet.binancefuture.com/en/futures/BTCUSDT), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined upon initialisation of the Binance clients. By default they will target testnet and look like so:
+
 ```python
 self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
 ```
+
 To switch to live trading, simply remove the final argument like so:
+
 ```python
 self.client = Client(api_key, api_secret)
 ```
+
 > As of release 0.1.0, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
     - BinanceCaller.py
     - BinancePositionController.py
@@ -94,12 +93,8 @@ Upon confirmation of execution, trades are logged to a database with each side (
 
 **Shutdown** 
 
-If you're running an instance of the bot and shut it down mid-trade, the positions won't close automatically; you'll have to close them manually either via a UI or by using 
-```python
-x = Main()
-x.MasterPositionController.close_all_positions()
-``` 
-on the main class.
+If you're running an instance of the bot and shut it down mid-trade, the positions won't close automatically; you'll have to close them manually either via the respective UIs or by using the CLI command:
+`close-all-positions`
 
 **Slippage**
 

@@ -85,7 +85,7 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
 
-    def add_collateral(self, market_id: int, amount: float):
+    def add_collateral(self, market_id: int, amount: int):
         try:
             tx = self.client.perps.modify_collateral(
                 amount=amount, 
