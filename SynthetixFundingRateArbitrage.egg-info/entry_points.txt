@@ -1,4 +1,0 @@
-[console_scripts]
-close-all-positions = TxExecution.Master.run:run
-deploy-collateral = TxExecution.Synthetix.run:main
-project-run = Main.run:run
