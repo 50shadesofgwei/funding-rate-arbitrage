@@ -16,6 +16,7 @@ This repo is designed to be open source and as such we welcome any who is intere
 ## Getting Started
 
 To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
+Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, and then create a virtual environment with `python3 -m venv venv && source venv/bin/activate`. Install project dependencies with `pip install -r requirements.txt`.
 After this, navigate to the .env file and input the necessary values. You will need:
 
 - An Alchemy API key
@@ -33,12 +34,23 @@ Trade Leverage specifies the leverage applied to the collateral amount on each t
 Delta Bound calculates the maximum delta on a trade pair before it will be cancelled by the health checker. The delta between positions will in most cases be 0.0, so this is mostly a failsafe.
 Percentage Capital Per Trade specifies the amount of available capital to be used on each trade that is executed. This is derived by checking how much available collateral there is on each exchange, then taking the smaller value and calculating `(smallerValue/100)*PERCANTAGE_CAPITAL_PER_TRADE`. Higher values for this will of course make the trade sizes larger, and therefore will mean having to rebalance the collateral between exchanges more frequently.
 
-## Dependenceies
+In addition, you can choose which tokens to target/exclude from the searching algorithm via navigating to `APICaller.master.MasterUtils.py`, where you will find an array that looks like this:
+```python
+TARGET_TOKENS = [
+    {"token": "BTC", "is_target": True},
+    {"token": "ETH", "is_target": True},
+]
+```
+To include/exclude a token, simply replace `True` with `False` and vice versa. The above example targets both BTC and ETH, but if for the sake of argument we only wanted to target ETH, we'd edit the array to look like the following:
+```python
+TARGET_TOKENS = [
+    {"token": "BTC", "is_target": False},
+    {"token": "ETH", "is_target": True},
+]
+```
+The bot will now only target ETH opportunities.
 
-Install dependenceies via navigating to the project directory 
-`cd SynthetixFundingRateArbitrage` 
-and running:
-`pip install -r requirements.txt`
+Note that some additional steps are required before executing trades, namely that a Synthetix perps account will have to be created and have some collateral deployed. The code for this is found in the next section.
 
 ## Testnet config
 To start executing some test trades, first you will need to mint some fUSDC on Base sepolia (you can do that [here](https://sepolia.basescan.org/address/0xa1ae612e07511a947783c629295678c07748bc7a#writeContract) by calling `deposit_eth` with some testnet Eth and '0x69980C3296416820623b3e3b30703A74e2320bC8' as the token_address argument). 
@@ -49,9 +61,20 @@ token_address = '0x69980C3296416820623b3e3b30703A74e2320bC8' #fUSDC contract add
 amount = 100000000 # example, 100 fUSDC
 x.approve_and_deposit_collateral(token_address, amount)
 ```
-And then running the script by entering `python3 TxExecution/Synthetix/SynthetixPositionController.py` into the CLI and clicking enter (this assumes you are in the root project directory already)
+And then running the script by entering `python3 SynthetixPositionController.py` into the CLI and clicking enter.
 
-For the Binance side, you will have to create an account and set of API keys [here](https://testnet.binancefuture.com/en/futures/BTCUSDT), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined by 
+For the Binance side, you will have to create an account and set of API keys [here](https://testnet.binancefuture.com/en/futures/BTCUSDT), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined upon initialisation of the Binance clients. By default they will target testnet and look like so:
+```python
+self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
+```
+To switch to live trading, simply remove the final argument like so:
+```python
+self.client = Client(api_key, api_secret)
+```
+> As of release 0.1.0, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
+    - BinanceCaller.py
+    - BinancePositionController.py
+    - BinancePositionMonitor.py
 
 ## Architecture
 
