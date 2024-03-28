@@ -10,9 +10,9 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'project-run = SynthetixFundingRateArbitrage.Main.run:run',
-            'deploy-collateral = SynthetixFundingRateArbitrage.TxExecution.Synthetix.run:main',
-            'close-all-positions = SynthetixFundingRateArbitrage.TxExecution.Master.run:run'
+            'project-run = Main.run:run',
+            'deploy-collateral = TxExecution.Synthetix.run:main',
+            'close-all-positions = TxExecution.Master.run:run'
         ],
     },
 

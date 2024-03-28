@@ -1,4 +1,7 @@
-from SynthetixPositionController import SynthetixPositionController
+import sys
+sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
+
+from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 import argparse
 
 def run(args):
@@ -9,6 +12,6 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description="Approve and deposit collateral using the SynthetixPositionController")
     parser.add_argument('token_address', type=str, help='The address of the token to use as collateral')
-    parser.add_argument('token_amount', type=int, help='The amount of the token to deposit (in token decimals)')
+    parser.add_argument('token_amount', type=float, help='The amount of the token to deposit (in token decimals)')
     args = parser.parse_args()
     run(args)

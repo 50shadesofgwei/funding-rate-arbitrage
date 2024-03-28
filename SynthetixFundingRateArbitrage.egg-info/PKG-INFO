@@ -1,3 +1,21 @@
+Metadata-Version: 2.1
+Name: SynthetixFundingRateArbitrage
+Version: 0.1.0
+Summary: Delta-neutral funding rate arbitrage searcher
+Home-page: https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage
+Author: zk50.eth
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: binance_futures_connector==4.0.0
+Requires-Dist: Pypubsub==4.0.3
+Requires-Dist: python-dotenv==1.0.1
+Requires-Dist: python_binance==1.0.17
+Requires-Dist: Requests==2.31.0
+Requires-Dist: synthetix==0.1.3
+Requires-Dist: web3==6.5.0
+
 # Synthetix Funding Rate Arbitrage
 ![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
 > **Version 0.1.0, Alpha**
@@ -58,10 +76,7 @@ Note that some additional steps are required before executing trades, namely tha
 
 ## Testnet config
 To start executing some test trades, first you will need to mint some fUSDC on Base sepolia (you can do that [here](https://sepolia.basescan.org/address/0xa1ae612e07511a947783c629295678c07748bc7a#writeContract) by calling `deposit_eth` with some testnet Eth and '0x69980C3296416820623b3e3b30703A74e2320bC8' as the token_address argument). 
-After you have some fUSDC, you can call the collateral deposit function by running the `deploy-collateral` command in the CLI. Once you click enter it will ask you for two variables, firstly the token address (which for fUSDC is 0x69980C3296416820623b3e3b30703A74e2320bC8), and the amount to deposit. Amount is denominated in USD terms, so to deposit 250.67 fUSDC, you'd enter the command as follows:
-`
-deploy-collateral 0x69980C3296416820623b3e3b30703A74e2320bC8 250.67
-`
+After you have some fUSDC, you can call the collateral deposit function by running the `deploy-collateral` command in the CLI. Once you click enter it will ask you for two variables, firstly the token address (which for fUSDC is 0x69980C3296416820623b3e3b30703A74e2320bC8), and the amount to deposit. Amount is denominated in the lowest decimal value of the given token, so to deposit 100 fUSDC the argument would be 100 concatenated by 6 decimal places - i.e. 100000000.
 
 For the Binance side, you will have to create an account and set of API keys [here](https://testnet.binancefuture.com/en/futures/BTCUSDT), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined upon initialisation of the Binance clients. By default they will target testnet and look like so:
 

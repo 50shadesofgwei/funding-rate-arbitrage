@@ -75,7 +75,7 @@ class SynthetixPositionController:
                 else:
                     raise e
 
-    def approve_and_deposit_collateral(self, token_address: str, amount: int):
+    def approve_and_deposit_collateral(self, token_address: str, amount: float):
         try:
             self.collateral_approval(token_address, amount)
             time.sleep(2)
@@ -85,7 +85,7 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
 
-    def add_collateral(self, market_id: int, amount: int):
+    def add_collateral(self, market_id: int, amount: float):
         try:
             tx = self.client.perps.modify_collateral(
                 amount=amount, 
