@@ -7,6 +7,7 @@
 This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between CEX/DEX perps platforms. Current version focuses on Synthetix vs Binance pairs, opening funding-accruing positions on Synthetix and hedging on Binance. 
 
 Given that the repo is under active development, it is recommended that you run the bot on testnet for a while first to ensure that the configuration is correct before putting any capital at stake.
+*No fees will be charged for running this bot, but if you happen to be inclined to charity the address is 0x7D8127Da2E23c5b371Ee436303BDCCe1c252afb1*
 
 > *All code contained within this repository is distrubuted freely under the MIT License*
 
