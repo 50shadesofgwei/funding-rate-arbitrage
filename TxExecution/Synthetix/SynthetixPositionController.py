@@ -3,9 +3,7 @@ from APICaller.Synthetix.SynthetixUtils import *
 from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
-from pubsub import pub
 import time
-import uuid
 
 class SynthetixPositionController:
     @log_function_call
@@ -45,8 +43,8 @@ class SynthetixPositionController:
         return None 
 
     def close_position(self, market_id: int):
-        max_retries = 2  # Total attempts: 1 initial + 1 retry
-        retry_delay = 3  # Seconds to wait before retrying
+        max_retries = 2 
+        retry_delay_in_seconds = 3  
         
         for attempt in range(max_retries):
             try:
@@ -73,7 +71,7 @@ class SynthetixPositionController:
                 logger.error(f"SynthetixPositionController - An error occurred while trying to close a position: {e}")
                 if attempt < max_retries - 1:
                     logger.info("SynthetixPositionController - Attempting to retry closing position after delay...")
-                    time.sleep(retry_delay)
+                    time.sleep(retry_delay_in_seconds)
                 else:
                     raise e
 
