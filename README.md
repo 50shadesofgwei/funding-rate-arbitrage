@@ -113,5 +113,9 @@ If you're running an instance of the bot and shut it down mid-trade, the positio
 
 In its current form, the bot uses market orders for both sides of each trade. For Synthetix this is mandated by the smart contracts but for the Binance side, there is a possibility that one could tighten the profit margins on each trade by using limit orders instead of market orders. The slippage is especially pronounced on Binance testnet because there's such little liquidity and therefore the bid/ask spread is very large, which also makes backtesting and + test PnL calculations harder to run off of testnet data.
 
+**Moving Collateral <> Exchanges**
+
+In current implementation, anyone running the bot over longer periods of time (or using really high leverage) will have to manually rebalance collateral across exchanges after a couple of trades due to the PnL imbalancing collateral amounts. If one wanted to maximise size on every trade, they would do this often.
+
 ## Tech Support 
 Any further questions please join the telegram chat at https://t.me/+ualID7ueKuJjMWJk
