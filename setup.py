@@ -11,6 +11,8 @@ setup(
     entry_points={
         'console_scripts': [
             'project-run = SynthetixFundingRateArbitrage.Main.run:run',
+            'deploy-collateral = SynthetixFundingRateArbitrage.TxExecution.Synthetix.run:main',
+            'close-all-positions = SynthetixFundingRateArbitrage.TxExecution.Master.run:run'
         ],
     },
 
