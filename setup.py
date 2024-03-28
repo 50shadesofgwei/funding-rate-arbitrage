@@ -10,7 +10,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'project-run = SynthetixFundingRateArbitrage.Main.main_class',
+            'project-run = SynthetixFundingRateArbitrage.Main.run:run',
         ],
     },
 
