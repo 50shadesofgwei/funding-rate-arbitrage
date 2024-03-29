@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
