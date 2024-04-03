@@ -5,7 +5,6 @@ from APICaller.master.MasterUtils import TARGET_TOKENS
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
 from TxExecution.Binance.BinancePositionControllerUtils import *
-from pubsub import pub
 import os
 import time
 from dotenv import load_dotenv
@@ -19,7 +18,7 @@ class BinancePositionController:
         api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(key=api_key, secret=api_secret, base_url="https://testnet.binancefuture.com")
         self.leverage = int(os.getenv('TRADE_LEVERAGE'))
-        # self.set_leverage_for_all_assets(TARGET_TOKENS)
+        self.set_leverage_for_all_assets(TARGET_TOKENS)
 
     #######################
     ### WRITE FUNCTIONS ###
