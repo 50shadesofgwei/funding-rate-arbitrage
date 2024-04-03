@@ -88,6 +88,10 @@ The bot can be controlled via the CLI using the following commands:
 - `project-run` (Run this command to start the bot after setup is finished)
 - `close-all-positions`
 
+## Video Walkthrough
+A high level walkthrough can be found via following this link:
+[Watch here](https://drive.google.com/file/d/1QlGKDZIhfQkfegQOnAi7ycPEOlvWn4ye/view?usp=sharing)
+
 ## Architecture
 
 The project is designed according to a modular, event-driven architecture where functionality is grouped together into like kind sub-classes, instances of which are then contained in a master class which itself is contained within the main class. To illustrate, let's look at the APICaller module contains all logic for calling funding rate data from the relevant APIs. This module contains two sub-classes `SynthetixCaller` and `BinanceCaller`, where all the logic for interacting with the respective APIs is stored in the corresponding sub-class. Then an instance of each class is stored within the `MasterCaller` class, which contains all functions that require access to both of these APIs, an example being reading and identifying funding rate discrepancies between the two.
