@@ -39,6 +39,3 @@ class Main:
     def start_search(self):
         self.search_for_opportunities()
         threading.Timer(30, self.start_search).start()
-
-main = Main()
-main.start_search()

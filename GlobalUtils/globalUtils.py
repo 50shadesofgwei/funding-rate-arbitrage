@@ -13,6 +13,7 @@ class eventsDirectory(Enum):
     OPPORTUNITY_FOUND = "opportunity_found"
     POSITION_OPENED = "position_opened"
     POSITION_CLOSED = "position_closed"
+    TRADE_LOGGED = "trade_logged"
 
 
 def initialise_client() -> Web3:

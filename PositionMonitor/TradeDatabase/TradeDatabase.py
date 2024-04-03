@@ -59,6 +59,8 @@ class TradeLogger:
             size = data.get('size')
             liquidation_price = data.get('liquidation_price')
             self.log_open_trade(strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time)
+        
+        pub.sendMessage(eventsDirectory.TRADE_LOGGED.value, position_data=position_data)
 
     @log_function_call
     def log_open_trade(self, strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time=datetime.now()):

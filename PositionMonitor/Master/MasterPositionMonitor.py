@@ -15,7 +15,7 @@ class MasterPositionMonitor():
         self.health_check_thread = None
         self.stop_health_check = threading.Event()
         
-        pub.subscribe(self.on_position_opened, eventsDirectory.POSITION_OPENED.value)
+        pub.subscribe(self.on_position_opened, eventsDirectory.TRADE_LOGGED.value)
         pub.subscribe(self.on_position_closed, eventsDirectory.POSITION_CLOSED.value)
 
     @log_function_call
@@ -77,21 +77,16 @@ class MasterPositionMonitor():
     def check_profitability_for_open_position(self):
         try:
             synthetix_position = self.synthetix.get_open_position()
-            synthetix_funding_rate = self.synthetix.get_funding_rate(synthetix_position)
-            size = float(synthetix_position['size'])
-            if size > 0:
-                is_long = True
-            elif size < 0:
-                is_long = False
-
 
             if not synthetix_position:
+                logger.info("MasterPositionMonitor - No open Synthetix positions found.")
                 return False
 
-            if is_long:
-                is_profitable = synthetix_funding_rate < 0
-            elif not is_long:
-                is_profitable = synthetix_funding_rate > 0
+            synthetix_funding_rate = self.synthetix.get_funding_rate(synthetix_position)
+
+            size = float(synthetix_position['size'])
+            is_long = size > 0
+            is_profitable = (is_long and synthetix_funding_rate < 0) or (not is_long and synthetix_funding_rate > 0)
 
             return is_profitable
         except Exception as e:

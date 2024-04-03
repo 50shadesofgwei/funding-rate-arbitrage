@@ -1,7 +1,7 @@
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
-from decimal import DecimalException
+from decimal import DivisionByZero
 import re
 import uuid
 
@@ -46,50 +46,27 @@ def is_transaction_hash(tx_hash) -> bool:
 @log_function_call
 def calculate_liquidation_price(position_data, asset_price: float) -> float:
     try:
-        position = position_data['position']
-        margin_details = position_data['margin_details']
+        position_size = Decimal(str(position_data['position']['position_size']))
+        available_margin = Decimal(str(position_data['margin_details']['available_margin']))
+        maintenance_margin_requirement = Decimal(str(position_data['margin_details']['maintenance_margin_requirement']))
+        initial_margin_requirement = Decimal(str(position_data['margin_details']['initial_margin_requirement']))
         current_asset_price = Decimal(asset_price)
 
-        position_size = Decimal(str(position['position_size']))
-        available_margin = Decimal(str(margin_details['available_margin']))
-        maintenance_margin_requirement = Decimal(str(margin_details['maintenance_margin_requirement']))
-        initial_margin_requirement = Decimal(str(margin_details['initial_margin_requirement']))
+        # Basic checks
+        if initial_margin_requirement <= 0 or position_size == 0 or current_asset_price <= 0:
+            raise ValueError("Invalid input values for calculating liquidation price.")
 
-        # Ensure position_size, maintenance_margin_requirement, and current_asset_price are not zero to avoid DivisionByZero error
-        if initial_margin_requirement <= 0:
-            logger.error("SynthetixPositionControllerUtils - Initial margin requirement is zero or negative, cannot calculate liquidation price.")
-            return float('nan')
+        maintenance_margin_ratio = maintenance_margin_requirement / initial_margin_requirement
+        is_long = position_size > 0
+        abs_position_size = abs(position_size)
+        price_difference = (available_margin / (abs_position_size * maintenance_margin_ratio)) - current_asset_price
 
-        # Check position size
-        if position_size == 0:
-            logger.error("SynthetixPositionControllerUtils - Position size is zero, cannot calculate liquidation price.")
-            return float('nan')
-
-        # Check current asset price
-        if current_asset_price == 0:
-            logger.error("SynthetixPositionControllerUtils - Current asset price is zero, cannot calculate liquidation price.")
-            return float('nan')
-
-        maintenance_margin_ratio = maintenance_margin_requirement / initial_margin_requirement if initial_margin_requirement > 0 else Decimal('0.5')
-
-        # Calculate bankruptcy price, ensuring divisor is not zero
-        divisor = (position_size * maintenance_margin_ratio * current_asset_price)
-        if divisor == 0:
-            logger.error("SynthetixPositionControllerUtils - Division by zero encountered in bankruptcy price calculation.")
-            return float('nan')
-
-        bankruptcy_price = available_margin / divisor
-        liquidation_price = current_asset_price + (bankruptcy_price - current_asset_price) / Decimal('1.05')
+        liquidation_price = current_asset_price - price_difference if is_long else current_asset_price + price_difference
 
         return float(liquidation_price)
-    except KeyError as e:
-        logger.error(f"SynthetixPositionControllerUtils - Key error in calculating liquidation price: {e}")
-    except DecimalException as e:
-        logger.error(f"SynthetixPositionControllerUtils - Decimal operation error in calculating liquidation price: {e}")
-    except Exception as e:
-        logger.error(f"SynthetixPositionControllerUtils - Unexpected error in calculating liquidation price: {e}")
-
-    return float('nan')
+    except (KeyError, ValueError, DivisionByZero, InvalidOperation) as e:
+        logger.error(f"SynthetixPositionControllerUtils - Error in calculating liquidation price: {e}")
+        return float('nan')
 
 @log_function_call
 def get_side(size: float) -> str:
