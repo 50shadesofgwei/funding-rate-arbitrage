@@ -34,8 +34,6 @@ class Main:
         except Exception as e:
             logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)
             
-
-    @log_function_call
     def start_search(self):
         self.search_for_opportunities()
         threading.Timer(30, self.start_search).start()

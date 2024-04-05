@@ -18,7 +18,6 @@ class MasterPositionMonitor():
         pub.subscribe(self.on_position_opened, eventsDirectory.TRADE_LOGGED.value)
         pub.subscribe(self.on_position_closed, eventsDirectory.POSITION_CLOSED.value)
 
-    @log_function_call
     def on_position_opened(self, position_data):
         if self.health_check_thread is None or not self.health_check_thread.is_alive():
             time.sleep(10)
@@ -28,17 +27,14 @@ class MasterPositionMonitor():
         else:
             logger.info('MasterPositionMonitor - Health check already running.')
 
-    @log_function_call
     def on_position_closed(self, position_report):
         self.stop_health_check.set()
 
-    @log_function_call
     def start_health_check(self):
         while not self.stop_health_check.is_set():
             self.position_health_check()
             time.sleep(30)
 
-    @log_function_call
     def position_health_check(self):
         is_liquidation_risk = self.check_liquidation_risk()
         is_profitable = self.check_profitability_for_open_position()
@@ -56,7 +52,6 @@ class MasterPositionMonitor():
         else:
             logger.info('MasterPositionMonitor - no threat detected for open position')
 
-    @log_function_call
     def check_liquidation_risk(self) -> bool:
         try:
             synthetix_position = self.synthetix.get_open_position()
@@ -73,7 +68,6 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error while checking liquidation risk for positions: {e}")
             return False
 
-    @log_function_call
     def check_profitability_for_open_position(self):
         try:
             synthetix_position = self.synthetix.get_open_position()
@@ -93,7 +87,6 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
             return False
 
-    @log_function_call
     def is_position_delta_within_bounds(self):
         try:
             delta_bound = float(os.getenv('DELTA_BOUND'))

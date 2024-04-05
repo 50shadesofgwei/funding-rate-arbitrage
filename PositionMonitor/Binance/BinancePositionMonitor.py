@@ -21,7 +21,6 @@ class BinancePositionMonitor():
             logger.error(f"BinancePositionMonitor - Error accessing the database: {e}")
             raise e
 
-    @log_function_call
     def get_open_position(self):
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -39,7 +38,6 @@ class BinancePositionMonitor():
             logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions:", {e})
             raise e
 
-    @log_function_call
     def is_near_liquidation_price(self, position) -> bool:
         try:
             liquidation_price = float(position['liquidation_price'])
@@ -60,7 +58,6 @@ class BinancePositionMonitor():
             logger.error(f"BinancePositionMonitor - Error checking if near liquidation price for {symbol}: {e}")
             return False
 
-    @log_function_call
     def get_funding_rate(self, position) -> float:
         try:
             symbol = position['symbol']
@@ -74,7 +71,6 @@ class BinancePositionMonitor():
             logger.error(f"BinancePositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
             return 0.0
 
-    @log_function_call
     def is_open_position(self) -> bool:
         try:
             with sqlite3.connect(self.db_path) as conn:
