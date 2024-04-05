@@ -20,7 +20,6 @@ class TradeLogger:
     ### WRITE FUNCTIONS ###
     #######################
 
-    @log_function_call
     def create_or_access_database(self):
         try:
             conn = sqlite3.connect(self.db_path)
@@ -62,7 +61,6 @@ class TradeLogger:
         
         pub.sendMessage(eventsDirectory.TRADE_LOGGED.value, position_data=position_data)
 
-    @log_function_call
     def log_open_trade(self, strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time=datetime.now()):
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -72,7 +70,6 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
 
-    @log_function_call
     def log_close_trade(self, position_report: dict):
         try:
             execution_id = self.get_open_execution_id()
@@ -81,7 +78,6 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error closing trades on the database: Error: {e}")
 
-    @log_function_call
     def log_close_trade_pair(self, close_reason, strategy_execution_id, position_report: dict):
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -124,7 +120,6 @@ class TradeLogger:
     ### READ FUNCTIONS ###
     ######################
 
-    @log_function_call
     def get_trade_pair_by_execution_id(self, strategy_execution_id):
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -137,7 +132,6 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error retrieving trades for execution id: {strategy_execution_id}, Error: {e}")
             return []
 
-    @log_function_call
     def get_open_execution_id(self) -> str:
         try:
             with sqlite3.connect(self.db_path) as conn:

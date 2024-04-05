@@ -1,0 +1,10 @@
+**PROFITABILITY CHECKER**
+Add funcs to API callers to build full opportunity objects including funding impact and skew calculations.
+Should include predicted pnl per time period(/min, /hour, /day).
+
+    - Funding impact
+    - Skew 
+    - Velocity
+
+**CLEANUP**
+Remove function call logs

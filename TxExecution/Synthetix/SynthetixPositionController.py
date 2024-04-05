@@ -6,7 +6,6 @@ from GlobalUtils.logger import *
 import time
 
 class SynthetixPositionController:
-    @log_function_call
     def __init__(self):
         self.client = get_synthetix_client()
         self.leverage_factor = float(os.getenv('TRADE_LEVERAGE'))

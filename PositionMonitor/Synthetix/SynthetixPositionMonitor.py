@@ -16,7 +16,6 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error accessing the database: {e}")
             raise e
 
-    @log_function_call
     def position_health_check(self):
         try:
             if self.is_open_position():
@@ -32,7 +31,6 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error checking position health: {e}")
             raise e
 
-    @log_function_call
     def get_open_position(self) -> dict:
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -50,7 +48,6 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")
             raise e
 
-    @log_function_call
     def is_near_liquidation_price(self, position) -> bool:
         try:
             liquidation_price = float(position['liquidation_price'])
@@ -71,7 +68,6 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error checking if near liquidation price for {symbol}: {e}")
             return False
 
-    @log_function_call
     def get_funding_rate(self, position) -> float:
         try:
             symbol = position['symbol']
@@ -88,7 +84,6 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
             return 0.0
 
-    @log_function_call
     def is_open_position(self) -> bool:
         try:
             with sqlite3.connect(self.db_path) as conn:

@@ -11,21 +11,17 @@ class ProfitabilityChecker:
     def __init__(self):
         self.position_controller = MasterPositionController()
 
-    @log_function_call
     def get_capital_amount(self, opportunity) -> float:
         capital = self.position_controller.get_trade_size(opportunity)
         return capital
 
-    @log_function_call
     def get_exchange_fee(self, exchange: str) -> float:
         return self.exchange_fees.get(exchange, 0)
 
-    @log_function_call
     def calculate_position_cost(self, fee_rate: float, opportunity) -> float:
         capital = self.get_capital_amount(opportunity)
         return capital * fee_rate
     
-    @log_function_call
     def find_most_profitable_opportunity(self, opportunities):
         max_profit = float('-inf')
         most_profitable = None
