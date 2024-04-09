@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class BinancePositionController:
-    @log_function_call
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
