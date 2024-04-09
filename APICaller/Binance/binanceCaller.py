@@ -2,7 +2,6 @@ from APICaller.Binance.binanceUtils import BinanceEnvVars
 from GlobalUtils.logger import *
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
-import json
 
 from dotenv import load_dotenv
 
@@ -13,6 +12,22 @@ class BinanceCaller:
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(api_key, api_secret)
+
+    def get_price(self, symbol: str) -> float:
+        try:
+            response = self.client.mark_price(symbol=symbol)
+            if 'markPrice' not in response:
+                raise KeyError("markPrice key not found in the response.")
+            
+            price = float(response['markPrice'])
+            return price
+        except KeyError as e:
+            logger.info(f"BinanceAPICaller - Error: {e}. Unable to find required data in the response for symbol {symbol}.")
+        except ValueError as e:
+            logger.info(f"BinanceAPICaller - Error converting price to float for symbol {symbol}: {e}. Check response format.")
+        except Exception as e:
+            logger.info(f"BinanceAPICaller - An error occurred while fetching the mark price for {symbol}: {e}.")
+        return None
 
     def get_funding_rates(self, symbols: list):
         funding_rates = []
@@ -38,7 +53,7 @@ class BinanceCaller:
         float: The estimated impact on the funding rate skew.
         """
 
-    def get_historical_funding_rate_for_symbol(self, symbol: str, limit: int):
+    def get_historical_funding_rate_for_symbol(self, symbol: str, limit: int) -> list:
         response = self.client.funding_rate(symbol=symbol, limit=limit)
         return response
 
@@ -67,5 +82,3 @@ class BinanceCaller:
     def get_price_of_100_contracts(self):
         pass
 
-x = BinanceCaller()
-x.get_historical_funding_rate_for_symbol(symbol='ETHUSDT')

@@ -6,5 +6,6 @@ Should include predicted pnl per time period(/min, /hour, /day).
     - Skew 
     - Velocity
 
+open_interest_differential_usd and time_profitable_estimate should be separate 
+
 **CLEANUP**
-Remove function call logs
