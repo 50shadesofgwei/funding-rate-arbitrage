@@ -12,10 +12,6 @@ class SynthetixBacktester:
     def get_historical_funding_rates(self, symbol: str):
         self.contract.events
 
-    def get_provider(self):
-        key = os.getenv('BASE_PROVIDER_RPC')
-        provider = Web3(key)
-
     def get_open_interest(self, symbol: str):
         response = self.caller.client.perps.get_market_summary(market_name=symbol)
         data = {
@@ -25,8 +21,6 @@ class SynthetixBacktester:
             'skew': response['skew'],
 
         }
-
-    
 
     def _get_long_short_ratio(self, market_summary) -> float:
         size = float(market_summary['size'])
