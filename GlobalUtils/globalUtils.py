@@ -8,13 +8,16 @@ from GlobalUtils.logger import *
 
 load_dotenv()
 
-class eventsDirectory(Enum):
+class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_positions"
     OPPORTUNITY_FOUND = "opportunity_found"
     POSITION_OPENED = "position_opened"
     POSITION_CLOSED = "position_closed"
     TRADE_LOGGED = "trade_logged"
 
+class MarketsDirectory(Enum):
+    ETH = {100, 'ETH'}
+    BTC = {200, 'BTC'}
 
 def initialise_client() -> Web3:
     try:

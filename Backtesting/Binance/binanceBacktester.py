@@ -14,14 +14,15 @@ class BinanceBacktester:
         self.caller = BinanceCaller()
 
     def build_statistics_dict(self, symbol: str) -> dict:
+        formatted_symbol = symbol + 'USDT'
         max_limit = 1000
-        rates = self.caller.get_historical_funding_rate_for_symbol(symbol, max_limit)
+        rates = self.caller.get_historical_funding_rate_for_symbol(formatted_symbol, max_limit)
         past_week_average = self._get_past_week_average_rate(rates)
         past_month_average = self._get_past_month_average_rate(rates)
         past_year_average = self._get_past_year_average_rate(rates)
         average_period_out_of_bounds = self._get_average_duration_above_mean(rates=rates, mean=past_year_average)
         active_out_of_bounds_streak = self._get_current_out_of_bounds_streak(past_year_average, rates)
-        open_interest_differential_usd = self._get_open_interest_usd_with_differential(symbol)
+        open_interest_differential_usd = self._get_open_interest_usd_with_differential(formatted_symbol)
         effective_apr = calculate_effective_apr(float(rates[0]['fundingRate']))
 
         stats = {
@@ -115,7 +116,7 @@ class BinanceBacktester:
             open_interest_info = self._get_open_interest(symbol)
             current_price = self.caller.get_price(symbol)
             open_interest_usd = float(open_interest_info['open_interest'] * current_price)
-            differential_usd = calculate_open_interest_differential_usd(float(open_interest_info['ratio']), float(open_interest_info['open_interest']), current_price)
+            differential_usd = calculate_open_interest_differential_usd(open_interest_info['ratio'], open_interest_info['open_interest'], current_price)
             if open_interest_info is None or current_price is None:
                 raise ValueError("BinanceBacktester - Failed to fetch open interest or current price from API.")
 
@@ -123,7 +124,6 @@ class BinanceBacktester:
                 'open_interest_usd': open_interest_usd,
                 'differential_usd': differential_usd,
                 'ratio': open_interest_info['ratio']
-
             }
             return data
         except Exception as e:
@@ -155,9 +155,5 @@ class BinanceBacktester:
         except Exception as e:
             logger.info(f"Failed to fetch open interest for {symbol}: {e}")
             return None
-        
-
-x = BinanceBacktester()
-y = x.build_statistics_dict(symbol='ETHUSDT')
-print(y)
+    
 
