@@ -13,6 +13,8 @@ load_dotenv()
 provider_url = os.getenv('BASE_PROVIDER_RPC')
 client = Web3(Web3.HTTPProvider(provider_url))
 
+MULTICALL_GAS = 500000
+
 class ContractAddresses(Enum):
     PERPS = Web3.to_checksum_address('0x0a2af931effd34b81ebcc57e3d3c9b1e1de1c9ce')
 
@@ -85,6 +87,9 @@ def save_events_to_json(events, filename='event_logs.json'):
         print(f"Failed to open {filename} for appending: {str(e)}")
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON from {filename}: {str(e)}")
+
+def get_time_until_funding_rate_change():
+    pass
 
 
 
