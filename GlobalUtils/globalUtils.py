@@ -15,9 +15,22 @@ class EventsDirectory(Enum):
     POSITION_CLOSED = "position_closed"
     TRADE_LOGGED = "trade_logged"
 
-class MarketsDirectory(Enum):
-    ETH = {100, 'ETH'}
-    BTC = {200, 'BTC'}
+class MarketDirectory(Enum):
+    ETH = {
+        'market_id': 100,
+        'symbol': 'ETH'
+    }
+
+    BTC = {
+        'market_id': 200,
+        'symbol': 'BTC'
+    }
+
+    def get_market_id(symbol: str) -> int:
+        for market in MarketDirectory:
+            if market.value['symbol'] == symbol:
+                return market.value['market_id']
+        raise ValueError(f"GlobalUtils - Market symbol '{symbol}' not found.")
 
 def initialise_client() -> Web3:
     try:

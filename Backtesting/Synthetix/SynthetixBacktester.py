@@ -11,29 +11,85 @@ class SynthetixBacktester:
         self.contract = get_perps_contract()
 
     def build_statistics_dict(self, symbol: str) -> dict:
-        rates = self.retrieve_and_process_events()
-        past_week_average = self._get_past_week_average_rate(rates)
-        past_month_average = self._get_past_month_average_rate(rates)
-        past_year_average = self._get_past_year_average_rate(rates)
-        average_period_out_of_bounds = self._get_average_duration_above_mean(rates=rates, mean=past_year_average)
-        active_out_of_bounds_streak = self._get_current_out_of_bounds_streak(past_year_average, rates)
-        open_interest_differential_usd = self._get_open_interest_usd_with_differential(symbol)
-        effective_apr = calculate_effective_apr(float(rates[0]['funding_rate']))
+        try:
+            rates = self.retrieve_and_process_events()
+            current_vs_historical_data = self.build_current_vs_historical_rates_dict(rates)
+            open_interest_differential_usd = self._get_open_interest_usd_with_differential(symbol)
+            keeper_fees = self.estimate_keeper_fees()
+            effective_apr = calculate_effective_apr(float(rates[-1]['funding_rate']))
 
-        stats = {
-            'symbol': symbol,
-            'past_week_avg': past_week_average,
-            'past_month_avg': past_month_average,
-            'past_year_avg': past_year_average,
-            'average_period_out_of_bounds': average_period_out_of_bounds,
-            'active_out_of_bounds_streak': active_out_of_bounds_streak,
-            'long_short_ratio': open_interest_differential_usd['ratio'],
-            'open_interest_usd': open_interest_differential_usd['open_interest_usd'],
-            'open_interest_differential_usd': open_interest_differential_usd['differential_usd'],
-            'effective_apr': effective_apr
-        }
+            stats = {
+                'symbol': symbol,
+                'long_short_ratio': open_interest_differential_usd['ratio'],
+                'open_interest_usd': open_interest_differential_usd['open_interest_usd'],
+                'open_interest_differential_usd': open_interest_differential_usd['differential_usd'],
+                'profitability_estimations': {
+                    'total_estimated_profit_usd': None,
+                    'total_estimated_profit_percentage': None,
+                    'first_period_return_usd': None,
+                    'second_period_return_usd': None,
+                    'total_percentage_return': None,
+                    'estimated_keeper_fees_usd': keeper_fees
+                },
 
-        return stats
+            }
+            return stats
+
+        except Exception as e:
+            logger.error(f"SynthetixBacktester - Error building statistics dict: {e}")
+            return None
+
+    def estimate_fill_price(self, symbol: str, size: int) -> float:
+        pass
+
+    def estimate_keeper_fees(self) -> float:
+        gas_price = int(self.caller.client.web3.eth.gas_price)
+        eth_price = get_asset_price('ethereum')
+        gwei_price = eth_price / 10**9
+        print(f'gwei_price = {gwei_price}')
+        estimated_keeper_fees_gwei = (gas_price * MULTICALL_GAS) / 10**9
+        entry_gas = float(estimated_keeper_fees_gwei) * gwei_price
+        entry_exit_gas_usd = entry_gas * 2
+        print(f'SynthetixBacktester - Estimated usd keeper fee = {entry_exit_gas_usd}')
+
+    def build_current_vs_historical_rates_dict(self, rates: list) -> dict:
+        try:
+            current_data = self._get_current_rate_data(rates)
+            weekly_avg = self._get_past_week_average_rate(rates)
+            monthly_avg = self._get_past_month_average_rate(rates)
+            yearly_avg = self._get_past_year_average_rate(rates)
+            historical_data = {
+                'weekly_average': weekly_avg,
+                'monthly_average': monthly_avg,
+                'yearly_average': yearly_avg
+            }
+
+            data = {
+                'current_data': current_data,
+                'historical_data': historical_data
+            }
+
+            logger.info(f'DATA DICT: {data}')
+            return None
+        except Exception as e:
+            logger.error('some error')
+
+    def _get_current_rate_data(self, rates: list) -> float:
+        try:
+            most_recent = rates[-1]
+            current_rate = most_recent['funding_rate']
+            current_velocity = most_recent['funding_velocity']
+            current_skew = float(most_recent['skew'])
+
+            data = {
+                'current_rate': current_rate,
+                'current_velocity': current_velocity,
+                'current_skew': current_skew
+            }
+            return data
+        except Exception as e:
+            logger.error(f"SynthetixBacktester - Error retrieving latest rate data from rates list: {e}")
+            return None
 
     def _get_average_duration_above_mean(self, rates: list, mean: float):
         lower_bound = mean * (1 - BOUND_CONST)
@@ -113,18 +169,13 @@ class SynthetixBacktester:
 
             for block in range(start_block, current_block, step_size):
                 end_block = min(block + step_size, current_block)
-                print(f"Fetching events from {block} to {end_block}")
+                logger.info(f"SynthetixBacktester - Fetching events from {block} to {end_block}")
                 events = self.fetch_events(block, end_block)
                 if events is not None:
                     parsed_events = parse_event_data(events)
-                    print(f"3 - parsed events: {parsed_events}")
                     all_parsed_events.extend(parsed_events)
                 else:
-                    logger.error(f'events = Null for blocks {block} -> {end_block}')
-            
-            # Optionally save to file
-            with open('parsed_events.json', 'w') as f:
-                json.dump(all_parsed_events, f, indent=4)
+                    logger.error(f'SynthetixBacktester - events = Null for blocks {block} -> {end_block}')
 
             return all_parsed_events
         except Exception as e:
@@ -168,34 +219,54 @@ class SynthetixBacktester:
         return long_short_ratio
 
     def _get_past_week_average_rate(self, rates: list) -> float:
-        average_rate = self._calculate_average_funding_rate_for_period(period_days=7, rates=rates)
+        average_rate = self._calculate_average_funding_rate(period_days=7, rates=rates)
         return average_rate
 
     def _get_past_month_average_rate(self, rates: list) -> float:
-        average_rate = self._calculate_average_funding_rate_for_period(period_days=30, rates=rates)
+        average_rate = self._calculate_average_funding_rate(period_days=30, rates=rates)
         return average_rate
 
     def _get_past_year_average_rate(self, rates: list) -> float:
-        average_rate = self._calculate_average_funding_rate_for_period(period_days=math.floor(1000/3), rates=rates)
+        average_rate = self._calculate_average_funding_rate(period_days=math.floor(1000/3), rates=rates)
         return average_rate
 
-    def _calculate_average_funding_rate_for_period(self, period_days: int, rates: list) -> float:
+    def _calculate_average_funding_rate(symbol: str, period_days: int, rates: list, blocks_per_sample=100) -> float:
+        market_id = MarketDirectory.get_market_id(symbol)
+
         current_block = client.eth.block_number
-        start_block = current_block - (period_days * 43200)  # 43200 blocks per day for a 2-second block time
-        
-        filtered_rates = [rate for rate in rates if rate['block_number'] >= start_block]
-        
-        if not filtered_rates:  
-            return float('nan')  
-        
-        rate_total = sum(float(rate['funding_rate']) for rate in filtered_rates)
-        num_rates = len(filtered_rates)
-        
-        mean_rate_for_period = rate_total / num_rates
-        return mean_rate_for_period
+        start_block = current_block - (period_days * 43200)  # 43200 blocks per day
 
-# x = SynthetixBacktester()
-# y = x.retrieve_and_process_events()
-# print(y)
+        filtered_rates = sorted(
+            (rate for rate in rates if rate['block_number'] >= start_block and rate['market_id'] == market_id),
+            key=lambda x: x['block_number']
+        )
 
+        if not filtered_rates:
+            return float('nan')
+
+        sampled_rates = []
         
+        for i in range(len(filtered_rates) - 1):
+            start_rate_info = filtered_rates[i]
+            end_rate_info = filtered_rates[i + 1]
+            start_rate = float(start_rate_info['funding_rate'])
+            end_rate = float(end_rate_info['funding_rate'])
+            start_rate_block = start_rate_info['block_number']
+            end_rate_block = end_rate_info['block_number']
+
+            gradient = (end_rate - start_rate) / (end_rate_block - start_rate_block)
+
+            for block in range(start_rate_block, end_rate_block, blocks_per_sample):
+                interpolated_rate = start_rate + gradient * (block - start_rate_block)
+                sampled_rates.append(interpolated_rate)
+
+        sampled_rates.append(float(filtered_rates[-1]['funding_rate']))
+        
+        average_rate = sum(sampled_rates) / len(sampled_rates)
+
+        return average_rate
+
+x = SynthetixBacktester()
+y = x.build_statistics_dict('ethereum')
+
+            
