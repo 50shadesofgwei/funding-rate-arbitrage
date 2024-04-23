@@ -159,13 +159,17 @@ class BinanceBacktester:
     def build_backtest_data(self, symbol: str) -> dict:
         try:
             formatted_symbol = symbol + 'USDT'
-            max_limit = 30
+            max_limit = 100
             rates = self.caller.get_historical_funding_rate_for_symbol(formatted_symbol, max_limit)
             for rate in rates:
-                timestamp = rate['fundingTime']
-                block_number = get_base_block_number_by_timestamp(timestamp)
-                time.sleep(0.2)
-                rate['fundingTime'] = block_number
+                timestamp = rate['fundingTime'] // 1000
+                if timestamp > MARKET_DEPLOYMENT_TIMESTAMP:
+                    block_number = get_base_block_number_by_timestamp(timestamp)
+                    time.sleep(0.2)
+                    del rate['fundingTime']
+                    rate['block_number'] = block_number
+                else:
+                    continue
             
             return rates
         
@@ -175,4 +179,3 @@ class BinanceBacktester:
 
 x = BinanceBacktester()
 y = x.build_backtest_data('ETH')
-logger.info(f'Binance Data: {y}')

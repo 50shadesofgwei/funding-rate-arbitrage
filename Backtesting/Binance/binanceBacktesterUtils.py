@@ -1,5 +1,7 @@
 from GlobalUtils.logger import logger
 
+MARKET_DEPLOYMENT_TIMESTAMP = 1702522800
+
 def calculate_open_interest_differential_usd(ratio: float, open_interest: float, price: float) -> float:
     try:
         total_parts = ratio + 1

@@ -2,6 +2,7 @@ from APICaller.Binance.binanceUtils import BinanceEnvVars
 from GlobalUtils.logger import *
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
+import json
 
 from dotenv import load_dotenv
 
@@ -56,7 +57,6 @@ class BinanceCaller:
     def get_historical_funding_rate_for_symbol(self, symbol: str, limit: int) -> list:
         response = self.client.funding_rate(symbol=symbol, limit=limit)
         return response
-
 
     def calculate_skew_impact_per_hundred_dollars(symbol, dollar_trade_size):
         """Calculate the skew impact per $100 of contracts."""
