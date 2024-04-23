@@ -14,7 +14,6 @@ class SynthetixPositionController:
     ### WRITE FUNCTIONS ###
     #######################
 
-    @log_function_call
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         try:
             if not self.is_already_position_open():
@@ -103,7 +102,6 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Account creation failed. Error: {e}")
 
-
     def collateral_approval(self, token_address: str, amount: int):
         try:
             perps_address = self.client.spot.market_proxy.address
@@ -158,7 +156,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Failed to get the default account. Error: {e}")
             return None
 
-
     def check_for_accounts(self):
         try:
             account_ids = self.client.perps.account_ids
@@ -173,7 +170,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error checking for or creating accounts: {e}")
             return None
  
-
     def calculate_adjusted_trade_size(self, opportunity, is_long: bool, trade_size: float) -> float:
         try:
             full_asset_name = get_full_asset_name(opportunity['symbol'])
@@ -186,7 +182,6 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Failed to calculate adjusted trade size. Error: {e}")
             return None
-
 
     def is_already_position_open(self) -> bool:
         try:
