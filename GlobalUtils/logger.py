@@ -12,16 +12,6 @@ app_handler.setFormatter(app_formatter)
 logger.addHandler(app_handler)
 logger.setLevel(logging.INFO)
 
-# Setup for the function tracker logger
-function_logger = logging.getLogger("FunctionTracker")
-function_tracker_handler = logging.FileHandler('functionTracker.log')
-function_tracker_handler.setLevel(logging.DEBUG)
-function_tracker_formatter = logging.Formatter('%(asctime)s - [%(levelname)s] - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-function_tracker_handler.setFormatter(function_tracker_formatter)
-function_logger.addHandler(function_tracker_handler)
-function_logger.setLevel(logging.DEBUG)
-
-
 pub.setListenerExcHandler(logging.exception)
 
 def setup_topics():
