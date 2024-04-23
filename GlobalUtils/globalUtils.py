@@ -107,3 +107,27 @@ def get_full_asset_name(symbol: str) -> str:
 
 def adjust_trade_size_for_direction(trade_size: float, is_long: bool) -> float:
     return trade_size if is_long else -trade_size
+
+def get_base_block_number_by_timestamp(timestamp: int) -> int:
+    apikey = os.getenv('BASESCAN_API_KEY')
+    url = "https://api.basescan.org/api"
+    params = {
+        'module': 'block',
+        'action': 'getblocknobytime',
+        'timestamp': timestamp,
+        'closest': 'before',
+        'apikey': apikey
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+        if data.get('status') == '1' and data.get('message') == 'OK':
+            return int(data.get('result'))
+        else:
+            logger.info(f"GlobalUtils - Basescan API Error: {data}")
+            return -1
+    except requests.RequestException as e:
+        print("GlobalUtils - Basescan API HTTP Request failed:", e)
+        return -1

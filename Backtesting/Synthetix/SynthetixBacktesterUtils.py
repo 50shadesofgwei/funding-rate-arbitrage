@@ -88,8 +88,9 @@ def save_events_to_json(events, filename='event_logs.json'):
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON from {filename}: {str(e)}")
 
-def get_time_until_funding_rate_change():
-    pass
-
-
-
+def preprocess_rates(rates):
+    preprocessed_rates = {}
+    for rate in rates:
+        block_number = rate['block_number']
+        preprocessed_rates[block_number] = rate
+    return sorted(preprocessed_rates.values(), key=lambda x: x['block_number'])

@@ -4,8 +4,10 @@ sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
 from APICaller.Binance.binanceCaller import BinanceCaller
 from Backtesting.utils.backtestingUtils import *
 from Backtesting.Binance.binanceBacktesterUtils import *
+from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
 import math
+import time 
 
 class BinanceBacktester:
     BOUND_CONST: float = 0.68 ## 2 std. devs
@@ -23,7 +25,7 @@ class BinanceBacktester:
         average_period_out_of_bounds = self._get_average_duration_above_mean(rates=rates, mean=past_year_average)
         active_out_of_bounds_streak = self._get_current_out_of_bounds_streak(past_year_average, rates)
         open_interest_differential_usd = self._get_open_interest_usd_with_differential(formatted_symbol)
-        effective_apr = calculate_effective_apr(float(rates[0]['fundingRate']))
+
 
         stats = {
             'symbol': symbol,
@@ -35,12 +37,11 @@ class BinanceBacktester:
             'long_short_ratio': open_interest_differential_usd['ratio'],
             'open_interest_usd': open_interest_differential_usd['open_interest_usd'],
             'open_interest_differential_usd': open_interest_differential_usd['differential_usd'],
-            'effective_apr': effective_apr
+
         }
 
         return stats
     
-
     def _get_past_week_average_rate(self, rates: list) -> float:
         average_rate = self._calculate_average_funding_rate_for_period(period_days=7, rates=rates)
         return average_rate
@@ -77,7 +78,6 @@ class BinanceBacktester:
                     break
 
             return current_streak
-
 
     def _get_average_duration_above_mean(self, rates: list, mean: float):
         lower_bound = mean * (1 - self.BOUND_CONST)
@@ -156,4 +156,23 @@ class BinanceBacktester:
             logger.info(f"Failed to fetch open interest for {symbol}: {e}")
             return None
     
+    def build_backtest_data(self, symbol: str) -> dict:
+        try:
+            formatted_symbol = symbol + 'USDT'
+            max_limit = 30
+            rates = self.caller.get_historical_funding_rate_for_symbol(formatted_symbol, max_limit)
+            for rate in rates:
+                timestamp = rate['fundingTime']
+                block_number = get_base_block_number_by_timestamp(timestamp)
+                time.sleep(0.2)
+                rate['fundingTime'] = block_number
+            
+            return rates
+        
+        except Exception as e:
+            logger.error(f'BinanceBacktester - Error while building backtesting data: {e}')
+            return None
 
+x = BinanceBacktester()
+y = x.build_backtest_data('ETH')
+logger.info(f'Binance Data: {y}')

@@ -79,6 +79,4 @@ class BinanceCaller:
         else:
             logger.info(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")
             return None
-    def get_price_of_100_contracts(self):
-        pass
 
