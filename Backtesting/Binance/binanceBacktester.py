@@ -158,6 +158,7 @@ class BinanceBacktester:
     
     def build_backtest_data(self, symbol: str) -> dict:
         try:
+            market_id = MarketDirectory.get_market_id(symbol)
             formatted_symbol = symbol + 'USDT'
             max_limit = 100
             rates = self.caller.get_historical_funding_rate_for_symbol(formatted_symbol, max_limit)
@@ -168,14 +169,19 @@ class BinanceBacktester:
                     time.sleep(0.2)
                     del rate['fundingTime']
                     rate['block_number'] = block_number
+                    rate['funding_rate'] = rate['fundingRate']
+                    del rate['fundingRate']
+                    del rate['symbol']
+                    rate['market_id'] = market_id
                 else:
                     continue
             
+            logger.info(f'binance rates = {rates}')
             return rates
         
         except Exception as e:
             logger.error(f'BinanceBacktester - Error while building backtesting data: {e}')
             return None
 
-x = BinanceBacktester()
-y = x.build_backtest_data('ETH')
+# x = BinanceBacktester()
+# y = x.build_backtest_data('ETH')
