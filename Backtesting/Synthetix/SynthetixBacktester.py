@@ -181,8 +181,8 @@ class SynthetixBacktester:
         try:
             market_id = MarketDirectory.get_market_id(symbol)
             current_block = client.eth.block_number
-            start_block = max(current_block - 1_000_000, 0)  
-            step_size = 1_000_000 
+            start_block = max(current_block - 1000000, 0)  
+            step_size = 1000000 
 
             all_parsed_events = []
 
@@ -197,12 +197,9 @@ class SynthetixBacktester:
                 else:
                     logger.error(f'SynthetixBacktester - Events = Null for blocks {block} -> {end_block}')
 
-            file_path = 'data.json'
-            with open(file_path, 'w') as file:
-                json.dump(all_parsed_events, file, indent=4)
             return all_parsed_events
         except Exception as e:
-            logger.info(f"SynthetixBacktester - Error while retrieving historical events from node: {e}")
+            logger.error(f"SynthetixBacktester - Error while retrieving historical events from node: {e}")
             return None
 
     def fetch_events(self, start_block, end_block):

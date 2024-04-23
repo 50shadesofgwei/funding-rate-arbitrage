@@ -33,22 +33,32 @@ def get_perps_contract():
         return client.eth.contract(address=ContractAddresses.PERPS.value, abi=abi)
 
 def parse_event_data(events):
-    """
-    Parse event data into a structured dictionary.
-    """
-    parsed_events = []
-    for event in events:
-        data = {
-            "market_id": event['args']['marketId'],
-            "price": event['args']['price'],
-            "size": event['args']['size'],
-            "skew": event['args']['skew'],
-            "funding_rate": event['args']['currentFundingRate'],
-            "funding_velocity": event['args']['currentFundingVelocity'],
-            "block_number": event['blockNumber']
-        }
-        parsed_events.append(data)
-    return parsed_events
+    try:
+        parsed_events = []
+        for event in events:
+            market_id = event['args']['marketId']
+            price = event['args']['price'] / 10**18
+            size = event['args']['size'] / 10**18
+            skew = event['args']['skew'] / 10**18
+            funding_rate = (event['args']['currentFundingRate'] / 10**18) / 3
+            funding_velocity = event['args']['currentFundingVelocity'] / 10**18
+
+            data = {
+                "market_id": market_id,
+                "price": price,
+                "size": size,
+                "skew": skew,
+                "funding_rate": funding_rate,
+                "funding_velocity": funding_velocity,
+                "block_number": event['blockNumber']
+            }
+            logger.info(f'parsed event data = {data}')
+            parsed_events.append(data)
+
+        return parsed_events
+
+    except Exception as e:
+        logger.error(f'Error parsing event data: {e}')
 
 def _convert_to_dict(data):
     """
