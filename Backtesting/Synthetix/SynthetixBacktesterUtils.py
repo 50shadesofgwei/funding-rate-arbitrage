@@ -52,7 +52,6 @@ def parse_event_data(events):
                 "funding_velocity": funding_velocity,
                 "block_number": event['blockNumber']
             }
-            logger.info(f'parsed event data = {data}')
             parsed_events.append(data)
 
         return parsed_events

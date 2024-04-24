@@ -293,7 +293,31 @@ class SynthetixBacktester:
             logger.error(f'SynthetixBacktester - Error while calculating average funding rate: {e}')
             return 0.0
 
-x = SynthetixBacktester()
-y = x.retrieve_and_process_events('ETH')
+    def _save_data_to_json(self, data, symbol: str):
+        try:
+            filename = f'Backtesting/MasterBacktester/historicalDataJSON/Synthetix/{symbol}Historical.json'
+            with open(filename, 'w') as file:
+                json.dump(data, file, indent=4)
+        except Exception as e:
+            logger.error(f'SynthetixBacktester - Error while logging historical data to JSON file: {e}')
+            return
+
+    def get_and_save_historical_data(self, symbol: str):
+        try:
+            data = self.retrieve_and_process_events(symbol)
+            self._save_data_to_json(data, symbol)
+            return
+        except Exception as e:
+            logger.error(f'SynthetixBacktester - Error while fetching historical data for JSON file: {e}')
+            return
+
+    def load_data_from_json(self, symbol: str):
+        try:
+            filename = f'Backtesting/MasterBacktester/historicalDataJSON/Synthetix/{symbol}Historical.json'
+            with open(filename, 'r') as file:
+                return json.load(file)
+        except Exception as e:
+            logger.error(f'SynthetixBacktester - Error while retriving historical data from JSON file: {e}')
+            return
 
             
