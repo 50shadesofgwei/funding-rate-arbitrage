@@ -42,7 +42,7 @@ def parse_event_data(events):
             price = event['args']['price'] / 10**18
             size = event['args']['size'] / 10**18
             skew = event['args']['skew'] / 10**18
-            funding_rate = (event['args']['currentFundingRate'] / 10**18) / 3
+            funding_rate = (event['args']['currentFundingRate'] / 10**18)
             funding_velocity = event['args']['currentFundingVelocity'] / 10**18
 
             data = {
