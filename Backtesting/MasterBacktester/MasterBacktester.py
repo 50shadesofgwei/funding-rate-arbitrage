@@ -1,6 +1,9 @@
 from Backtesting.Binance.binanceBacktester import BinanceBacktester
 from Backtesting.Synthetix.SynthetixBacktester import SynthetixBacktester
 from Backtesting.utils.backtestingUtils import *
+from Backtesting.Binance.binanceBacktesterUtils import *
+from Backtesting.Synthetix.SynthetixBacktesterUtils import *
+from Backtesting.MasterBacktester.MasterBacktesterUtils import *
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from GlobalUtils.logger import logger
 import time
@@ -23,112 +26,38 @@ class MasterBacktester:
                     time.sleep(3)
         except Exception as e:
             logger.error(f'MasterBacktester - Error encountered while updating data: {e}')
-
-    def find_nearest_binance_entry(self, synthetix_block_number, binance_df):
-        time_diffs = abs(binance_df['block_number'] - synthetix_block_number)
-        idx_nearest = time_diffs.idxmin()
-
-        return binance_df.loc[idx_nearest, 'funding_rate']
-
-    def analyse_data(self, symbol: str):
-        synthetix_data = self.synthetix.load_data_from_json(symbol)
-        binance_data = self.binance.load_data_from_json(symbol)
-
-        synthetix_df = pd.DataFrame(synthetix_data)
-        binance_df = pd.DataFrame(binance_data)
-
-        binance_df['funding_rate'] = pd.to_numeric(binance_df['funding_rate'])
-        synthetix_df['nearest_binance_funding_rate'] = synthetix_df['block_number'].apply(
-            lambda bn: self.find_nearest_binance_entry(bn, binance_df)
-        )
-        synthetix_df['funding_rate_discrepancy'] = synthetix_df['funding_rate'] - synthetix_df['nearest_binance_funding_rate']
-        arbitrage_opportunities = synthetix_df[synthetix_df['funding_rate_discrepancy'].abs() > 0.0001]
-
-        return_value = {
-            "snx": synthetix_df,
-            "binance": binance_df
-        }
-
-        return return_value
-
     
-    def backtest_arbitrage_strategy(self, synthetix_funding_events, binance_funding_events: list, entry_threshold=0.0001, exit_threshold=0.00005):
+    def backtest_arbitrage_strategy(self, symbol: str, entry_threshold=0.0001, exit_threshold=0.00005):
+        synthetix_funding_events = self.synthetix.load_data_from_json(symbol)
+        binance_funding_events = self.binance.load_data_from_json(symbol)
+
         synthetix_df = pd.DataFrame(synthetix_funding_events)
         binance_df = pd.DataFrame(binance_funding_events).sort_values('block_number')
 
-        open_position = False
-        position_size_eth = 0.0
         total_profit = 0.0
-        entry_details = {}
-
         trades = []
 
-        binance_idx = 0
+        potential_trades = determine_trade_entry_exit_points(synthetix_df, binance_df, entry_threshold, exit_threshold)
 
-        for i, row in synthetix_df.iterrows():
-            funding_rate_snx = row['funding_rate']
-            block_number_snx = row['block_number']
+        for trade in potential_trades:
+            binance_trade_events = extract_funding_events(binance_df, trade['entry_block_binance'], trade['exit_block_binance'])
+            binance_funding_impact = calculate_total_funding_impact(binance_trade_events, trade['binance_position_size'])
 
-            while binance_idx < len(binance_df) and block_number_snx >= binance_df.iloc[binance_idx]['block_number']:
-                last_binance_block = binance_df.iloc[binance_idx]['block_number']
-                binance_funding_rate = float(binance_df.iloc[binance_idx]['funding_rate'])
-                if open_position:
-                    binance_funding_paid = binance_funding_rate * -position_size_eth  # Opposite position for Binance
-                binance_idx += 1
+            synthetix_trade_data = synthetix_df[(synthetix_df['block_number'] >= trade['entry_block_snx']) & (synthetix_df['block_number'] <= trade['exit_block_snx'])]
+            synthetix_funding_impact = accumulate_funding_costs(synthetix_trade_data, trade['entry_block_snx'], trade['exit_block_snx'], trade['snx_position_size'])
 
-            funding_discrepancy = funding_rate_snx - binance_funding_rate
+            trade_details = calculate_profit_or_loss_for_trade(trade, synthetix_funding_impact, binance_funding_impact)
+            trades.append(trade_details)
+            total_profit += trade_details['profit']['total']
 
-            if abs(funding_discrepancy) > entry_threshold and not open_position:
-                position_size_eth = float(row['skew'] / 2)
-                open_position = True
-                entry_details = {
-                    'entry_block': block_number_snx,
-                    'entry_funding_rate_snx': funding_rate_snx,
-                    'entry_funding_rate_binance': binance_funding_rate if open_position else 0,
-                    'entry_discrepancy': funding_discrepancy
-                }
+        x = calculate_effective_APR(trades, total_profit, base_trade_size=2)
+        logger.info(f'APR calculated at: {x}')
 
-            if open_position and (abs(funding_discrepancy) < exit_threshold or i == len(synthetix_df) - 1):
-                snx_pnl = funding_rate_snx * position_size_eth
-                binance_pnl = -binance_funding_paid  # PnL for opposite position
-                total_pnl = snx_pnl + binance_pnl  # Correcting total PnL calculation
-                total_profit += total_pnl
-                trades.append({
-                    'synthetix': {
-                        'entry_block': entry_details['entry_block'],
-                        'exit_block': block_number_snx,
-                        'position_size_eth': position_size_eth,
-                        'pnl': snx_pnl
-                    },
-                    'binance': {
-                        'entry_block': entry_details['entry_block'],
-                        'exit_block': block_number_snx,
-                        'position_size_eth': -position_size_eth,  # Opposite position size
-                        'pnl': binance_pnl
-                    },
-                    'joint': {
-                        'total_pnl': total_pnl,
-                        'entry_discrepancy': entry_details['entry_discrepancy'],
-                        'exit_discrepancy': funding_discrepancy
-                    }
-                })
-                open_position = False
-
-        # Print detailed trade logs
-        for trade in trades:
-            print(f"Synthetix Trade Details: {trade['synthetix']}")
-            print(f"Binance Trade Details: {trade['binance']}")
-            print(f"Joint Trade Details: {trade['joint']}")
+        plot_discrepancies_with_trades(synthetix_df, binance_df, trades)
 
         return total_profit
 
-
-entry_threshold = 0.0001
-exit_threshold = 0.00005 
-
 x = MasterBacktester()
-y = x.binance.load_data_from_json('ETH')
-z = x.synthetix.load_data_from_json('ETH')
+x.backtest_arbitrage_strategy('ETH')
 
-profit = x.backtest_arbitrage_strategy(z, y)
-print(f"Total Profit from Arbitrage Strategy: {profit}")
+
