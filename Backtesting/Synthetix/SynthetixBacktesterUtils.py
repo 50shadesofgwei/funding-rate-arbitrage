@@ -5,6 +5,8 @@ from GlobalUtils.logger import *
 from web3 import *
 from web3.datastructures import AttributeDict
 from hexbytes import HexBytes
+from GlobalUtils.globalUtils import *
+import pandas as pd
 
 from dotenv import load_dotenv
 
@@ -59,16 +61,16 @@ def parse_event_data(events):
     except Exception as e:
         logger.error(f'Error parsing event data: {e}')
 
-def _convert_to_dict(data):
+def convert_to_dict(data):
     """
     Recursively converts data which may include nested AttributeDicts and HexBytes into standard dictionaries.
     """
     if isinstance(data, AttributeDict) or isinstance(data, dict):
-        return {key: _convert_to_dict(value) for key, value in dict(data).items()}
+        return {key: convert_to_dict(value) for key, value in dict(data).items()}
     elif isinstance(data, HexBytes):
         return data.hex()
     elif isinstance(data, list):
-        return [_convert_to_dict(item) for item in data]
+        return [convert_to_dict(item) for item in data]
     else:
         return data
 
@@ -76,7 +78,7 @@ def save_events_to_json(events, filename='event_logs.json'):
     """
     Appends a list of event data to a JSON file. If the file doesn't exist, it creates a new one.
     """
-    events_dict = [_convert_to_dict(event) for event in events]
+    events_dict = [convert_to_dict(event) for event in events]
     
     try:
         if os.path.exists(filename) and os.path.getsize(filename) > 0:
@@ -97,9 +99,30 @@ def save_events_to_json(events, filename='event_logs.json'):
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON from {filename}: {str(e)}")
 
+def save_data_to_json(data, symbol: str):
+        try:
+            filename = f'Backtesting/MasterBacktester/historicalDataJSON/Synthetix/{symbol}Historical.json'
+            with open(filename, 'w') as file:
+                json.dump(data, file, indent=4)
+        except Exception as e:
+            logger.error(f'SynthetixBacktester - Error while logging historical data to JSON file: {e}')
+            return
+
 def preprocess_rates(rates):
     preprocessed_rates = {}
     for rate in rates:
         block_number = rate['block_number']
         preprocessed_rates[block_number] = rate
     return sorted(preprocessed_rates.values(), key=lambda x: x['block_number'])
+
+def calculate_adjusted_funding_rate(initial_rate, funding_velocity, blocks_since_update):
+    return initial_rate + (funding_velocity / BLOCKS_PER_DAY_BASE) * blocks_since_update
+
+def accumulate_funding_costs(data: pd.DataFrame, start_block, end_block, position_size):
+    total_funding = 0
+    relevant_data: pd.DataFrame = data[(data['block_number'] >= start_block) & (data['block_number'] <= end_block)]
+    for index, row in relevant_data.iterrows():
+        blocks_since_start = row['block_number'] - start_block
+        adjusted_rate = row['funding_rate'] + (row['funding_velocity'] / BLOCKS_PER_DAY_BASE) * blocks_since_start
+        total_funding += (adjusted_rate * position_size) / BLOCKS_PER_DAY_BASE
+    return total_funding

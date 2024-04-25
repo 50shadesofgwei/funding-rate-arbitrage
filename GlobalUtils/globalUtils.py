@@ -8,6 +8,8 @@ from GlobalUtils.logger import *
 
 load_dotenv()
 
+BLOCKS_PER_DAY_BASE = 43200
+
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_positions"
     OPPORTUNITY_FOUND = "opportunity_found"
