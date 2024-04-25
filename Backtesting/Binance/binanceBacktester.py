@@ -161,11 +161,23 @@ class BinanceBacktester:
         """Fetches historical funding rate data for a symbol from the Binance API and writes it to a JSON file"""
         try:
             data = self.build_backtest_data(symbol)
-            self._save_data_to_json(data, symbol)
+            save_data_to_json(data, symbol)
             return
         except Exception as e:
             logger.error(f'BinanceBacktester - Error while fetching historical data for JSON file: {e}')
             return
+
+    def load_data_from_json(self, symbol: str):
+        try:
+            filename = f'Backtesting/MasterBacktester/historicalDataJSON/Binance/{symbol}Historical.json'
+            with open(filename, 'r') as file:
+                data = json.load(file)
+            if not isinstance(data, list) or not all(isinstance(item, dict) for item in data):
+                raise ValueError("BinanceBacktester - Loaded data is not a list of dictionaries.")
+            return data
+        except Exception as e:
+            logger.error(f'BinanceBacktester - Error while retrieving historical data from JSON file: {e}')
+            return None
 
     def build_backtest_data(self, symbol: str) -> dict:
         try:
@@ -194,20 +206,3 @@ class BinanceBacktester:
             logger.error(f'BinanceBacktester - Error while building backtesting data: {e}')
             return None
 
-    def _save_data_to_json(self, data, symbol: str):
-        try:
-            filename = f'Backtesting/MasterBacktester/historicalDataJSON/Binance/{symbol}Historical.json'
-            with open(filename, 'w') as file:
-                json.dump(data, file, indent=4)
-        except Exception as e:
-            logger.error(f'BinanceBacktester - Error while logging historical data to JSON file: {e}')
-            return
-
-    def load_data_from_json(self, symbol: str):
-        try:
-            filename = f'Backtesting/MasterBacktester/historicalDataJSON/Binance/{symbol}Historical.json'
-            with open(filename, 'r') as file:
-                return json.load(file)
-        except Exception as e:
-            logger.error(f'BinanceBacktester - Error while retriving historical data from JSON file: {e}')
-            return

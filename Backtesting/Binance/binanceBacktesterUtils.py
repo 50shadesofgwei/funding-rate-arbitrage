@@ -1,4 +1,6 @@
 from GlobalUtils.logger import logger
+import pandas as pd
+import json
 
 MARKET_DEPLOYMENT_TIMESTAMP = 1702522800
 
@@ -18,3 +20,21 @@ def calculate_open_interest_differential_usd(ratio: float, open_interest: float,
     except Exception as e:
         logger.info(f"BinanceBacktesterUtils - An error occurred: {e}")
     return 0.0
+
+def save_data_to_json(data, symbol: str):
+    try:
+        filename = f'Backtesting/MasterBacktester/historicalDataJSON/Binance/{symbol}Historical.json'
+        with open(filename, 'w') as file:
+            json.dump(data, file, indent=4)
+    except Exception as e:
+        logger.error(f'BinanceBacktester - Error while logging historical data to JSON file: {e}')
+        return
+
+def extract_funding_events(funding_data: pd.DataFrame, start_block: int, end_block: int):
+    return funding_data[(funding_data['block_number'] >= start_block) & (funding_data['block_number'] <= end_block)]
+
+def calculate_total_funding_impact(funding_events: pd.DataFrame, position_size: float):
+    total_impact: float = 0
+    for index, event in funding_events.iterrows():
+        total_impact += event['funding_rate'] * position_size
+    return total_impact
