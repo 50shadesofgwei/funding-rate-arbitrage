@@ -122,18 +122,18 @@ def calculate_effective_APR(trades, total_profit, base_trade_size):
 def log_trade_details(trade):
     logger.info(f"Trade Log: {trade}")
 
-def plot_funding_rates_over_time(synthetix_data, binance_data):
+def plot_funding_rates_over_time(synthetix_data, binance_data, symbol: str):
     plt.figure(figsize=(12, 6))
     plt.plot(synthetix_data['block_number'], synthetix_data['funding_rate'], label='Synthetix Funding Rate', color='blue')
     plt.plot(binance_data['block_number'], binance_data['funding_rate'], label='Binance Funding Rate', color='red')
-    plt.title('Funding Rates on Binance vs Synthetix Over Time')
+    plt.title(f'Funding Rates on Binance vs Synthetix Over Time - Asset: {symbol}')
     plt.xlabel('Block Number')
     plt.ylabel('Funding Rate')
     plt.legend()
     plt.grid(True)
     plt.show()
 
-def plot_funding_rate_discrepancies_over_time(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame):
+def plot_funding_rate_discrepancies_over_time(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, symbol: str):
     # Ensure the data is sorted by block number
     synthetix_data = synthetix_data.sort_values('block_number').reset_index(drop=True)
     binance_data = binance_data.sort_values('block_number').reset_index(drop=True)
@@ -148,14 +148,14 @@ def plot_funding_rate_discrepancies_over_time(synthetix_data: pd.DataFrame, bina
 
     plt.figure(figsize=(12, 6))
     plt.plot(combined_data['nearest_block'], combined_data['discrepancy'], label='Funding Rate Discrepancy', color='blue')
-    plt.title('Funding Rate Discrepancies Over Time')
+    plt.title(f'Funding Rate Discrepancy - Asset: {symbol}')
     plt.xlabel('Block Number')
     plt.ylabel('Discrepancy')
     plt.legend()
     plt.grid(True)
     plt.show()
 
-def plot_discrepancies_with_trades(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, trades):
+def plot_discrepancies_with_trades(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, trades, symbol: str):
     synthetix_data = synthetix_data.sort_values('block_number').reset_index(drop=True)
     binance_data = binance_data.sort_values('block_number').reset_index(drop=True)
 
@@ -173,7 +173,7 @@ def plot_discrepancies_with_trades(synthetix_data: pd.DataFrame, binance_data: p
     plt.scatter(entry_blocks, entry_discrepancies, color='green', label='Entry Points', marker='^', s=100)
     plt.scatter(exit_blocks, exit_discrepancies, color='black', label='Exit Points', marker='v', s=100)
 
-    plt.title('Funding Rate Discrepancies Overlaid with Trade Entry and Exit Points')
+    plt.title(f'Funding Rate Discrepancy w/ Trades - Asset: {symbol}')
     plt.xlabel('Block Number')
     plt.ylabel('Discrepancy')
     plt.legend()

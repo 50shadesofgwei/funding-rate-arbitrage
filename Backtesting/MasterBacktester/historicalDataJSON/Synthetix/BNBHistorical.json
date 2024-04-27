@@ -1,0 +1,605 @@
+[
+    {
+        "market_id": 1800,
+        "price": 544.77477509,
+        "size": 0.046930894029801225,
+        "skew": 0.046930894029801225,
+        "funding_rate": 0.0,
+        "funding_velocity": 6.758048740284e-06,
+        "block_number": 13315638
+    },
+    {
+        "market_id": 1800,
+        "price": 544.87724386,
+        "size": 0.0,
+        "skew": 0.0,
+        "funding_rate": 1.87723576e-09,
+        "funding_velocity": 0.0,
+        "block_number": 13315650
+    },
+    {
+        "market_id": 1800,
+        "price": 553.03133466,
+        "size": 0.1447,
+        "skew": 0.1447,
+        "funding_rate": 1.87723576e-09,
+        "funding_velocity": 2.08368e-05,
+        "block_number": 13330848
+    },
+    {
+        "market_id": 1800,
+        "price": 548.10863431,
+        "size": 0.0,
+        "skew": 0.0,
+        "funding_rate": 3.424996902425e-06,
+        "funding_velocity": 0.0,
+        "block_number": 13337945
+    },
+    {
+        "market_id": 1800,
+        "price": 550.86862934,
+        "size": 0.3008,
+        "skew": 0.3008,
+        "funding_rate": 3.424996902425e-06,
+        "funding_velocity": 4.33152e-05,
+        "block_number": 13344379
+    },
+    {
+        "market_id": 1800,
+        "price": 550.15196209,
+        "size": 91.2205,
+        "skew": 91.2205,
+        "funding_rate": 4.12686356909e-06,
+        "funding_velocity": 0.013135752,
+        "block_number": 13345079
+    },
+    {
+        "market_id": 1800,
+        "price": 551.83190001,
+        "size": 109.2205,
+        "skew": 73.2205,
+        "funding_rate": 0.000637197133569089,
+        "funding_velocity": 0.010543752,
+        "block_number": 13347161
+    },
+    {
+        "market_id": 1800,
+        "price": 540.7746673,
+        "size": 118.4481,
+        "skew": 63.9929,
+        "funding_rate": 0.002429879041902421,
+        "funding_velocity": 0.0092149776,
+        "block_number": 13354506
+    },
+    {
+        "market_id": 1800,
+        "price": 545.90251894,
+        "size": 136.4481,
+        "skew": 45.9929,
+        "funding_rate": 0.002753896425569087,
+        "funding_velocity": 0.0066229776,
+        "block_number": 13356025
+    },
+    {
+        "market_id": 1800,
+        "price": 542.08262561,
+        "size": 186.4481,
+        "skew": 95.9929,
+        "funding_rate": 0.002985547331902419,
+        "funding_velocity": 0.0138229776,
+        "block_number": 13357536
+    },
+    {
+        "market_id": 1800,
+        "price": 542.21870749,
+        "size": 216.4481,
+        "skew": 125.9929,
+        "funding_rate": 0.002998026408902418,
+        "funding_velocity": 0.0181429776,
+        "block_number": 13357575
+    },
+    {
+        "market_id": 1800,
+        "price": 540.71894,
+        "size": 186.4481,
+        "skew": 95.9929,
+        "funding_rate": 0.00308538148623575,
+        "funding_velocity": 0.0138229776,
+        "block_number": 13357783
+    },
+    {
+        "market_id": 1800,
+        "price": 542.78007968,
+        "size": 216.4481,
+        "skew": 125.9929,
+        "funding_rate": 0.003138497557569082,
+        "funding_velocity": 0.0181429776,
+        "block_number": 13357949
+    },
+    {
+        "market_id": 1800,
+        "price": 544.7,
+        "size": 166.4481,
+        "skew": 75.9929,
+        "funding_rate": 0.003264070481235747,
+        "funding_velocity": 0.0109429776,
+        "block_number": 13358248
+    },
+    {
+        "market_id": 1800,
+        "price": 544.75957672,
+        "size": 186.4481,
+        "skew": 95.9929,
+        "funding_rate": 0.003267110197235745,
+        "funding_velocity": 0.0138229776,
+        "block_number": 13358260
+    },
+    {
+        "market_id": 1800,
+        "price": 544.76896468,
+        "size": 236.4481,
+        "skew": 145.9929,
+        "funding_rate": 0.003280549203235743,
+        "funding_velocity": 0.0210229776,
+        "block_number": 13358302
+    },
+    {
+        "market_id": 1800,
+        "price": 543.45197027,
+        "size": 291.6848,
+        "skew": 90.7562,
+        "funding_rate": 0.003448441038235741,
+        "funding_velocity": 0.0130688928,
+        "block_number": 13358647
+    },
+    {
+        "market_id": 1800,
+        "price": 543.46311788,
+        "size": 191.6848,
+        "skew": -9.2438,
+        "funding_rate": 0.00345751665823574,
+        "funding_velocity": -0.0013311072,
+        "block_number": 13358677
+    },
+    {
+        "market_id": 1800,
+        "price": 559.96262387,
+        "size": 182.6848,
+        "skew": -0.2438,
+        "funding_rate": 0.003403224739569075,
+        "funding_velocity": -3.51072e-05,
+        "block_number": 13360439
+    },
+    {
+        "market_id": 1800,
+        "price": 563.72480164,
+        "size": 184.3648,
+        "skew": 1.4362,
+        "funding_rate": 0.003395236226235743,
+        "funding_velocity": 0.0002068128,
+        "block_number": 13370269
+    },
+    {
+        "market_id": 1800,
+        "price": 555.6592686,
+        "size": 182.384,
+        "skew": -0.5446,
+        "funding_rate": 0.003412015829569075,
+        "funding_velocity": -7.84224e-05,
+        "block_number": 13373774
+    },
+    {
+        "market_id": 1800,
+        "price": 560.25,
+        "size": 91.4643,
+        "skew": -91.4643,
+        "funding_rate": 0.003401356192235743,
+        "funding_velocity": -0.0131708592,
+        "block_number": 13379646
+    },
+    {
+        "market_id": 1800,
+        "price": 558.87630327,
+        "size": 64.4643,
+        "skew": -64.4643,
+        "funding_rate": 0.003052877209235745,
+        "funding_velocity": -0.0092828592,
+        "block_number": 13380789
+    },
+    {
+        "market_id": 1800,
+        "price": 560.71463548,
+        "size": 9.2276,
+        "skew": -9.2276,
+        "funding_rate": 0.002608933063235747,
+        "funding_velocity": -0.0013287744,
+        "block_number": 13382855
+    },
+    {
+        "market_id": 1800,
+        "price": 557.57075301,
+        "size": 59.2276,
+        "skew": 40.7724,
+        "funding_rate": 0.002175358897902414,
+        "funding_velocity": 0.0058712256,
+        "block_number": 13396951
+    },
+    {
+        "market_id": 1800,
+        "price": 558.05218812,
+        "size": 61.2276,
+        "skew": 42.7724,
+        "funding_rate": 0.002195745097902412,
+        "funding_velocity": 0.0061592256,
+        "block_number": 13397101
+    },
+    {
+        "market_id": 1800,
+        "price": 556.9523682,
+        "size": 9.2276,
+        "skew": -9.2276,
+        "funding_rate": 0.002241226416569078,
+        "funding_velocity": -0.0013287744,
+        "block_number": 13397420
+    },
+    {
+        "market_id": 1800,
+        "price": 571.74997299,
+        "size": 29.2276,
+        "skew": 10.7724,
+        "funding_rate": 0.00101524748056908,
+        "funding_velocity": 0.0015512256,
+        "block_number": 13437278
+    },
+    {
+        "market_id": 1800,
+        "price": 571.69017255,
+        "size": 59.2276,
+        "skew": 40.7724,
+        "funding_rate": 0.001016647892569078,
+        "funding_velocity": 0.0058712256,
+        "block_number": 13437317
+    },
+    {
+        "market_id": 1800,
+        "price": 572.38318949,
+        "size": 84.2276,
+        "skew": 65.7724,
+        "funding_rate": 0.001095882256569076,
+        "funding_velocity": 0.0094712256,
+        "block_number": 13437900
+    },
+    {
+        "market_id": 1800,
+        "price": 571.80197517,
+        "size": 59.2276,
+        "skew": 40.7724,
+        "funding_rate": 0.001126137560569075,
+        "funding_velocity": 0.0058712256,
+        "block_number": 13438038
+    },
+    {
+        "market_id": 1800,
+        "price": 575.16471024,
+        "size": 84.2276,
+        "skew": 65.7724,
+        "funding_rate": 0.001224670860569073,
+        "funding_velocity": 0.0094712256,
+        "block_number": 13438763
+    },
+    {
+        "market_id": 1800,
+        "price": 575.12687778,
+        "size": 34.2276,
+        "skew": 15.7724,
+        "funding_rate": 0.001234317479235738,
+        "funding_velocity": 0.0022712256,
+        "block_number": 13438807
+    },
+    {
+        "market_id": 1800,
+        "price": 575.9001987,
+        "size": 59.2276,
+        "skew": 40.7724,
+        "funding_rate": 0.001235789569902403,
+        "funding_velocity": 0.0058712256,
+        "block_number": 13438835
+    },
+    {
+        "market_id": 1800,
+        "price": 574.89989964,
+        "size": 9.2276,
+        "skew": -9.2276,
+        "funding_rate": 0.001351855001902401,
+        "funding_velocity": -0.0013287744,
+        "block_number": 13439689
+    },
+    {
+        "market_id": 1800,
+        "price": 575.84527,
+        "size": 14.4447,
+        "skew": -14.4447,
+        "funding_rate": 0.001350224792569069,
+        "funding_velocity": -0.0020800368,
+        "block_number": 13439742
+    },
+    {
+        "market_id": 1800,
+        "price": 576.12283147,
+        "size": 0.0,
+        "skew": 0.0,
+        "funding_rate": 0.001080012604569071,
+        "funding_velocity": 0.0,
+        "block_number": 13445354
+    },
+    {
+        "market_id": 1800,
+        "price": 605.54999999,
+        "size": 0.3843,
+        "skew": 0.3843,
+        "funding_rate": 0.001080012604569071,
+        "funding_velocity": 5.53392e-05,
+        "block_number": 13589467
+    },
+    {
+        "market_id": 1800,
+        "price": 601.63613,
+        "size": 2.4127,
+        "skew": 2.4127,
+        "funding_rate": 0.001081488316569069,
+        "funding_velocity": 0.0003474288,
+        "block_number": 13590619
+    },
+    {
+        "market_id": 1800,
+        "price": 602.39736507,
+        "size": 2.0284,
+        "skew": 2.0284,
+        "funding_rate": 0.001082228211235734,
+        "funding_velocity": 0.0002920896,
+        "block_number": 13590711
+    },
+    {
+        "market_id": 1800,
+        "price": 596.95,
+        "size": 4.6884,
+        "skew": 4.6884,
+        "funding_rate": 0.001093965885902399,
+        "funding_velocity": 0.0006751296,
+        "block_number": 13592447
+    },
+    {
+        "market_id": 1800,
+        "price": 598.75325,
+        "size": 5.1504,
+        "skew": 5.1504,
+        "funding_rate": 0.001120517857902397,
+        "funding_velocity": 0.0007416576,
+        "block_number": 13594146
+    },
+    {
+        "market_id": 1800,
+        "price": 607.89085365,
+        "size": 15.1504,
+        "skew": 15.1504,
+        "funding_rate": 0.001418039297902394,
+        "funding_velocity": 0.0021816576,
+        "block_number": 13611476
+    },
+    {
+        "market_id": 1800,
+        "price": 607.84699245,
+        "size": 17.1504,
+        "skew": 17.1504,
+        "funding_rate": 0.001419301831235726,
+        "funding_velocity": 0.0024696576,
+        "block_number": 13611501
+    },
+    {
+        "market_id": 1800,
+        "price": 608.13864919,
+        "size": 23.1504,
+        "skew": 23.1504,
+        "funding_rate": 0.001531579783235724,
+        "funding_velocity": 0.0033336576,
+        "block_number": 13613465
+    },
+    {
+        "market_id": 1800,
+        "price": 605.25,
+        "size": 20.1504,
+        "skew": 20.1504,
+        "funding_rate": 0.001580967303235722,
+        "funding_velocity": 0.0029016576,
+        "block_number": 13614105
+    },
+    {
+        "market_id": 1800,
+        "price": 604.9,
+        "size": 15.1504,
+        "skew": 15.1504,
+        "funding_rate": 0.00159023648723572,
+        "funding_velocity": 0.0021816576,
+        "block_number": 13614243
+    },
+    {
+        "market_id": 1800,
+        "price": 605.12566618,
+        "size": 30.1504,
+        "skew": 30.1504,
+        "funding_rate": 0.001632910113902385,
+        "funding_velocity": 0.0043416576,
+        "block_number": 13615088
+    },
+    {
+        "market_id": 1800,
+        "price": 604.82630838,
+        "size": 35.1504,
+        "skew": 35.1504,
+        "funding_rate": 0.001635422647235717,
+        "funding_velocity": 0.0050616576,
+        "block_number": 13615113
+    },
+    {
+        "market_id": 1800,
+        "price": 605.79855036,
+        "size": 45.1504,
+        "skew": 45.1504,
+        "funding_rate": 0.001656278551235715,
+        "funding_velocity": 0.0065016576,
+        "block_number": 13615291
+    },
+    {
+        "market_id": 1800,
+        "price": 606.2852657,
+        "size": 55.1504,
+        "skew": 55.1504,
+        "funding_rate": 0.001693903884569047,
+        "funding_velocity": 0.0079416576,
+        "block_number": 13615541
+    },
+    {
+        "market_id": 1800,
+        "price": 606.5,
+        "size": 45.1504,
+        "skew": 45.1504,
+        "funding_rate": 0.001784350540569045,
+        "funding_velocity": 0.0065016576,
+        "block_number": 13616033
+    },
+    {
+        "market_id": 1800,
+        "price": 605.49177626,
+        "size": 35.1504,
+        "skew": 35.1504,
+        "funding_rate": 0.001849367116569043,
+        "funding_velocity": 0.0050616576,
+        "block_number": 13616465
+    },
+    {
+        "market_id": 1800,
+        "price": 607.06810554,
+        "size": 55.1504,
+        "skew": 55.1504,
+        "funding_rate": 0.002065542076569041,
+        "funding_velocity": 0.0079416576,
+        "block_number": 13618310
+    },
+    {
+        "market_id": 1800,
+        "price": 606.78827063,
+        "size": 45.1504,
+        "skew": 45.1504,
+        "funding_rate": 0.002176945884569039,
+        "funding_velocity": 0.0065016576,
+        "block_number": 13618916
+    },
+    {
+        "market_id": 1800,
+        "price": 607.05,
+        "size": 35.1504,
+        "skew": 35.1504,
+        "funding_rate": 0.002218032748569038,
+        "funding_velocity": 0.0050616576,
+        "block_number": 13619189
+    },
+    {
+        "market_id": 1800,
+        "price": 605.774325,
+        "size": 68.1504,
+        "skew": 2.1504,
+        "funding_rate": 0.003123038380569036,
+        "funding_velocity": 0.0003096576,
+        "block_number": 13626913
+    },
+    {
+        "market_id": 1800,
+        "price": 609.32313092,
+        "size": 88.1504,
+        "skew": 22.1504,
+        "funding_rate": 0.003162835116569034,
+        "funding_velocity": 0.0031896576,
+        "block_number": 13632465
+    },
+    {
+        "market_id": 1800,
+        "price": 608.69230507,
+        "size": 109.1504,
+        "skew": 1.1504,
+        "funding_rate": 0.003200638465902366,
+        "funding_velocity": 0.0001656576,
+        "block_number": 13632977
+    },
+    {
+        "market_id": 1800,
+        "price": 610.97678489,
+        "size": 134.1504,
+        "skew": 26.1504,
+        "funding_rate": 0.003209550231235698,
+        "funding_velocity": 0.0037656576,
+        "block_number": 13635301
+    },
+    {
+        "market_id": 1800,
+        "price": 610.96118895,
+        "size": 59.1504,
+        "skew": -48.8496,
+        "funding_rate": 0.003234305943235696,
+        "funding_velocity": -0.0070343424,
+        "block_number": 13635585
+    },
+    {
+        "market_id": 1800,
+        "price": 612.72094499,
+        "size": 75.4715,
+        "skew": -65.1707,
+        "funding_rate": 0.003016436727235698,
+        "funding_velocity": -0.0093845808,
+        "block_number": 13636923
+    },
+    {
+        "market_id": 1800,
+        "price": 616.56774856,
+        "size": 74.1839,
+        "skew": -66.4583,
+        "funding_rate": 0.001707809071235699,
+        "funding_velocity": -0.0095699952,
+        "block_number": 13642947
+    },
+    {
+        "market_id": 1800,
+        "price": 616.45662864,
+        "size": 57.8628,
+        "skew": -50.1372,
+        "funding_rate": 0.001650654933235701,
+        "funding_velocity": -0.0072197568,
+        "block_number": 13643205
+    },
+    {
+        "market_id": 1800,
+        "price": 614.39710524,
+        "size": 36.8628,
+        "skew": -29.1372,
+        "funding_rate": 0.000765231981235703,
+        "funding_velocity": -0.0041957568,
+        "block_number": 13648503
+    },
+    {
+        "market_id": 1800,
+        "price": 613.09938759,
+        "size": 6.8628,
+        "skew": 0.8628,
+        "funding_rate": 0.000553210289235705,
+        "funding_velocity": 0.0001242432,
+        "block_number": 13650686
+    },
+    {
+        "market_id": 1800,
+        "price": 603.13340005,
+        "size": 9.5928,
+        "skew": 3.5928,
+        "funding_rate": 0.000609600021235703,
+        "funding_velocity": 0.0005173632,
+        "block_number": 13670293
+    }
+]

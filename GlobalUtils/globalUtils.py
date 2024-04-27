@@ -28,6 +28,51 @@ class MarketDirectory(Enum):
         'symbol': 'BTC'
     }
 
+    SNX = {
+        'market_id': 300,
+        'symbol': 'SNX'
+    }
+
+    SOL = {
+        'market_id': 400,
+        'symbol': 'SOL'
+    }
+
+    WIF = {
+        'market_id': 500,
+        'symbol': 'WIF'
+    }
+
+    W = {
+        'market_id': 600,
+        'symbol': 'W'
+    }
+
+    ENA = {
+        'market_id': 700,
+        'symbol': 'ENA'
+    }
+
+    DOGE = {
+        'market_id': 800,
+        'symbol': 'DOGE'
+    }
+
+    PEPE = {
+        'market_id': 1200,
+        'symbol': 'PEPE'
+    }
+
+    ARB = {
+        'market_id': 1600,
+        'symbol': 'ARB'
+    }
+
+    BNB = {
+        'market_id': 1800,
+        'symbol': 'BNB'
+    }
+
     def get_market_id(symbol: str) -> int:
         for market in MarketDirectory:
             if market.value['symbol'] == symbol:

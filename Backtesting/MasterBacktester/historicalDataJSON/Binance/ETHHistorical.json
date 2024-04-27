@@ -1,17 +1,5 @@
 [
     {
-        "markPrice": "3407.55015152",
-        "block_number": 12210126,
-        "funding_rate": "0.00013906",
-        "market_id": 100
-    },
-    {
-        "markPrice": "3330.83000000",
-        "block_number": 12224526,
-        "funding_rate": "0.00012767",
-        "market_id": 100
-    },
-    {
         "markPrice": "3344.28006818",
         "block_number": 12238926,
         "funding_rate": "0.00017907",
@@ -597,6 +585,18 @@
         "markPrice": "3159.38000000",
         "block_number": 13635726,
         "funding_rate": "0.00010000",
+        "market_id": 100
+    },
+    {
+        "markPrice": "3154.43000000",
+        "block_number": 13650126,
+        "funding_rate": "0.00001631",
+        "market_id": 100
+    },
+    {
+        "markPrice": "3133.56897727",
+        "block_number": 13664526,
+        "funding_rate": "0.00003847",
         "market_id": 100
     }
 ]
