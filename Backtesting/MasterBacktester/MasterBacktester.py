@@ -18,11 +18,11 @@ class MasterBacktester:
     def run_updates(self):
         """Iterate over each token in TARGET_TOKENS and update data."""
         try:
+            self.synthetix.fetch_and_process_events_for_all_symbols()
+
             for token_info in TARGET_TOKENS:
                 if token_info["is_target"]:
                     self.binance.get_historical_data(token_info["token"])
-                    time.sleep(3)
-                    self.synthetix.get_and_save_historical_data(token_info["token"])
                     time.sleep(3)
         except Exception as e:
             logger.error(f'MasterBacktester - Error encountered while updating data: {e}')
@@ -53,11 +53,12 @@ class MasterBacktester:
         x = calculate_effective_APR(trades, total_profit, base_trade_size=2)
         logger.info(f'APR calculated at: {x}')
 
-        plot_discrepancies_with_trades(synthetix_df, binance_df, trades)
+        plot_funding_rates_over_time(synthetix_df, binance_df, symbol)
+        plot_discrepancies_with_trades(synthetix_df, binance_df, trades, symbol)
 
         return total_profit
 
 x = MasterBacktester()
-x.backtest_arbitrage_strategy('ETH')
+x.backtest_arbitrage_strategy('WIF')
 
 

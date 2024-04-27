@@ -2,6 +2,7 @@ from Backtesting.utils.backtestingUtils import *
 from Backtesting.Synthetix.SynthetixBacktesterUtils import *
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from GlobalUtils.globalUtils import *
+from APICaller.master.MasterUtils import TARGET_TOKENS
 from web3 import *
 import math
 
@@ -174,38 +175,51 @@ class SynthetixBacktester:
             logger.info(f"SynthetixBacktester - Error calculating dollar value of open interest for {symbol}: {e}")
             return None
 
-    def retrieve_and_process_events(self, symbol: str) -> list:
-        """
-        Retrieve events in batches and process them.
-        """
+    def fetch_and_process_events_for_all_tokens(self):
         try:
-            market_id = MarketDirectory.get_market_id(symbol)
+            events = self.fetch_all_events()
+            self.process_events_for_all_symbols(events)
+
+        except Exception as e:
+            logger.error(f"SynthetixBacktester - Error fetching or processing events for all symbols: {e}")
+            return
+
+    def process_events_for_all_symbols(self, parsed_events: list):
+        try:
+            for token_info in TARGET_TOKENS:
+                symbol = token_info["token"]
+                if token_info["is_target"]:
+                    market_id = MarketDirectory.get_market_id(symbol)
+                    market_events = [event for event in parsed_events if event.get('market_id') == market_id]
+                    save_data_to_json(market_events, symbol)
+                    logger.info(f"SynthetixBacktester - Processed {len(market_events)} events for symbol {symbol}")
+
+            return
+        except Exception as e:
+            logger.error(f"SynthetixBacktester - Error processing events for all symbols: {e}")
+            return 
+
+    def fetch_all_events(self) -> list:
+        try:
             current_block = client.eth.block_number
-            start_block = max(current_block - 1000000, 0)  
-            step_size = 1000000 
-
-            all_parsed_events = []
-
-            for block in range(start_block, current_block, step_size):
-                end_block = min(block + step_size, current_block)
-                logger.info(f"SynthetixBacktester - Fetching events from {block} to {end_block}")
-                events = self.fetch_events(block, end_block)
-                if events is not None:
+            start_block = max(current_block - 1000000, 0)
+            step_size = 1000000
+            all_events = []
+            for block in range(start_block, current_block, step_size): 
+                current_end_block = min(block + 1000000, current_block)
+                logger.info(f"Fetching events from block {block} to {current_end_block}")
+                events = self.fetch_events_for_block_range(block, current_end_block)
+                if events:
                     parsed_events = parse_event_data(events)
-                    market_events = [event for event in parsed_events if event['market_id'] == market_id]
-                    all_parsed_events.extend(market_events)
+                    all_events.extend(events)
                 else:
-                    logger.error(f'SynthetixBacktester - Events = Null for blocks {block} -> {end_block}')
-
-            return all_parsed_events
+                    logger.error(f"SynthetixBacktester - No events found from blocks {block} to {current_end_block}")
+            return parsed_events
         except Exception as e:
             logger.error(f"SynthetixBacktester - Error while retrieving historical events from node: {e}")
-            return None
+            return []
 
-    def fetch_events(self, start_block, end_block):
-        """
-        Fetch events from the contract within a specified block range.
-        """
+    def fetch_events_for_block_range(self, start_block, end_block):
         contract = get_perps_contract()
         try:
             event_filter = contract.events.MarketUpdated.create_filter(fromBlock=start_block, toBlock=end_block)
@@ -292,15 +306,6 @@ class SynthetixBacktester:
         except Exception as e:
             logger.error(f'SynthetixBacktester - Error while calculating average funding rate: {e}')
             return 0.0
-
-    def get_and_save_historical_data(self, symbol: str):
-        try:
-            data = self.retrieve_and_process_events(symbol)
-            save_data_to_json(data, symbol)
-            return
-        except Exception as e:
-            logger.error(f'SynthetixBacktester - Error while fetching historical data for JSON file: {e}')
-            return
 
     def load_data_from_json(self, symbol: str):
         try:

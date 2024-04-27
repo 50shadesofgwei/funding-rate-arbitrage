@@ -3,6 +3,16 @@ from GlobalUtils.logger import logger
 TARGET_TOKENS = [
     {"token": "BTC", "is_target": True},
     {"token": "ETH", "is_target": True},
+    {"token": "SNX", "is_target": True},
+    {"token": "SOL", "is_target": True},
+    {"token": "W", "is_target": True},
+    {"token": "WIF", "is_target": True},
+    {"token": "ARB", "is_target": True},
+    {"token": "BNB", "is_target": True},
+    {"token": "ENA", "is_target": True},
+    {"token": "DOGE", "is_target": True},
+    {"token": "PEPE", "is_target": True},
+    
 ]
 
 TARGET_EXCHANGES = [
