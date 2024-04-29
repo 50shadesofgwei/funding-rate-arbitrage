@@ -8,8 +8,8 @@ import uuid
 class TradeLogger:
     def __init__(self, db_path='trades.db'):
         self.db_path = db_path
-        pub.subscribe(self.log_trade_pair, eventsDirectory.POSITION_OPENED.value)
-        pub.subscribe(self.log_close_trade, eventsDirectory.POSITION_CLOSED.value)
+        pub.subscribe(self.log_trade_pair, EventsDirectory.POSITION_OPENED.value)
+        pub.subscribe(self.log_close_trade, EventsDirectory.POSITION_CLOSED.value)
         try:
             self.conn = self.create_or_access_database()
         except Exception as e:
@@ -45,7 +45,6 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error creating/accessing the database: {e}")
             raise e
 
-    @log_function_call
     def log_trade_pair(self, position_data):
         strategy_execution_id = str(uuid.uuid4())
         open_time = datetime.now()
@@ -59,7 +58,7 @@ class TradeLogger:
             liquidation_price = data.get('liquidation_price')
             self.log_open_trade(strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time)
         
-        pub.sendMessage(eventsDirectory.TRADE_LOGGED.value, position_data=position_data)
+        pub.sendMessage(EventsDirectory.TRADE_LOGGED.value, position_data=position_data)
 
     def log_open_trade(self, strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time=datetime.now()):
         try:
@@ -104,8 +103,7 @@ class TradeLogger:
 
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging close trade for strategy_execution_id: {strategy_execution_id}. Error: {e}")
-        
-    @log_function_call    
+          
     def clear_database(self):
         try:
             conn = sqlite3.connect(self.db_path)

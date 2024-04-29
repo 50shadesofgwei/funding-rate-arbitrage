@@ -6,26 +6,42 @@ class matchingEngine:
         pass
     
     def find_arbitrage_opportunities_for_symbol(self, sorted_rates):
-        synthetix_opportunities = [rate for rate in sorted_rates if rate['exchange'] == 'Synthetix']
+        synthetix_rates = [rate for rate in sorted_rates if rate['exchange'] == 'Synthetix']
+        binance_rates = [rate for rate in sorted_rates if rate['exchange'] == 'Binance']
+        
+        synthetix_dict = {normalize_symbol(rate['symbol']): rate for rate in synthetix_rates}
+        binance_dict = {normalize_symbol(rate['symbol']): rate for rate in binance_rates}
+
+        block_number = get_base_block_number()
         
         arbitrage_opportunities = []
-        for opportunity in synthetix_opportunities:
-            funding_rate = float(opportunity['funding_rate'])
-            
-            if funding_rate > 0:
-                long_exchange = 'Binance'
-                short_exchange = 'Synthetix'
-            else:
-                long_exchange = 'Synthetix'
-                short_exchange = 'Binance'
+        for symbol in synthetix_dict:
+            if symbol in binance_dict:
+                snx_rate = float(synthetix_dict[symbol]['funding_rate'])
+                binance_rate = float(binance_dict[symbol]['funding_rate'])
+                skew = synthetix_dict[symbol]['skew']
 
-            arbitrage_opportunity = {
-                'long_exchange': long_exchange,
-                'short_exchange': short_exchange,
-                'symbol': normalize_symbol(opportunity['symbol']),
-                'funding_rate': funding_rate,
-            }
-            arbitrage_opportunities.append(arbitrage_opportunity)
+                if snx_rate > binance_rate:
+                    long_exchange = 'Binance'
+                    short_exchange = 'Synthetix'
+                    long_rate = binance_rate
+                    short_rate = snx_rate
+                else:
+                    long_exchange = 'Synthetix'
+                    short_exchange = 'Binance'
+                    long_rate = snx_rate
+                    short_rate = binance_rate
+
+                arbitrage_opportunity = {
+                    'long_exchange': long_exchange,
+                    'short_exchange': short_exchange,
+                    'symbol': symbol,
+                    'long_exchange_funding_rate': long_rate,
+                    'short_exchange_funding_rate': short_rate,
+                    'skew': skew,
+                    'block_number': block_number
+                }
+                arbitrage_opportunities.append(arbitrage_opportunity)
         
         return arbitrage_opportunities
 

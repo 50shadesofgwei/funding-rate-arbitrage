@@ -20,64 +20,122 @@ class EventsDirectory(Enum):
 class MarketDirectory(Enum):
     ETH = {
         'market_id': 100,
-        'symbol': 'ETH'
+        'symbol': 'ETH',
+        'max_funding_velocity': 9,
+        'skew_scale': 350000,
+        'maker_fee': 0.000001,
+        'taker_fee': 0.0005
     }
 
     BTC = {
         'market_id': 200,
-        'symbol': 'BTC'
+        'symbol': 'BTC',
+        'max_funding_velocity': 9,
+        'skew_scale': 35000,
+        'maker_fee': 0.000001,
+        'taker_fee': 0.0005
     }
 
     SNX = {
         'market_id': 300,
-        'symbol': 'SNX'
+        'symbol': 'SNX',
+        'max_funding_velocity': 36,
+        'skew_scale': 3400000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.001
     }
 
     SOL = {
         'market_id': 400,
-        'symbol': 'SOL'
+        'symbol': 'SOL',
+        'max_funding_velocity': 36,
+        'skew_scale': 1410000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.0008
     }
 
     WIF = {
         'market_id': 500,
-        'symbol': 'WIF'
+        'symbol': 'WIF',
+        'max_funding_velocity': 36,
+        'skew_scale': 10000000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.0008
     }
 
     W = {
         'market_id': 600,
-        'symbol': 'W'
+        'symbol': 'W',
+        'max_funding_velocity': 36,
+        'skew_scale': 26250000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.001
     }
 
     ENA = {
         'market_id': 700,
-        'symbol': 'ENA'
+        'symbol': 'ENA',
+        'max_funding_velocity': 9,
+        'skew_scale': 25500000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.001
     }
 
     DOGE = {
         'market_id': 800,
-        'symbol': 'DOGE'
+        'symbol': 'DOGE',
+        'max_funding_velocity': 36,
+        'skew_scale': 790000000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.001
     }
 
     PEPE = {
         'market_id': 1200,
-        'symbol': 'PEPE'
+        'symbol': 'PEPE',
+        'max_funding_velocity': 36,
+        'skew_scale': 8400000000000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.001
     }
 
     ARB = {
         'market_id': 1600,
-        'symbol': 'ARB'
+        'symbol': 'ARB',
+        'max_funding_velocity': 9,
+        'skew_scale': 41000000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.001
     }
 
     BNB = {
         'market_id': 1800,
-        'symbol': 'BNB'
+        'symbol': 'BNB',
+        'max_funding_velocity': 36,
+        'skew_scale': 250000,
+        'maker_fee': 0.0002,
+        'taker_fee': 0.001
     }
 
-    def get_market_id(symbol: str) -> int:
+    def get_market_id(self, symbol: str) -> int:
         for market in MarketDirectory:
             if market.value['symbol'] == symbol:
                 return market.value['market_id']
-        raise ValueError(f"GlobalUtils - Market symbol '{symbol}' not found.")
+        raise ValueError(f"GlobalUtils - Market symbol '{symbol}' not found in MarketDirectory enum.")
+
+    def get_market_params(self, symbol: str):
+        market_info = MarketDirectory.__members__.get(symbol)
+        if market_info:
+            return market_info.value
+        else:
+            raise ValueError(f"GlobalUtils - No data available for market {symbol} in MarketDirectory enum")
+
+    def calculate_new_funding_velocity(self, symbol: str, current_skew, trade_size):
+        market_data = self.get_market_params(symbol)
+        c = market_data['max_funding_velocity'] / market_data['skew_scale']
+        new_skew = current_skew + trade_size
+        new_funding_velocity = c * new_skew
+        return new_funding_velocity
 
 def initialise_client() -> Web3:
     try:
@@ -178,3 +236,19 @@ def get_base_block_number_by_timestamp(timestamp: int) -> int:
     except requests.RequestException as e:
         print("GlobalUtils - Basescan API HTTP Request failed:", e)
         return -1
+
+def get_base_block_number() -> int:
+    client = initialise_client()
+    block_number = client.eth.block_number
+    return block_number
+
+def get_binance_funding_event_schedule(current_block_number: int) -> list:
+    coordination_block = 13664526
+    interval_in_blocks = 14400
+
+    intervals_since_last_event = (current_block_number - coordination_block) // interval_in_blocks
+    next_funding_event = coordination_block + (intervals_since_last_event + 1) * interval_in_blocks
+    next_three_funding_events = [next_funding_event + i * interval_in_blocks for i in range(3)]
+
+    return next_three_funding_events
+
