@@ -23,7 +23,6 @@ class BinancePositionController:
     ### WRITE FUNCTIONS ###
     #######################
 
-    @log_function_call
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         order_with_amount = {} 
         try:

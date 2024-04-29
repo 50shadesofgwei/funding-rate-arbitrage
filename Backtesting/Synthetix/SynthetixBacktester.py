@@ -315,5 +315,4 @@ class SynthetixBacktester:
         except Exception as e:
             logger.error(f'SynthetixBacktester - Error while retriving historical data from JSON file: {e}')
             return
-
             

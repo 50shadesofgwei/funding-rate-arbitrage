@@ -21,11 +21,13 @@ class SynthetixCaller:
                 try:
                     market_data = markets_by_name[symbol]
                     funding_rate_24 = market_data['current_funding_rate']
-                    funding_rate = funding_rate_24 / 3  # Assuming this is the correct calculation
+                    skew = market_data['skew']
+                    funding_rate = funding_rate_24 / 3 
                     market_funding_rates.append({
-                        'exchange': 'Synthetix',  # Change this to the correct exchange name if needed
+                        'exchange': 'Synthetix', 
                         'symbol': symbol,
                         'funding_rate': funding_rate,
+                        'skew': skew
                     })
                 except KeyError as e:
                     logger.error(f"SynthetixAPICaller - Error processing market data for {symbol}: {e}")
