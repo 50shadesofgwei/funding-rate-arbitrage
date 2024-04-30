@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
+
 from web3 import *
 import os
 from dotenv import load_dotenv
@@ -117,25 +120,43 @@ class MarketDirectory(Enum):
         'taker_fee': 0.001
     }
 
-    def get_market_id(self, symbol: str) -> int:
+    @staticmethod
+    def get_market_id(symbol: str) -> int:
         for market in MarketDirectory:
             if market.value['symbol'] == symbol:
                 return market.value['market_id']
         raise ValueError(f"GlobalUtils - Market symbol '{symbol}' not found in MarketDirectory enum.")
 
-    def get_market_params(self, symbol: str):
+    @staticmethod
+    def get_market_params(symbol: str):
         market_info = MarketDirectory.__members__.get(symbol)
         if market_info:
             return market_info.value
         else:
             raise ValueError(f"GlobalUtils - No data available for market {symbol} in MarketDirectory enum")
 
-    def calculate_new_funding_velocity(self, symbol: str, current_skew, trade_size):
-        market_data = self.get_market_params(symbol)
-        c = market_data['max_funding_velocity'] / market_data['skew_scale']
-        new_skew = current_skew + trade_size
-        new_funding_velocity = c * new_skew
-        return new_funding_velocity
+    @staticmethod
+    def calculate_new_funding_velocity(symbol: str, current_skew, trade_size):
+        try:
+            market_data = MarketDirectory.get_market_params(symbol)
+            c = market_data['max_funding_velocity'] / market_data['skew_scale']
+            new_skew = current_skew + trade_size
+            new_funding_velocity = c * new_skew
+            return new_funding_velocity
+        except Exception as e:
+            raise ValueError(f"Failed to calculate new funding velocity for {symbol}: {str(e)}")
+
+    @staticmethod
+    def get_maker_taker_fee(symbol: str, skew, is_long):
+        try:
+            market = MarketDirectory.get_market_params(symbol)
+            if is_long:
+                fee = market['maker_fee'] if skew < 0 else market['taker_fee']
+            else:
+                fee = market['maker_fee'] if skew > 0 else market['taker_fee']
+            return fee
+        except Exception as e:
+            raise ValueError(f"Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}: {e}")
 
 def initialise_client() -> Web3:
     try:
@@ -164,12 +185,20 @@ def get_asset_price(asset: str) -> float:
         if response.status_code == 200:
             data = response.json()
             logger.info(f"API response data for {asset}: {data}")
-            return data[asset]['usd']
+            if asset in data and 'usd' in data[asset]:
+                return data[asset]['usd']
+            else:
+                logger.error(f"Data for {asset} is missing or malformed: {data}")
         else:
-            logger.info(f"API call for {asset} returned non-200 status code: {response.status_code}")
+            logger.error(f"API call for {asset} returned non-200 status code: {response.status_code}, Response: {response.text}")
+            return None
+    except requests.exceptions.RequestException as req_e:
+        logger.error(f"Request error fetching asset price for {asset}: {req_e}, URL: {url}")
+    except ValueError as val_e:
+        logger.error(f"JSON decoding error when fetching asset price for {asset}: {val_e}")
     except Exception as e:
-        logger.info(f"Error fetching asset price for {asset}: {e}, URL: {url}")
-    return 0.0
+        logger.error(f"Unexpected error fetching asset price for {asset}: {e}, URL: {url}")
+    return None
 
 def calculate_transaction_cost_usd(total_gas: int) -> float:
     try:
@@ -206,7 +235,16 @@ def normalize_symbol(symbol: str) -> str:
 def get_full_asset_name(symbol: str) -> str:
     asset_mapping = {
         'btc': 'bitcoin',
-        'eth': 'ethereum'
+        'eth': 'ethereum',
+        'snx': 'havven',
+        'sol': 'solana',
+        'wif': 'dogwifcoin',
+        'w': 'wormhole',
+        'ena': 'ethena',
+        'doge': 'dogecoin',
+        'pepe': 'pepe',
+        'arb': 'arbitrum',
+        'bnb': 'binancecoin'
     }
     return asset_mapping.get(symbol.lower(), symbol)
 
@@ -252,3 +290,5 @@ def get_binance_funding_event_schedule(current_block_number: int) -> list:
 
     return next_three_funding_events
 
+x = get_asset_price('bitcoin')
+print(x)

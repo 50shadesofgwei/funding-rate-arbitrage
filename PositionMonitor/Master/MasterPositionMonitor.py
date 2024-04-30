@@ -7,7 +7,6 @@ from pubsub import pub
 import threading
 import time
 
-
 class MasterPositionMonitor():
     def __init__(self):
         self.synthetix = SynthetixPositionMonitor()
@@ -68,7 +67,7 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error while checking liquidation risk for positions: {e}")
             return False
 
-    def check_profitability_for_open_position(self):
+    def check_profitability_for_open_position(self) -> bool:
         try:
             synthetix_position = self.synthetix.get_open_position()
 
@@ -87,7 +86,7 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
             return False
 
-    def is_position_delta_within_bounds(self):
+    def is_position_delta_within_bounds(self) -> bool:
         try:
             delta_bound = float(os.getenv('DELTA_BOUND'))
             synthetix_position = self.synthetix.get_open_position()
@@ -134,3 +133,30 @@ class MasterPositionMonitor():
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
             return False
+
+    def is_funding_turning_against_trade(self) -> bool:
+        try:
+            synthetix_position = self.synthetix.get_open_position()
+            is_long = synthetix_position['size'] > 0
+            symbol = synthetix_position['symbol']
+
+            market_data = MarketDirectory.get_market_params(symbol)
+            if not market_data:
+                raise ValueError(f"No market data available for symbol: {symbol}")
+
+            market_summary = self.synthetix.client.perps.get_market_summary(market_data['market_id'])
+            funding_rate = market_summary['current_funding_rate']
+            velocity = market_summary['current_funding_velocity']
+
+            future_blocks = 7200
+            predicted_funding_rate = funding_rate + (velocity * future_blocks / BLOCKS_PER_DAY_BASE)
+
+            if (is_long and predicted_funding_rate < 0) or (not is_long and predicted_funding_rate > 0):
+                return True 
+            return False
+        except Exception as e:
+            logger.error(f"Error checking if funding is turning against trade for {symbol}: {e}")
+            return False
+
+
+
