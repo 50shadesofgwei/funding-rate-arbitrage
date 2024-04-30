@@ -16,16 +16,17 @@ class Main:
         self.caller = MasterCaller()
         self.matching_engine = matchingEngine()
         self.profitability_checker = ProfitabilityChecker()
-        self.position_controller = MasterPositionController()
+        # self.position_controller = MasterPositionController()
         # self.position_controller.subscribe_to_events()
-        self.position_monitor = MasterPositionMonitor()
-        self.trade_logger = TradeLogger()
+        # self.position_monitor = MasterPositionMonitor()
+        # self.trade_logger = TradeLogger()
     
     def search_for_opportunities(self):
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
             opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
+            logger.info(f'best opportunity = {opportunity}')
             if opportunity is not None:
                 pub.sendMessage(EventsDirectory.OPPORTUNITY_FOUND.value, opportunity=opportunity)
             else:

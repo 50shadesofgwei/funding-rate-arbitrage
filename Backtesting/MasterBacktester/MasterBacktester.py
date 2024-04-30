@@ -58,7 +58,6 @@ class MasterBacktester:
 
         return total_profit
 
-x = MasterBacktester()
-x.backtest_arbitrage_strategy('WIF')
+
 
 

@@ -10,7 +10,6 @@ ALL_MARKET_IDS = [
     200
 ]
 
-@log_function_call
 def parse_trade_data_from_position_details(position_details) -> dict:
     try:
         side = get_side(position_details['position']['position_size'])
