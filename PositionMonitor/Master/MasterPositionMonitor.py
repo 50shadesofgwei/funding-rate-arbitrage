@@ -15,8 +15,8 @@ class MasterPositionMonitor():
         self.health_check_thread = None
         self.stop_health_check = threading.Event()
         
-        pub.subscribe(self.on_position_opened, eventsDirectory.TRADE_LOGGED.value)
-        pub.subscribe(self.on_position_closed, eventsDirectory.POSITION_CLOSED.value)
+        pub.subscribe(self.on_position_opened, EventsDirectory.TRADE_LOGGED.value)
+        pub.subscribe(self.on_position_closed, EventsDirectory.POSITION_CLOSED.value)
 
     def on_position_opened(self, position_data):
         if self.health_check_thread is None or not self.health_check_thread.is_alive():
@@ -42,13 +42,13 @@ class MasterPositionMonitor():
 
         if is_liquidation_risk:
             reason = PositionCloseReason.LIQUIDATION_RISK.value
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
+            pub.sendMessage(EventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
         elif not is_profitable:
             reason = PositionCloseReason.NO_LONGER_PROFITABLE.value
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
+            pub.sendMessage(EventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
         elif not is_delta_within_bounds:
             reason = PositionCloseReason.DELTA_ABOVE_BOUND.value
-            pub.sendMessage(eventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
+            pub.sendMessage(EventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
         else:
             logger.info('MasterPositionMonitor - no threat detected for open position')
 

@@ -163,7 +163,7 @@ def get_asset_price(asset: str) -> float:
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
-            logger.debug(f"API response data for {asset}: {data}")
+            logger.info(f"API response data for {asset}: {data}")
             return data[asset]['usd']
         else:
             logger.info(f"API call for {asset} returned non-200 status code: {response.status_code}")

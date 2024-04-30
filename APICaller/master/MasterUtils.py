@@ -11,8 +11,6 @@ TARGET_TOKENS = [
     {"token": "BNB", "is_target": True},
     {"token": "ENA", "is_target": True},
     {"token": "DOGE", "is_target": True},
-    {"token": "PEPE", "is_target": True},
-    
 ]
 
 TARGET_EXCHANGES = [

@@ -28,7 +28,7 @@ class ProfitabilityChecker:
         most_profitable = None
 
         for opportunity in opportunities:
-            symbol = opportunity['asset']
+            symbol = opportunity['symbol']
             size = get_asset_amount_for_given_dollar_amount(symbol, 10000)
             profit_estimate_dict = self.estimate_profit_for_time_period(time_period_hours, size, opportunity)
             profit_estimate_in_asset = profit_estimate_dict['total_profit_loss']
@@ -54,7 +54,7 @@ class ProfitabilityChecker:
 
             current_block_number = get_base_block_number()
             initial_rate = opportunity['short_exchange_funding_rate'] if opportunity['short_exchange'] == 'Synthetix' else opportunity['long_exchange_funding_rate']
-            funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol, skew, size)
+            funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol=symbol, current_skew=skew, trade_size=size)
 
             blocks_per_hour = 1800
             end_block_number = current_block_number + blocks_per_hour * time_period_hours
@@ -94,15 +94,19 @@ class ProfitabilityChecker:
         try:
             symbol = opportunity['symbol']
 
-            snx_profit_loss = self.estimate_synthetix_profit()
-            binance_profit_loss = self.estimate_binance_profit()
+            snx_profit_loss = self.estimate_synthetix_profit(time_period_hours, size, opportunity)
+            binance_profit_loss = self.estimate_binance_profit(time_period_hours, size, opportunity)
             total_profit_loss = snx_profit_loss + binance_profit_loss
 
-            return {
+            pnl_dict = {
                 'total_profit_loss': total_profit_loss,
                 'snx_profit_loss': snx_profit_loss,
                 'binance_profit_loss': binance_profit_loss
             }
+
+            logger.info(f'CheckProfitability - profitability estimated as: {pnl_dict}')
+
+            return pnl_dict
         except Exception as e:
             logger.error(f'CheckProfitability - Error estimating profit for {symbol} over {time_period_hours} hours: {e}')
             return None
