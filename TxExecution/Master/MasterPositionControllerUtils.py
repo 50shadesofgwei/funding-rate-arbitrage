@@ -15,12 +15,10 @@ def adjust_collateral_allocation(
         raise ValueError("Collateral on exchanges does not meet the minimum ratio requirement - collateral amounts need rebalancing across exchanges")
     
     initial_percentage = int(os.getenv('PERCENTAGE_CAPITAL_PER_TRADE'))
-    # Determine the smaller of the two collateral amounts
     long_collateral = collateral_amounts.get(long_exchange, 0)
     short_collateral = collateral_amounts.get(short_exchange, 0)
     smaller_collateral = min(long_collateral, short_collateral)
     
-    # Calculate 75% of the smaller collateral amount
     trade_amount = smaller_collateral * (initial_percentage / 100)
     return float(trade_amount)
 
