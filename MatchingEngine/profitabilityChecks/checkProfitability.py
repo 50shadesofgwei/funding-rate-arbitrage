@@ -94,8 +94,6 @@ class ProfitabilityChecker:
                 'binance_profit_loss': binance_profit_loss
             }
 
-            logger.info(f'CheckProfitability - profitability estimated as: {pnl_dict}')
-
             return pnl_dict
         except Exception as e:
             logger.error(f'CheckProfitability - Error estimating profit for {symbol} over {time_period_hours} hours: {e}')
