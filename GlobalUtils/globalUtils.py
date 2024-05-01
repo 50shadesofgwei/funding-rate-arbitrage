@@ -289,6 +289,3 @@ def get_binance_funding_event_schedule(current_block_number: int) -> list:
     next_three_funding_events = [next_funding_event + i * interval_in_blocks for i in range(3)]
 
     return next_three_funding_events
-
-x = get_asset_price('bitcoin')
-print(x)
