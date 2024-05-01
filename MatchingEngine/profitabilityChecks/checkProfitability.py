@@ -8,8 +8,7 @@ class ProfitabilityChecker:
         self.position_controller = MasterPositionController()
     
     def find_most_profitable_opportunity(self, opportunities, time_period_hours=8):
-        max_profit = float('-inf')
-        most_profitable = None
+        enhanced_opportunities = []
 
         for opportunity in opportunities:
             symbol = opportunity['symbol']
@@ -19,17 +18,19 @@ class ProfitabilityChecker:
             profit_estimate_in_asset = profit_estimate_dict['total_profit_loss']
             profit_estimate = get_dollar_amount_for_given_asset_amount(full_symbol, profit_estimate_in_asset)
 
-            if profit_estimate > max_profit:
-                max_profit = profit_estimate
-                most_profitable = opportunity
+            opportunity['profit_estimate_usd'] = profit_estimate
+            opportunity['profit_details'] = profit_estimate_dict
+            enhanced_opportunities.append(opportunity)
 
-        if most_profitable:
-            position = "short" if most_profitable['short_exchange'] == 'Synthetix' else "long"
-            logger.info(f"CheckProfitability - Best opportunity found with a profit of {max_profit} USD, suggested position: {position}, details: {most_profitable}")
+        enhanced_opportunities.sort(key=lambda x: x['profit_estimate'], reverse=True)
+
+        if enhanced_opportunities:
+            logger.info(f"CheckProfitability - Opportunities by profitability: {enhanced_opportunities}")
         else:
             logger.info("CheckProfitability - No profitable opportunities found.")
 
-        return most_profitable
+        return enhanced_opportunities[0]
+
 
     def estimate_synthetix_profit(self, time_period_hours, size, opportunity):
         try:
