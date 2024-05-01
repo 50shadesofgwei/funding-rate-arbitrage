@@ -2,6 +2,7 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from Backtesting.Synthetix.SynthetixBacktesterUtils import calculate_adjusted_funding_rate
+import json
 
 class ProfitabilityChecker:
     def __init__(self):
@@ -9,11 +10,12 @@ class ProfitabilityChecker:
     
     def find_most_profitable_opportunity(self, opportunities, time_period_hours=8):
         enhanced_opportunities = []
+        trade_size_usd = self.position_controller.get_trade_size(opportunities[0])
 
         for opportunity in opportunities:
             symbol = opportunity['symbol']
             full_symbol = get_full_asset_name(symbol)
-            size = get_asset_amount_for_given_dollar_amount(full_symbol, 10000)
+            size = get_asset_amount_for_given_dollar_amount(full_symbol, trade_size_usd)
             profit_estimate_dict = self.estimate_profit_for_time_period(time_period_hours, size, opportunity)
             profit_estimate_in_asset = profit_estimate_dict['total_profit_loss']
             profit_estimate = get_dollar_amount_for_given_asset_amount(full_symbol, profit_estimate_in_asset)
@@ -22,10 +24,13 @@ class ProfitabilityChecker:
             opportunity['profit_details'] = profit_estimate_dict
             enhanced_opportunities.append(opportunity)
 
-        enhanced_opportunities.sort(key=lambda x: x['profit_estimate'], reverse=True)
+        enhanced_opportunities.sort(key=lambda x: x['profit_estimate_usd'], reverse=True)
 
         if enhanced_opportunities:
             logger.info(f"CheckProfitability - Opportunities by profitability: {enhanced_opportunities}")
+            filename = 'OrderedOpportunities.json'
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(enhanced_opportunities, f, ensure_ascii=False, indent=4)
         else:
             logger.info("CheckProfitability - No profitable opportunities found.")
 

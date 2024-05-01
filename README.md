@@ -1,6 +1,6 @@
 # Synthetix Funding Rate Arbitrage
 ![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
-> **Version 0.1.1, Alpha**
+> **Version 0.2.0**
 
 ![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk) ![Static Badge](https://img.shields.io/badge/License-MIT-green)
 
@@ -77,7 +77,7 @@ To switch to live trading, simply remove the final argument like so:
 self.client = Client(api_key, api_secret)
 ```
 
-> As of release 0.1.1, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
+> As of version 0.2.0, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
     - BinanceCaller.py
     - BinancePositionController.py
     - BinancePositionMonitor.py
@@ -91,6 +91,9 @@ The bot can be controlled via the CLI using the following commands:
 ## Video Walkthrough
 A high level walkthrough can be found via following this link:
 [Watch here](https://drive.google.com/file/d/1QlGKDZIhfQkfegQOnAi7ycPEOlvWn4ye/view?usp=sharing)
+
+## Profitability Estimations
+As of version 0.2.0, the impact of a potential trade on funding velocity is now taken into consideration when assessing the profitability of a position - maker/taker fees are also taken into account, and 8 new markets have been added to the searcher algorithm (by default, all will be selected). More markets will be added in future releases as they amass sufficient liquidity.
 
 ## Architecture
 
@@ -106,7 +109,7 @@ Cross-module communication is handled via event emitters and listeners, a direct
 Upon confirmation of execution, trades are logged to a database with each side (SNX/Binance) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
 
 ## Open Issues / Potential Improvements
-> **Version 0.1.1**
+> **Version 0.2.0**
 
 **Shutdown** 
 
