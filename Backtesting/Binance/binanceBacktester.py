@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/jfeasby/SynthetixFundingRateArbitrage')
-
 from APICaller.Binance.binanceCaller import BinanceCaller
 from Backtesting.utils.backtestingUtils import *
 from Backtesting.Binance.binanceBacktesterUtils import *

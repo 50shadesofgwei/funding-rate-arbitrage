@@ -195,3 +195,21 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
+
+    def calculate_slippage(self, symbol: str, size: float) -> float:
+        try:
+            market_id = MarketDirectory.get_market_id(symbol)
+            quote_dict = self.client.perps.get_quote(size=size, market_id=market_id)
+            index_price = float(quote_dict['index_price'])
+            fill_price = float(quote_dict['fill_price'])
+            
+            if fill_price == 0:
+                logger.error(f"SynthetixAPICaller - Zero fill price error for symbol {symbol} with market ID {market_id}")
+                return None
+            
+            slippage = (fill_price - index_price) / index_price
+            return slippage
+
+        except Exception as e:
+            logger.error(f"SynthetixAPICaller - Error calculating slippage for symbol {symbol}: {e}")
+            return None

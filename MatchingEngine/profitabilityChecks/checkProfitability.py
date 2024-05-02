@@ -23,9 +23,7 @@ class ProfitabilityChecker:
             size = get_asset_amount_for_given_dollar_amount(full_symbol, trade_size_usd)
             size_per_exchange = size / 2
             hours_to_neutralize = self.estimate_time_to_neutralize_funding_rate(opportunity, size_per_exchange)
-            logger.info(f'DEBUGGING - Hours to neutralize = {hours_to_neutralize}')
             profit_estimate_dict = self.estimate_profit_for_time_period(hours_to_neutralize, size_per_exchange, opportunity)
-            logger.info(f'DEBUGGING - profit estimate dict = {profit_estimate_dict}')
             profit_estimate_in_asset = profit_estimate_dict['total_profit_loss']
             profit_estimate_usd = get_dollar_amount_for_given_asset_amount(full_symbol, profit_estimate_in_asset)
 
@@ -45,7 +43,6 @@ class ProfitabilityChecker:
 
         return enhanced_opportunities[0]
 
-
     def estimate_synthetix_profit(self, time_period_hours, size, opportunity):
         try:
             symbol = opportunity['symbol']
@@ -55,7 +52,13 @@ class ProfitabilityChecker:
             fee = MarketDirectory.get_maker_taker_fee(symbol, skew, is_long)
             fee_size = size * fee
             size_after_fee = size - fee_size
-            adjusted_size = get_adjusted_size(size_after_fee, is_long)
+            slippage = self.position_controller.synthetix.calculate_slippage(symbol, size_after_fee)
+            if slippage is not None: 
+                size_with_slippage = size_after_fee * (1 + slippage)
+            else:
+                size_with_slippage = size_after_fee
+
+            adjusted_size = get_adjusted_size(size_with_slippage, is_long)
 
             current_block_number = get_base_block_number()
             initial_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
