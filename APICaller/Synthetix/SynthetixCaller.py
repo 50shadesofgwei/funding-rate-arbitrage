@@ -22,11 +22,13 @@ class SynthetixCaller:
                     market_data = markets_by_name[symbol]
                     funding_rate_24 = market_data['current_funding_rate']
                     skew = market_data['skew']
+                    funding_velocity = market_data['current_funding_velocity']
                     funding_rate = funding_rate_24 / 3 
                     market_funding_rates.append({
                         'exchange': 'Synthetix', 
                         'symbol': symbol,
                         'funding_rate': funding_rate,
+                        'funding_velocity': funding_velocity,
                         'skew': skew
                     })
                 except KeyError as e:

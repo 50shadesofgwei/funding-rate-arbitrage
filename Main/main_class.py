@@ -16,10 +16,10 @@ class Main:
         self.caller = MasterCaller()
         self.matching_engine = matchingEngine()
         self.profitability_checker = ProfitabilityChecker()
-        self.position_controller = MasterPositionController()
-        self.position_controller.subscribe_to_events()
-        self.position_monitor = MasterPositionMonitor()
-        self.trade_logger = TradeLogger()
+        # self.position_controller = MasterPositionController()
+        # self.position_controller.subscribe_to_events()
+        # self.position_monitor = MasterPositionMonitor()
+        # self.trade_logger = TradeLogger()
     
     def search_for_opportunities(self):
         try:

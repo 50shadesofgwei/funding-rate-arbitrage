@@ -20,6 +20,7 @@ class matchingEngine:
                 snx_rate = float(synthetix_dict[symbol]['funding_rate'])
                 binance_rate = float(binance_dict[symbol]['funding_rate'])
                 skew = synthetix_dict[symbol]['skew']
+                funding_velocity = synthetix_dict[symbol]['funding_velocity']
 
                 if snx_rate > binance_rate:
                     long_exchange = 'Binance'
@@ -39,6 +40,7 @@ class matchingEngine:
                     'long_exchange_funding_rate': long_rate,
                     'short_exchange_funding_rate': short_rate,
                     'skew': skew,
+                    'funding_velocity': funding_velocity,
                     'block_number': block_number
                 }
                 arbitrage_opportunities.append(arbitrage_opportunity)
