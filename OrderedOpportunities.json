@@ -1,162 +1,212 @@
 [
     {
-        "long_exchange": "Synthetix",
-        "short_exchange": "Binance",
-        "symbol": "SNX",
-        "long_exchange_funding_rate": -0.0005833918497725184,
-        "short_exchange_funding_rate": 8.034e-05,
-        "skew": -1460.9465000000007,
-        "block_number": 13889137,
-        "profit_estimate_usd": 13.147300751323053,
-        "profit_details": {
-            "symbol": "SNX",
-            "total_profit_loss": 5.115681226195741,
-            "snx_profit_loss": 4.80307422230469,
-            "binance_profit_loss": 0.3126070038910506
-        }
-    },
-    {
         "long_exchange": "Binance",
         "short_exchange": "Synthetix",
-        "symbol": "W",
-        "long_exchange_funding_rate": 4.566e-05,
-        "short_exchange_funding_rate": 0.00015951643643377734,
-        "skew": 0.0,
-        "block_number": 13889138,
-        "profit_estimate_usd": 12.709974966406783,
-        "profit_details": {
-            "symbol": "W",
-            "total_profit_loss": 19.592510384215565,
-            "snx_profit_loss": 18.88865846750625,
-            "binance_profit_loss": 0.703851916709315
-        }
-    },
-    {
-        "long_exchange": "Synthetix",
-        "short_exchange": "Binance",
         "symbol": "WIF",
-        "long_exchange_funding_rate": -0.00014804347000595133,
-        "short_exchange_funding_rate": 5e-05,
-        "skew": 1360.2816,
-        "block_number": 13889138,
-        "profit_estimate_usd": 10.977275795424617,
+        "long_exchange_funding_rate": 5e-05,
+        "short_exchange_funding_rate": 0.0008772278792496031,
+        "skew": 20957.446,
+        "funding_velocity": 0.0754468056,
+        "block_number": 13895807,
+        "profit_estimate_usd": 0.3665141815823996,
         "profit_details": {
             "symbol": "WIF",
-            "total_profit_loss": 4.536064378274635,
-            "snx_profit_loss": 4.329452808026701,
-            "binance_profit_loss": 0.2066115702479339
-        }
-    },
-    {
-        "long_exchange": "Synthetix",
-        "short_exchange": "Binance",
-        "symbol": "SOL",
-        "long_exchange_funding_rate": 9.125201349337e-05,
-        "short_exchange_funding_rate": 0.0001,
-        "skew": 278.3033,
-        "block_number": 13889138,
-        "profit_estimate_usd": 6.388119414047444,
-        "profit_details": {
-            "symbol": "SOL",
-            "total_profit_loss": 0.051396889645566365,
-            "snx_profit_loss": 0.04335119007198844,
-            "binance_profit_loss": 0.008045699573577921
-        }
-    },
-    {
-        "long_exchange": "Synthetix",
-        "short_exchange": "Binance",
-        "symbol": "BTC",
-        "long_exchange_funding_rate": -1.249571140523e-06,
-        "short_exchange_funding_rate": 8.946e-05,
-        "skew": 0.81,
-        "block_number": 13889137,
-        "profit_estimate_usd": 1.0306667117750392,
-        "profit_details": {
-            "symbol": "BTC",
-            "total_profit_loss": 1.7739835655950004e-05,
-            "snx_profit_loss": 2.341980271175738e-06,
-            "binance_profit_loss": 1.5397855384774265e-05
-        }
-    },
-    {
-        "long_exchange": "Synthetix",
-        "short_exchange": "Binance",
-        "symbol": "DOGE",
-        "long_exchange_funding_rate": -0.000519417101819622,
-        "short_exchange_funding_rate": 7.52e-05,
-        "skew": -3700.0,
-        "block_number": 13889138,
-        "profit_estimate_usd": 0.9255258032980077,
-        "profit_details": {
-            "symbol": "DOGE",
-            "total_profit_loss": 7.30803271584356,
-            "snx_profit_loss": 1.3701749243792312,
-            "binance_profit_loss": 5.937857791464329
+            "total_profit_loss": 0.15271424232599984,
+            "snx_profit_loss": 0.15271424232599984,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "infinite",
+            "neutralization_profit_usd": null
         }
     },
     {
         "long_exchange": "Binance",
         "short_exchange": "Synthetix",
         "symbol": "ETH",
-        "long_exchange_funding_rate": 4.89e-05,
-        "short_exchange_funding_rate": 0.00022692976522524567,
-        "skew": -56.835880508108225,
-        "block_number": 13889137,
-        "profit_estimate_usd": 0.4823989883179976,
+        "long_exchange_funding_rate": 7.347e-05,
+        "short_exchange_funding_rate": 0.00017389550013722,
+        "skew": -70.65161701822387,
+        "funding_velocity": -0.001816755866182899,
+        "block_number": 13895807,
+        "profit_estimate_usd": 0.07244379866620106,
         "profit_details": {
             "symbol": "ETH",
-            "total_profit_loss": 0.00016522380553898132,
-            "snx_profit_loss": -2.260875948995076e-06,
-            "binance_profit_loss": 0.0001674846814879764
+            "total_profit_loss": 2.5094236548996337e-05,
+            "snx_profit_loss": 2.5094236548996337e-05,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "2.42",
+            "neutralization_profit_usd": "0.087449"
+        }
+    },
+    {
+        "long_exchange": "Binance",
+        "short_exchange": "Synthetix",
+        "symbol": "W",
+        "long_exchange_funding_rate": 5e-05,
+        "short_exchange_funding_rate": 0.00015951643643377734,
+        "skew": 0.0,
+        "funding_velocity": 0.0,
+        "block_number": 13895807,
+        "profit_estimate_usd": 0.06664044253116447,
+        "profit_details": {
+            "symbol": "W",
+            "total_profit_loss": 0.10334687585766089,
+            "snx_profit_loss": 0.10334687585766089,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "infinite",
+            "neutralization_profit_usd": null
         }
     },
     {
         "long_exchange": "Synthetix",
         "short_exchange": "Binance",
-        "symbol": "ARB",
-        "long_exchange_funding_rate": -0.00019210329355894866,
-        "short_exchange_funding_rate": -6.31e-06,
-        "skew": -983.6886,
-        "block_number": 13889138,
-        "profit_estimate_usd": 0.36029399817235386,
+        "symbol": "BTC",
+        "long_exchange_funding_rate": -3.867463005600333e-06,
+        "short_exchange_funding_rate": 9.902e-05,
+        "skew": 0.3953,
+        "funding_velocity": 0.000101648571428565,
+        "block_number": 13895807,
+        "profit_estimate_usd": -0.0016101173898852672,
         "profit_details": {
-            "symbol": "ARB",
-            "total_profit_loss": 0.3497999982255863,
-            "snx_profit_loss": 0.41106213414791637,
-            "binance_profit_loss": -0.06126213592233009
+            "symbol": "BTC",
+            "total_profit_loss": -2.8197215331954525e-08,
+            "snx_profit_loss": -2.8197215331954525e-08,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "0.63",
+            "neutralization_profit_usd": "0.000509"
+        }
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "Binance",
+        "symbol": "SOL",
+        "long_exchange_funding_rate": -2.5430918002926665e-05,
+        "short_exchange_funding_rate": 9.105e-05,
+        "skew": 248.8166,
+        "funding_velocity": 0.006369704959999968,
+        "block_number": 13895807,
+        "profit_estimate_usd": -0.010512498829273834,
+        "profit_details": {
+            "symbol": "SOL",
+            "total_profit_loss": -8.488774894439465e-05,
+            "snx_profit_loss": -8.488774894439465e-05,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "0.07",
+            "neutralization_profit_usd": "0.000381"
         }
     },
     {
         "long_exchange": "Synthetix",
         "short_exchange": "Binance",
         "symbol": "BNB",
-        "long_exchange_funding_rate": -0.00018991679858809768,
-        "short_exchange_funding_rate": -0.00017534,
+        "long_exchange_funding_rate": -0.00018970264958809768,
+        "short_exchange_funding_rate": -0.00017136,
         "skew": 0.0289,
-        "block_number": 13889138,
-        "profit_estimate_usd": -0.9430802916815306,
+        "funding_velocity": 4.1616e-06,
+        "block_number": 13895808,
+        "profit_estimate_usd": -0.07898216595882455,
         "profit_details": {
             "symbol": "BNB",
-            "total_profit_loss": -0.001701389665671172,
-            "snx_profit_loss": 0.0014618793222415114,
-            "binance_profit_loss": -0.0031632689879126834
+            "total_profit_loss": -0.00014459771879247291,
+            "snx_profit_loss": -0.00014459771879247291,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "1.73",
+            "neutralization_profit_usd": "0.068123"
+        }
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "Binance",
+        "symbol": "SNX",
+        "long_exchange_funding_rate": -0.000233538563032324,
+        "short_exchange_funding_rate": 2.951e-05,
+        "skew": 1289.440999999999,
+        "funding_velocity": 0.013652904705882336,
+        "block_number": 13895807,
+        "profit_estimate_usd": -0.09673132523575009,
+        "profit_details": {
+            "symbol": "SNX",
+            "total_profit_loss": -0.038083198911712635,
+            "snx_profit_loss": -0.038083198911712635,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "0.10",
+            "neutralization_profit_usd": "0.004900"
+        }
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "Binance",
+        "symbol": "ARB",
+        "long_exchange_funding_rate": -0.00023654922359553235,
+        "short_exchange_funding_rate": 0.0001,
+        "skew": -983.6886,
+        "funding_velocity": -0.000863726575609728,
+        "block_number": 13895807,
+        "profit_estimate_usd": -0.0985783896613918,
+        "profit_details": {
+            "symbol": "ARB",
+            "total_profit_loss": -0.09731331654629004,
+            "snx_profit_loss": -0.09731331654629004,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "2.91",
+            "neutralization_profit_usd": "0.143377"
+        }
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "Binance",
+        "symbol": "DOGE",
+        "long_exchange_funding_rate": -0.00046658133925097034,
+        "short_exchange_funding_rate": 9.25e-06,
+        "skew": 46300.0,
+        "funding_velocity": 0.002112547528517076,
+        "block_number": 13895808,
+        "profit_estimate_usd": -0.19426587514219065,
+        "profit_details": {
+            "symbol": "DOGE",
+            "total_profit_loss": -1.6007141868310564,
+            "snx_profit_loss": -1.6007141868310564,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "1.91",
+            "neutralization_profit_usd": "0.185479"
         }
     },
     {
         "long_exchange": "Synthetix",
         "short_exchange": "Binance",
         "symbol": "ENA",
-        "long_exchange_funding_rate": -0.001724121175324483,
-        "short_exchange_funding_rate": -0.00067973,
-        "skew": -2867.0701,
-        "block_number": 13889138,
-        "profit_estimate_usd": -10.693093618772252,
+        "long_exchange_funding_rate": -0.0011782517985107586,
+        "short_exchange_funding_rate": 5e-05,
+        "skew": 17936.5215,
+        "funding_velocity": 0.025322148,
+        "block_number": 13895808,
+        "profit_estimate_usd": -0.4906152512586021,
         "profit_details": {
             "symbol": "ENA",
-            "total_profit_loss": -13.161540548676538,
-            "snx_profit_loss": -4.795117999596594,
-            "binance_profit_loss": -8.366422549079944
+            "total_profit_loss": -0.6278332253175567,
+            "snx_profit_loss": -0.6278332253175567,
+            "binance_profit_loss": 0
+        },
+        "neutralization_estimate": {
+            "hours_until_neutralization": "2.61",
+            "neutralization_profit_usd": "0.639422"
         }
     }
 ]
