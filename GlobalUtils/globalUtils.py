@@ -12,6 +12,7 @@ from GlobalUtils.logger import *
 load_dotenv()
 
 BLOCKS_PER_DAY_BASE = 43200
+BLOCKS_PER_HOUR_BASE = 1800
 
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_positions"
