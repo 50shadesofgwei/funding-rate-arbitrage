@@ -26,7 +26,6 @@ def get_target_exchanges() -> list:
         logger.error(f"MasterAPICallerUtils - Error retrieving target exchanges: {e}")
         return []
 
-
 def get_all_target_token_lists() -> list:
     try:
         binance_token_list = get_target_tokens_for_binance()

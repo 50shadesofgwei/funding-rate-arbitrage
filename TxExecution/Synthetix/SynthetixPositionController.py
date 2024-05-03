@@ -33,12 +33,21 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - An error occurred while executing a trade: {e}")
 
     def close_all_positions(self):
-        for market in ALL_MARKET_IDS:
-            close_details = self.close_position(market)
-            if close_details:
-                return close_details 
+        close_results = []
+        try:
+            for market in MarketDirectory:
+                symbol = market.value['symbol']
+                try:
+                    close_details = self.close_position(market.value['market_id'])
+                    if close_details:
+                        close_results.append(close_details)
+                except Exception as e:
+                    logger.error(f"SynthetixPositionController - Error closing position for market {symbol}: {e}")
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - General error in close all positions: {e}")
+        
+        return close_results if close_results else None
 
-        return None 
 
     def close_position(self, market_id: int):
         max_retries = 2 
