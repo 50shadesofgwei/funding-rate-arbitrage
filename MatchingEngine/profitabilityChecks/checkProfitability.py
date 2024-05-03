@@ -11,7 +11,7 @@ class ProfitabilityChecker:
     def __init__(self):
         self.position_controller = MasterPositionController()
         self.default_trade_duration = float(os.getenv('DEFAULT_TRADE_DURATION_HOURS'))
-        self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD')) * float(os.getenv('TRADE_LEVERAGE'))
+        self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD')) * float(self.position_controller.synthetix.leverage_factor)
     
     def find_most_profitable_opportunity(self, opportunities):
         enhanced_opportunities = []

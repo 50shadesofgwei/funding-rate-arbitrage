@@ -66,116 +66,138 @@ def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.D
     return trades
 
 def calculate_profit_or_loss_for_trade(trade, snx_funding_impact, binance_funding_impact):
-    snx_profit = snx_funding_impact * (trade['snx_side'] == 'short' and -1 or 1)
-    binance_profit = binance_funding_impact * (trade['binance_side'] == 'long' and 1 or -1)
-    total_profit = snx_profit + binance_profit
-    time_open = trade['exit_block_snx'] - trade['entry_block_binance']
-    
-    trade_details = {
-        'entry': {
-            'snx': trade['entry_block_snx'],
-            'binance': trade['entry_block_binance']
-        },
-        'exit': {
-            'snx': trade['exit_block_snx'],
-            'binance': trade['exit_block_binance']
-        },
-        'discrepancy': {
-            'entry': trade['discrepancy_entry'],
-            'exit': trade['discrepancy_exit']
-        },
-        'time_open_in_blocks': time_open,
-        'position_size': {
-            'snx': trade['snx_position_size'],
-            'binance': trade['binance_position_size']
-        },
-        'profit': {
-            'snx': snx_profit,
-            'binance': binance_profit,
-            'total': total_profit
-        },
-        'side': {
-            'snx': trade['snx_side'],
-            'binance': trade['binance_side']
+    try:
+        snx_profit = snx_funding_impact * (trade['snx_side'] == 'short' and -1 or 1)
+        binance_profit = binance_funding_impact * (trade['binance_side'] == 'long' and 1 or -1)
+        total_profit = snx_profit + binance_profit
+        time_open = trade['exit_block_snx'] - trade['entry_block_binance']
+        
+        trade_details = {
+            'entry': {
+                'snx': trade['entry_block_snx'],
+                'binance': trade['entry_block_binance']
+            },
+            'exit': {
+                'snx': trade['exit_block_snx'],
+                'binance': trade['exit_block_binance']
+            },
+            'discrepancy': {
+                'entry': trade['discrepancy_entry'],
+                'exit': trade['discrepancy_exit']
+            },
+            'time_open_in_blocks': time_open,
+            'position_size': {
+                'snx': trade['snx_position_size'],
+                'binance': trade['binance_position_size']
+            },
+            'profit': {
+                'snx': snx_profit,
+                'binance': binance_profit,
+                'total': total_profit
+            },
+            'side': {
+                'snx': trade['snx_side'],
+                'binance': trade['binance_side']
+            }
         }
-    }
-    
-    return trade_details
+        
+        return trade_details
+
+    except Exception as e:
+        logger.error(f'MasterBacktesterUtils - Error calculating profit and loss for trade {trade}: {e}')
+        return None
 
 def calculate_effective_APR(trades, total_profit, base_trade_size):
-    if not trades:
-        return 0 
+    try:
+        if not trades:
+            return 0 
 
-    start_block = trades[0]['entry']['snx']
-    end_block = trades[-1]['exit']['snx'] 
-    total_blocks = end_block - start_block
-    total_seconds = total_blocks * 2 
-    years = total_seconds / 31_536_000 
-    total_capital = base_trade_size
+        start_block = trades[0]['entry']['snx']
+        end_block = trades[-1]['exit']['snx'] 
+        total_blocks = end_block - start_block
+        total_seconds = total_blocks * 2 
+        years = total_seconds / 31_536_000 
+        total_capital = base_trade_size
 
-    if years == 0:
-        return float('inf')
+        if years == 0:
+            return float('inf')
 
-    apr = (total_profit / total_capital) / years * 100
-    return apr
+        apr = (total_profit / total_capital) / years * 100
+        return apr
+    
+    except Exception as e:
+        logger.error(f'MasterBacktesterUtils - Error calculating effective APR: {e}')
+        return None
 
 def log_trade_details(trade):
     logger.info(f"Trade Log: {trade}")
 
 def plot_funding_rates_over_time(synthetix_data, binance_data, symbol: str):
-    plt.figure(figsize=(12, 6))
-    plt.plot(synthetix_data['block_number'], synthetix_data['funding_rate'], label='Synthetix Funding Rate', color='blue')
-    plt.plot(binance_data['block_number'], binance_data['funding_rate'], label='Binance Funding Rate', color='red')
-    plt.title(f'Funding Rates on Binance vs Synthetix Over Time - Asset: {symbol}')
-    plt.xlabel('Block Number')
-    plt.ylabel('Funding Rate')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    try:
+        plt.figure(figsize=(12, 6))
+        plt.plot(synthetix_data['block_number'], synthetix_data['funding_rate'], label='Synthetix Funding Rate', color='blue')
+        plt.plot(binance_data['block_number'], binance_data['funding_rate'], label='Binance Funding Rate', color='red')
+        plt.title(f'Funding Rates on Binance vs Synthetix Over Time - Asset: {symbol}')
+        plt.xlabel('Block Number')
+        plt.ylabel('Funding Rate')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+    
+    except Exception as e:
+        logger.error(f'MasterBacktesterUtils - Error plotting historical funding rates for symbol {symbol}: {e}')
+        return None
 
 def plot_funding_rate_discrepancies_over_time(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, symbol: str):
-    # Ensure the data is sorted by block number
-    synthetix_data = synthetix_data.sort_values('block_number').reset_index(drop=True)
-    binance_data = binance_data.sort_values('block_number').reset_index(drop=True)
+    try:
+        synthetix_data = synthetix_data.sort_values('block_number').reset_index(drop=True)
+        binance_data = binance_data.sort_values('block_number').reset_index(drop=True)
 
-    # Merge data on nearest block number
-    synthetix_data['nearest_block'] = synthetix_data['block_number']
-    binance_data['nearest_block'] = binance_data['block_number']
+        synthetix_data['nearest_block'] = synthetix_data['block_number']
+        binance_data['nearest_block'] = binance_data['block_number']
 
-    # Using merge_asof to find the nearest block numbers for discrepancies
-    combined_data = pd.merge_asof(synthetix_data, binance_data, on='nearest_block', suffixes=('_snx', '_binance'), direction='nearest')
-    combined_data['discrepancy'] = combined_data['funding_rate_snx'] - combined_data['funding_rate_binance']
+        combined_data = pd.merge_asof(synthetix_data, binance_data, on='nearest_block', suffixes=('_snx', '_binance'), direction='nearest')
+        combined_data['discrepancy'] = combined_data['funding_rate_snx'] - combined_data['funding_rate_binance']
 
-    plt.figure(figsize=(12, 6))
-    plt.plot(combined_data['nearest_block'], combined_data['discrepancy'], label='Funding Rate Discrepancy', color='blue')
-    plt.title(f'Funding Rate Discrepancy - Asset: {symbol}')
-    plt.xlabel('Block Number')
-    plt.ylabel('Discrepancy')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+        plt.figure(figsize=(12, 6))
+        plt.plot(combined_data['nearest_block'], combined_data['discrepancy'], label='Funding Rate Discrepancy', color='blue')
+        plt.title(f'Funding Rate Discrepancy - Asset: {symbol}')
+        plt.xlabel('Block Number')
+        plt.ylabel('Discrepancy')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+    
+    except Exception as e:
+        logger.error(f'MasterBacktesterUtils - Error plotting historical funding rate discrepancies for symbol {symbol}: {e}')
+        return None
 
 def plot_discrepancies_with_trades(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, trades, symbol: str):
-    synthetix_data = synthetix_data.sort_values('block_number').reset_index(drop=True)
-    binance_data = binance_data.sort_values('block_number').reset_index(drop=True)
+    try:
+        synthetix_data = synthetix_data.sort_values('block_number').reset_index(drop=True)
+        binance_data = binance_data.sort_values('block_number').reset_index(drop=True)
 
-    combined_data = pd.merge_asof(synthetix_data, binance_data, on='block_number', suffixes=('_snx', '_binance'), direction='nearest')
-    combined_data['discrepancy'] = combined_data['funding_rate_snx'] - combined_data['funding_rate_binance']
+        combined_data = pd.merge_asof(synthetix_data, binance_data, on='block_number', suffixes=('_snx', '_binance'), direction='nearest')
+        combined_data['discrepancy'] = combined_data['funding_rate_snx'] - combined_data['funding_rate_binance']
 
-    plt.figure(figsize=(12, 6))
-    plt.plot(combined_data['block_number'], combined_data['discrepancy'], label='Funding Rate Discrepancy', color='red')
+        plt.figure(figsize=(12, 6))
+        plt.plot(combined_data['block_number'], combined_data['discrepancy'], label='Funding Rate Discrepancy', color='red')
 
-    entry_blocks = [trade['entry']['snx'] for trade in trades]
-    exit_blocks = [trade['exit']['snx'] for trade in trades]
-    entry_discrepancies = [combined_data.loc[combined_data['block_number'] == block, 'discrepancy'].values[0] if not combined_data[combined_data['block_number'] == block].empty else None for block in entry_blocks]
-    exit_discrepancies = [combined_data.loc[combined_data['block_number'] == block, 'discrepancy'].values[0] if not combined_data[combined_data['block_number'] == block].empty else None for block in exit_blocks]
+        entry_blocks = [trade['entry']['snx'] for trade in trades]
+        exit_blocks = [trade['exit']['snx'] for trade in trades]
+        entry_discrepancies = [combined_data.loc[combined_data['block_number'] == block, 'discrepancy'].values[0] if not combined_data[combined_data['block_number'] == block].empty else None for block in entry_blocks]
+        exit_discrepancies = [combined_data.loc[combined_data['block_number'] == block, 'discrepancy'].values[0] if not combined_data[combined_data['block_number'] == block].empty else None for block in exit_blocks]
 
-    plt.scatter(entry_blocks, entry_discrepancies, color='green', label='Entry Points', marker='^', s=100)
-    plt.scatter(exit_blocks, exit_discrepancies, color='black', label='Exit Points', marker='v', s=100)
+        plt.scatter(entry_blocks, entry_discrepancies, color='green', label='Entry Points', marker='^', s=100)
+        plt.scatter(exit_blocks, exit_discrepancies, color='black', label='Exit Points', marker='v', s=100)
 
-    plt.title(f'Funding Rate Discrepancy w/ Trades - Asset: {symbol}')
-    plt.xlabel('Block Number')
-    plt.ylabel('Discrepancy')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+        plt.title(f'Funding Rate Discrepancy w/ Trades - Asset: {symbol}')
+        plt.xlabel('Block Number')
+        plt.ylabel('Discrepancy')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+    
+    except Exception as e:
+        logger.error(f'MasterBacktesterUtils - Error plotting historical funding rate discrepancies with trades for symbol {symbol}: {e}')
+        return None

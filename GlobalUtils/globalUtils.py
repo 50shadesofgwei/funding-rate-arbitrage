@@ -137,7 +137,7 @@ class MarketDirectory(Enum):
             raise ValueError(f"GlobalUtils - No data available for market {symbol} in MarketDirectory enum")
 
     @staticmethod
-    def calculate_new_funding_velocity(symbol: str, current_skew, trade_size):
+    def calculate_new_funding_velocity(symbol: str, current_skew: float, trade_size: float) -> float:
         try:
             market_data = MarketDirectory.get_market_params(symbol)
             c = market_data['max_funding_velocity'] / market_data['skew_scale']
@@ -145,7 +145,7 @@ class MarketDirectory(Enum):
             new_funding_velocity = c * new_skew
             return new_funding_velocity
         except Exception as e:
-            raise ValueError(f"Failed to calculate new funding velocity for {symbol}: {str(e)}")
+            raise ValueError(f"GlobalUtils - Failed to calculate new funding velocity for {symbol}: {e}")
 
     @staticmethod
     def get_maker_taker_fee(symbol: str, skew, is_long):
@@ -157,7 +157,7 @@ class MarketDirectory(Enum):
                 fee = market['maker_fee'] if skew > 0 else market['taker_fee']
             return fee
         except Exception as e:
-            raise ValueError(f"Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}: {e}")
+            raise ValueError(f"GlobalUtils - Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}: {e}")
 
 def initialise_client() -> Web3:
     try:
@@ -276,16 +276,24 @@ def get_base_block_number_by_timestamp(timestamp: int) -> int:
         return -1
 
 def get_base_block_number() -> int:
-    client = initialise_client()
-    block_number = client.eth.block_number
-    return block_number
+    try:
+        client = initialise_client()
+        block_number = client.eth.block_number
+        return block_number
+    except Exception as e:
+        logger.error(f'GlobalUtils - Error while calling current block number for BASE network: {e}')
+        return None
 
 def get_binance_funding_event_schedule(current_block_number: int) -> list:
-    coordination_block = 13664526
-    interval_in_blocks = 14400
+    try:
+        coordination_block = 13664526
+        interval_in_blocks = 14400
 
-    intervals_since_last_event = (current_block_number - coordination_block) // interval_in_blocks
-    next_funding_event = coordination_block + (intervals_since_last_event + 1) * interval_in_blocks
-    next_three_funding_events = [next_funding_event + i * interval_in_blocks for i in range(3)]
+        intervals_since_last_event = (current_block_number - coordination_block) // interval_in_blocks
+        next_funding_event = coordination_block + (intervals_since_last_event + 1) * interval_in_blocks
+        next_three_funding_events = [next_funding_event + i * interval_in_blocks for i in range(3)]
+        return next_three_funding_events
 
-    return next_three_funding_events
+    except Exception as e:
+        logger.error(f'GlobalUtils - Error while calling current block number for BASE network: {e}')
+        return None

@@ -28,13 +28,22 @@ def save_data_to_json(data, symbol: str):
             json.dump(data, file, indent=4)
     except Exception as e:
         logger.error(f'BinanceBacktester - Error while logging historical data to JSON file: {e}')
-        return
+        return None
 
 def extract_funding_events(funding_data: pd.DataFrame, start_block: int, end_block: int):
-    return funding_data[(funding_data['block_number'] >= start_block) & (funding_data['block_number'] <= end_block)]
+    try:
+        return funding_data[(funding_data['block_number'] >= start_block) & (funding_data['block_number'] <= end_block)]
+    except Exception as e:
+        logger.error(f'BinanceBacktesterUtils - Error while extracting funding events for funding data {funding_data}, {e}')
+        return None
 
 def calculate_total_funding_impact(funding_events: pd.DataFrame, position_size: float):
-    total_impact: float = 0
-    for index, event in funding_events.iterrows():
-        total_impact += event['funding_rate'] * position_size
-    return total_impact
+    try:
+        total_impact: float = 0
+        for index, event in funding_events.iterrows():
+            total_impact += event['funding_rate'] * position_size
+        return total_impact
+    
+    except Exception as e:
+        logger.error(f'BinanceBacktesterUtils - Error while calculating total funding impact for funding event dataframe {funding_events}, {e}')
+        return None
