@@ -13,7 +13,7 @@ Given that the repo is under active development, it is recommended that you run 
 > *All code contained within this repository is distrubuted freely under the MIT License*
 
 ## Contributions
-This repo is designed to be open source and as such we welcome any who is interested in contributing to the codebase. To reach out, join the Telegram chat linked at the bottom of the README.
+This repo is designed to be open source and as such we welcome any who may be interested in contributing to the codebase. To reach out, join the Telegram chat linked at the bottom of the README.
 
 ## Getting Started
 
