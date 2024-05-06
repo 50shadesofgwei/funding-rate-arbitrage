@@ -49,7 +49,6 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
         initial_margin_requirement = Decimal(str(position_data['margin_details']['initial_margin_requirement']))
         current_asset_price = Decimal(asset_price)
 
-        # Basic checks
         if initial_margin_requirement <= 0 or position_size == 0 or current_asset_price <= 0:
             raise ValueError("Invalid input values for calculating liquidation price.")
 
