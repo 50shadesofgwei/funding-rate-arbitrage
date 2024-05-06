@@ -52,13 +52,13 @@ class ProfitabilityChecker:
             fee = MarketDirectory.get_maker_taker_fee(symbol, skew, is_long)
             fee_size = size * fee
             size_after_fee = size - fee_size
-            slippage = self.position_controller.synthetix.calculate_slippage(symbol, size_after_fee)
-            if slippage is not None: 
-                size_with_slippage = size_after_fee * (1 + slippage)
+            premium = self.position_controller.synthetix.calculate_premium(symbol, size_after_fee)
+            if premium is not None: 
+                size_with_premium = size_after_fee * (1 + premium)
             else:
-                size_with_slippage = size_after_fee
+                size_with_premium = size_after_fee
 
-            adjusted_size = get_adjusted_size(size_with_slippage, is_long)
+            adjusted_size = get_adjusted_size(size_with_premium, is_long)
 
             current_block_number = get_base_block_number()
             initial_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
