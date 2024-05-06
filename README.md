@@ -126,8 +126,8 @@ ETH = {
 ```
 from which we calculate our constant factor and our new funding velocity.
 
-Now that we have our funding velocity, we have to do some further calculations to give us an estimate of how long it will take before the funding rate turns against our trade. Fundamentally, the velocity figure shows us where the funding rate will be in 24 hours' time assuming no other trades are placed within that period. To visualise this, we can track the funding rate over time on a chart like so:
-![Funding Velocity](velocity1.png)
+Now that we have our funding velocity, we have to do some further calculations to give us an estimate of how long it will take before the funding rate turns against our trade. Fundamentally, the velocity figure shows us where the funding rate will be in 24 hours' time assuming no other trades are placed within that period. To visualise this, we can illustrate the funding rate over time on a chart like so:
+![Funding Velocity](Assets/velocity1.png)
 Where the green shaded area is our profit, and the funding velocity is represented by the gradient of the funding rate value over time. As we can see, once our trade is placed a new funding rate velocity is calculated and the gradient of the line changes; in this example there is already a negative funding velocity (funding rate is headed downwards), and our short trade increases the rate at which this change is occuring. You can visualise the profit as the sum of the green shaded area.
 
 ## Backtesting
@@ -135,11 +135,11 @@ Where the green shaded area is our profit, and the funding velocity is represent
 New module introduced in v0.2.0 - fetches, parses, and runs backdated strategies on any asset in the `TARGET_TOKENS` enum. Some helper functions are included, mainly to abstract away the process of calling the `MarketProxy` contract for historical funding rate data. This is done in one call, and sorted by asset + block number before being written to local storage in the relevant JSON file. Upon analysis, this data is parsed into pandas DataFrames which makes running the tests easier - The current model runs for one asset at a time, entering a position when the discrepancy in funding rates rises above a given bound, and closes the position when it falls back below.
 
 From some initial runs, we find a handful of useful results:
-![Funding Rate Differential](backtest1.png)
+![Funding Rate Differential](Assets/fundingRateDiscrepanciesETH.png)
 First of all that the funding rate on the Synthetix market is much more volatile than the Binance equivalent, which tells us that we will in most cases be taking the Synthetic position as the 'yield farm' and the Binance position as the hedge.
 
 A visualisation of the strategy would look like the following:
-[Backtest Results](backtest.png)
+[Backtest Results](Assets/backtest1.png)
 We see that the strategy is generally functioning well, but shows that there are many optimisations that we can make. Timing the trade to get out before the funding rate flips, and therefore avoiding some of the `taker` fees in favour of the lower `maker` fees. This part of the repo is free to play around with, and tinkering with strategies, leverage numbers, entry and exit conditions is highly encouraged.
 
 
