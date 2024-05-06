@@ -6,7 +6,6 @@ class SynthetixCaller:
     def __init__(self):
         self.client = get_synthetix_client()
 
-    @log_function_call
     def get_funding_rates(self, symbols: list):
         try:
             _, markets_by_name = self.client.perps.get_markets()
@@ -15,7 +14,6 @@ class SynthetixCaller:
             logger.error(f"SynthetixAPICaller - Error fetching market data: {e}")
             return []
 
-    @log_function_call
     def _filter_market_data(self, markets_by_name, symbols):
         market_funding_rates = []
         for symbol in symbols:
@@ -23,14 +21,16 @@ class SynthetixCaller:
                 try:
                     market_data = markets_by_name[symbol]
                     funding_rate_24 = market_data['current_funding_rate']
-                    funding_rate = funding_rate_24 / 3  # Assuming this is the correct calculation
+                    skew = market_data['skew']
+                    funding_velocity = market_data['current_funding_velocity']
+                    funding_rate = funding_rate_24 / 3 
                     market_funding_rates.append({
-                        'exchange': 'Synthetix',  # Change this to the correct exchange name if needed
+                        'exchange': 'Synthetix', 
                         'symbol': symbol,
                         'funding_rate': funding_rate,
+                        'funding_velocity': funding_velocity,
+                        'skew': skew
                     })
                 except KeyError as e:
                     logger.error(f"SynthetixAPICaller - Error processing market data for {symbol}: {e}")
         return market_funding_rates
-
-

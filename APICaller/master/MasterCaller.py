@@ -11,7 +11,6 @@ class MasterCaller:
         self.target_exchanges = get_target_exchanges()
         self.filtered_exchange_objects_and_tokens = self.filter_exchanges_and_tokens()
 
-    @log_function_call
     def filter_exchanges_and_tokens(self):
         try:
             all_exchanges = {
@@ -28,8 +27,7 @@ class MasterCaller:
         except Exception as e:
             logger.error(f"MasterAPICaller - Error filtering exchanges and tokens: {e}")
             return {}
-
-    @log_function_call    
+  
     def get_funding_rates(self) -> list:
         try:
             funding_rates = []

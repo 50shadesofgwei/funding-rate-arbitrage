@@ -6,7 +6,6 @@ from GlobalUtils.logger import *
 import time
 
 class SynthetixPositionController:
-    @log_function_call
     def __init__(self):
         self.client = get_synthetix_client()
         self.leverage_factor = float(os.getenv('TRADE_LEVERAGE'))
@@ -15,7 +14,6 @@ class SynthetixPositionController:
     ### WRITE FUNCTIONS ###
     #######################
 
-    @log_function_call
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         try:
             if not self.is_already_position_open():
@@ -35,12 +33,21 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - An error occurred while executing a trade: {e}")
 
     def close_all_positions(self):
-        for market in ALL_MARKET_IDS:
-            close_details = self.close_position(market)
-            if close_details:
-                return close_details 
+        close_results = []
+        try:
+            for market in MarketDirectory:
+                symbol = market.value['symbol']
+                try:
+                    close_details = self.close_position(market.value['market_id'])
+                    if close_details:
+                        close_results.append(close_details)
+                except Exception as e:
+                    logger.error(f"SynthetixPositionController - Error closing position for market {symbol}: {e}")
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - General error in close all positions: {e}")
+        
+        return close_results if close_results else None
 
-        return None 
 
     def close_position(self, market_id: int):
         max_retries = 2 
@@ -104,7 +111,6 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Account creation failed. Error: {e}")
 
-
     def collateral_approval(self, token_address: str, amount: int):
         try:
             perps_address = self.client.spot.market_proxy.address
@@ -159,7 +165,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Failed to get the default account. Error: {e}")
             return None
 
-
     def check_for_accounts(self):
         try:
             account_ids = self.client.perps.account_ids
@@ -174,7 +179,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error checking for or creating accounts: {e}")
             return None
  
-
     def calculate_adjusted_trade_size(self, opportunity, is_long: bool, trade_size: float) -> float:
         try:
             full_asset_name = get_full_asset_name(opportunity['symbol'])
@@ -188,7 +192,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Failed to calculate adjusted trade size. Error: {e}")
             return None
 
-
     def is_already_position_open(self) -> bool:
         try:
             positions = self.client.perps.get_open_positions()
@@ -201,3 +204,21 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
+
+    def calculate_premium(self, symbol: str, size: float) -> float:
+        try:
+            market_id = MarketDirectory.get_market_id(symbol)
+            quote_dict = self.client.perps.get_quote(size=size, market_id=market_id)
+            index_price = float(quote_dict['index_price'])
+            fill_price = float(quote_dict['fill_price'])
+            
+            if fill_price == 0:
+                logger.error(f"SynthetixAPICaller - Zero fill price error for symbol {symbol} with market ID {market_id}")
+                return None
+            
+            premium = (fill_price - index_price) / index_price
+            return premium
+
+        except Exception as e:
+            logger.error(f"SynthetixAPICaller - Error calculating premium for symbol {symbol}: {e}")
+            return None
