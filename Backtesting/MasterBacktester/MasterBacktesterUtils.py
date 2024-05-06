@@ -1,10 +1,12 @@
 import pandas as pd
 from GlobalUtils.logger import logger
+from GlobalUtils.globalUtils import *
 import numpy as np
 import matplotlib.pyplot as plt
 
 def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.DataFrame, entry_threshold: float, exit_threshold: float):
     trades = []
+    data_snx['skew'] = data_snx['skew'].astype(float)
     data_snx['funding_rate'] = data_snx['funding_rate'].astype(float)
     data_binance['funding_rate'] = data_binance['funding_rate'].astype(float)
 
@@ -12,11 +14,11 @@ def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.D
     data_snx['block_number'] = data_snx['block_number'].astype(int)
 
     binance_blocks = data_binance['block_number'].values
-
     open_trade = None
 
     for index, row in data_snx.iterrows():
         block_number_snx = row['block_number']
+        base_position_size = 5
         nearest_index = np.abs(binance_blocks - block_number_snx).argmin()
         nearest_binance_row = data_binance.iloc[nearest_index]
 
@@ -25,7 +27,6 @@ def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.D
         discrepancy = snx_rate - binance_rate
 
         if abs(discrepancy) > entry_threshold and not open_trade:
-            base_position_size = 10
             snx_position_size = -base_position_size if snx_rate > binance_rate else base_position_size
             binance_position_size = base_position_size if snx_rate > binance_rate else -base_position_size
             open_trade = {
@@ -34,22 +35,25 @@ def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.D
                 'snx_rate_entry': snx_rate,
                 'binance_rate_entry': binance_rate,
                 'discrepancy_entry': discrepancy,
+                'discrepancy_direction': 1 if discrepancy > 0 else -1, 
                 'snx_side': 'short' if snx_rate > binance_rate else 'long',
                 'binance_side': 'long' if snx_rate > binance_rate else 'short',
                 'snx_position_size': snx_position_size,
                 'binance_position_size': binance_position_size
             }
 
-        elif open_trade and abs(discrepancy) < exit_threshold:
-            open_trade.update({
-                'exit_block_snx': block_number_snx,
-                'exit_block_binance': nearest_binance_row['block_number'],
-                'snx_rate_exit': snx_rate,
-                'binance_rate_exit': binance_rate,
-                'discrepancy_exit': discrepancy
-            })
-            trades.append(open_trade)
-            open_trade = None
+        elif open_trade:
+            current_direction = 1 if discrepancy > 0 else -1
+            if abs(discrepancy) < exit_threshold or current_direction != open_trade['discrepancy_direction']:
+                open_trade.update({
+                    'exit_block_snx': block_number_snx,
+                    'exit_block_binance': nearest_binance_row['block_number'],
+                    'snx_rate_exit': snx_rate,
+                    'binance_rate_exit': binance_rate,
+                    'discrepancy_exit': discrepancy
+                })
+                trades.append(open_trade)
+                open_trade = None
 
     if open_trade:
         last_row = data_snx.iloc[-1]
@@ -64,6 +68,7 @@ def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.D
         trades.append(open_trade)
 
     return trades
+
 
 def calculate_profit_or_loss_for_trade(trade, snx_funding_impact, binance_funding_impact):
     try:
@@ -107,7 +112,7 @@ def calculate_profit_or_loss_for_trade(trade, snx_funding_impact, binance_fundin
         logger.error(f'MasterBacktesterUtils - Error calculating profit and loss for trade {trade}: {e}')
         return None
 
-def calculate_effective_APR(trades, total_profit, base_trade_size):
+def calculate_effective_APR(trades, total_profit_in_asset, total_capital_usd):
     try:
         if not trades:
             return 0 
@@ -117,12 +122,13 @@ def calculate_effective_APR(trades, total_profit, base_trade_size):
         total_blocks = end_block - start_block
         total_seconds = total_blocks * 2 
         years = total_seconds / 31_536_000 
-        total_capital = base_trade_size
 
         if years == 0:
             return float('inf')
+        
+        total_profit_usd = get_dollar_amount_for_given_asset_amount(asset='ethereum', asset_amount=total_profit_in_asset)
 
-        apr = (total_profit / total_capital) / years * 100
+        apr = (total_profit_usd / total_capital_usd) / years * 100
         return apr
     
     except Exception as e:

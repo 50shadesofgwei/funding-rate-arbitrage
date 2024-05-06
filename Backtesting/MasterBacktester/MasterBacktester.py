@@ -16,7 +16,6 @@ class MasterBacktester:
         self.synthetix = SynthetixBacktester()
 
     def run_updates(self):
-        """Iterate over each token in TARGET_TOKENS and update data."""
         try:
             self.synthetix.fetch_and_process_events_for_all_symbols()
 
@@ -51,15 +50,8 @@ class MasterBacktester:
                 trades.append(trade_details)
                 total_profit += trade_details['profit']['total']
 
-            plot_funding_rates_over_time(synthetix_df, binance_df, symbol)
-            plot_discrepancies_with_trades(synthetix_df, binance_df, trades, symbol)
-
             return total_profit
         
         except Exception as e:
             logger.error(f'MasterBacktester - Error while backtesting arbitrage strategy for symbol {symbol}: {e}')
             return None
-
-
-
-
