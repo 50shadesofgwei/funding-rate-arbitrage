@@ -11,9 +11,24 @@ class BinanceCaller:
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
+        self.client = Client(api_key, api_secret)
 
-    @log_function_call
+    def get_price(self, symbol: str) -> float:
+        try:
+            response = self.client.mark_price(symbol=symbol)
+            if 'markPrice' not in response:
+                raise KeyError("markPrice key not found in the response.")
+            
+            price = float(response['markPrice'])
+            return price
+        except KeyError as e:
+            logger.info(f"BinanceAPICaller - Error: {e}. Unable to find required data in the response for symbol {symbol}.")
+        except ValueError as e:
+            logger.info(f"BinanceAPICaller - Error converting price to float for symbol {symbol}: {e}. Check response format.")
+        except Exception as e:
+            logger.info(f"BinanceAPICaller - An error occurred while fetching the mark price for {symbol}: {e}.")
+        return None
+
     def get_funding_rates(self, symbols: list):
         funding_rates = []
         try:
@@ -26,7 +41,14 @@ class BinanceCaller:
             logger.error(f"BinanceAPICaller - Failed to fetch or parse funding rates for symbols. Error: {e}")
         return funding_rates
 
-    @log_function_call
+    def get_historical_funding_rate_for_symbol(self, symbol: str, limit: int) -> list:
+        try:
+            response = self.client.funding_rate(symbol=symbol, limit=limit)
+            return response
+        except Exception as e:
+            logger.error(f'BinanceAPICaller - Error while calling historical rates for symbol {symbol}, limit: {limit}, {e}')
+            return None
+    
     def _fetch_funding_rate_for_symbol(self, symbol: str):
         try:
             futures_funding_rate = self.client.funding_rate(symbol=symbol)
@@ -35,8 +57,7 @@ class BinanceCaller:
         except Exception as e:
             logger.error(f"BinanceAPICaller - Error fetching funding rate for {symbol}: {e}")
         return None
-
-    @log_function_call
+        
     def _parse_funding_rate_data(self, funding_rate_data, symbol: str):
         if funding_rate_data:
             return {
@@ -47,3 +68,4 @@ class BinanceCaller:
         else:
             logger.info(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")
             return None
+

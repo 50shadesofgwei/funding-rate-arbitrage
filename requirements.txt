@@ -3,5 +3,5 @@ Pypubsub==4.0.3
 python-dotenv==1.0.1
 python_binance==1.0.17
 Requests==2.31.0
-synthetix==0.1.3
-web3==6.5.0
+synthetix>=0.1.8
+web3>=6.5.0

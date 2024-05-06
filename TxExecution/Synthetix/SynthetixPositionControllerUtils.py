@@ -10,7 +10,6 @@ ALL_MARKET_IDS = [
     200
 ]
 
-@log_function_call
 def parse_trade_data_from_position_details(position_details) -> dict:
     try:
         side = get_side(position_details['position']['position_size'])
@@ -37,13 +36,11 @@ def parse_trade_data_from_position_details(position_details) -> dict:
         logger.error(f"SynthetixPositionControllerUtils - An unexpected error occurred in parse_trade_data_from_position_details: {e}")
         return {}
 
-@log_function_call
 def is_transaction_hash(tx_hash) -> bool:
     # Regular expression to match an Ethereum transaction hash
     pattern = r'^0x[a-fA-F0-9]{64}$'
     return re.match(pattern, tx_hash) is not None
 
-@log_function_call
 def calculate_liquidation_price(position_data, asset_price: float) -> float:
     try:
         position_size = Decimal(str(position_data['position']['position_size']))
@@ -52,7 +49,6 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
         initial_margin_requirement = Decimal(str(position_data['margin_details']['initial_margin_requirement']))
         current_asset_price = Decimal(asset_price)
 
-        # Basic checks
         if initial_margin_requirement <= 0 or position_size == 0 or current_asset_price <= 0:
             raise ValueError("Invalid input values for calculating liquidation price.")
 
@@ -68,7 +64,6 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
         logger.error(f"SynthetixPositionControllerUtils - Error in calculating liquidation price: {e}")
         return float('nan')
 
-@log_function_call
 def get_side(size: float) -> str:
     try:
         if size > 0:

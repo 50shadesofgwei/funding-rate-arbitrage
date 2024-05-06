@@ -12,19 +12,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class BinancePositionController:
-    @log_function_call
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(key=api_key, secret=api_secret, base_url="https://testnet.binancefuture.com")
-        self.leverage = int(os.getenv('TRADE_LEVERAGE'))
-        self.set_leverage_for_all_assets(TARGET_TOKENS)
+        self.client = Client(key=api_key, secret=api_secret)
+        # self.leverage = int(os.getenv('TRADE_LEVERAGE'))
+        # self.set_leverage_for_all_assets(TARGET_TOKENS)
 
     #######################
     ### WRITE FUNCTIONS ###
     #######################
 
-    @log_function_call
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         order_with_amount = {} 
         try:

@@ -15,7 +15,6 @@ class MasterPositionController:
     ### WRITE FUNCTIONS ###
     #######################
 
-    @log_function_call
     def execute_trades(self, opportunity):
         try:
             if self.is_already_position_open():
@@ -44,7 +43,7 @@ class MasterPositionController:
  
             if len(position_data_dict) == 2:
                 logger.info(f"Publishing POSITION_OPENED with position_data: {position_data_dict}")
-                pub.sendMessage(eventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
+                pub.sendMessage(EventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
                 logger.info("MasterPositionController - Trades executed successfully for opportunity.")
             else:
                 self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
@@ -55,7 +54,6 @@ class MasterPositionController:
             logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
             self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
 
-    @log_function_call
     def close_all_positions(self, reason: str):
         synthetix_position_report = self.synthetix.close_all_positions()
         binance_position_report = self.binance.close_all_positions()
@@ -65,18 +63,16 @@ class MasterPositionController:
             'close_reason': reason
         }
         logger.info(f'MasterPositionController - Closing positions with position report: {position_report}')
-        pub.sendMessage(eventsDirectory.POSITION_CLOSED.value, position_report=position_report)
+        pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, position_report=position_report)
 
-    @log_function_call
     def subscribe_to_events(self):
-        pub.subscribe(self.execute_trades, eventsDirectory.OPPORTUNITY_FOUND.value)
-        pub.subscribe(self.close_all_positions, eventsDirectory.CLOSE_ALL_POSITIONS.value)
+        pub.subscribe(self.execute_trades, EventsDirectory.OPPORTUNITY_FOUND.value)
+        pub.subscribe(self.close_all_positions, EventsDirectory.CLOSE_ALL_POSITIONS.value)
 
     ######################
     ### READ FUNCTIONS ###
     ######################
 
-    @log_function_call
     def get_trade_size(self, opportunity) -> float:
         try:
             collateral_amounts = self.get_available_collateral_by_exchange()
@@ -91,7 +87,6 @@ class MasterPositionController:
             logger.error(f"MasterPositionController - Failed to calculate trade size for opportunity. Error: {e}")
             return 0.0
 
-    @log_function_call
     def get_available_collateral_by_exchange(self):
         try:
             synthetix_collateral = self.synthetix.get_available_collateral()
@@ -107,7 +102,6 @@ class MasterPositionController:
             logger.error(f"MasterPositionController - Failed to get available collateral by exchange. Error: {e}")
             return None
 
-    @log_function_call
     def is_already_position_open(self) -> bool:
         if self.synthetix.is_already_position_open() or self.binance.is_already_position_open():
             logger.info("MasterPositionController - Position already open")
