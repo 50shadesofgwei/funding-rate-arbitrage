@@ -53,7 +53,7 @@ class MarketDirectory(Enum):
         'market_id': 400,
         'symbol': 'SOL',
         'max_funding_velocity': 36,
-        'skew_scale': 1410000,
+        'skew_scale': 1406250,
         'maker_fee': 0.0002,
         'taker_fee': 0.0008
     }
@@ -64,7 +64,7 @@ class MarketDirectory(Enum):
         'max_funding_velocity': 36,
         'skew_scale': 10000000,
         'maker_fee': 0.0002,
-        'taker_fee': 0.0008
+        'taker_fee': 0.001
     }
 
     W = {
@@ -79,7 +79,7 @@ class MarketDirectory(Enum):
     ENA = {
         'market_id': 700,
         'symbol': 'ENA',
-        'max_funding_velocity': 9,
+        'max_funding_velocity': 36,
         'skew_scale': 25500000,
         'maker_fee': 0.0002,
         'taker_fee': 0.001
@@ -89,7 +89,7 @@ class MarketDirectory(Enum):
         'market_id': 800,
         'symbol': 'DOGE',
         'max_funding_velocity': 36,
-        'skew_scale': 790000000,
+        'skew_scale': 798000000,
         'maker_fee': 0.0002,
         'taker_fee': 0.001
     }
@@ -106,7 +106,7 @@ class MarketDirectory(Enum):
     ARB = {
         'market_id': 1600,
         'symbol': 'ARB',
-        'max_funding_velocity': 9,
+        'max_funding_velocity': 36,
         'skew_scale': 41000000,
         'maker_fee': 0.0002,
         'taker_fee': 0.001
