@@ -109,7 +109,7 @@ Now that we have the size of the position we are going to place on Synthetix, th
         except Exception as e:
             raise ValueError(f"GlobalUtils - Failed to calculate new funding velocity for {symbol}: {e}")
 ```
-Funding velocity is defined as the product of the formula $dr/dt=c*skew$, where `dr/dt` is the velocity, `c` is the constant factor `(maxFundingVelocity / skewScale)`, and `skew` is the measure of the imbalance between long and short open interest in the given market, measured in units of said asset. 
+Funding velocity is defined as the product of the formula $dr/dt=c*skew$, where $dr/dt$ is the velocity, $c$ is the constant factor $(maxFundingVelocity / skewScale)$, and $skew$ is the measure of the imbalance between long and short open interest in the given market, measured in units of said asset. 
 
 > (If this is a bit abstract, there's a good blog post that you can find [here](https://blog.synthetix.io/synthetix-perps-dynamic-funding-rates/) with some more intuitive explanations)
 
