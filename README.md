@@ -17,7 +17,7 @@ This repo is designed to be open source and as such we welcome any who may be in
 
 ## Getting Started
 
-To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
+To start, first clone the repo using `git clone git@github.com/50shadesofgwei/SynthetixFundingRateArbitrage.git`.
 
 Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, and then create a virtual environment with `python3 -m venv venv && source venv/bin/activate`. 
 Install project dependencies with `pip install -r requirements.txt`.
