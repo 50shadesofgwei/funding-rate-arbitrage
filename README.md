@@ -12,16 +12,33 @@ Given that the repo is under active development, it is recommended that you run 
 
 > *All code contained within this repository is distrubuted freely under the MIT License*
 
+## Disclaimer - Please Read
+As mentioned above, this repository is under active development and has not yet been ran extensively in production. By cloning or forking the code and running it locally, you take on all responsibility for any loss of funds that are incurred via user error, as-of-yet-undiscovered bugs, or any other concievable reason. You should be comfortable running, interacting with and debugging the bot on testnet before considering any runs with real capital.
+
+## Important Note!
+**In order to start running the bot, some beginner/intermediate programming knowledge is required.**
+
+This isn't ideal of course, the plan is to have a user-friendly interface from which one can control everything and see their profit and loss, historical trades etc; this is coming, but won't be here for a while as there is currently only one active developer.
+
+If you're newer to programming and want to have a go anyway, don't be afraid to ask chatGPT to explain errors and help you along; this should be your first port of call. If there's an error or you encounter unexpected behaviour within the project repo itself, please provide screenshots of the error and what you ran that caused said error in the telegram chat (linked at bottom of readme).
+
+
 ## Contributions
 This repo is designed to be open source and as such we welcome any who may be interested in contributing to the codebase. To reach out, join the Telegram chat linked at the bottom of the README.
 
 ## Getting Started
 
-To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
+To start, first clone the repo to your local machine using either:
+`git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git` if you have SSH keys set up on linked github account
+or alternatively
+`git clone https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage.git`
+if you don't.
+
+You will need the git package installed on you machine for this.
 
 Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, and then create a virtual environment with `python3 -m venv venv && source venv/bin/activate`. 
 Install project dependencies with `pip install -r requirements.txt`.
-To make sure you can run the project's commands directly from your terminal, run `pip install -e`.
+To make sure you can run the project's commands directly from your terminal, run `pip install -e .`.
 
 After this, navigate to the .env file and input the necessary values. You will need:
 
