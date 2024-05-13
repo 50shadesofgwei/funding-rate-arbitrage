@@ -36,8 +36,7 @@ if you don't.
 
 You will need the git package installed on you machine for this.
 
-Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, and then create a virtual environment with `python3 -m venv venv && source venv/bin/activate`. 
-Install project dependencies with `pip install -r requirements.txt`.
+Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, then install project dependencies with `pip install -r requirements.txt`.
 To make sure you can run the project's commands directly from your terminal, run `pip install -e .`.
 
 After this, navigate to the .env file and input the necessary values. You will need:
