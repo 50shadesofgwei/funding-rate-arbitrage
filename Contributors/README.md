@@ -2,16 +2,6 @@
 
 Welcome to the SynthetixFundingRateArbitrage contributors' section - we're excited to have you consider contributing to the project. Here you can find the types of contributions we are looking for and how the process works.
 
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Types of Contributions](#types-of-contributions)
-- [How to Contribute](#how-to-contribute)
-- [Contribution Guidelines](#contribution-guidelines)
-- [Setup and Installation](#setup-and-installation)
-- [Community and Communication](#community-and-communication)
-- [Acknowledgments](#acknowledgments)
-
 ## Introduction
 
 As an open source project, community contributions are highly encouraged - most opportunities are somewhat technical in nature, although there are also avenues for content-focused + organisational contributors. A list of the outstanding tasks, their category and their respective bounty are to be found below.
