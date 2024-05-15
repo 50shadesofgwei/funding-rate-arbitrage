@@ -3,6 +3,7 @@ from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonito
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
+from GlobalUtils.marketDirectory import MarketDirectory
 from pubsub import pub
 import threading
 import time

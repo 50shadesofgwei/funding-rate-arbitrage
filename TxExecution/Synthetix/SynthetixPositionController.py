@@ -3,6 +3,7 @@ from APICaller.Synthetix.SynthetixUtils import *
 from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
+from GlobalUtils.marketDirectory import MarketDirectory
 import time
 
 class SynthetixPositionController:

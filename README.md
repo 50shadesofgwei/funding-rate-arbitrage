@@ -129,9 +129,9 @@ Funding velocity is defined as the product of the formula $dr/dt=c*skew$, where 
 
 > (If this is a bit abstract, there's a good blog post that you can find [here](https://blog.synthetix.io/synthetix-perps-dynamic-funding-rates/) with some more intuitive explanations)
 
-So to calculate the new funding velocity we solve for the above function by grabbing the market details from the `MarketDirectory` enum, which will be of type:
+So to calculate the new funding velocity we solve for the above function by grabbing the market details from the `MarketDirectory` class, which will be of type:
 ```python
-ETH = {
+'ETH': {
         'market_id': 100,
         'symbol': 'ETH',
         'max_funding_velocity': 9,
