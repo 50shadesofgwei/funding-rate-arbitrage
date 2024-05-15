@@ -86,7 +86,9 @@ class SynthetixPositionController:
         try:
             self.collateral_approval(token_address, amount)
             time.sleep(2)
-            self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
+            wrap_tx = self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
+            if is_transaction_hash(wrap_tx):
+                logger.info(f"SynthetixPositionController - Wrap tx executed successfully")
             time.sleep(2)
             self.add_collateral(market_id=100, amount=amount)
         except Exception as e:
@@ -213,12 +215,12 @@ class SynthetixPositionController:
             fill_price = float(quote_dict['fill_price'])
             
             if fill_price == 0:
-                logger.error(f"SynthetixAPICaller - Zero fill price error for symbol {symbol} with market ID {market_id}")
+                logger.error(f"SynthetixPositionController - Zero fill price error for symbol {symbol} with market ID {market_id}")
                 return None
             
             premium = (fill_price - index_price) / index_price
             return premium
 
         except Exception as e:
-            logger.error(f"SynthetixAPICaller - Error calculating premium for symbol {symbol}: {e}")
+            logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None

@@ -42,6 +42,7 @@ As an open source project, community contributions are highly encouraged - most 
 - [ ] GMX
 - [ ] DYDX
 - [ ] HMX
+- [ ] HyperLiquid
 
 ## Contribution Guidelines - Non-Technical
 

@@ -5,6 +5,7 @@ import requests
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
+from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 
 load_dotenv()
 
@@ -155,6 +156,29 @@ class MarketDirectory(Enum):
             return fee
         except Exception as e:
             raise ValueError(f"GlobalUtils - Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}: {e}")
+
+    @staticmethod
+    def update_enum_member(market_data):
+        symbol = market_data['market_name']
+        try:
+            market_enum = MarketDirectory[symbol]
+            market_enum.value.update({
+                'market_id': market_data['market_id'],
+                'max_funding_velocity': market_data['max_funding_velocity'],
+                'skew_scale': market_data['skew_scale'],
+                'maker_fee': market_data['maker_fee'],
+                'taker_fee': market_data['taker_fee']
+            })
+            logger.info(f"GlobalUtils - Updated {symbol} with latest parameters.")
+        except KeyError:
+            logger.info(f"GlobalUtils - Market {symbol} is not defined in MarketDirectory enum.")
+
+    @staticmethod
+    def update_all_market_parameters():
+        client = get_synthetix_client()
+        market_data_response = client.perps.markets_by_name
+        for symbol, market_data in market_data_response.items():
+            MarketDirectory.update_enum_member(market_data)
 
 def initialise_client() -> Web3:
     try:
