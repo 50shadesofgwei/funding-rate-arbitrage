@@ -3,6 +3,7 @@ from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from Backtesting.Synthetix.SynthetixBacktesterUtils import calculate_adjusted_funding_rate
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
+from GlobalUtils.marketDirectory import MarketDirectory
 import json
 from math import floor
 import os
