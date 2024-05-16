@@ -1,6 +1,6 @@
 # Synthetix Funding Rate Arbitrage
 ![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
-> **Version 0.2.0**
+> **Version 0.2.1**
 
 ![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk) ![Static Badge](https://img.shields.io/badge/License-MIT-green)
 
@@ -12,16 +12,32 @@ Given that the repo is under active development, it is recommended that you run 
 
 > *All code contained within this repository is distrubuted freely under the MIT License*
 
+## Legal Disclaimer - Please Read
+> As mentioned above, this repository is under active development and has not yet been ran extensively in production. By cloning or forking the code and running it locally, you understand that you are running in-development code, and take on all responsibility for any loss of funds that are incurred via user error, as-of-yet-undiscovered bugs, or any other concievable reason. You should be comfortable running, interacting with and debugging the bot on testnet before considering any runs with real capital. This project is for educational purposes only. Any interested party should not construe any information or other material found in this repository as legal, tax, investment, financial, or other advice. Nothing contained here constitutes a solicitation, recommendation, endorsement, or offer by the repository creator, the Synthetix Protocol, or any third party service provider to buy or sell any securities or other financial instruments in the US, nor in any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of said jurisdiction. Under no circumstances will the repository creator or the Synthetix Protocol be held responsible or liable in any way for any claims, damages, losses, expenses, costs, or liabilities whatsoever, including, without limitation, any direct or indirect damages for loss of profits.
+
+## Important Note!
+**In order to start running the bot, some beginner/intermediate programming knowledge is required.**
+
+This isn't ideal of course, the plan is to have a user-friendly interface from which one can control everything and see their profit and loss, historical trades etc; this is coming, but won't be here for a while as there is currently only one active developer.
+
+If you're newer to programming and want to have a go anyway, don't be afraid to ask chatGPT to explain errors and help you along; this should be your first port of call. If there's an error or you encounter unexpected behaviour within the project repo itself, please provide screenshots of the error and what you ran that caused said error in the telegram chat (linked at bottom of readme).
+
+
 ## Contributions
 This repo is designed to be open source and as such we welcome any who may be interested in contributing to the codebase. To reach out, join the Telegram chat linked at the bottom of the README.
 
 ## Getting Started
 
-To start, first clone the repo using `git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git`.
+To start, first clone the repo to your local machine using either:
+`git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git` if you have SSH keys set up on linked github account
+or alternatively
+`git clone https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage.git`
+if you don't.
 
-Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, and then create a virtual environment with `python3 -m venv venv && source venv/bin/activate`. 
-Install project dependencies with `pip install -r requirements.txt`.
-To make sure you can run the project's commands directly from your terminal, run `pip install -e`.
+You will need the git package installed on you machine for this.
+
+Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, then install project dependencies with `pip install -r requirements.txt`.
+To make sure you can run the project's commands directly from your terminal, run `pip install -e .`.
 
 After this, navigate to the .env file and input the necessary values. You will need:
 
@@ -29,7 +45,6 @@ After this, navigate to the .env file and input the necessary values. You will n
 - The relevant chainId (Base Mainnet: 8453, Base Testnet: 84532)
 - Your wallet address and Private Key (For security reasons you should create a new wallet to use here)
 - A Binance API key + secret
-- A Coingecko API key
 
 Recommended values for the following vars are as follows:
 - `TRADE_LEVERAGE=5`
@@ -59,10 +74,10 @@ The bot will now only target ETH opportunities.
 Note that some additional steps are required before executing trades, namely that a Synthetix perps account will have to be created and have some collateral deployed. The code for this is found in the next section.
 
 ## Testnet config
-To start executing some test trades, first you will need to mint some fUSDC on Base sepolia (you can do that [here](https://sepolia.basescan.org/address/0xa1ae612e07511a947783c629295678c07748bc7a#writeContract) by calling `deposit_eth` with some testnet Eth and '0x69980C3296416820623b3e3b30703A74e2320bC8' as the token_address argument). 
-After you have some fUSDC, you can call the collateral deposit function by running the `deploy-collateral` command in the CLI. Once you click enter it will ask you for two variables, firstly the token address (which for fUSDC is 0x69980C3296416820623b3e3b30703A74e2320bC8), and the amount to deposit. Amount is denominated in USD terms, so to deposit 250.67 fUSDC, you'd enter the command as follows:
+To start executing some test trades, first you will need to mint some fUSDC on Base sepolia (you can do that [here](https://sepolia.basescan.org/address/0xa1ae612e07511a947783c629295678c07748bc7a#writeContract) by calling `deposit_eth` with some testnet Eth and '0xc43708f8987Df3f3681801e5e640667D86Ce3C30' as the token_address argument). 
+After you have some fUSDC, you can call the collateral deposit function by running the `deploy-collateral` command in the CLI. Once you click enter it will ask you for two variables, firstly the token address (which for fUSDC is 0xc43708f8987Df3f3681801e5e640667D86Ce3C30), and the amount to deposit. Amount is denominated in USD terms, so to deposit 100.0 fUSDC, you'd enter the command as follows:
 `
-deploy-collateral 0x69980C3296416820623b3e3b30703A74e2320bC8 250.67
+deploy-collateral 0xc43708f8987Df3f3681801e5e640667D86Ce3C30 100.0
 `
 
 For the Binance side, you will have to create an account and set of API keys [here](https://testnet.binancefuture.com/en/futures/BTCUSDT), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined upon initialisation of the Binance clients. By default they will target testnet and look like so:
@@ -77,7 +92,7 @@ To switch to live trading, simply remove the final argument like so:
 self.client = Client(api_key, api_secret)
 ```
 
-> As of version 0.2.0, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
+> As of version 0.2.1, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
     - BinanceCaller.py
     - BinancePositionController.py
     - BinancePositionMonitor.py
@@ -93,7 +108,7 @@ A high level walkthrough can be found via following this link:
 [Watch here](https://drive.google.com/file/d/1QlGKDZIhfQkfegQOnAi7ycPEOlvWn4ye/view?usp=sharing)
 
 ## Profitability Estimations
-As of version 0.2.0, the impact of a potential trade on funding velocity is now taken into consideration when assessing the profitability of a position - maker/taker fees are also taken into account, and 8 new markets have been added to the searcher algorithm (by default, all will be selected). More markets will be added in future releases as they amass sufficient liquidity.
+As of version 0.2.1, the impact of a potential trade on funding velocity is now taken into consideration when assessing the profitability of a position - maker/taker fees are also taken into account, and 8 new markets have been added to the searcher algorithm (by default, all will be selected). More markets will be added in future releases as they amass sufficient liquidity.
 
 To estimate the profit for a trade we start with the Synthetix half - the trade details are generated by the MatchingEngine module and passed to CheckProfitability.py, where the user's `BASE_TRADE_SIZE_USD` is multiplied by their `TRADE_LEVERAGE` to find the total dollar value of the position. The market price of the asset is then called, and the dollar value converted into the amount of the asset in question which is halved, giving us the trade size per trade leg and finally we adjust for the side (long or short) of each trade and factor in the expected price impact. 
 Now that we have the size of the position we are going to place on Synthetix, the next step is to calculate the effect that our trade will have on the funding velocity of the respective market. To do this, we use the `skew` value in our `opportunity` object along with the our trade size, and pass these as arguments to a helper function that will return the funding velocity after our trade is placed:
@@ -109,13 +124,13 @@ Now that we have the size of the position we are going to place on Synthetix, th
         except Exception as e:
             raise ValueError(f"GlobalUtils - Failed to calculate new funding velocity for {symbol}: {e}")
 ```
-Funding velocity is defined as the product of the formula `dr/dt = c * skew`, where `dr/dt` is the velocity, `c` is the constant factor `(maxFundingVelocity / skewScale)`, and `skew` is the measure of the imbalance between long and short open interest in the given market, measured in units of said asset. 
+Funding velocity is defined as the product of the formula $dr/dt=c*skew$, where $dr/dt$ is the velocity, $c$ is the constant factor $(maxFundingVelocity / skewScale)$, and $skew$ is the measure of the imbalance between long and short open interest in the given market, measured in units of said asset. 
 
 > (If this is a bit abstract, there's a good blog post that you can find [here](https://blog.synthetix.io/synthetix-perps-dynamic-funding-rates/) with some more intuitive explanations)
 
-So to calculate the new funding velocity we solve for the above function by grabbing the market details from the `MarketDirectory` enum, which will be of type:
+So to calculate the new funding velocity we solve for the above function by grabbing the market details from the `MarketDirectory` class, which will be of type:
 ```python
-ETH = {
+'ETH': {
         'market_id': 100,
         'symbol': 'ETH',
         'max_funding_velocity': 9,
@@ -157,7 +172,7 @@ Cross-module communication is handled via event emitters and listeners, a direct
 Upon confirmation of execution, trades are logged to a database with each side (SNX/Binance) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
 
 ## Open Issues / Potential Improvements
-> **Version 0.2.0**
+> **Version 0.2.1**
 
 **Shutdown** 
 

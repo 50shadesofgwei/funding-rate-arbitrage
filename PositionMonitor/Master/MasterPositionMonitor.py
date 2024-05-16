@@ -3,6 +3,7 @@ from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonito
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
+from GlobalUtils.marketDirectory import MarketDirectory
 from pubsub import pub
 import threading
 import time
@@ -110,15 +111,9 @@ class MasterPositionMonitor():
                 return False
 
             try:
-                full_symbol = get_full_asset_name(symbol)
+                asset_price = get_price_from_pyth(asset=symbol)
             except Exception as e:
-                logger.error(f"MasterPositionMonitor - Error retrieving full symbol name for {symbol}: {e}")
-                return False
-
-            try:
-                asset_price = get_asset_price(asset=full_symbol)
-            except Exception as e:
-                logger.error(f"MasterPositionMonitor - Error retrieving asset price for {full_symbol}: {e}")
+                logger.error(f"MasterPositionMonitor - Error retrieving asset price for {symbol}: {e}")
                 return False
 
             synthetix_notional_value = float(synthetix_position['size']) * asset_price

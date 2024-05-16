@@ -3,6 +3,7 @@ from APICaller.Synthetix.SynthetixUtils import *
 from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
+from GlobalUtils.marketDirectory import MarketDirectory
 import time
 
 class SynthetixPositionController:
@@ -82,63 +83,99 @@ class SynthetixPositionController:
                 else:
                     raise e
 
-    def approve_and_deposit_collateral(self, token_address: str, amount: float):
+    def approve_and_deposit_collateral(self, amount: int):
         try:
-            self.collateral_approval(token_address, amount)
-            time.sleep(2)
-            self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
-            time.sleep(2)
-            self.add_collateral(market_id=100, amount=amount)
+            self._approve_collateral_for_spot_market_proxy(amount)
+            time.sleep(1)
+            self._wrap_collateral(amount)
+            time.sleep(1)
+            self._approve_collateral_for_spot_market_proxy(amount)
+            time.sleep(1)
+            self._execute_atomic_order(amount, 'sell')
+            time.sleep(1)
+            self._approve_collateral_for_perps_market_proxy(amount)
+            time.sleep(1)
+            self._add_collateral(amount)
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
 
-    def add_collateral(self, market_id: int, amount: float):
+    def _add_collateral(self, amount: int):
         try:
             tx = self.client.perps.modify_collateral(
                 amount=amount, 
-                market_id=market_id, 
+                market_id=0, 
                 submit=True
             )
             if is_transaction_hash(tx):
-                logger.info(f"SynthetixPositionController - Successfully added {amount} collateral to market ID {market_id}.")
+                logger.info(f"SynthetixPositionController - Successfully added {amount} to collateral, market_id=0.")
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
 
-    def create_account(self):
+    def _create_account(self):
         try:
             account = self.client.perps.create_account(submit=True)
             logger.info(f"SynthetixPositionController - Account creation successful: {account}")
         except Exception as e:
             logger.error(f"SynthetixPositionController - Account creation failed. Error: {e}")
 
-    def collateral_approval(self, token_address: str, amount: int):
+    def _approve_collateral_for_spot_market_proxy(self, amount: int):
         try:
-            perps_address = self.client.spot.market_proxy.address
-            approve_tx = self.client.approve(
-                token_address=token_address, 
-                target_address=perps_address, 
+            spot_market_proxy_address = self.client.spot.market_proxy.address
+            approve_tx = self.client.spot.approve(
+                target_address=spot_market_proxy_address, 
+                market_id=0,
                 amount=amount,
                 submit=True
             )
             if is_transaction_hash(approve_tx):
-                logger.info(f"SynthetixPositionController - Collateral approval transaction successful. Transaction ID: {approve_tx}")
+                logger.info(f"SynthetixPositionController - Spot market collateral approval transaction successful. Transaction ID: {approve_tx}")
         except Exception as e:
-            logger.error(f"SynthetixPositionController - Collateral approval failed for token {token_address} with amount {amount}. Error: {e}")
+            logger.error(f"SynthetixPositionController - Collateral approval for spot market failed. Error: {e}")
+
+    def _approve_collateral_for_perps_market_proxy(self, amount: int):
+        try:
+            perps_market_proxy_address = self.client.perps.market_proxy.address
+            approve_tx = self.client.spot.approve(
+                target_address=perps_market_proxy_address, 
+                market_id=0,
+                amount=amount,
+                submit=True
+            )
+            if is_transaction_hash(approve_tx):
+                logger.info(f"SynthetixPositionController - Perps market collateral approval transaction successful. Transaction ID: {approve_tx}")
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - Collateral approval for perps market failed. Error: {e}")
+
+    def _wrap_collateral(self, amount: int):
+        wrap_tx = self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
+        if is_transaction_hash(wrap_tx):
+            logger.info(f"SynthetixPositionController - Wrap tx executed successfully")
+
+    def _execute_atomic_order(self, amount: int, side: str):
+        order_tx = self.client.spot.atomic_order(side, amount, market_name="sUSDC", submit=True)
+        if is_transaction_hash(order_tx):
+            logger.info(f"SynthetixPositionController - Atomic order transaction successful. Side: {side}, Transaction ID: {order_tx}")
+
+
 
     ######################
     ### READ FUNCTIONS ###
     ######################
 
     def handle_position_opened(self, opportunity):
-        position = self.client.perps.get_open_position(market_name=opportunity['symbol'])
-        position['symbol'] = opportunity['symbol']
-        margin_details = self.client.perps.get_margin_info()
-        position_details = {
-            'position': position,
-            'margin_details': margin_details
-        }
-        trade_data = parse_trade_data_from_position_details(position_details)
-        return trade_data
+        try:
+            position = self.client.perps.get_open_position(market_name=opportunity['symbol'])
+            position['symbol'] = opportunity['symbol']
+            margin_details = self.client.perps.get_margin_info()
+            position_details = {
+                'position': position,
+                'margin_details': margin_details
+            }
+            trade_data = parse_trade_data_from_position_details(position_details)
+            return trade_data
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
+            return None
 
     def get_available_collateral(self):
         try:
@@ -170,10 +207,10 @@ class SynthetixPositionController:
             account_ids = self.client.perps.account_ids
             if not account_ids:
                 logger.info("SynthetixPositionController - No accounts found for wallet, creating new one.")
-                self.create_account()
+                self._create_account()
                 return self.client.perps.account_ids
             else:
-                logger.info("SynthetixPositionController - Accounts checked and found successfully.")
+                logger.info(f"SynthetixPositionController - Accounts checked and found successfully: {account_ids}.")
                 return account_ids
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error checking for or creating accounts: {e}")
@@ -181,8 +218,7 @@ class SynthetixPositionController:
  
     def calculate_adjusted_trade_size(self, opportunity, is_long: bool, trade_size: float) -> float:
         try:
-            full_asset_name = get_full_asset_name(opportunity['symbol'])
-            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(full_asset_name, trade_size)
+            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size)
             trade_size_with_leverage = trade_size_in_asset * self.leverage_factor
             adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)
@@ -213,12 +249,12 @@ class SynthetixPositionController:
             fill_price = float(quote_dict['fill_price'])
             
             if fill_price == 0:
-                logger.error(f"SynthetixAPICaller - Zero fill price error for symbol {symbol} with market ID {market_id}")
+                logger.error(f"SynthetixPositionController - Zero fill price error for symbol {symbol} with market ID {market_id}")
                 return None
             
             premium = (fill_price - index_price) / index_price
             return premium
 
         except Exception as e:
-            logger.error(f"SynthetixAPICaller - Error calculating premium for symbol {symbol}: {e}")
+            logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None
