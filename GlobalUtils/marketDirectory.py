@@ -105,5 +105,3 @@ class MarketDirectory:
     def print_markets(cls):
         for symbol, data in cls._markets.items():
             logger.info(f"{symbol}: {data}")
-
-MarketDirectory.initialize()

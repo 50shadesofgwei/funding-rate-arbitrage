@@ -5,8 +5,7 @@ import requests
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
-from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
-import json
+from synthetix import Synthetix
 
 load_dotenv()
 
@@ -61,6 +60,23 @@ def get_asset_price(asset: str) -> float:
         logger.error(f"Unexpected error fetching asset price for {asset}: {e}, URL: {url}")
     return None
 
+def get_price_from_pyth(client: Synthetix, symbol: str):
+    try:
+        response = client.pyth.get_price_from_symbols([symbol])
+        if 'price' in response:
+            price: float = response['price']
+            return price
+        else:
+            logger.error(f"GlobalUtils - 'price' key missing in Pyth response for {symbol}.")
+            return None
+    except KeyError as ke:
+        logger.error(f"GlobalUtils - KeyError accessing Pyth response data for {symbol}: {ke}")
+        return None
+    except Exception as e:
+        logger.error(f"GlobalUtils - Unexpected error fetching asset price for {symbol} from Pyth: {e}")
+        return None
+
+
 def calculate_transaction_cost_usd(total_gas: int) -> float:
     try:
         gas_price_gwei = get_gas_price()
@@ -69,7 +85,7 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
         transaction_cost_usd = float(gas_cost_eth) * eth_price_usd
         return transaction_cost_usd
     except (InvalidOperation, ValueError) as e:
-        logger.info(f"GlobalUtils - Error calculating transaction cost: {e}")
+        logger.error(f"GlobalUtils - Error calculating transaction cost: {e}")
     return 0.0
 
 def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
