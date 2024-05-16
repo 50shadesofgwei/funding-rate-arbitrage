@@ -207,7 +207,7 @@ class SynthetixPositionController:
             account_ids = self.client.perps.account_ids
             if not account_ids:
                 logger.info("SynthetixPositionController - No accounts found for wallet, creating new one.")
-                self.create_account()
+                self._create_account()
                 return self.client.perps.account_ids
             else:
                 logger.info(f"SynthetixPositionController - Accounts checked and found successfully: {account_ids}.")
