@@ -6,6 +6,7 @@ from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
 from synthetix import Synthetix
+from APICaller.Synthetix.SynthetixCaller import get_synthetix_client
 
 load_dotenv()
 
@@ -68,7 +69,8 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
 
 def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        client = get_synthetix_client()
+        asset_price = get_price_from_pyth(client, asset)
         asset_amount = dollar_amount / asset_price
         return asset_amount
     except ZeroDivisionError:
@@ -77,7 +79,8 @@ def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -
 
 def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        client = get_synthetix_client()
+        asset_price = get_price_from_pyth(client, asset)
         dollar_amount = asset_amount * asset_price
         return dollar_amount
     except Exception as e:
