@@ -5,3 +5,5 @@ trades.db
 test.csv
 app.log
 SynthetixFundingRateArbitrage.egg-info/
+markets.json
+OrderedOpportunities.json
