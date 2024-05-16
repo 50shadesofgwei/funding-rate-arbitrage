@@ -2,6 +2,7 @@ from APICaller.Binance.binanceCaller import BinanceCaller
 from Backtesting.utils.backtestingUtils import *
 from Backtesting.Binance.binanceBacktesterUtils import *
 from GlobalUtils.globalUtils import *
+from GlobalUtils.marketDirectory import MarketDirectory
 from GlobalUtils.logger import logger
 import math
 import time 

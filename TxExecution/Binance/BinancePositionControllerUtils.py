@@ -36,8 +36,7 @@ def parse_trade_data_from_response(response) -> dict:
 def calculate_adjusted_trade_size(opportunity, is_long: bool, trade_size: float) -> float:
         try:
             leverage_factor = float(os.getenv('TRADE_LEVERAGE'))
-            full_asset_name = get_full_asset_name(opportunity['symbol'])
-            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(full_asset_name, trade_size)
+            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size)
             trade_size_with_leverage = trade_size_in_asset * leverage_factor
             adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)

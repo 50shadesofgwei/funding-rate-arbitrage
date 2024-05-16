@@ -3,7 +3,7 @@ import argparse
 
 def run(args):
     x = SynthetixPositionController()
-    x.check_for_accounts
+    x.check_for_accounts()
     x.approve_and_deposit_collateral(token_address=args.token_address, amount=args.token_amount)
 
 def main():

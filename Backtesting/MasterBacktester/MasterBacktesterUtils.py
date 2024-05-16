@@ -126,7 +126,7 @@ def calculate_effective_APR(trades, total_profit_in_asset, total_capital_usd):
         if years == 0:
             return float('inf')
         
-        total_profit_usd = get_dollar_amount_for_given_asset_amount(asset='ethereum', asset_amount=total_profit_in_asset)
+        total_profit_usd = get_dollar_amount_for_given_asset_amount(asset='ETH', asset_amount=total_profit_in_asset)
 
         apr = (total_profit_usd / total_capital_usd) / years * 100
         return apr
