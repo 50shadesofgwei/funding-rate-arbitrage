@@ -45,7 +45,6 @@ After this, navigate to the .env file and input the necessary values. You will n
 - The relevant chainId (Base Mainnet: 8453, Base Testnet: 84532)
 - Your wallet address and Private Key (For security reasons you should create a new wallet to use here)
 - A Binance API key + secret
-- A Coingecko API key
 
 Recommended values for the following vars are as follows:
 - `TRADE_LEVERAGE=5`

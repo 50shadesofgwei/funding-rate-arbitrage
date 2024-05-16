@@ -38,28 +38,6 @@ def get_gas_price() -> float:
             logger.info(f"GlobalUtils - Error fetching gas price: {e}")
     return 0.0
 
-def get_asset_price(asset: str) -> float:
-    api_key = os.getenv('COINGECKO_API_KEY')
-    url = f'https://api.coingecko.com/api/v3/simple/price?ids={asset}&vs_currencies=usd&x_cg_demo_api_key={api_key}'
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            if asset in data and 'usd' in data[asset]:
-                return data[asset]['usd']
-            else:
-                logger.error(f"Data for {asset} is missing or malformed: {data}")
-        else:
-            logger.error(f"API call for {asset} returned non-200 status code: {response.status_code}, Response: {response.text}")
-            return None
-    except requests.exceptions.RequestException as req_e:
-        logger.error(f"Request error fetching asset price for {asset}: {req_e}, URL: {url}")
-    except ValueError as val_e:
-        logger.error(f"JSON decoding error when fetching asset price for {asset}: {val_e}")
-    except Exception as e:
-        logger.error(f"Unexpected error fetching asset price for {asset}: {e}, URL: {url}")
-    return None
-
 def get_price_from_pyth(client: Synthetix, symbol: str):
     try:
         response = client.pyth.get_price_from_symbols([symbol])
@@ -80,7 +58,7 @@ def get_price_from_pyth(client: Synthetix, symbol: str):
 def calculate_transaction_cost_usd(total_gas: int) -> float:
     try:
         gas_price_gwei = get_gas_price()
-        eth_price_usd = get_asset_price('ethereum')
+        eth_price_usd = get_price_from_pyth('ETH')
         gas_cost_eth = (gas_price_gwei * total_gas) / Decimal('1e9')
         transaction_cost_usd = float(gas_cost_eth) * eth_price_usd
         return transaction_cost_usd
@@ -90,7 +68,7 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
 
 def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
     try:
-        asset_price = get_asset_price(asset)
+        asset_price = get_price_from_pyth(asset)
         asset_amount = dollar_amount / asset_price
         return asset_amount
     except ZeroDivisionError:
@@ -99,7 +77,7 @@ def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -
 
 def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
     try:
-        asset_price = get_asset_price(asset)
+        asset_price = get_price_from_pyth(asset)
         dollar_amount = asset_amount * asset_price
         return dollar_amount
     except Exception as e:
@@ -108,22 +86,6 @@ def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) ->
 
 def normalize_symbol(symbol: str) -> str:
     return symbol.replace('USDT', '').replace('PERP', '')
-
-def get_full_asset_name(symbol: str) -> str:
-    asset_mapping = {
-        'btc': 'bitcoin',
-        'eth': 'ethereum',
-        'snx': 'havven',
-        'sol': 'solana',
-        'wif': 'dogwifcoin',
-        'w': 'wormhole',
-        'ena': 'ethena',
-        'doge': 'dogecoin',
-        'pepe': 'pepe',
-        'arb': 'arbitrum',
-        'bnb': 'binancecoin'
-    }
-    return asset_mapping.get(symbol.lower(), symbol)
 
 def adjust_trade_size_for_direction(trade_size: float, is_long: bool) -> float:
     return trade_size if is_long else -trade_size
