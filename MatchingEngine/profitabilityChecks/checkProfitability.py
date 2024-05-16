@@ -20,13 +20,12 @@ class ProfitabilityChecker:
 
         for opportunity in opportunities:
             symbol = opportunity['symbol']
-            full_symbol = get_full_asset_name(symbol)
-            size = get_asset_amount_for_given_dollar_amount(full_symbol, trade_size_usd)
+            size = get_asset_amount_for_given_dollar_amount(symbol, trade_size_usd)
             size_per_exchange = size / 2
             hours_to_neutralize = self.estimate_time_to_neutralize_funding_rate(opportunity, size_per_exchange)
             profit_estimate_dict = self.estimate_profit_for_time_period(hours_to_neutralize, size_per_exchange, opportunity)
             profit_estimate_in_asset = profit_estimate_dict['total_profit_loss']
-            profit_estimate_usd = get_dollar_amount_for_given_asset_amount(full_symbol, profit_estimate_in_asset)
+            profit_estimate_usd = get_dollar_amount_for_given_asset_amount(symbol, profit_estimate_in_asset)
 
             opportunity['profit_estimate_usd'] = profit_estimate_usd
             opportunity['profit_details'] = profit_estimate_dict

@@ -218,8 +218,7 @@ class SynthetixPositionController:
  
     def calculate_adjusted_trade_size(self, opportunity, is_long: bool, trade_size: float) -> float:
         try:
-            full_asset_name = get_full_asset_name(opportunity['symbol'])
-            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(full_asset_name, trade_size)
+            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size)
             trade_size_with_leverage = trade_size_in_asset * self.leverage_factor
             adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)

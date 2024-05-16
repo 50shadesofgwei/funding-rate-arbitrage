@@ -13,8 +13,7 @@ ALL_MARKET_IDS = [
 def parse_trade_data_from_position_details(position_details) -> dict:
     try:
         side = get_side(position_details['position']['position_size'])
-        full_asset_name = get_full_asset_name(position_details['position']['symbol'])
-        asset_price = get_asset_price(full_asset_name)
+        asset_price = get_price_from_pyth(position_details['position']['symbol'])
         liquidation_price = calculate_liquidation_price(position_details, asset_price)
         order_id_hash = uuid.uuid4()
         order_id = order_id_hash.int % (10**18)

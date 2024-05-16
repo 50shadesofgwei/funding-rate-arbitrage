@@ -44,8 +44,7 @@ class BinancePositionMonitor():
             symbol = position['symbol']
             
             normalized_symbol = normalize_symbol(symbol)
-            full_symbol = get_full_asset_name(normalized_symbol)
-            asset_price = get_asset_price(full_symbol)
+            asset_price = get_price_from_pyth(normalized_symbol)
 
             lower_bound = liquidation_price * 0.9
             upper_bound = liquidation_price * 1.1
