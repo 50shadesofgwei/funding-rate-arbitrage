@@ -42,12 +42,14 @@ def get_gas_price() -> float:
 def get_price_from_pyth(client: Synthetix, symbol: str):
     try:
         response = client.pyth.get_price_from_symbols([symbol])
-        if 'price' in response:
-            price: float = response['price']
+        
+        feed_id = next(iter(response['meta']))
+        meta_data = response['meta'].get(feed_id, {})
+        price: float = meta_data.get('price')
+
+        if price is not None:
             return price
-        else:
-            logger.error(f"GlobalUtils - 'price' key missing in Pyth response for {symbol}.")
-            return None
+
     except KeyError as ke:
         logger.error(f"GlobalUtils - KeyError accessing Pyth response data for {symbol}: {ke}")
         return None
@@ -139,3 +141,7 @@ def get_binance_funding_event_schedule(current_block_number: int) -> list:
     except Exception as e:
         logger.error(f'GlobalUtils - Error while calling current block number for BASE network: {e}')
         return None
+
+x = get_synthetix_client()
+y = x.pyth.get_price_from_symbols(['ETH'])
+print(y)
