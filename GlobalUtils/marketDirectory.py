@@ -9,10 +9,15 @@ load_dotenv()
 class MarketDirectory:
     _markets = {}
     _file_path = 'markets.json'
+    _is_initialized = False
 
     @classmethod
     def initialize(cls):
         try:
+            if not cls._is_initialized:
+                cls.update_all_market_parameters()
+                cls._is_initialized = True
+                logger.info('MarketDirectory - Markets Initialized')
             with open(cls._file_path, 'r') as file:
                 cls._markets = json.load(file)
             logger.info("MarketDirectory - Loaded markets from file.")
@@ -22,11 +27,11 @@ class MarketDirectory:
             logger.error("MarketDirectory - Error decoding JSON. Starting with an empty dictionary.")
 
     @classmethod
-    def save_markets_to_file(cls):
+    def save_market_to_file(cls):
         try:
             with open(cls._file_path, 'w') as file:
                 json.dump(cls._markets, file)
-            logger.info("MarketDirectory - Markets saved to file.")
+            logger.info("MarketDirectory - Market saved to file.")
         except Exception as e:
             logger.error(f"MarketDirectory - Failed to save markets to file: {e}")
 
@@ -45,6 +50,7 @@ class MarketDirectory:
         market_data_response = client.perps.markets_by_name
         for symbol, market_data in market_data_response.items():
             cls.update_market_member(market_data)
+        cls.save_market_to_file()
 
     @classmethod
     def update_market_member(cls, market_data):
@@ -55,13 +61,13 @@ class MarketDirectory:
             logger.info(f"MarketDirectory - Adding new market: {symbol}.")
 
         cls._markets[symbol] = {
+            'symbol': symbol,
             'market_id': market_data['market_id'],
             'max_funding_velocity': market_data['max_funding_velocity'],
             'skew_scale': market_data['skew_scale'],
             'maker_fee': market_data['maker_fee'],
             'taker_fee': market_data['taker_fee']
         }
-        cls.save_markets_to_file()
 
     @classmethod
     def get_market_params(cls, symbol):
@@ -105,3 +111,8 @@ class MarketDirectory:
     def print_markets(cls):
         for symbol, data in cls._markets.items():
             logger.info(f"{symbol}: {data}")
+
+x = MarketDirectory()
+x.initialize()
+y = x.get_market_params('ETH')
+print(y)
