@@ -141,7 +141,3 @@ def get_binance_funding_event_schedule(current_block_number: int) -> list:
     except Exception as e:
         logger.error(f'GlobalUtils - Error while calling current block number for BASE network: {e}')
         return None
-
-x = get_synthetix_client()
-y = x.pyth.get_price_from_symbols(['ETH'])
-print(y)
