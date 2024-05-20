@@ -188,4 +188,4 @@ In its current form, the bot uses market orders for both sides of each trade. Fo
 In current implementation, anyone running the bot over longer periods of time (or using really high leverage) will have to manually rebalance collateral across exchanges after a couple of trades due to the PnL imbalancing collateral amounts. If one wanted to maximise size on every trade, they would do this often.
 
 ## Tech Support 
-Any further questions please join the telegram chat at https://t.me/+ualID7ueKuJjMWJk
+Any further questions, please join the telegram chat at https://t.me/+ualID7ueKuJjMWJk
