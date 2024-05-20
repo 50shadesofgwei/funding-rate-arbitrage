@@ -66,6 +66,6 @@ class BinanceCaller:
                 'funding_rate': funding_rate_data.get('fundingRate'),
             }
         else:
-            logger.info(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")
+            logger.error(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")
             return None
 

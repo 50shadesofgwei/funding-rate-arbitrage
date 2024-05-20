@@ -16,6 +16,7 @@ TARGET_TOKENS = [
 TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
     {"exchange": "Binance", "is_target": True},
+    {"exchange": "ByBit", "is_target": True},
 ]
 
 def get_target_exchanges() -> list:
@@ -30,9 +31,11 @@ def get_all_target_token_lists() -> list:
     try:
         binance_token_list = get_target_tokens_for_binance()
         synthetix_token_list = get_target_tokens_for_synthetix()
+        bybit_token_list = get_target_tokens_for_bybit()
         all_target_token_lists = [
             synthetix_token_list,
-            binance_token_list
+            binance_token_list,
+            bybit_token_list
         ]
         return all_target_token_lists
     except Exception as e:
@@ -53,4 +56,12 @@ def get_target_tokens_for_synthetix() -> list:
         return symbols
     except Exception as e:
         logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for Synthetix: {e}")
+        return []
+
+def get_target_tokens_for_bybit() -> list:
+    try:
+        symbols = [token["token"] + "USDT" for token in TARGET_TOKENS if token["is_target"]]
+        return symbols
+    except Exception as e:
+        logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for ByBit: {e}")
         return []
