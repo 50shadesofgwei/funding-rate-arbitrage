@@ -3,6 +3,7 @@ from APICaller.Binance.binanceCaller import BinanceCaller
 from APICaller.ByBit.ByBitCaller import ByBitCaller
 from APICaller.master.MasterUtils import get_all_target_token_lists, get_target_exchanges
 from GlobalUtils.logger import *
+import json
 
 class MasterCaller:
     def __init__(self):
@@ -50,4 +51,8 @@ class MasterCaller:
 
 x = MasterCaller()
 y = x.get_funding_rates()
-print(y)
+
+filename = 'funding_rates.json'
+
+with open(filename, 'w') as file:
+    json.dump(y, file, indent=4)

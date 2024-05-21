@@ -114,5 +114,5 @@ class MarketDirectory:
 
 x = MarketDirectory()
 x.initialize()
-y = x.get_market_params('ETH')
+y = x.get_market_params('BTC')
 print(y)
