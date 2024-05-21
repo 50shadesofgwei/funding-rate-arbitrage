@@ -37,9 +37,10 @@ class BinanceCaller:
                 parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
                 if parsed_data:
                     funding_rates.append(parsed_data)
+            return funding_rates
         except Exception as e:
             logger.error(f"BinanceAPICaller - Failed to fetch or parse funding rates for symbols. Error: {e}")
-        return funding_rates
+            return None
 
     def get_historical_funding_rate_for_symbol(self, symbol: str, limit: int) -> list:
         try:
@@ -60,10 +61,11 @@ class BinanceCaller:
         
     def _parse_funding_rate_data(self, funding_rate_data, symbol: str):
         if funding_rate_data:
+            rate_as_float = float(funding_rate_data.get('fundingRate'))
             return {
                 'exchange': 'Binance',
                 'symbol': symbol,
-                'funding_rate': funding_rate_data.get('fundingRate'),
+                'funding_rate': rate_as_float,
             }
         else:
             logger.error(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")

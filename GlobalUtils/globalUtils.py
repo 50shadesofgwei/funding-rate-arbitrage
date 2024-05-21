@@ -141,3 +141,13 @@ def get_binance_funding_event_schedule(current_block_number: int) -> list:
     except Exception as e:
         logger.error(f'GlobalUtils - Error while calling current block number for BASE network: {e}')
         return None
+
+def normalize_funding_rate_to_8hrs(rate: float, hours: int) -> float:
+    try:
+        rate_per_hour = rate / hours
+        normalized_rate = rate_per_hour * 8
+        return normalized_rate
+
+    except Exception as e:
+        logger.error(f'GlobalUtils - Error while normalizing funding rate to 8hrs. Function inputs: rate={rate}, hours={hours} {e}')
+        return None
