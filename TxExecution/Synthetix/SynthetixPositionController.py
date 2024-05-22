@@ -5,10 +5,11 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.marketDirectory import MarketDirectory
 import time
+from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
 
 class SynthetixPositionController:
     def __init__(self):
-        self.client = get_synthetix_client()
+        self.client = GLOBAL_SYNTHETIX_CLIENT
         self.leverage_factor = float(os.getenv('TRADE_LEVERAGE'))
 
     #######################
@@ -18,8 +19,10 @@ class SynthetixPositionController:
     def execute_trade(self, opportunity, is_long: bool, trade_size: float):
         try:
             if not self.is_already_position_open():
+                account_id: int = self.get_default_account()
                 adjusted_trade_size = self.calculate_adjusted_trade_size(opportunity, is_long, trade_size)
-                response = self.client.perps.commit_order(adjusted_trade_size, market_name=opportunity['symbol'], submit=True)
+                market_name = opportunity['symbol']
+                response = self.client.perps.commit_order(adjusted_trade_size, market_name=market_name, account_id=account_id, submit=True)
                 if is_transaction_hash(response):
                     time.sleep(15)
                     position_data = self.handle_position_opened(opportunity)
@@ -195,7 +198,7 @@ class SynthetixPositionController:
             default_account = self.check_for_accounts()
             if default_account:
                 default_account = default_account[0]
-                logger.info("SynthetixPositionController - Successfully retrieved default account.")
+                logger.info(f"SynthetixPositionController - Successfully retrieved default account: {default_account}.")
                 return default_account
             else:
                 logger.error("SynthetixPositionController - No accounts found.")
@@ -260,3 +263,7 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None
+
+x = SynthetixPositionController()
+y = x.close_position(100)
+print(y)

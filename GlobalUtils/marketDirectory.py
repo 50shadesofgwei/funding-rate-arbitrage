@@ -1,7 +1,7 @@
 from web3 import *
 from dotenv import load_dotenv
 from GlobalUtils.logger import *
-from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
+from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
 import json
 
 load_dotenv()
@@ -46,7 +46,7 @@ class MarketDirectory:
 
     @classmethod
     def update_all_market_parameters(cls):
-        client = get_synthetix_client()
+        client = GLOBAL_SYNTHETIX_CLIENT
         market_data_response = client.perps.markets_by_name
         for symbol, market_data in market_data_response.items():
             cls.update_market_member(market_data)
