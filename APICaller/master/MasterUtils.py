@@ -1,22 +1,22 @@
 from GlobalUtils.logger import logger
 
 TARGET_TOKENS = [
-    {"token": "BTC", "is_target": True},
+    {"token": "BTC", "is_target": False},
     {"token": "ETH", "is_target": True},
-    {"token": "SNX", "is_target": True},
-    {"token": "SOL", "is_target": True},
-    {"token": "W", "is_target": True},
-    {"token": "WIF", "is_target": True},
-    {"token": "ARB", "is_target": True},
-    {"token": "BNB", "is_target": True},
-    {"token": "ENA", "is_target": True},
-    {"token": "DOGE", "is_target": True},
+    {"token": "SNX", "is_target": False},
+    {"token": "SOL", "is_target": False},
+    {"token": "W", "is_target": False},
+    {"token": "WIF", "is_target": False},
+    {"token": "ARB", "is_target": False},
+    {"token": "BNB", "is_target": False},
+    {"token": "ENA", "is_target": False},
+    {"token": "DOGE", "is_target": False},
 ]
 
 TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
     {"exchange": "Binance", "is_target": True},
-    {"exchange": "ByBit", "is_target": True},
+    {"exchange": "ByBit", "is_target": False},
 ]
 
 def get_target_exchanges() -> list:

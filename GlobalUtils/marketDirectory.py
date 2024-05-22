@@ -111,8 +111,3 @@ class MarketDirectory:
     def print_markets(cls):
         for symbol, data in cls._markets.items():
             logger.info(f"{symbol}: {data}")
-
-x = MarketDirectory()
-x.initialize()
-y = x.get_market_params('BTC')
-print(y)

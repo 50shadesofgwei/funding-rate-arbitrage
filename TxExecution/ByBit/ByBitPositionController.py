@@ -65,9 +65,16 @@ class ByBitPositionController:
                 qty=close_order_details['size']
             )
 
-        except Exception as e:
-            logger.error(f"ByBitPositionController - Failed to close position. Error: {e}")
+            order_id: str = close_position_response['result']['orderId']
 
+            if self._was_trade_executed_successfully(order_id):
+                logger.info(f'ByBitPositionController - Order closed successfully for symbol {symbol}, orderId: {order_id}')
+                return None
+
+        except Exception as e:
+            logger.error(f"ByBitPositionController - Failed to close position for symbol {symbol}, orderId: {order_id}. Error: {e}")
+            return None
+            
     def set_leverage_for_all_assets(self, tokens):
         for token in tokens:
             try:
@@ -137,6 +144,13 @@ class ByBitPositionController:
         except Exception as e:
             logger.error(f"ByBitPositionController - Error checking if position is open. Error: {e}")
             return False
+
+    def _was_trade_executed_successfully(self, order_id: str) -> bool:
+        response = self.client.get_order_history(
+            category="linear",
+            orderId=order_id
+        )
+        pass
 
 x = ByBitPositionController()
 x.close_position_for_symbol('BTCUSDT')
