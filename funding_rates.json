@@ -2,9 +2,9 @@
     {
         "exchange": "Synthetix",
         "symbol": "ETH",
-        "funding_rate": 0.0009339266740004266,
-        "funding_velocity": 6.9219125399709e-05,
-        "skew": 2.6918548766554125
+        "funding_rate": 0.0009356415994917026,
+        "funding_velocity": 6.9990553971135e-05,
+        "skew": 2.7218548766554123
     },
     {
         "exchange": "Binance",
