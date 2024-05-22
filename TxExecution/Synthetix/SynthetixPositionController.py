@@ -93,7 +93,9 @@ class SynthetixPositionController:
             time.sleep(1)
             self._execute_atomic_order(amount, 'sell')
             time.sleep(1)
-            self._approve_collateral_for_perps_market_proxy(amount)
+            self._approve_collateral_for_perps_market_proxy(amount, market_id=0)
+            time.sleep(1)
+            self._approve_collateral_for_perps_market_proxy(amount, market_id=1)
             time.sleep(1)
             self._add_collateral(amount)
         except Exception as e:
@@ -132,12 +134,12 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Collateral approval for spot market failed. Error: {e}")
 
-    def _approve_collateral_for_perps_market_proxy(self, amount: int):
+    def _approve_collateral_for_perps_market_proxy(self, amount: int, market_id: int):
         try:
             perps_market_proxy_address = self.client.perps.market_proxy.address
             approve_tx = self.client.spot.approve(
                 target_address=perps_market_proxy_address, 
-                market_id=0,
+                market_id=market_id,
                 amount=amount,
                 submit=True
             )

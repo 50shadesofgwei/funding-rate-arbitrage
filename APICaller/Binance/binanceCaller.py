@@ -11,7 +11,7 @@ class BinanceCaller:
     def __init__(self):
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(api_key, api_secret)
+        self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
 
     def get_price(self, symbol: str) -> float:
         try:

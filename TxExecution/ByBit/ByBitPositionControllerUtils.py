@@ -47,3 +47,4 @@ def parse_close_order_data_from_position_response(APIresponse: dict) -> dict:
     }
 
     return close_order
+
