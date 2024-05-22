@@ -96,7 +96,7 @@ class MasterPositionController:
                 "Synthetix": synthetix_collateral,
                 "Binance": binance_collateral
             }
-            logger.info("MasterPositionController - Successfully retrieved available collateral from all exchanges.")
+            
             return collateral
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to get available collateral by exchange. Error: {e}")

@@ -48,11 +48,3 @@ class MasterCaller:
         except Exception as e:
             logger.error(f"MasterAPICaller - Error aggregating funding rates across exchanges: {e}")
             return []
-
-x = MasterCaller()
-y = x.get_funding_rates()
-
-filename = 'funding_rates.json'
-
-with open(filename, 'w') as file:
-    json.dump(y, file, indent=4)

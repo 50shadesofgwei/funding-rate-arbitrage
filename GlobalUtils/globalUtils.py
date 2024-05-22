@@ -6,12 +6,14 @@ from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
 from synthetix import Synthetix
-from APICaller.Synthetix.SynthetixCaller import get_synthetix_client
+from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 
 load_dotenv()
 
 BLOCKS_PER_DAY_BASE = 43200
 BLOCKS_PER_HOUR_BASE = 1800
+
+GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
 
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_positions"
@@ -39,9 +41,9 @@ def get_gas_price() -> float:
             logger.info(f"GlobalUtils - Error fetching gas price: {e}")
     return 0.0
 
-def get_price_from_pyth(client: Synthetix, symbol: str):
+def get_price_from_pyth(symbol: str):
     try:
-        response = client.pyth.get_price_from_symbols([symbol])
+        response = GLOBAL_SYNTHETIX_CLIENT.pyth.get_price_from_symbols([symbol])
         
         feed_id = next(iter(response['meta']))
         meta_data = response['meta'].get(feed_id, {})
@@ -71,8 +73,7 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
 
 def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
     try:
-        client = get_synthetix_client()
-        asset_price = get_price_from_pyth(client, asset)
+        asset_price = get_price_from_pyth(asset)
         asset_amount = dollar_amount / asset_price
         return asset_amount
     except ZeroDivisionError:
@@ -81,8 +82,7 @@ def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -
 
 def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
     try:
-        client = get_synthetix_client()
-        asset_price = get_price_from_pyth(client, asset)
+        asset_price = get_price_from_pyth(asset)
         dollar_amount = asset_amount * asset_price
         return dollar_amount
     except Exception as e:

@@ -16,19 +16,19 @@ class BinancePositionController:
         api_key = BinanceEnvVars.API_KEY.get_value()
         api_secret = BinanceEnvVars.API_SECRET.get_value()
         self.client = Client(key=api_key, secret=api_secret, base_url="https://testnet.binancefuture.com")
-        # self.leverage = int(os.getenv('TRADE_LEVERAGE'))
+        self.leverage = int(os.getenv('TRADE_LEVERAGE'))
         # self.set_leverage_for_all_assets(TARGET_TOKENS)
 
     #######################
     ### WRITE FUNCTIONS ###
     #######################
 
-    def execute_trade(self, opportunity, is_long: bool, trade_size: float):
+    def execute_trade(self, opportunity, is_long: bool, trade_size: float) -> dict:
         order_with_amount = {} 
         try:
 
             order = get_order_from_opportunity(opportunity, is_long)
-            amount = calculate_adjusted_trade_size(opportunity, is_long, trade_size)
+            amount = calculate_adjusted_trade_size(opportunity, is_long, trade_size, self.leverage)
             order_with_amount = add_amount_to_order(order, amount)
 
             response = self.client.new_order(
@@ -36,11 +36,8 @@ class BinancePositionController:
                 side=order_with_amount['side'],
                 type=order_with_amount['type'],
                 quantity=order_with_amount['quantity'])
-            
-            logger.info(f"BinancePositionController - placing order w/ amount: {order_with_amount['quantity']}")
 
-            if not isinstance(response, dict) or 'orderId' not in response or 'symbol' not in response:
-                logger.error("BinancePositionController - Invalid response structure from new_order.")
+            if not is_expected_api_response_format_for_new_order(response):
                 return None
 
             time.sleep(2)
@@ -56,7 +53,7 @@ class BinancePositionController:
                 logger.info("BinancePositionController - Order not filled.")
                 return None
         except Exception as e:
-            logger.error(f"BinancePositionController - Failed to format database object for {order_with_amount.get('symbol', 'unknown')}. Error: {e}")
+            logger.error(f"BinancePositionController - Error encountered while placing trade for {order_with_amount.get('symbol', 'unknown')}. Error: {e}")
             return None
 
     def close_all_positions(self):
@@ -69,7 +66,6 @@ class BinancePositionController:
 
     def close_position(self, symbol: str):
         try:
-            # Fetch the current open position for the symbol
             position_info = self.client.get_position_risk(symbol=symbol)
             
             if not position_info or 'positionAmt' not in position_info[0]:
@@ -102,7 +98,7 @@ class BinancePositionController:
                 close_position_details = {
                     'exchange': 'Binance',
                     'pnl': float(position_info[0]['unRealizedProfit']),
-                    'accrued_fees': 0.0
+                    'accrued_fees': position_info[]
                 }
                 logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed: {close_position_details}")
                 return close_position_details
@@ -131,20 +127,25 @@ class BinancePositionController:
     ######################
 
     def get_position_object_from_response(self, response) -> dict:
-        symbol = response['symbol']
-        order_id = response['orderId']
-        side = get_side(response['side'])
-        size = float(response['origQty'])
-        liquidation_price = self.get_liquidation_price(response['symbol'])
+        try:
+            symbol = response['symbol']
+            order_id = response['orderId']
+            side = get_side(response['side'])
+            size = float(response['origQty'])
+            liquidation_price = self.get_liquidation_price(response['symbol'])
 
-        return {
-            'exchange': 'Binance',
-            'symbol': symbol,
-            'side': side,
-            'size': size,
-            'order_id': order_id,
-            'liquidation_price': liquidation_price
-        }
+            return {
+                'exchange': 'Binance',
+                'symbol': symbol,
+                'side': side,
+                'size': size,
+                'order_id': order_id,
+                'liquidation_price': liquidation_price
+            }
+        
+        except Exception as e:
+            logger.error(f"BinancePositionController - Failed to generate position object for {response['symbol']}. Error: {e}")
+            return None
 
     def is_already_position_open(self) -> bool:
         try:
@@ -170,21 +171,20 @@ class BinancePositionController:
             return False
 
     def get_liquidation_price(self, symbol: str) -> float:
-        response = self.client.get_position_risk(symbol=symbol)
-        
-        if isinstance(response, list) and len(response) > 0:
-            position_risk = response[0]
-            logger.info(f"BinancePositionController - position_risk object = {position_risk}")
+        try:
+            response = self.client.get_position_risk(symbol=symbol)
             
-            if 'liquidationPrice' in position_risk:
-                return float(position_risk['liquidationPrice'])
-            else:
-                logger.error(f"BinancePositionController - No liquidationPrice found in position risk for {symbol}.")
-                return 0.0 
-        else:
-            logger.error(f"BinancePositionController - Unexpected response structure or empty response for position risk of {symbol}.")
-            return 0.0 
-
+            if isinstance(response, list) and len(response) > 0:
+                position_risk = response[0]
+            
+                if 'liquidationPrice' in position_risk:
+                    return float(position_risk['liquidationPrice'])
+                else:
+                    logger.error(f"BinancePositionController - No liquidationPrice found in position risk response for {symbol}.")
+                    return None 
+        except Exception as e:
+            logger.error(f"BinancePositionController - Failed to get liquidation price for position. Asset: {symbol}, Error: {e}")
+            return None 
 
     def get_available_collateral(self) -> float:
         try:
@@ -192,8 +192,17 @@ class BinancePositionController:
             for asset_detail in account_details:
                 if asset_detail['asset'] == 'USDT':
                     return float(asset_detail['balance'])
-            logger.info("BinancePositionController - USDT collateral not found, returning 0.0")
-            return 0.0
+
         except Exception as e:
             logger.error(f"BinancePositionController - Failed to get available collateral. Error: {e}")
             return 0.0
+
+    def handle_position_opened(self, response: dict):
+        try:
+            
+            position_object = self.get_position_object_from_response(response)
+
+            return position_object
+        except Exception as e:
+            logger.error(f"BinancePositionController - Failed to obtain liquidation price for {response['symbol']}. Error: {e}")
+            return response 

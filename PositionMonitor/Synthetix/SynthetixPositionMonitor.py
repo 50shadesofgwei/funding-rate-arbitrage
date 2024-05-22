@@ -5,10 +5,11 @@ from GlobalUtils.logger import *
 from pubsub import pub
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 import sqlite3
+from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
 
 class SynthetixPositionMonitor():
     def __init__(self, db_path='trades.db'):
-        self.client = get_synthetix_client()
+        self.client = GLOBAL_SYNTHETIX_CLIENT
         self.db_path = db_path
         try:
             self.conn = sqlite3.connect(self.db_path)
