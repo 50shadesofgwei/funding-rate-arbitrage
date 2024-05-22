@@ -22,7 +22,8 @@ class SynthetixEnvVars(Enum):
 def get_synthetix_client() -> Synthetix:
     synthetix_client = Synthetix(
                 provider_rpc=SynthetixEnvVars.BASE_PROVIDER_RPC.get_value(),
-                private_key=SynthetixEnvVars.PRIVATE_KEY.get_value()
+                private_key=SynthetixEnvVars.PRIVATE_KEY.get_value(),
+                tracking_code='SynthetixFundingRateArbitrage'
     )
     return synthetix_client
 
