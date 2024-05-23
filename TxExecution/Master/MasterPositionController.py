@@ -65,6 +65,17 @@ class MasterPositionController:
         logger.info(f'MasterPositionController - Closing positions with position report: {position_report}')
         pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, position_report=position_report)
 
+    def close_position_pair(self, symbol: str, reason: str, exchanges: list):
+        try:
+            for exchange_name in exchanges:
+                    close_position_method = getattr(self, exchange_name.lower()).close_position
+                    close_position_method(
+                        symbol, 
+                        reason
+                    )
+        except Exception as e:
+            logger.error(f"MasterPositionController - Failed to close trade pair for symbol {symbol} and exchange pair {exchanges}. Error: {e}")
+
     def subscribe_to_events(self):
         pub.subscribe(self.execute_trades, EventsDirectory.OPPORTUNITY_FOUND.value)
         pub.subscribe(self.close_all_positions, EventsDirectory.CLOSE_ALL_POSITIONS.value)
@@ -96,7 +107,7 @@ class MasterPositionController:
                 "Synthetix": synthetix_collateral,
                 "Binance": binance_collateral
             }
-            
+
             return collateral
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to get available collateral by exchange. Error: {e}")

@@ -7,6 +7,7 @@ from binance.enums import *
 from TxExecution.Binance.BinancePositionControllerUtils import *
 import os
 import time
+import pubsub
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -64,7 +65,7 @@ class BinancePositionController:
         
         return positions[0]
 
-    def close_position(self, symbol: str):
+    def close_position(self, symbol: str, reason: str):
         try:
             position_info = self.client.get_position_risk(symbol=symbol)
             
@@ -73,11 +74,7 @@ class BinancePositionController:
                 return
             
             position_amount = float(position_info[0]['positionAmt'])
-            if position_amount > 0:
-                is_long = True
-            elif position_amount < 0:
-                is_long = False
-        
+            is_long = is_long_trade(position_amount)
 
             if position_amount == 0:
                 logger.info(f"BinancePositionController - No open position to close for {symbol}.")
@@ -87,23 +84,19 @@ class BinancePositionController:
             close_quantity_raw = abs(position_amount)
             close_quantity = round(close_quantity_raw, 4)
 
-            x = self.client.new_order(
+            response = self.client.new_order(
                 symbol=symbol, 
                 side=close_side,
                 type=ORDER_TYPE_MARKET,
                 quantity=close_quantity)
 
             time.sleep(3)
-            if self.is_order_filled(x['orderId'], symbol):
-                close_position_details = {
-                    'exchange': 'Binance',
-                    'pnl': float(position_info[0]['unRealizedProfit']),
-                    'accrued_fees': position_info[]
-                }
+            if self.is_order_filled(response['orderId'], symbol):
+                close_position_details = self.parse_close_position_details_from_api_response(position_info, reason)
+                self.handle_position_closed(close_position_details)
                 logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed: {close_position_details}")
-                return close_position_details
             else:
-                logger.error(f"BinancePositionController - Failed to close the open position for symbol {symbol}.")
+                logger.error(f"BinancePositionController - Failed to close the open position for symbol {symbol}. Error: {e}")
 
         except Exception as e:
             logger.error(f"BinancePositionController - Failed to close position for symbol {symbol}. Error: {e}")
@@ -199,10 +192,26 @@ class BinancePositionController:
 
     def handle_position_opened(self, response: dict):
         try:
-            
             position_object = self.get_position_object_from_response(response)
-
             return position_object
         except Exception as e:
-            logger.error(f"BinancePositionController - Failed to obtain liquidation price for {response['symbol']}. Error: {e}")
-            return response 
+            logger.error(f"BinancePositionController - Failed to handle position opening for {response['symbol']}. Error: {e}")
+            return None
+
+    def handle_position_closed(self, close_position_details: dict):
+        try:
+            pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, close_position_details)
+            return 
+        except Exception as e:
+            logger.error(f"BinancePositionController - Failed to handle position closed with details: {close_position_details}. Error: {e}")
+            return None 
+    
+    def parse_close_position_details_from_api_response(self, APIresponse: dict, reason: str) -> dict:
+        close_position_details = {
+                        'exchange': 'Binance',
+                        'pnl': float(APIresponse[0]['unRealizedProfit']),
+                        'accrued_fees': 0.0,
+                        'close_reason': reason
+                    }
+        return close_position_details
+

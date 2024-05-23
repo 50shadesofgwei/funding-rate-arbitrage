@@ -7,7 +7,7 @@ ALL_MARKETS = [
     'BTCUSDT'
 ]
 
-def is_long(position_amount: float) -> bool:
+def is_long_trade(position_amount: float) -> bool:
     try:
         if position_amount > 0:
             is_long = True
