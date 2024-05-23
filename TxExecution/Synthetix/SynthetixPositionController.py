@@ -263,7 +263,3 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None
-
-x = SynthetixPositionController()
-y = x.close_position(100)
-print(y)

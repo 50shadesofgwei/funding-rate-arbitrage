@@ -21,22 +21,30 @@ class BinancePositionMonitor():
             logger.error(f"BinancePositionMonitor - Error accessing the database: {e}")
             raise e
 
-    def get_open_position(self):
+    def get_open_position(self) -> dict:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Binance';''')
+                
+                sql_query = '''
+                    SELECT * 
+                    FROM trade_log 
+                    WHERE open_close = 'Open' 
+                      AND exchange = 'Binance';
+                '''
+                
+                cursor.execute(sql_query, ())
                 open_positions = cursor.fetchall()
+                
                 if open_positions:
                     position_dict = get_dict_from_database_response(open_positions[0])
-                    logger.info(f'BinancePositionMonitor - Open trade pulled from database: {position_dict}')
                     return position_dict
                 else:
-                    logger.info(f"BinancePositionMonitor - No open Binance positions found")
+                    logger.info("BinancePositionMonitor - No open Binance positions found")
                     return None
         except Exception as e:
-            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions:", {e})
-            raise e
+            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions: {e}")
+            return None
 
     def is_near_liquidation_price(self, position) -> bool:
         try:
@@ -74,15 +82,44 @@ class BinancePositionMonitor():
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Binance';''')
+                
+                sql_query = '''
+                    SELECT 1
+                    FROM trade_log
+                    WHERE open_close = 'Open' 
+                      AND exchange = 'Binance';
+                '''
+                
+                cursor.execute(sql_query, ())
                 open_positions = cursor.fetchall()
-                if open_positions:
-                    return True
-                else:
-                    return False
+                
+                return open_positions is not None
+
         except Exception as e:
-            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions:", {e})
-            raise e
+            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions: {e}")
+            return None
+
+    def is_open_position_for_symbol(self, symbol: str) -> bool:
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                sql_query = '''
+                    SELECT 1
+                    FROM trade_log
+                    WHERE open_close = 'Open' 
+                      AND symbol = ?
+                      AND exchange = 'Binance';
+                '''
+                
+                cursor.execute(sql_query, (symbol,))
+                open_positions = cursor.fetchone()
+                
+                return open_positions is not None
+
+        except Exception as e:
+            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions for {symbol}: {e}")
+            return None
         
 
 
