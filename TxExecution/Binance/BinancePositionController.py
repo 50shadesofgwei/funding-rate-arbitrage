@@ -1,7 +1,7 @@
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 from APICaller.Binance.binanceUtils import BinanceEnvVars
-from APICaller.master.MasterUtils import TARGET_TOKENS
+from APICaller.master.MasterUtils import get_target_tokens_for_binance
 from binance.um_futures import UMFutures as Client
 from binance.enums import *
 from TxExecution.Binance.BinancePositionControllerUtils import *
@@ -57,10 +57,12 @@ class BinancePositionController:
             logger.error(f"BinancePositionController - Error encountered while placing trade for {order_with_amount.get('symbol', 'unknown')}. Error: {e}")
             return None
 
+    @log_function_call
     def close_all_positions(self):
+        selected_markets = get_target_tokens_for_binance()
         positions = []
-        for market in ALL_MARKETS:
-            close_details = self.close_position(market)
+        for market in selected_markets:
+            close_details = self.close_position(market, reason="TEST")
             positions.append(close_details)
         
         return positions[0]
@@ -92,7 +94,7 @@ class BinancePositionController:
 
             time.sleep(3)
             if self.is_order_filled(response['orderId'], symbol):
-                close_position_details = self.parse_close_position_details_from_api_response(position_info, reason)
+                close_position_details = self.parse_close_position_details_from_api_response(position_info, reason, symbol)
                 self.handle_position_closed(close_position_details)
                 logger.info(f"BinancePositionController - Open position for symbol {symbol} has been successfully closed: {close_position_details}")
             else:
@@ -142,12 +144,15 @@ class BinancePositionController:
 
     def is_already_position_open(self) -> bool:
         try:
-            for token in TARGET_TOKENS:
-                symbol = token["token"] + "USDT"
-                orders = self.client.get_position_risk(symbol=symbol)
-            if float(orders[0]['positionAmt']) > 0:
-                logger.error(f"BinancePositionController - Open position found for {symbol}")
-                return True
+            selected_markets = get_target_tokens_for_binance()
+            for token in selected_markets:
+                orders = self.client.get_position_risk(symbol=token)
+                if float(orders[0]['positionAmt']) > 0:
+                    logger.info(f"BinancePositionController - Open position found for {token}")
+                    return True
+            
+            return False
+
         except Exception as e:
             logger.error(f"BinancePositionController - Error while checking if position is open for target tokens. Error: {e}")
             return False
@@ -198,20 +203,22 @@ class BinancePositionController:
             logger.error(f"BinancePositionController - Failed to handle position opening for {response['symbol']}. Error: {e}")
             return None
 
+    @log_function_call
     def handle_position_closed(self, close_position_details: dict):
         try:
-            pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, close_position_details)
+            logger.error(f'DEBUGGING: BPC handle_position_closed arg = {close_position_details}')
+            pub.sendMessage(topicName=EventsDirectory.POSITION_CLOSED.value, position_report=close_position_details)
             return 
         except Exception as e:
             logger.error(f"BinancePositionController - Failed to handle position closed with details: {close_position_details}. Error: {e}")
             return None 
     
-    def parse_close_position_details_from_api_response(self, APIresponse: dict, reason: str) -> dict:
+    def parse_close_position_details_from_api_response(self, APIresponse: dict, reason: str, symbol: str) -> dict:
         close_position_details = {
+                        'symbol': symbol,
                         'exchange': 'Binance',
                         'pnl': float(APIresponse[0]['unRealizedProfit']),
-                        'accrued_fees': 0.0,
-                        'close_reason': reason
+                        'accrued_funding': 0.0,
+                        'reason': reason
                     }
         return close_position_details
-

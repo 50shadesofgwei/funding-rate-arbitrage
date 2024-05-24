@@ -13,7 +13,8 @@ ALL_MARKET_IDS = [
 def parse_trade_data_from_position_details(position_details) -> dict:
     try:
         side = get_side(position_details['position']['position_size'])
-        asset_price = get_price_from_pyth(position_details['position']['symbol'])
+        symbol = position_details['position']['symbol']
+        asset_price = get_price_from_pyth(symbol)
         liquidation_price = calculate_liquidation_price(position_details, asset_price)
         order_id_hash = uuid.uuid4()
         order_id = order_id_hash.int % (10**18)
@@ -40,8 +41,10 @@ def is_transaction_hash(tx_hash) -> bool:
     pattern = r'^0x[a-fA-F0-9]{64}$'
     return re.match(pattern, tx_hash) is not None
 
+@log_function_call
 def calculate_liquidation_price(position_data, asset_price: float) -> float:
     try:
+        logger.info(f'DEBUGGING: SynthetixPositionControllerUtils - position data = {position_data}, asset price = {asset_price}')
         position_size = Decimal(str(position_data['position']['position_size']))
         available_margin = Decimal(str(position_data['margin_details']['available_margin']))
         maintenance_margin_requirement = Decimal(str(position_data['margin_details']['maintenance_margin_requirement']))
@@ -59,9 +62,9 @@ def calculate_liquidation_price(position_data, asset_price: float) -> float:
         liquidation_price = current_asset_price - price_difference if is_long else current_asset_price + price_difference
 
         return float(liquidation_price)
-    except (KeyError, ValueError, DivisionByZero, InvalidOperation) as e:
+    except Exception as e:
         logger.error(f"SynthetixPositionControllerUtils - Error in calculating liquidation price: {e}")
-        return float('nan')
+        return None
 
 def get_side(size: float) -> str:
     try:

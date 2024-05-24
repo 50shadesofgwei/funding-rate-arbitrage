@@ -3,18 +3,18 @@
         "long_exchange": "Binance",
         "short_exchange": "Synthetix",
         "symbol": "ETH",
-        "long_exchange_funding_rate": -0.003,
-        "short_exchange_funding_rate": 0.0009370647844198181,
-        "skew": 2.7218548766554123,
-        "funding_velocity": 6.9990553971135e-05,
-        "block_number": 10318165,
-        "profit_estimate_usd": 3836.1350505882388,
+        "long_exchange_funding_rate": -0.00110627,
+        "short_exchange_funding_rate": 0.0009861765790642161,
+        "skew": 2.670128174471731,
+        "funding_velocity": 6.8660438772123e-05,
+        "block_number": 10395196,
+        "profit_estimate_usd": 2260.8201416440816,
         "profit_details": {
             "symbol": "ETH",
-            "total_profit_loss": 1.027747688409509,
-            "snx_profit_loss": 1.0530653988847452,
-            "binance_profit_loss": -0.025317710475236198
+            "total_profit_loss": 0.6121699245616701,
+            "snx_profit_loss": 0.6216057014791118,
+            "binance_profit_loss": -0.009435776917441664
         },
-        "hours_to_neutralize": 9587.610123890567
+        "hours_to_neutralize": 5320.735036004092
     }
 ]

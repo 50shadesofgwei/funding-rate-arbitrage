@@ -39,20 +39,21 @@ class MasterPositionMonitor():
         is_liquidation_risk = self.check_liquidation_risk()
         is_profitable = self.check_profitability_for_open_position()
         is_delta_within_bounds = self.is_position_delta_within_bounds()
-        is_funding_velocity_turning = self.is_funding_turning_against_trade()
+        # is_funding_velocity_turning = self.is_funding_turning_against_trade()
 
+        exchanges = ['Synthetix', 'Binance']
         if is_liquidation_risk:
             reason = PositionCloseReason.LIQUIDATION_RISK.value
-            pub.sendMessage(EventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
         elif not is_profitable:
             reason = PositionCloseReason.NO_LONGER_PROFITABLE.value
-            pub.sendMessage(EventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
         elif not is_delta_within_bounds:
             reason = PositionCloseReason.DELTA_ABOVE_BOUND.value
-            pub.sendMessage(EventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
-        elif is_funding_velocity_turning:
-            reason = PositionCloseReason.FUNDING_TURNING_AGAINST_TRADE.value
-            pub.sendMessage(EventsDirectory.CLOSE_ALL_POSITIONS.value, reason=reason)
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
+        # elif is_funding_velocity_turning:
+        #     reason = PositionCloseReason.FUNDING_TURNING_AGAINST_TRADE.value
+        #     pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
         else:
             logger.info('MasterPositionMonitor - no threat detected for open position')
 
@@ -111,7 +112,7 @@ class MasterPositionMonitor():
                 return False
 
             try:
-                asset_price = get_price_from_pyth(asset=symbol)
+                asset_price = get_price_from_pyth(symbol)
             except Exception as e:
                 logger.error(f"MasterPositionMonitor - Error retrieving asset price for {symbol}: {e}")
                 return False

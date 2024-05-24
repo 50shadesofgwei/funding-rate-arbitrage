@@ -65,3 +65,7 @@ def get_target_tokens_for_bybit() -> list:
     except Exception as e:
         logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for ByBit: {e}")
         return []
+
+def get_full_symbol_for_binance(symbol: str) -> str:
+    full_symbol = symbol+'USDT'
+    return full_symbol
