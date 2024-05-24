@@ -16,7 +16,8 @@ BLOCKS_PER_HOUR_BASE = 1800
 GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
 
 class EventsDirectory(Enum):
-    CLOSE_ALL_POSITIONS = "close_positions"
+    CLOSE_ALL_POSITIONS = "close_all_positions"
+    CLOSE_POSITION_PAIR = "close_position_pair"
     OPPORTUNITY_FOUND = "opportunity_found"
     POSITION_OPENED = "position_opened"
     POSITION_CLOSED = "position_closed"

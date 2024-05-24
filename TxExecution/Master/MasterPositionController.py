@@ -2,6 +2,7 @@ from TxExecution.Binance.BinancePositionController import BinancePositionControl
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
+from APICaller.master.MasterUtils import get_full_symbol_for_binance
 from pubsub import pub
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
@@ -54,6 +55,7 @@ class MasterPositionController:
             logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
             self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
 
+    @log_function_call
     def close_all_positions(self, reason: str):
         synthetix_position_report = self.synthetix.close_all_positions()
         binance_position_report = self.binance.close_all_positions()
@@ -65,19 +67,24 @@ class MasterPositionController:
         logger.info(f'MasterPositionController - Closing positions with position report: {position_report}')
         pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, position_report=position_report)
 
+    @log_function_call
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
         try:
+            logger.error(f'DEBUGGING: MasterPositionController - Closing position pair with args: symbol={symbol}, reason={reason}, exchanges={exchanges}')
             for exchange_name in exchanges:
+                    if exchange_name == 'Binance':
+                        symbol = get_full_symbol_for_binance(symbol)
                     close_position_method = getattr(self, exchange_name.lower()).close_position
                     close_position_method(
-                        symbol, 
-                        reason
+                        symbol=symbol, 
+                        reason=reason
                     )
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to close trade pair for symbol {symbol} and exchange pair {exchanges}. Error: {e}")
 
     def subscribe_to_events(self):
         pub.subscribe(self.execute_trades, EventsDirectory.OPPORTUNITY_FOUND.value)
+        pub.subscribe(self.close_position_pair, EventsDirectory.CLOSE_POSITION_PAIR.value)
         pub.subscribe(self.close_all_positions, EventsDirectory.CLOSE_ALL_POSITIONS.value)
 
     ######################

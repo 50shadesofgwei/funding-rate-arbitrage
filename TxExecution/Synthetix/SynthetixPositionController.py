@@ -1,5 +1,6 @@
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
+from APICaller.master.MasterUtils import get_target_tokens_for_synthetix
 from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
@@ -38,33 +39,37 @@ class SynthetixPositionController:
 
     def close_all_positions(self):
         close_results = []
+        selected_markets = get_target_tokens_for_synthetix()
         try:
-            for market in MarketDirectory:
-                symbol = market.value['symbol']
+            for market in selected_markets:
+                market_id = MarketDirectory.get_market_id(market)
                 try:
-                    close_details = self.close_position(market.value['market_id'])
+                    close_details = self.close_position(market_id)
                     if close_details:
                         close_results.append(close_details)
                 except Exception as e:
-                    logger.error(f"SynthetixPositionController - Error closing position for market {symbol}: {e}")
+                    logger.error(f"SynthetixPositionController - Error closing position for market {market}: {e}")
         except Exception as e:
             logger.error(f"SynthetixPositionController - General error in close all positions: {e}")
         
         return close_results if close_results else None
 
 
-    def close_position(self, market_id: int):
+    def close_position(self, symbol: str, reason: str):
         max_retries = 2 
-        retry_delay_in_seconds = 3  
+        retry_delay_in_seconds = 3 
+        market_id = MarketDirectory.get_market_id(symbol) 
         
         for attempt in range(max_retries):
             try:
                 position = self.client.perps.get_open_position(market_id=market_id)
                 if position and position['position_size'] != 0:
                     close_position_details = {
+                        'symbol': symbol,
                         'exchange': 'Synthetix',
                         'pnl': position['pnl'],
-                        'accrued_funding': position['accrued_funding']
+                        'accrued_funding': position['accrued_funding'],
+                        'reason': reason
                     }
 
                     size = position['position_size']
@@ -72,8 +77,9 @@ class SynthetixPositionController:
                     response = self.client.perps.commit_order(size=inverse_size, market_id=market_id, submit=True)
 
                     if is_transaction_hash(response):
+                        self.handle_position_closed(position_report=close_position_details)
                         logger.info(f'SynthetixPositionController - Position successfully closed: {close_position_details}')
-                        return close_position_details
+                        return 
                     else:
                         logger.error('SynthetixPositionController - Failed to close position. Please check manually.')
                         raise Exception('SynthetixPositionController - Commit order failed, no transaction hash returned.')
@@ -178,6 +184,14 @@ class SynthetixPositionController:
             }
             trade_data = parse_trade_data_from_position_details(position_details)
             return trade_data
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
+            return None
+
+    def handle_position_closed(self, position_report: dict):
+        try:
+            pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, position_report=position_report)
+            return 
         except Exception as e:
             logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
             return None

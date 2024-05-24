@@ -84,6 +84,7 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
 
+    @log_function_call
     def log_close_trade(self, position_report: dict):
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -93,7 +94,7 @@ class TradeLogger:
                 close_time = datetime.now()
                 pnl = position_report['pnl']
                 accrued_funding = position_report['accrued_funding']
-                close_reason = position_report['close_reason']
+                close_reason = position_report['reason']
 
                 conn.execute('''UPDATE trade_log 
                                         SET close_time = ?, pnl = ?, accrued_funding = ?, close_reason = ?, open_close = 'Close' 
