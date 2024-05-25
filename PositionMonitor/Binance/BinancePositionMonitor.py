@@ -1,8 +1,6 @@
-from APICaller.Binance.binanceUtils import BinanceEnvVars
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from binance.um_futures import UMFutures as Client
 from binance.enums import *
 import sqlite3
 from dotenv import load_dotenv
@@ -11,9 +9,7 @@ load_dotenv()
 
 class BinancePositionMonitor():
     def __init__(self, db_path='trades.db'):
-        api_key = BinanceEnvVars.API_KEY.get_value()
-        api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
+        self.client = GLOBAL_BINANCE_CLIENT
         self.db_path = db_path
         try:
             self.conn = sqlite3.connect(self.db_path)

@@ -1,8 +1,6 @@
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from APICaller.Binance.binanceUtils import BinanceEnvVars
 from APICaller.master.MasterUtils import get_target_tokens_for_binance
-from binance.um_futures import UMFutures as Client
 from binance.enums import *
 from TxExecution.Binance.BinancePositionControllerUtils import *
 import os
@@ -14,9 +12,7 @@ load_dotenv()
 
 class BinancePositionController:
     def __init__(self):
-        api_key = BinanceEnvVars.API_KEY.get_value()
-        api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(key=api_key, secret=api_secret, base_url="https://testnet.binancefuture.com")
+        self.client = GLOBAL_BINANCE_CLIENT
         self.leverage = int(os.getenv('TRADE_LEVERAGE'))
         # self.set_leverage_for_all_assets(TARGET_TOKENS)
 

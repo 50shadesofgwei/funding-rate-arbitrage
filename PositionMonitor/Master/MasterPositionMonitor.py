@@ -39,7 +39,7 @@ class MasterPositionMonitor():
         is_liquidation_risk = self.check_liquidation_risk()
         is_profitable = self.check_profitability_for_open_position()
         is_delta_within_bounds = self.is_position_delta_within_bounds()
-        # is_funding_velocity_turning = self.is_funding_turning_against_trade()
+        is_funding_velocity_turning = self.is_funding_turning_against_trade_in_given_time(30)
 
         exchanges = ['Synthetix', 'Binance']
         if is_liquidation_risk:
@@ -51,9 +51,9 @@ class MasterPositionMonitor():
         elif not is_delta_within_bounds:
             reason = PositionCloseReason.DELTA_ABOVE_BOUND.value
             pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
-        # elif is_funding_velocity_turning:
-        #     reason = PositionCloseReason.FUNDING_TURNING_AGAINST_TRADE.value
-        #     pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
+        elif is_funding_velocity_turning:
+            reason = PositionCloseReason.FUNDING_TURNING_AGAINST_TRADE.value
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
         else:
             logger.info('MasterPositionMonitor - no threat detected for open position')
 
@@ -134,7 +134,7 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
             return False
 
-    def is_funding_turning_against_trade(self) -> bool:
+    def is_funding_turning_against_trade_in_given_time(self, minuites: int) -> bool:
         try:
             synthetix_position = self.synthetix.get_open_position()
             is_long = synthetix_position['size'] > 0
@@ -148,7 +148,7 @@ class MasterPositionMonitor():
             funding_rate = market_summary['current_funding_rate']
             velocity = market_summary['current_funding_velocity']
 
-            future_blocks = 7200
+            future_blocks = minuites * 30
             predicted_funding_rate = funding_rate + (velocity * future_blocks / BLOCKS_PER_DAY_BASE)
 
             if (is_long and predicted_funding_rate < 0) or (not is_long and predicted_funding_rate > 0):

@@ -1,15 +1,11 @@
 import os
 from dotenv import load_dotenv
-from enum import Enum
-
+from binance.um_futures import UMFutures as Binance
 load_dotenv()
 
-class BinanceEnvVars(Enum):
-    API_KEY = "BINANCE_API_KEY"
-    API_SECRET = "BINANCE_API_SECRET"
-    
-    def get_value(self):
-        value = os.getenv(self.value)
-        if value is None:
-            raise ValueError(f"Environment variable for {self.name} not found.")
-        return value
+def get_binance_client() -> Binance:
+    api_key = str(os.getenv('BINANCE_API_KEY'))
+    api_secret = str(os.getenv('BINANCE_API_SECRET'))
+    client = Binance(api_key, api_secret, base_url="https://testnet.binancefuture.com")
+
+    return client

@@ -20,7 +20,7 @@ class Main:
         self.profitability_checker = ProfitabilityChecker()
         self.position_controller = MasterPositionController()
         self.position_controller.subscribe_to_events()
-        # self.position_monitor = MasterPositionMonitor()
+        self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
         MarketDirectory.initialize()
     
@@ -35,8 +35,7 @@ class Main:
                 logger.info("MainClass - Error while searching for opportunity.")
 
             time.sleep(30)
-            exchanges = ['Synthetix', 'Binance']
-            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol="ETH", reason=PositionCloseReason.TEST.value, exchanges=exchanges)
+
         except Exception as e:
             logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)
             
