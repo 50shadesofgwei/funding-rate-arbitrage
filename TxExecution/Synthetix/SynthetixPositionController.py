@@ -26,7 +26,7 @@ class SynthetixPositionController:
                 response = self.client.perps.commit_order(adjusted_trade_size, market_name=market_name, account_id=account_id, submit=True)
                 if is_transaction_hash(response):
                     time.sleep(15)
-                    position_data = self.handle_position_opened(opportunity)
+                    position_data = self.handle_position_opened(market_name)
                     logger.info("SynthetixPositionController - Order executed successfully")
                     return position_data
                 else:
@@ -173,10 +173,10 @@ class SynthetixPositionController:
     ### READ FUNCTIONS ###
     ######################
 
-    def handle_position_opened(self, opportunity):
+    def handle_position_opened(self, market_name: str):
         try:
-            position = self.client.perps.get_open_position(market_name=opportunity['symbol'])
-            position['symbol'] = opportunity['symbol']
+            position = self.client.perps.get_open_position(market_name=market_name)
+            position['symbol'] = market_name
             margin_details = self.client.perps.get_margin_info()
             position_details = {
                 'position': position,

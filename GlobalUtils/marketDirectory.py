@@ -18,8 +18,8 @@ class MarketDirectory:
                 cls.update_all_market_parameters()
                 cls._is_initialized = True
                 logger.info('MarketDirectory - Markets Initialized')
-            with open(cls._file_path, 'r') as file:
-                cls._markets = json.load(file)
+                with open(cls._file_path, 'r') as file:
+                    cls._markets = json.load(file)
             logger.info("MarketDirectory - Loaded markets from file.")
         except FileNotFoundError:
             logger.info("MarketDirectory - No existing market file found. Starting fresh.")
@@ -50,7 +50,7 @@ class MarketDirectory:
         market_data_response = client.perps.markets_by_name
         for symbol, market_data in market_data_response.items():
             cls.update_market_member(market_data)
-        cls.save_market_to_file()
+            cls.save_market_to_file()
 
     @classmethod
     def update_market_member(cls, market_data):

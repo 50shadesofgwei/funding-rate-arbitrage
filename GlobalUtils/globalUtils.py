@@ -5,9 +5,9 @@ import requests
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
-from synthetix import Synthetix
 from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 from APICaller.Binance.binanceUtils import get_binance_client
+from APICaller.HMX.HMXCallerUtils import get_HMX_client
 
 load_dotenv()
 
@@ -16,6 +16,7 @@ BLOCKS_PER_HOUR_BASE = 1800
 
 GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
 GLOBAL_BINANCE_CLIENT = get_binance_client()
+GLOBAL_HMX_CLIENT = get_HMX_client()
 
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_all_positions"
