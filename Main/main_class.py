@@ -34,8 +34,6 @@ class Main:
             else:
                 logger.info("MainClass - Error while searching for opportunity.")
 
-            time.sleep(30)
-
         except Exception as e:
             logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)
             

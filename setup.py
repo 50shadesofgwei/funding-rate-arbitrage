@@ -13,7 +13,7 @@ setup(
             'project-run = Main.run:run',
             'deploy-collateral = TxExecution.Synthetix.run:main',
             'close-all-positions = TxExecution.Master.run:run',
-            'close-position-pair = TxExecution.Master.run.close_position_pair'
+            'close-position-pair = TxExecution.Master.run.close_position_pair',
         ],
     },
 

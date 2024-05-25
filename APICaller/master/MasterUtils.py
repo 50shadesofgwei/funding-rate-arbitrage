@@ -15,8 +15,9 @@ TARGET_TOKENS = [
 
 TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
-    {"exchange": "Binance", "is_target": True},
+    {"exchange": "Binance", "is_target": False},
     {"exchange": "ByBit", "is_target": False},
+    {"exchange": "HMX", "is_target": True}
 ]
 
 def get_target_exchanges() -> list:
@@ -61,6 +62,14 @@ def get_target_tokens_for_synthetix() -> list:
 def get_target_tokens_for_bybit() -> list:
     try:
         symbols = [token["token"] + "USDT" for token in TARGET_TOKENS if token["is_target"]]
+        return symbols
+    except Exception as e:
+        logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for ByBit: {e}")
+        return []
+
+def get_target_tokens_for_HMX() -> list:
+    try:
+        symbols = [token["token"] + "USD" for token in TARGET_TOKENS if token["is_target"]]
         return symbols
     except Exception as e:
         logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for ByBit: {e}")

@@ -20,7 +20,7 @@ class MasterPositionMonitor():
 
     def on_position_opened(self, position_data):
         if self.health_check_thread is None or not self.health_check_thread.is_alive():
-            time.sleep(10)
+            time.sleep(25)
             self.stop_health_check.clear()  
             self.health_check_thread = threading.Thread(target=self.start_health_check, daemon=True)
             self.health_check_thread.start()
