@@ -22,7 +22,7 @@ class HMXPositionController:
                 symbol = opportunity['symbol']
                 market = get_market_for_symbol(symbol)
                 adjusted_trade_size = self.calculate_adjusted_trade_size(is_long, trade_size)
-                response = self.client.private.create_market_order(
+                self.client.private.create_market_order(
                     0,
                     market_index=market,
                     buy=is_long,
@@ -37,9 +37,9 @@ class HMXPositionController:
                     return None
 
 
-                self.handle_position_opened()
+                position_details = self.handle_position_opened()
 
-                return response
+                return position_details
 
         except Exception as e:
             logger.error(f'HMXPositionController - Error while opening trade for symbol {symbol}, Error: {e}')
@@ -171,7 +171,7 @@ class HMXPositionController:
             logger.error(f"HMXPositionController - Failed to handle position closing. Error: {e}")
             return None
 
-    def get_position_object(self, symbol: str, side: str, size: float, ):
+    def get_position_object(self, symbol: str, side: str, size: float) -> dict:
         liquidation_price = self.get_liquidation_price()
         position_object = {
                 'exchange': 'HMX',
@@ -180,6 +180,7 @@ class HMXPositionController:
                 'size': size,
                 'liquidation_price': liquidation_price
             }
+        return position_object
 
     def get_liquidation_price(self, symbol: str) -> float:
         market_index = get_market_for_symbol(symbol)
@@ -188,10 +189,8 @@ class HMXPositionController:
             0,
             market_index,
             )
-
         size = position['position_size']
-        y = self.client.public.__multicall_all_market_data()
-        print(y)
+        return 0.0
 
 
 

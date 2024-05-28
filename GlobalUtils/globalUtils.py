@@ -95,7 +95,7 @@ def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) ->
     return 0.0
 
 def normalize_symbol(symbol: str) -> str:
-    return symbol.replace('USDT', '').replace('PERP', '')
+    return symbol.replace('USDT', '').replace('PERP', '').replace('USD', '')
 
 def adjust_trade_size_for_direction(trade_size: float, is_long: bool) -> float:
     return trade_size if is_long else -trade_size
