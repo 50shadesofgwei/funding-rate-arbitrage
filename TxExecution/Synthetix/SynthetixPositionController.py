@@ -25,7 +25,7 @@ class SynthetixPositionController:
                 market_name = opportunity['symbol']
                 response = self.client.perps.commit_order(adjusted_trade_size, market_name=market_name, account_id=account_id, submit=True)
                 if is_transaction_hash(response):
-                    time.sleep(15)
+                    time.sleep(7)
                     position_data = self.handle_position_opened(market_name)
                     logger.info("SynthetixPositionController - Order executed successfully")
                     return position_data
@@ -44,7 +44,8 @@ class SynthetixPositionController:
             for market in selected_markets:
                 market_id = MarketDirectory.get_market_id(market)
                 try:
-                    close_details = self.close_position(market_id)
+                    reason = PositionCloseReason.CLOSE_ALL_POSITIONS
+                    close_details = self.close_position(market_id, reason)
                     if close_details:
                         close_results.append(close_details)
                 except Exception as e:
@@ -193,7 +194,7 @@ class SynthetixPositionController:
             pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, position_report=position_report)
             return 
         except Exception as e:
-            logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
+            logger.error(f"SynthetixPositionController - Failed to retrieve handle position closing. Error: {e}")
             return None
 
     def get_available_collateral(self):
@@ -241,7 +242,6 @@ class SynthetixPositionController:
             trade_size_with_leverage = trade_size_in_asset * self.leverage_factor
             adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)
-            logger.info(f'SynthetixPositionController - levered trade size in asset calculated at {adjusted_trade_size}')
             return adjusted_trade_size
         except Exception as e:
             logger.error(f"SynthetixPositionController - Failed to calculate adjusted trade size. Error: {e}")

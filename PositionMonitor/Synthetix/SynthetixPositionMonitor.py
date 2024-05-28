@@ -49,7 +49,7 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")
             raise e
 
-    def is_near_liquidation_price(self, position) -> bool:
+    def is_near_liquidation_price(self, position: dict) -> bool:
         try:
             liquidation_price = float(position['liquidation_price'])
             symbol = position['symbol']

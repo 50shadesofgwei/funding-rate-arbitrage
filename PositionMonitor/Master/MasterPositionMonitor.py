@@ -36,12 +36,12 @@ class MasterPositionMonitor():
             time.sleep(30)
 
     def position_health_check(self):
+        exchanges = []
         is_liquidation_risk = self.check_liquidation_risk()
         is_profitable = self.check_profitability_for_open_position()
         is_delta_within_bounds = self.is_position_delta_within_bounds()
-        is_funding_velocity_turning = self.is_funding_turning_against_trade_in_given_time(30)
+        is_funding_velocity_turning = self.is_synthetix_funding_turning_against_trade_in_given_time(30)
 
-        exchanges = ['Synthetix', 'Binance']
         if is_liquidation_risk:
             reason = PositionCloseReason.LIQUIDATION_RISK.value
             pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
@@ -57,23 +57,32 @@ class MasterPositionMonitor():
         else:
             logger.info('MasterPositionMonitor - no threat detected for open position')
 
-    def check_liquidation_risk(self) -> bool:
+    def check_liquidation_risk(self, exchanges: list) -> bool:
         try:
-            synthetix_position = self.synthetix.get_open_position()
-            binance_position = self.binance.get_open_position()
+            first_exchange = exchanges[0]
+            second_exchange = exchanges[1]
+            
+            get_first_position_method = getattr(self, first_exchange.lower()).get_open_position
+            get_second_position_method = getattr(self, second_exchange.lower()).get_open_position
 
-            is_synthetix_risk = self.synthetix.is_near_liquidation_price(synthetix_position)
-            is_binance_risk = self.binance.is_near_liquidation_price(binance_position)
+            first_position = get_first_position_method()
+            second_position = get_second_position_method()
+        
+            first_is_near_liquidation_method = getattr(self, first_exchange.lower()).is_near_liquidation_price(first_position)
+            second_is_near_liquidation_method = getattr(self, second_exchange.lower()).is_near_liquidation_price(second_position)
 
-            if is_binance_risk or is_synthetix_risk:
+            is_first_exchange_risk = first_is_near_liquidation_method()
+            is_second_exchange_risk = second_is_near_liquidation_method()
+
+            if is_first_exchange_risk or is_second_exchange_risk:
                 return True
             else:
                 return False
         except Exception as e:
-            logger.error(f"MasterPositionMonitor - Error while checking liquidation risk for positions: {e}")
+            logger.error(f"MasterPositionMonitor - Error while checking liquidation risk for positions on exchanges {exchanges}: {e}")
             return False
 
-    def check_profitability_for_open_position(self) -> bool:
+    def check_profitability_for_open_position(self, exchanges: list) -> bool:
         try:
             synthetix_position = self.synthetix.get_open_position()
 
@@ -92,39 +101,36 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
             return False
 
-    def is_position_delta_within_bounds(self) -> bool:
+    def is_position_delta_within_bounds(self, exchanges: list) -> bool:
         try:
             delta_bound = float(os.getenv('DELTA_BOUND'))
-            synthetix_position = self.synthetix.get_open_position()
-            binance_position = self.binance.get_open_position()
+            first_exchange = exchanges[0]
+            second_exchange = exchanges[1]
+            
+            get_first_position_method = getattr(self, first_exchange.lower()).get_open_position
+            get_second_position_method = getattr(self, second_exchange.lower()).get_open_position
 
-            if not synthetix_position:
-                logger.error("MasterPositionMonitor - Synthetix position is missing when trying to calculate delta.")
-                return False
-            elif not binance_position:
-                logger.error("MasterPositionMonitor - Binance position is missing when trying to calculate delta.")
-                return False
+            first_position = get_first_position_method()
+            second_position = get_second_position_method()
 
-            try:
-                symbol = normalize_symbol(synthetix_position['symbol'])
-            except KeyError as e:
-                logger.error(f"MasterPositionMonitor - Missing 'symbol' key in Synthetix position details: {e}")
+            if not first_position:
+                logger.error(f"MasterPositionMonitor - Position for exchange {exchanges[0]} is missing when trying to calculate delta.")
                 return False
-
-            try:
-                asset_price = get_price_from_pyth(symbol)
-            except Exception as e:
-                logger.error(f"MasterPositionMonitor - Error retrieving asset price for {symbol}: {e}")
+            elif not second_position:
+                logger.error(f"MasterPositionMonitor - Position for exchange {exchanges[1]}is missing when trying to calculate delta.")
                 return False
 
-            synthetix_notional_value = float(synthetix_position['size']) * asset_price
-            binance_notional_value = float(binance_position['size']) * asset_price
+            symbol = first_position['symbol']
+            asset_price = get_price_from_pyth(symbol)
 
-            synthetix_notional_value = synthetix_notional_value if synthetix_position['side'].upper() == 'LONG' else -synthetix_notional_value
-            binance_notional_value = binance_notional_value if binance_position['side'].upper() == 'LONG' else -binance_notional_value
+            first_notional_value = float(first_position['size']) * asset_price
+            second_notional_value = float(second_position['size']) * asset_price
 
-            total_notional_value = abs(synthetix_notional_value) + abs(binance_notional_value)
-            delta_in_usd = abs(synthetix_notional_value - binance_notional_value)
+            first_notional_value = first_notional_value if first_notional_value['side'].upper() == 'LONG' else -first_notional_value
+            second_notional_value = second_notional_value if second_notional_value['side'].upper() == 'LONG' else -second_notional_value
+
+            total_notional_value = abs(first_notional_value) + abs(second_notional_value)
+            delta_in_usd = abs(first_notional_value - second_notional_value)
             delta = (delta_in_usd / total_notional_value) if total_notional_value else 0
 
             logger.info(f'MasterPositionMonitor - Position delta calculated at {delta}. delta_in_usd: {delta_in_usd}, total_notional_value: {total_notional_value}, asset price: {asset_price}')
@@ -134,7 +140,7 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
             return False
 
-    def is_funding_turning_against_trade_in_given_time(self, minuites: int) -> bool:
+    def is_synthetix_funding_turning_against_trade_in_given_time(self, mins: int) -> bool:
         try:
             synthetix_position = self.synthetix.get_open_position()
             is_long = synthetix_position['size'] > 0
@@ -148,7 +154,7 @@ class MasterPositionMonitor():
             funding_rate = market_summary['current_funding_rate']
             velocity = market_summary['current_funding_velocity']
 
-            future_blocks = minuites * 30
+            future_blocks = mins * 30
             predicted_funding_rate = funding_rate + (velocity * future_blocks / BLOCKS_PER_DAY_BASE)
 
             if (is_long and predicted_funding_rate < 0) or (not is_long and predicted_funding_rate > 0):

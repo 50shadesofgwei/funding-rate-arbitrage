@@ -26,7 +26,7 @@ class TradeLogger:
             conn.execute('''CREATE TABLE IF NOT EXISTS trade_log (
                         id INTEGER PRIMARY KEY,
                         strategy_execution_id TEXT NOT NULL,
-                        order_id TEXT NOT NULL,
+                        order_id TEXT,
                         exchange TEXT NOT NULL,
                         symbol TEXT NOT NULL,
                         side TEXT NOT NULL,
@@ -134,11 +134,11 @@ class TradeLogger:
           
     def clear_database(self):
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute("DROP TABLE IF EXISTS trade_log")
-            conn.commit()
-            self.create_or_access_database()
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute("DROP TABLE IF EXISTS trade_log")
+                conn.commit()
+                self.create_or_access_database()
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error clearing the database: {e}")
 

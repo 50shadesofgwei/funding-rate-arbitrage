@@ -8,6 +8,7 @@ class PositionCloseReason(Enum):
     DELTA_ABOVE_BOUND = "DELTA_ABOVE_BOUND"
     POSITION_OPEN_ERROR = "POSITION_OPEN_ERROR"
     FUNDING_TURNING_AGAINST_TRADE = "FUNDING_TURNING_AGAINST_TRADE"
+    CLOSE_ALL_POSITIONS = "CLOSE_ALL_POSITIONS"
     TEST = "TEST"
     
 def get_dict_from_database_response(response):
