@@ -177,8 +177,10 @@ class TradeLogger:
                     logger.info(f"TradeLogger - Found open strategy execution ID: {strategy_execution_id}")
                     return str(strategy_execution_id)
                 else:
-                    logger.error(f"TradeLogger - No open strategy executio ID found for symbol: {symbol} on exchange: {exchange}.")
+                    logger.error(f"TradeLogger - No open strategy execution ID found for symbol: {symbol} on exchange: {exchange}.")
                     return None
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving execution ID for open trades. Error: {e}")
             return None
+
+    

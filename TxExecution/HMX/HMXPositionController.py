@@ -182,7 +182,16 @@ class HMXPositionController:
             }
 
     def get_liquidation_price(self, symbol: str) -> float:
-        pass
+        market_index = get_market_for_symbol(symbol)
+        position = self.client.public.get_position_info(
+            self.account,
+            0,
+            market_index,
+            )
+
+        size = position['position_size']
+        y = self.client.public.__multicall_all_market_data()
+        print(y)
 
 
 
@@ -191,5 +200,4 @@ test_op = {
 }
 
 x = HMXPositionController()
-y = x.execute_trade(test_op, True, 50.0)
-print(y)
+y = x.get_liquidation_price('ETH')
