@@ -93,26 +93,33 @@ class MasterPositionController:
 
     def get_trade_size(self, opportunity) -> float:
         try:
-            collateral_amounts = self.get_available_collateral_by_exchange()
+            exchanges = {
+                'long_exchange': opportunity['long_exchange'],
+                'short_exchange': opportunity['short_exchange']
+            }
+            collateral_amounts = self.get_available_collateral_for_exchanges(exchanges)
             trade_size = adjust_collateral_allocation(
                 collateral_amounts,
                 opportunity['long_exchange'],
                 opportunity['short_exchange'])
             
-            logger.info(f"MasterPositionController - Trade size calculated: {trade_size}")
             return trade_size
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to calculate trade size for opportunity. Error: {e}")
-            return 0.0
+            return None
 
-    def get_available_collateral_by_exchange(self):
+    def get_available_collateral_for_exchanges(self, exchanges: dict):
         try:
-            synthetix_collateral = self.synthetix.get_available_collateral()
-            binance_collateral = self.binance.get_available_collateral()
-            
+            long_exchange = exchanges['long_exchange']
+            short_exchange = exchanges['short_exchange']
+            get_long_available_collateral_method = getattr(self, long_exchange.lower()).get_available_collateral
+            long_collateral = get_long_available_collateral_method()
+            get_short_available_collateral_method = getattr(self, short_exchange.lower()).get_available_collateral
+            short_collateral = get_short_available_collateral_method()
+
             collateral = {
-                "Synthetix": synthetix_collateral,
-                "Binance": binance_collateral
+                long_exchange: long_collateral,
+                short_exchange: short_collateral
             }
 
             return collateral

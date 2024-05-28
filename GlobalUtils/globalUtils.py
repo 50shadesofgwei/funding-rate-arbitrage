@@ -8,6 +8,7 @@ from GlobalUtils.logger import *
 from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 from APICaller.Binance.binanceUtils import get_binance_client
 from APICaller.HMX.HMXCallerUtils import get_HMX_client
+import re
 
 load_dotenv()
 
@@ -155,3 +156,8 @@ def normalize_funding_rate_to_8hrs(rate: float, hours: int) -> float:
     except Exception as e:
         logger.error(f'GlobalUtils - Error while normalizing funding rate to 8hrs. Function inputs: rate={rate}, hours={hours} {e}')
         return None
+
+def is_transaction_hash(tx_hash) -> bool:
+    # Regular expression to match an Ethereum transaction hash
+    pattern = r'^0x[a-fA-F0-9]{64}$'
+    return re.match(pattern, tx_hash) is not None
