@@ -6,6 +6,7 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.marketDirectory import MarketDirectory
 from pubsub import pub
 import threading
+import sqlite3
 import time
 
 class MasterPositionMonitor():
@@ -36,24 +37,27 @@ class MasterPositionMonitor():
             time.sleep(30)
 
     def position_health_check(self):
-        exchanges = []
-        is_liquidation_risk = self.check_liquidation_risk()
-        is_profitable = self.check_profitability_for_open_position()
-        is_delta_within_bounds = self.is_position_delta_within_bounds()
-        is_funding_velocity_turning = self.is_synthetix_funding_turning_against_trade_in_given_time(30)
+        exchanges = self.get_exchanges_for_open_position()
+        symbol = self.get_symbol_for_open_position()
+        is_liquidation_risk = self.check_liquidation_risk(exchanges)
+        is_profitable = self.check_profitability_for_open_positions(exchanges)
+        is_delta_within_bounds = self.is_position_delta_within_bounds(exchanges)
+
+        if 'Synthetix' in exchanges:
+            is_funding_velocity_turning = self.is_synthetix_funding_turning_against_trade_in_given_time(30)
 
         if is_liquidation_risk:
             reason = PositionCloseReason.LIQUIDATION_RISK.value
-            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol=symbol, reason=reason, exchanges=exchanges)
         elif not is_profitable:
             reason = PositionCloseReason.NO_LONGER_PROFITABLE.value
-            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol=symbol, reason=reason, exchanges=exchanges)
         elif not is_delta_within_bounds:
             reason = PositionCloseReason.DELTA_ABOVE_BOUND.value
-            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol=symbol, reason=reason, exchanges=exchanges)
         elif is_funding_velocity_turning:
             reason = PositionCloseReason.FUNDING_TURNING_AGAINST_TRADE.value
-            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol='ETH', reason=reason, exchanges=exchanges)
+            pub.sendMessage(EventsDirectory.CLOSE_POSITION_PAIR.value, symbol=symbol, reason=reason, exchanges=exchanges)
         else:
             logger.info('MasterPositionMonitor - no threat detected for open position')
 
@@ -82,21 +86,31 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error while checking liquidation risk for positions on exchanges {exchanges}: {e}")
             return False
 
-    def check_profitability_for_open_position(self, exchanges: list) -> bool:
+    def check_profitability_for_open_positions(self, exchanges: list) -> bool:
         try:
-            synthetix_position = self.synthetix.get_open_position()
+            get_first_position = getattr(self, exchanges[0].lower()).get_open_position
+            first_position = get_first_position()
+            get_first_funding_rate = getattr(self, exchanges[0].lower()).get_funding_rate(first_position)
+            first_funding_rate = get_first_funding_rate(first_position)
 
-            if not synthetix_position:
-                logger.info("MasterPositionMonitor - No open Synthetix positions found.")
-                return False
+            get_second_position = getattr(self, exchanges[1].lower()).get_open_position
+            second_position = get_second_position()
+            get_second_funding_rate = getattr(self, exchanges[1].lower()).get_funding_rate(second_position)
+            second_funding_rate = get_second_funding_rate(second_position)
 
-            synthetix_funding_rate = self.synthetix.get_funding_rate(synthetix_position)
+            first_position_is_long = first_position['size'] > 0
+            second_position_is_long = second_position['size'] > 0
 
-            size = float(synthetix_position['size'])
-            is_long = size > 0
-            is_profitable = (is_long and synthetix_funding_rate < 0) or (not is_long and synthetix_funding_rate > 0)
+            first_fee_impact = Decimal(first_funding_rate) * (1 if first_position_is_long else -1)
+            second_fee_impact = Decimal(second_funding_rate) * (1 if second_position_is_long else -1)
 
+            net_profitability = first_fee_impact + second_fee_impact
+
+            logger.info(f"MasterPositionMonitor - Net funding fees impact: First = {first_fee_impact}, Second = {second_fee_impact}, Net = {net_profitability}")
+
+            is_profitable = net_profitability > 0
             return is_profitable
+
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
             return False
@@ -163,6 +177,53 @@ class MasterPositionMonitor():
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Error checking if funding is turning against trade for {symbol}: {e}")
             return False
+
+    def get_exchanges_for_open_position(self) -> list:
+        try:
+            with sqlite3.connect('trades.db') as conn:
+                cursor = conn.cursor()
+                query = """
+                        SELECT exchange 
+                        FROM trade_log 
+                        WHERE open_close = 'Open'
+                        GROUP BY exchange
+                        HAVING COUNT(*) = 1;
+                        """
+                cursor.execute(query)
+                exchanges = [exchange[0] for exchange in cursor.fetchall()]
+
+                if len(exchanges) == 2:
+                    logger.info(f"MasterPositionMonitor - Found exchanges with open positions: {exchanges}")
+                    return exchanges
+                else:
+                    logger.error(f"MasterPositionMonitor - Expected 2 exchanges with open positions but found {len(exchanges)}: {exchanges}")
+                    return exchanges if len(exchanges) == 2 else []
+        except Exception as e:
+            logger.error(f"MasterPositionMonitor - Error retrieving exchanges with open positions. Error: {e}")
+            return []
+
+    def get_symbol_for_open_position(self) -> str:
+        try:
+            with sqlite3.connect('trades.db') as conn:
+                cursor = conn.cursor()
+                query = """
+                        SELECT symbol
+                        FROM trade_log
+                        WHERE open_close = 'Open'
+                        LIMIT 1; 
+                        """
+                cursor.execute(query)
+                symbol = cursor.fetchone() 
+
+                if symbol:
+                    logger.info(f"MasterPositionMonitor - Found open position symbol: {symbol[0]}")
+                    return symbol[0]
+                else:
+                    logger.error("MasterPositionMonitor - No open position found.")
+                    return None
+        except Exception as e:
+            logger.error(f"MasterPositionMonitor - Error retrieving symbol for open position. Error: {e}")
+            return None
 
 
 
