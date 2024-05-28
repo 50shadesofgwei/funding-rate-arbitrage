@@ -151,7 +151,14 @@ class HMXPositionController:
             position_response = self.client.public.get_position_info(self.account, 0, market_id)
             avg_entry_price = float(position_response['avg_entry_price'])
             size = get_position_size_from_response(response, avg_entry_price)
-            position = self.get_position_object()
+
+            if size > 0:
+                side = "LONG"
+            elif size < 0:
+                side = "SHORT"
+
+            position = self.get_position_object(symbol, side, size)
+            return position
         
         except Exception as e:
             logger.error(f'HMXPositionController - Failed to handle position opened. Error: {e}')
