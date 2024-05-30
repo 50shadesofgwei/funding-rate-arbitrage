@@ -1,16 +1,16 @@
 from GlobalUtils.logger import logger
 
 TARGET_TOKENS = [
-    {"token": "BTC", "is_target": False},
+    {"token": "BTC", "is_target": True},
     {"token": "ETH", "is_target": True},
     {"token": "SNX", "is_target": False},
-    {"token": "SOL", "is_target": False},
-    {"token": "W", "is_target": False},
+    {"token": "SOL", "is_target": True},
+    {"token": "W", "is_target": True},
     {"token": "WIF", "is_target": False},
-    {"token": "ARB", "is_target": False},
-    {"token": "BNB", "is_target": False},
-    {"token": "ENA", "is_target": False},
-    {"token": "DOGE", "is_target": False},
+    {"token": "ARB", "is_target": True},
+    {"token": "BNB", "is_target": True},
+    {"token": "ENA", "is_target": True},
+    {"token": "DOGE", "is_target": True},
 ]
 
 TARGET_EXCHANGES = [
@@ -23,6 +23,7 @@ TARGET_EXCHANGES = [
 def get_target_exchanges() -> list:
     try:
         exchanges = [exchange["exchange"] for exchange in TARGET_EXCHANGES if exchange["is_target"]]
+        logger.info(f'MasterUtils - Debugging: target exchanges list = {exchanges}')
         return exchanges
     except Exception as e:
         logger.error(f"MasterAPICallerUtils - Error retrieving target exchanges: {e}")
@@ -33,10 +34,12 @@ def get_all_target_token_lists() -> list:
         binance_token_list = get_target_tokens_for_binance()
         synthetix_token_list = get_target_tokens_for_synthetix()
         bybit_token_list = get_target_tokens_for_bybit()
+        hmx_token_list = get_target_tokens_for_HMX()
         all_target_token_lists = [
             synthetix_token_list,
             binance_token_list,
-            bybit_token_list
+            bybit_token_list,
+            hmx_token_list
         ]
         return all_target_token_lists
     except Exception as e:

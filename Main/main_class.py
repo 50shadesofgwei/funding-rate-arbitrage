@@ -27,12 +27,14 @@ class Main:
     def search_for_opportunities(self):
         try:
             funding_rates = self.caller.get_funding_rates()
+            logger.info(f'MainClass - Debugging: funding rates var at Main = {funding_rates}')
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
             opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities)
+            logger.info(f'MainClass - Opportunities object at Main = {opportunities}')
             if opportunity is not None:
                 pub.sendMessage(EventsDirectory.OPPORTUNITY_FOUND.value, opportunity=opportunity)
             else:
-                logger.info("MainClass - Error while searching for opportunity.")
+                logger.error(f"MainClass - Error while searching for opportunity with object {opportunity}")
 
         except Exception as e:
             logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)

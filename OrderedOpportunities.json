@@ -1,20 +1,130 @@
 [
     {
-        "long_exchange": "Binance",
-        "short_exchange": "Synthetix",
-        "symbol": "ETH",
-        "long_exchange_funding_rate": -0.003,
-        "short_exchange_funding_rate": 0.0010098088690556836,
-        "skew": 2.670128174471731,
-        "funding_velocity": 6.8660438772123e-05,
-        "block_number": 10439819,
-        "profit_estimate_usd": 2949.972750746781,
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "ARB",
+        "long_exchange_funding_rate": -0.0006616374578347,
+        "short_exchange_funding_rate": 0.1329659794625969,
+        "long_exchange_skew": 10699.5648,
+        "short_exchange_skew": -10828.410534196242,
+        "block_number": 15122884,
         "profit_details": {
-            "symbol": "ETH",
-            "total_profit_loss": 0.7885977734210642,
-            "snx_profit_loss": 0.813859867645299,
-            "binance_profit_loss": -0.025262094224234893
+            "long_exchange_profit_loss": -1.157865551210725,
+            "short_exchange_profit_loss": 232.69046405954455,
+            "total_profit_usd": 231.53259850833382
         },
-        "hours_to_neutralize": 6891.127169194338
+        "total_profit_usd": 231.53259850833382
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "W",
+        "long_exchange_funding_rate": 0.00018965401013484003,
+        "short_exchange_funding_rate": 0.1012869559144936,
+        "long_exchange_skew": 941.1563,
+        "short_exchange_skew": 22353.290961232902,
+        "block_number": 15122884,
+        "profit_details": {
+            "long_exchange_profit_loss": 0.33189451773597006,
+            "short_exchange_profit_loss": 177.25217285036382,
+            "total_profit_usd": 177.5840673680998
+        },
+        "total_profit_usd": 177.5840673680998
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "DOGE",
+        "long_exchange_funding_rate": 0.00050815609773651,
+        "short_exchange_funding_rate": 0.09839059777929214,
+        "long_exchange_skew": 5727.4623,
+        "short_exchange_skew": 471.9549906186294,
+        "block_number": 15122884,
+        "profit_details": {
+            "long_exchange_profit_loss": 0.8892731710388926,
+            "short_exchange_profit_loss": 172.18354611376125,
+            "total_profit_usd": 173.07281928480015
+        },
+        "total_profit_usd": 173.07281928480015
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "SOL",
+        "long_exchange_funding_rate": 6.874307097160033e-05,
+        "short_exchange_funding_rate": 0.0819398514012903,
+        "long_exchange_skew": -9.8289,
+        "short_exchange_skew": -30393.45541641477,
+        "block_number": 15122883,
+        "profit_details": {
+            "long_exchange_profit_loss": 0.12030037420030058,
+            "short_exchange_profit_loss": 143.39473995225802,
+            "total_profit_usd": 143.51504032645832
+        },
+        "total_profit_usd": 143.51504032645832
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "ETH",
+        "long_exchange_funding_rate": 0.00010911206032411033,
+        "short_exchange_funding_rate": 0.07630151862431994,
+        "long_exchange_skew": -11.9983394408517,
+        "short_exchange_skew": -331004.16003615316,
+        "block_number": 15122883,
+        "profit_details": {
+            "long_exchange_profit_loss": 0.19094610556719308,
+            "short_exchange_profit_loss": 133.5276575925599,
+            "total_profit_usd": 133.7186036981271
+        },
+        "total_profit_usd": 133.7186036981271
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "BTC",
+        "long_exchange_funding_rate": 0.0003158324765587507,
+        "short_exchange_funding_rate": 0.0480967536440699,
+        "long_exchange_skew": -0.4561018227702,
+        "short_exchange_skew": 808439.6498712134,
+        "block_number": 15122883,
+        "profit_details": {
+            "long_exchange_profit_loss": 0.5527068339778137,
+            "short_exchange_profit_loss": 84.16931887712232,
+            "total_profit_usd": 84.72202571110013
+        },
+        "total_profit_usd": 84.72202571110013
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "ENA",
+        "long_exchange_funding_rate": -0.0013917019750503202,
+        "short_exchange_funding_rate": 0.007187541051637733,
+        "long_exchange_skew": -2540.8285,
+        "short_exchange_skew": 16067.693172377902,
+        "block_number": 15122884,
+        "profit_details": {
+            "long_exchange_profit_loss": -2.4354784563380605,
+            "short_exchange_profit_loss": 12.578196840366033,
+            "total_profit_usd": 10.142718384027972
+        },
+        "total_profit_usd": 10.142718384027972
+    },
+    {
+        "long_exchange": "Synthetix",
+        "short_exchange": "HMX",
+        "symbol": "BNB",
+        "long_exchange_funding_rate": 8.118038787455667e-05,
+        "short_exchange_funding_rate": 0.0001776185599849333,
+        "long_exchange_skew": 0.0289,
+        "short_exchange_skew": -29235.0639607,
+        "block_number": 15122884,
+        "profit_details": {
+            "long_exchange_profit_loss": 0.14206567878047419,
+            "short_exchange_profit_loss": 0.3108324799736333,
+            "total_profit_usd": 0.45289815875410744
+        },
+        "total_profit_usd": 0.45289815875410744
     }
 ]

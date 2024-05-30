@@ -1,7 +1,9 @@
 import os
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
-from HMXPositionControllerUtils import *
+from TxExecution.HMX.HMXPositionControllerUtils import *
+from APICaller.master.MasterUtils import get_target_tokens_for_HMX
+from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
 from hmx2.constants.tokens import COLLATERAL_USDC
 import time
 from hexbytes import HexBytes
@@ -44,6 +46,12 @@ class HMXPositionController:
         except Exception as e:
             logger.error(f'HMXPositionController - Error while opening trade for symbol {symbol}, Error: {e}')
             return None
+
+
+    def close_all_positions(self):
+        tokens = get_target_tokens_for_HMX
+        for token in tokens:
+            self.close_position(token, reason=PositionCloseReason.CLOSE_ALL_POSITIONS.value)
 
     def close_position(self, symbol: str, reason: str):
         max_retries = 2 
@@ -106,8 +114,11 @@ class HMXPositionController:
         eg. 100.00 = 100 USDC
         """
         try:
+            self.client.private.deposit_erc20_collateral(0, COLLATERAL_USDC, 500)
             response = self.client.private.deposit_erc20_collateral(0, token_address, amount)
+            print(response)
             tx_hash = HexBytes.hex(response['tx'])
+            print(type(tx_hash))
             time.sleep(3)
             if is_transaction_hash(tx_hash):
                 logger.info(f'HMXPositionController - Collateral deposit tx successful. Token Address: {token_address}, Amount = {amount}')
@@ -116,7 +127,6 @@ class HMXPositionController:
         except Exception as e:
             logger.error(f'HMXPositionController - Failed to deposit collateral. Token Address: {token_address}, Amount: {amount}. Error: {e}')
             return None
-
 
     ######################
     ### READ FUNCTIONS ###
@@ -192,11 +202,12 @@ class HMXPositionController:
         size = position['position_size']
         return 0.0
 
+    def get_available_collateral(self) -> int:
+        available_collateral = self.client.public.get_collateral_usd(self.account, 0)
+        return available_collateral
 
 
-test_op = {
-    'symbol': 'ETH'
-}
 
 x = HMXPositionController()
-y = x.get_liquidation_price('ETH')
+y = x.is_already_position_open()
+print(y)

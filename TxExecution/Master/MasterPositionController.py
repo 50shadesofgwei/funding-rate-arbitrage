@@ -1,5 +1,6 @@
 from TxExecution.Binance.BinancePositionController import BinancePositionController
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
+from TxExecution.HMX.HMXPositionController import HMXPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from APICaller.master.MasterUtils import get_full_symbol_for_binance
@@ -11,28 +12,33 @@ class MasterPositionController:
     def __init__(self):
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
+        self.hmx = HMXPositionController()
 
     #######################
     ### WRITE FUNCTIONS ###
     #######################
 
-    def execute_trades(self, opportunity):
+    def execute_trades(self, opportunity: dict):
         try:
             if self.is_already_position_open():
                 logger.info("MasterPositionController - Position already open, skipping opportunity.")
-                return
+                return None
 
-            trade_size_raw = self.get_trade_size(opportunity)
-            trade_size = round(trade_size_raw, 6)
-            long_exchange, short_exchange = opportunity['long_exchange'], opportunity['short_exchange']
+            trade_size = self.get_trade_size(opportunity)
+            logger.info(f'MasterPositionController:execute_trades - getting trade size for opportunity object: {opportunity}')
+            exchanges = {
+                'long_exchange': opportunity[0]['long_exchange'],
+                'short_exchange': opportunity[0]['short_exchange']
+            }
+            symbol = opportunity['symbol']
 
             position_data_dict = {}
 
-            for exchange_name in [long_exchange, short_exchange]:
+            for exchange_name in exchanges:
                 execute_trade_method = getattr(self, exchange_name.lower()).execute_trade
                 position_data = execute_trade_method(
                     opportunity, 
-                    is_long=exchange_name == long_exchange, 
+                    is_long=exchange_name == opportunity['long_exchange'], 
                     trade_size=trade_size
                 )
 
@@ -45,15 +51,15 @@ class MasterPositionController:
             if len(position_data_dict) == 2:
                 logger.info(f"Publishing POSITION_OPENED with position_data: {position_data_dict}")
                 pub.sendMessage(EventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
-                logger.info("MasterPositionController - Trades executed successfully for opportunity.")
+                logger.info("MasterPositionController:execute_trades - Trades executed successfully for opportunity.")
             else:
-                self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
-                missing_exchanges = set([long_exchange, short_exchange]) - set(position_data_dict.keys())
-                logger.error(f"MasterPositionController - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
+                self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=exchanges)
+                missing_exchanges = set([exchanges[0], exchanges[1]]) - set(position_data_dict.keys())
+                logger.error(f"MasterPositionController:execute_trades - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
 
         except Exception as e:
-            logger.error(f"MasterPositionController - Failed to process trades for opportunity. Error: {e}")
-            self.close_all_positions(PositionCloseReason.POSITION_OPEN_ERROR.value)
+            logger.error(f"MasterPositionController:execute_trades - Failed to process trades for opportunity. Error: {e}")
+            self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=exchanges)
 
     @log_function_call
     def close_all_positions(self, reason: str):
@@ -91,36 +97,48 @@ class MasterPositionController:
     ### READ FUNCTIONS ###
     ######################
 
-    def get_trade_size(self, opportunity) -> float:
+    def get_trade_size(self, opportunity):
         try:
-            exchanges = {
-                'long_exchange': opportunity['long_exchange'],
-                'short_exchange': opportunity['short_exchange']
-            }
-            collateral_amounts = self.get_available_collateral_for_exchanges(exchanges)
-            trade_size = adjust_collateral_allocation(
-                collateral_amounts,
-                opportunity['long_exchange'],
-                opportunity['short_exchange'])
+            print(opportunity)
+            # long_exchange = opportunity['long_exchange']
+            # short_exchange = opportunity['short_exchange']
+            # exchanges = {
+            #     'long_exchange': long_exchange,
+            #     'short_exchange': short_exchange
+            # }
+
+            # logger.info(f'MPC - Debugging - exchanges object = {exchanges}, collateral_amounts = {collateral_amounts}, trade_size = {trade_size}.')
+
+            # collateral_amounts = self.get_available_collateral_for_exchanges(exchanges)
+
+            # trade_size = adjust_collateral_allocation(collateral_amounts, opportunity['long_exchange'], opportunity['short_exchange'])
+
             
-            return trade_size
+            return 
         except Exception as e:
-            logger.error(f"MasterPositionController - Failed to calculate trade size for opportunity. Error: {e}")
+            logger.error(f"MasterPositionController:get_trade_size - Failed to print opportunity. Error: {e}")
             return None
+
+    def get_available_collateral_for_exchange(self, exchange: str) -> float:
+        method_caller = getattr(self, exchange.lower()).get_available_collateral
+        collateral = method_caller()
+        return collateral
+
+
 
     def get_available_collateral_for_exchanges(self, exchanges: dict):
         try:
             long_exchange = exchanges['long_exchange']
             short_exchange = exchanges['short_exchange']
-            get_long_available_collateral_method = getattr(self, long_exchange.lower()).get_available_collateral
-            long_collateral = get_long_available_collateral_method()
-            get_short_available_collateral_method = getattr(self, short_exchange.lower()).get_available_collateral
-            short_collateral = get_short_available_collateral_method()
+            long_collateral = self.get_available_collateral_for_exchange(long_exchange)
+            short_collateral = self.get_available_collateral_for_exchange(short_exchange)
 
             collateral = {
-                long_exchange: long_collateral,
-                short_exchange: short_collateral
+                'long_exchange': long_collateral,
+                'short_exchange': short_collateral
             }
+
+            logger.info(f'MPC - Debugging: collateral object = {collateral}')
 
             return collateral
         except Exception as e:
@@ -128,7 +146,39 @@ class MasterPositionController:
             return None
 
     def is_already_position_open(self) -> bool:
-        if self.synthetix.is_already_position_open() or self.binance.is_already_position_open():
-            logger.info("MasterPositionController - Position already open")
-            return True
-        return False
+        try:
+            is_synthetix_position = False
+            is_hmx_position = False
+            is_binance_position = False
+
+            try:
+                is_synthetix_position = self.synthetix.is_already_position_open()
+            except Exception as e:
+                logger.error(f'MasterPositionController:is_already_position_open - Error checking Synthetix position: {e}')
+
+            try:
+                is_hmx_position = self.hmx.is_already_position_open()
+            except Exception as e:
+                logger.error(f'MasterPositionController:is_already_position_open - Error checking HMX position: {e}')
+
+            try:
+                is_binance_position = self.binance.is_already_position_open()
+            except Exception as e:
+                logger.error(f'MasterPositionController:is_already_position_open - Error checking Binance position: {e}')
+
+            positions_open = [
+                is_synthetix_position,
+                is_hmx_position,
+                is_binance_position
+            ]
+
+            if any(positions_open):
+                logger.info(f"MasterPositionController - Position already open: SNX: {is_synthetix_position}, HMX: {is_hmx_position}, Binance: {is_binance_position}")
+                return True
+            else:
+                return False
+
+        except Exception as e:
+            logger.error(f'MasterPositionController - Unexpected error when checking positions: {e}')
+            return False
+

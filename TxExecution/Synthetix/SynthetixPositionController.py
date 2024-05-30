@@ -95,11 +95,13 @@ class SynthetixPositionController:
 
     def approve_and_deposit_collateral(self, amount: int):
         try:
-            self._approve_collateral_for_spot_market_proxy(amount)
+            self._approve_collateral_for_spot_market_proxy(amount, market_id=0)
+            time.sleep(1)
+            self._approve_collateral_for_spot_market_proxy(amount, market_id=1)
             time.sleep(1)
             self._wrap_collateral(amount)
             time.sleep(1)
-            self._approve_collateral_for_spot_market_proxy(amount)
+            self._approve_collateral_for_spot_market_proxy(amount, market_id=1)
             time.sleep(1)
             self._execute_atomic_order(amount, 'sell')
             time.sleep(1)
@@ -130,12 +132,13 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Account creation failed. Error: {e}")
 
-    def _approve_collateral_for_spot_market_proxy(self, amount: int):
+    def _approve_collateral_for_spot_market_proxy(self, amount: int, market_id: int = None):
         try:
+            amount=amount*10**18
             spot_market_proxy_address = self.client.spot.market_proxy.address
             approve_tx = self.client.spot.approve(
                 target_address=spot_market_proxy_address, 
-                market_id=0,
+                market_name='USDC',
                 amount=amount,
                 submit=True
             )
@@ -146,6 +149,7 @@ class SynthetixPositionController:
 
     def _approve_collateral_for_perps_market_proxy(self, amount: int, market_id: int):
         try:
+            amount=amount*10**18
             perps_market_proxy_address = self.client.perps.market_proxy.address
             approve_tx = self.client.spot.approve(
                 target_address=perps_market_proxy_address, 
@@ -161,7 +165,9 @@ class SynthetixPositionController:
     def _wrap_collateral(self, amount: int):
         wrap_tx = self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
         if is_transaction_hash(wrap_tx):
-            logger.info(f"SynthetixPositionController - Wrap tx executed successfully")
+            logger.info(f"SynthetixPositionController - Wrap tx executed successfully: {wrap_tx}")
+
+        return wrap_tx
 
     def _execute_atomic_order(self, amount: int, side: str):
         order_tx = self.client.spot.atomic_order(side, amount, market_name="sUSDC", submit=True)
