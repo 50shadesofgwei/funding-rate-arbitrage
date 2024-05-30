@@ -1,5 +1,7 @@
 from enum import Enum
 from GlobalUtils.logger import logger
+from GlobalUtils.globalUtils import *
+import sqlite3
 
 class PositionCloseReason(Enum):
     LIQUIDATION_RISK = "LIQUIDATION_RISK"
@@ -21,3 +23,64 @@ def get_dict_from_database_response(response):
 
     return response_dict
 
+def get_percentage_away_from_liquidation_price(position: dict) -> float:
+        try:
+            liquidation_price = float(position['liquidation_price'])
+            symbol = position['symbol']
+            normalized_symbol = normalize_symbol(symbol)
+            asset_price = get_price_from_pyth(normalized_symbol)
+            is_long = float(position['size']) > 0
+            differential = (asset_price-liquidation_price) if is_long else (liquidation_price-asset_price)
+            percentage = asset_price / differential
+            return percentage
+
+        except Exception as e:
+            logger.error(f"MasterPositionMonitorUtils - Error checking for percentage away from liquidation price for {symbol}: {e}")
+            return None
+
+def is_open_position_for_symbol_on_exchange(symbol: str, exchange: str) -> bool:
+        try:
+            with sqlite3.connect('trades.db') as conn:
+                cursor = conn.cursor()
+                
+                sql_query = '''
+                    SELECT 1
+                    FROM trade_log
+                    WHERE open_close = 'Open' 
+                      AND symbol = ?
+                      AND exchange = ?;
+                '''
+                
+                cursor.execute(sql_query, (symbol, exchange))
+                open_positions = cursor.fetchone()
+                
+                return open_positions is not None
+
+        except Exception as e:
+            logger.error(f"MasterPositionMonitorUtils - Error while searching for open positions for {symbol} on exchange {exchange}. Error: {e}")
+            return None
+
+def get_open_position_for_exchange(exchange: str) -> dict:
+        try:
+            with sqlite3.connect('trades.db') as conn:
+                cursor = conn.cursor()
+                
+                sql_query = '''
+                    SELECT 1
+                    FROM trade_log 
+                    WHERE open_close = 'Open' 
+                      AND exchange = ?;
+                '''
+                
+                cursor.execute(sql_query, (exchange))
+                open_position = cursor.fetchone()
+                
+                if open_position:
+                    position_dict = get_dict_from_database_response(open_position)
+                    return position_dict
+                else:
+                    logger.info("MasterPositionMonitorUtils - No open positions found")
+                    return None
+        except Exception as e:
+            logger.error(f"MasterPositionMonitorUtils - Error while searching for open Binance positions: {e}")
+            return None

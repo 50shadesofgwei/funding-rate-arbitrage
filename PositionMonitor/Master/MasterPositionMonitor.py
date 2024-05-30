@@ -66,14 +66,11 @@ class MasterPositionMonitor():
             first_exchange = exchanges[0]
             second_exchange = exchanges[1]
             
-            get_first_position_method = getattr(self, first_exchange.lower()).get_open_position
-            get_second_position_method = getattr(self, second_exchange.lower()).get_open_position
-
-            first_position = get_first_position_method()
-            second_position = get_second_position_method()
+            position_one = get_open_position_for_exchange(first_exchange)
+            position_two = get_open_position_for_exchange(second_exchange)
         
-            first_is_near_liquidation_method = getattr(self, first_exchange.lower()).is_near_liquidation_price(first_position)
-            second_is_near_liquidation_method = getattr(self, second_exchange.lower()).is_near_liquidation_price(second_position)
+            first_is_near_liquidation_method = getattr(self, first_exchange.lower()).is_near_liquidation_price(position_one)
+            second_is_near_liquidation_method = getattr(self, second_exchange.lower()).is_near_liquidation_price(position_two)
 
             is_first_exchange_risk = first_is_near_liquidation_method()
             is_second_exchange_risk = second_is_near_liquidation_method()
@@ -88,18 +85,20 @@ class MasterPositionMonitor():
 
     def check_profitability_for_open_positions(self, exchanges: list) -> bool:
         try:
-            get_first_position = getattr(self, exchanges[0].lower()).get_open_position
-            first_position = get_first_position()
-            get_first_funding_rate = getattr(self, exchanges[0].lower()).get_funding_rate(first_position)
-            first_funding_rate = get_first_funding_rate(first_position)
+            first_exchange = exchanges[0]
+            second_exchange = exchanges[1]
 
-            get_second_position = getattr(self, exchanges[1].lower()).get_open_position
-            second_position = get_second_position()
-            get_second_funding_rate = getattr(self, exchanges[1].lower()).get_funding_rate(second_position)
-            second_funding_rate = get_second_funding_rate(second_position)
+            position_one = get_open_position_for_exchange(first_exchange)
+            position_two = get_open_position_for_exchange(second_exchange)
 
-            first_position_is_long = first_position['size'] > 0
-            second_position_is_long = second_position['size'] > 0
+            get_first_funding_rate = getattr(self, first_exchange.lower()).get_funding_rate(position_one)
+            first_funding_rate = get_first_funding_rate(position_one)
+
+            get_second_funding_rate = getattr(self, second_exchange.lower()).get_funding_rate(position_two)
+            second_funding_rate = get_second_funding_rate(position_two)
+
+            first_position_is_long = position_one['size'] > 0
+            second_position_is_long = position_two['size'] > 0
 
             first_fee_impact = Decimal(first_funding_rate) * (1 if first_position_is_long else -1)
             second_fee_impact = Decimal(second_funding_rate) * (1 if second_position_is_long else -1)
@@ -120,25 +119,22 @@ class MasterPositionMonitor():
             delta_bound = float(os.getenv('DELTA_BOUND'))
             first_exchange = exchanges[0]
             second_exchange = exchanges[1]
-            
-            get_first_position_method = getattr(self, first_exchange.lower()).get_open_position
-            get_second_position_method = getattr(self, second_exchange.lower()).get_open_position
 
-            first_position = get_first_position_method()
-            second_position = get_second_position_method()
+            position_one = get_open_position_for_exchange(first_exchange)
+            position_two = get_open_position_for_exchange(second_exchange)
 
-            if not first_position:
-                logger.error(f"MasterPositionMonitor - Position for exchange {exchanges[0]} is missing when trying to calculate delta.")
+            if not position_one:
+                logger.error(f"MasterPositionMonitor - Position for exchange {first_exchange} is missing when trying to calculate delta.")
                 return False
-            elif not second_position:
-                logger.error(f"MasterPositionMonitor - Position for exchange {exchanges[1]}is missing when trying to calculate delta.")
+            elif not position_two:
+                logger.error(f"MasterPositionMonitor - Position for exchange {second_exchange}is missing when trying to calculate delta.")
                 return False
 
-            symbol = first_position['symbol']
+            symbol = position_one['symbol']
             asset_price = get_price_from_pyth(symbol)
 
-            first_notional_value = float(first_position['size']) * asset_price
-            second_notional_value = float(second_position['size']) * asset_price
+            first_notional_value = float(position_one['size']) * asset_price
+            second_notional_value = float(position_two['size']) * asset_price
 
             first_notional_value = first_notional_value if first_notional_value['side'].upper() == 'LONG' else -first_notional_value
             second_notional_value = second_notional_value if second_notional_value['side'].upper() == 'LONG' else -second_notional_value
