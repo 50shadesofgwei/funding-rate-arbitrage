@@ -5,13 +5,10 @@ from decimal import DivisionByZero
 import re
 import uuid
 
-ALL_MARKET_IDS = [
-    100,
-    200
-]
 
-def parse_trade_data_from_position_details(position_details) -> dict:
+def parse_trade_data_from_position_details(position_details: dict) -> dict:
     try:
+        logger.error(f'SynthetixPositionControllerUtils:parse_trade_data_from_position_details - position_details = {position_details}')
         side = get_side(position_details['position']['position_size'])
         symbol = position_details['position']['symbol']
         asset_price = get_price_from_pyth(symbol)
@@ -27,6 +24,8 @@ def parse_trade_data_from_position_details(position_details) -> dict:
             "order_id": order_id,
             "liquidation_price": liquidation_price
         }
+
+        logger.info(f'SynthetixPositionControllerUtils - trade_data = {trade_data}')
         return trade_data
 
     except KeyError as e:
@@ -37,28 +36,45 @@ def parse_trade_data_from_position_details(position_details) -> dict:
         return {}
 
 @log_function_call
-def calculate_liquidation_price(position_data, asset_price: float) -> float:
+def calculate_liquidation_price(position_data: dict, asset_price: float) -> float:
     try:
-        position_size = Decimal(str(position_data['position']['position_size']))
-        available_margin = Decimal(str(position_data['margin_details']['available_margin']))
-        maintenance_margin_requirement = Decimal(str(position_data['margin_details']['maintenance_margin_requirement']))
-        initial_margin_requirement = Decimal(str(position_data['margin_details']['initial_margin_requirement']))
-        current_asset_price = Decimal(asset_price)
+        logger.error(f'SynthetixPositionControllerUtils:calculate_liquidation_price - position_data = {position_data}')
+        position_size = position_data['position']['position_size']
+        available_margin = position_data['margin_details']['available_margin']
+        maintenance_margin_requirement = position_data['margin_details']['maintenance_margin_requirement']
 
-        if initial_margin_requirement <= 0 or position_size == 0 or current_asset_price <= 0:
-            raise ValueError("Invalid input values for calculating liquidation price.")
+        logger.debug(f"SynthetixPositionControllerUtils - Calculating liquidation price with position_size={position_size}, available_margin={available_margin}, maintenance_margin_requirement={maintenance_margin_requirement}, asset_price={asset_price}")
+
+        if not position_size:
+            logger.error(f"SynthetixPositionControllerUtils - Invalid position size: {position_size}. Cannot calculate liquidation price.")
+            return None
+        if asset_price <= 0:
+            logger.error(f"SynthetixPositionControllerUtils - Invalid asset price: {asset_price}. Cannot calculate liquidation price.")
+            return None
+        if available_margin <= 0 or maintenance_margin_requirement < 0:
+            logger.error(f"SynthetixPositionControllerUtils - Invalid margin values: Available={available_margin}, Maintenance Requirement={maintenance_margin_requirement}.")
+            return None
 
         is_long = position_size > 0
-
         if is_long:
-            liquidation_price = (available_margin - maintenance_margin_requirement + (position_size * current_asset_price)) / position_size
+            liquidation_price = (available_margin - maintenance_margin_requirement + (position_size * asset_price)) / position_size
         else:
-            liquidation_price = (available_margin - maintenance_margin_requirement - (position_size * current_asset_price)) / position_size
+            liquidation_price = (available_margin - maintenance_margin_requirement - (position_size * asset_price)) / position_size
 
-        return float(liquidation_price)
-    except Exception as e:
-        logger.error(f"SynthetixPositionControllerUtils - Error in calculating liquidation price: {e}")
+        if liquidation_price <= 0:
+            logger.error(f"SynthetixPositionControllerUtils - Calculated invalid liquidation price: {liquidation_price}.")
+            return None
+
+        logger.info(f"SynthetixPositionControllerUtils - Liquidation price calculated successfully: {liquidation_price}")
+        return liquidation_price
+
+    except KeyError as ke:
+        logger.error(f"SynthetixPositionControllerUtils - Key error in input data during liquidation price calculation: {ke}. Data might be incomplete.")
         return None
+    except Exception as e:
+        logger.error(f"SynthetixPositionControllerUtils - Unexpected error during liquidation price calculation: {e}")
+        return None
+
 
 def get_side(size: float) -> str:
     try:

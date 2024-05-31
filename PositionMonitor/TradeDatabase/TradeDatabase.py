@@ -14,7 +14,7 @@ class TradeLogger:
             self.conn = self.create_or_access_database()
         except Exception as e:
             logger.error(f"TradeLogger - Error accessing the database: {e}")
-            raise e
+            return None
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -43,7 +43,7 @@ class TradeLogger:
             return conn
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error creating/accessing the database: {e}")
-            raise e
+            return None
 
     def log_trade_pair(self, position_data):
         strategy_execution_id = str(uuid.uuid4())

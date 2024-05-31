@@ -19,47 +19,51 @@ class MasterPositionController:
     #######################
 
     def execute_trades(self, opportunity: dict):
+        symbol: str = opportunity['symbol']
+        if not symbol:
+            logger.error("MasterPositionController:execute_trades - Opportunity does not include 'symbol'.")
+            return
+
         try:
             if self.is_already_position_open():
                 logger.info("MasterPositionController - Position already open, skipping opportunity.")
-                return None
+                return
 
             trade_size = self.get_trade_size(opportunity)
-            logger.info(f'MasterPositionController:execute_trades - getting trade size for opportunity object: {opportunity}')
+            logger.info(f'MasterPositionController:execute_trades - Getting trade size for opportunity: {opportunity}')
             exchanges = {
-                'long_exchange': opportunity[0]['long_exchange'],
-                'short_exchange': opportunity[0]['short_exchange']
+                'long_exchange': opportunity['long_exchange'],
+                'short_exchange': opportunity['short_exchange']
             }
-            symbol = opportunity['symbol']
 
             position_data_dict = {}
 
-            for exchange_name in exchanges:
+            for role, exchange_name in exchanges.items():
                 execute_trade_method = getattr(self, exchange_name.lower()).execute_trade
                 position_data = execute_trade_method(
                     opportunity, 
-                    is_long=exchange_name == opportunity['long_exchange'], 
+                    is_long=(role == 'long_exchange'), 
                     trade_size=trade_size
                 )
 
                 logger.info(f"MasterPositionController - {exchange_name} trade execution response: {position_data}")
 
                 if position_data:
-                    position_data_dict[exchange_name] = position_data
+                    position_data_dict[role] = position_data
 
- 
             if len(position_data_dict) == 2:
                 logger.info(f"Publishing POSITION_OPENED with position_data: {position_data_dict}")
                 pub.sendMessage(EventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
                 logger.info("MasterPositionController:execute_trades - Trades executed successfully for opportunity.")
             else:
-                self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=exchanges)
-                missing_exchanges = set([exchanges[0], exchanges[1]]) - set(position_data_dict.keys())
+                self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=list(exchanges.values()))
+                missing_exchanges = set(exchanges.values()) - set(position_data_dict.keys())
                 logger.error(f"MasterPositionController:execute_trades - Failed to execute trades on all required exchanges. Missing: {missing_exchanges}. Cancelling trades.")
 
         except Exception as e:
-            logger.error(f"MasterPositionController:execute_trades - Failed to process trades for opportunity. Error: {e}")
-            self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=exchanges)
+            logger.error(f"MasterPositionController:execute_trades - Failed to process trades for {symbol}. Error: {e}")
+            self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=list(exchanges.values()))
+
 
     @log_function_call
     def close_all_positions(self, reason: str):
@@ -97,53 +101,67 @@ class MasterPositionController:
     ### READ FUNCTIONS ###
     ######################
 
-    def get_trade_size(self, opportunity):
+    def get_trade_size(self, opportunity: dict) -> float:
         try:
-            print(opportunity)
-            # long_exchange = opportunity['long_exchange']
-            # short_exchange = opportunity['short_exchange']
-            # exchanges = {
-            #     'long_exchange': long_exchange,
-            #     'short_exchange': short_exchange
-            # }
+            long_exchange = opportunity['long_exchange']
+            short_exchange = opportunity['short_exchange']
+            exchanges = {
+                'long_exchange': long_exchange,
+                'short_exchange': short_exchange
+            }
 
-            # logger.info(f'MPC - Debugging - exchanges object = {exchanges}, collateral_amounts = {collateral_amounts}, trade_size = {trade_size}.')
+            collateral_amounts = self.get_available_collateral_for_exchanges(exchanges)
+            trade_size = adjust_collateral_allocation(collateral_amounts, long_exchange, short_exchange)
 
-            # collateral_amounts = self.get_available_collateral_for_exchanges(exchanges)
+            logger.info(f'MPC - Debugging - exchanges object = {exchanges}, collateral_amounts = {collateral_amounts}, trade_size = {trade_size}.')
+            return trade_size
 
-            # trade_size = adjust_collateral_allocation(collateral_amounts, opportunity['long_exchange'], opportunity['short_exchange'])
-
-            
-            return 
         except Exception as e:
-            logger.error(f"MasterPositionController:get_trade_size - Failed to print opportunity. Error: {e}")
+            logger.error(f"MasterPositionController:get_trade_size - Failed while getting trade size. trade_size: to error: {e}")
             return None
 
+
     def get_available_collateral_for_exchange(self, exchange: str) -> float:
-        method_caller = getattr(self, exchange.lower()).get_available_collateral
-        collateral = method_caller()
-        return collateral
-
-
-
-    def get_available_collateral_for_exchanges(self, exchanges: dict):
         try:
-            long_exchange = exchanges['long_exchange']
-            short_exchange = exchanges['short_exchange']
+            exchange_object = getattr(self, exchange.lower(), None)
+            if not callable(getattr(exchange_object, 'get_available_collateral', None)):
+                logger.error(f"MasterPositionController:get_available_collateral_for_exchange - '{exchange}' does not support 'get_available_collateral' or is not callable.")
+                return None
+
+            collateral = float(exchange_object.get_available_collateral())
+            logger.info(f'MasterPositionController:get_availablee_collateral_for_exchange - collateral = {collateral} for exchange {exchange}')
+            return collateral
+            
+        except Exception as e:
+            logger.error(f'MasterPositionController:get_available_collateral_for_exchange - Error while getting available collateral for exchange {exchange}: {str(e)}')
+            return None
+
+
+    def get_available_collateral_for_exchanges(self, exchanges: dict) -> dict:
+        try:
+            if 'long_exchange' not in exchanges or 'short_exchange' not in exchanges:
+                logger.error("MasterPositionController - Missing 'long_exchange' or 'short_exchange' keys in exchanges input.")
+                return None
+
+            collateral = {}
+            long_exchange = str(exchanges['long_exchange'])
+            short_exchange = str(exchanges['short_exchange'])
             long_collateral = self.get_available_collateral_for_exchange(long_exchange)
             short_collateral = self.get_available_collateral_for_exchange(short_exchange)
 
-            collateral = {
-                'long_exchange': long_collateral,
-                'short_exchange': short_collateral
-            }
+            collateral['long_exchange'] = long_collateral
+            collateral['short_exchange'] = short_collateral
 
-            logger.info(f'MPC - Debugging: collateral object = {collateral}')
+            logger.info(f'MasterPositionController - available collateral = {collateral}')
 
             return collateral
+        except KeyError as ke:
+            logger.error(f"MasterPositionController - KeyError in getting collateral: {ke}")
+            return None
         except Exception as e:
             logger.error(f"MasterPositionController - Failed to get available collateral by exchange. Error: {e}")
             return None
+
 
     def is_already_position_open(self) -> bool:
         try:

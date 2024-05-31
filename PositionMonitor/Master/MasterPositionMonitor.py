@@ -154,15 +154,16 @@ class MasterPositionMonitor():
         try:
             synthetix_position = self.synthetix.get_open_position()
             is_long = synthetix_position['size'] > 0
-            symbol = synthetix_position['symbol']
+            symbol = str(synthetix_position['symbol'])
 
             market_data = MarketDirectory.get_market_params(symbol)
             if not market_data:
-                raise ValueError(f"No market data available for symbol: {symbol}")
+                logger.error(f"MasterPositionMonitor:is_synthetix_funding_turning_against_trade_in_given_time - No market data available for symbol: {symbol}")
+                return None
 
             market_summary = self.synthetix.client.perps.get_market_summary(market_data['market_id'])
-            funding_rate = market_summary['current_funding_rate']
-            velocity = market_summary['current_funding_velocity']
+            funding_rate = float(market_summary['current_funding_rate'])
+            velocity = float(market_summary['current_funding_velocity'])
 
             future_blocks = mins * 30
             predicted_funding_rate = funding_rate + (velocity * future_blocks / BLOCKS_PER_DAY_BASE)

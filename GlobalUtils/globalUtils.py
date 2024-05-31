@@ -43,7 +43,8 @@ def get_gas_price() -> float:
             price_in_gwei = client.from_wei(price_in_wei, 'gwei')
             return price_in_gwei
         except Exception as e:
-            logger.info(f"GlobalUtils - Error fetching gas price: {e}")
+            logger.error(f"GlobalUtils - Error fetching gas price: {e}")
+            return None
     return 0.0
 
 def get_price_from_pyth(symbol: str):
@@ -82,7 +83,7 @@ def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -
         asset_amount = dollar_amount / asset_price
         return asset_amount
     except ZeroDivisionError:
-        logger.info(f"GlobalUtils - Error calculating asset amount for {asset}: Price is zero")
+        logger.error(f"GlobalUtils - Error calculating asset amount for {asset}: Price is zero")
     return 0.0
 
 def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
@@ -91,14 +92,17 @@ def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) ->
         dollar_amount = asset_amount * asset_price
         return dollar_amount
     except Exception as e:
-        logger.info(f"GlobalUtils - Error converting asset amount to dollar amount for {asset}: {e}")
+        logger.error(f"GlobalUtils - Error converting asset amount to dollar amount for {asset}: {e}")
     return 0.0
 
 def normalize_symbol(symbol: str) -> str:
     return symbol.replace('USDT', '').replace('PERP', '').replace('USD', '')
 
 def adjust_trade_size_for_direction(trade_size: float, is_long: bool) -> float:
-    return trade_size if is_long else -trade_size
+    try:
+        return trade_size if is_long else trade_size * -1
+    except Exception as e:
+        logger.error(f'GlobalUtils - Failed to adjust trade size for direction, Error: {e}')
 
 def get_base_block_number_by_timestamp(timestamp: int) -> int:
     apikey = os.getenv('BASESCAN_API_KEY')

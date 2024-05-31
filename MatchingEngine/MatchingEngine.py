@@ -55,7 +55,7 @@ class matchingEngine:
             return []
 
 
-    def find_delta_neutral_arbitrage_opportunities(self, funding_rates):
+    def find_delta_neutral_arbitrage_opportunities(self, funding_rates) -> list:
         opportunities = []
         if not funding_rates:
             logger.error("Funding rates are empty or not passed correctly.")

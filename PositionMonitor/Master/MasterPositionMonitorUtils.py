@@ -26,12 +26,12 @@ def get_dict_from_database_response(response):
 def get_percentage_away_from_liquidation_price(position: dict) -> float:
         try:
             liquidation_price = float(position['liquidation_price'])
-            symbol = position['symbol']
+            symbol = str(position['symbol'])
             normalized_symbol = normalize_symbol(symbol)
             asset_price = get_price_from_pyth(normalized_symbol)
             is_long = float(position['size']) > 0
-            differential = (asset_price-liquidation_price) if is_long else (liquidation_price-asset_price)
-            percentage = asset_price / differential
+            differential = float(asset_price-liquidation_price) if is_long else float(liquidation_price-asset_price)
+            percentage: float = asset_price / differential
             return percentage
 
         except Exception as e:
