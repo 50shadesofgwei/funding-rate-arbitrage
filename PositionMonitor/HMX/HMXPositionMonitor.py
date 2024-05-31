@@ -14,7 +14,7 @@ class SynthetixPositionMonitor():
             self.conn = sqlite3.connect(self.db_path)
         except Exception as e:
             logger.error(f"HMXPositionMonitor - Error accessing the database: {e}")
-            raise e
+            return None
 
     def position_health_check(self):
         try:
@@ -29,7 +29,7 @@ class SynthetixPositionMonitor():
                 return
         except Exception as e:
             logger.error(f"HMXPositionMonitor - Error checking position health: {e}")
-            raise e
+            return None
 
     def get_open_position(self) -> dict:
         try:
@@ -46,18 +46,18 @@ class SynthetixPositionMonitor():
                     return None
         except Exception as e:
             logger.error(f"HMXPositionMonitor - Error while searching for open HMX positions: {e}")
-            raise e
+            return None
 
     def is_near_liquidation_price(self, position: dict) -> bool:
-        # try:
-        #     percentage_from_liqiudation_price = get_percentage_away_from_liquidation_price(position)
-        #     if percentage_from_liqiudation_price > float(os.getenv('MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE')):
-        #         return True
+        try:
+            percentage_from_liqiudation_price = get_percentage_away_from_liquidation_price(position)
+            if percentage_from_liqiudation_price > float(os.getenv('MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE')):
+                return True
 
-        # except Exception as e:
-        #     logger.error(f"HMXPositionMonitor - Error checking if near liquidation price for {position}: {e}")
-        #     return False
-        return False
+        except Exception as e:
+            logger.error(f"HMXPositionMonitor - Error checking if near liquidation price for HMX position: {position}: Error: {e}")
+            return False
+
 
     def get_funding_rate(self, position) -> float:
         try:
@@ -69,7 +69,7 @@ class SynthetixPositionMonitor():
             
         except Exception as e:
             logger.error(f"HMXPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
-            return 0.0
+            return None
 
     def is_open_position(self) -> bool:
         try:
@@ -83,5 +83,5 @@ class SynthetixPositionMonitor():
                     return False
         except Exception as e:
             logger.error(f"HMXPositionMonitor - Error while searching for open Synthetix positions:", {e})
-            raise e
+            return None
 

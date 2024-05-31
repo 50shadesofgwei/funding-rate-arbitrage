@@ -21,7 +21,7 @@ class HMXPositionController:
     def execute_trade(self, opportunity: dict, is_long: bool, trade_size: float):
         try:
             if not self.is_already_position_open():
-                symbol = opportunity['symbol']
+                symbol = str(opportunity['symbol'])
                 market = get_market_for_symbol(symbol)
                 adjusted_trade_size = self.calculate_adjusted_trade_size(is_long, trade_size)
                 self.client.private.create_market_order(
@@ -205,9 +205,3 @@ class HMXPositionController:
     def get_available_collateral(self) -> int:
         available_collateral = self.client.public.get_collateral_usd(self.account, 0)
         return available_collateral
-
-
-
-x = HMXPositionController()
-y = x.is_already_position_open()
-print(y)

@@ -15,7 +15,7 @@ class SynthetixPositionMonitor():
             self.conn = sqlite3.connect(self.db_path)
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error accessing the database: {e}")
-            raise e
+            return None
 
     def position_health_check(self):
         try:
@@ -30,7 +30,7 @@ class SynthetixPositionMonitor():
                 return
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error checking position health: {e}")
-            raise e
+            return None
 
     def get_open_position(self) -> dict:
         try:
@@ -47,25 +47,16 @@ class SynthetixPositionMonitor():
                     return None
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")
-            raise e
+            return None
 
     def is_near_liquidation_price(self, position: dict) -> bool:
         try:
-            liquidation_price = float(position['liquidation_price'])
-            symbol = position['symbol']
-            
-            normalized_symbol = normalize_symbol(symbol)
-            asset_price = get_price_from_pyth(normalized_symbol)
-
-            lower_bound = liquidation_price * 0.9
-            upper_bound = liquidation_price * 1.1
-
-            if lower_bound <= asset_price <= upper_bound:
+            percentage_from_liqiudation_price = get_percentage_away_from_liquidation_price(position)
+            if percentage_from_liqiudation_price > float(os.getenv('MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE')):
                 return True
-            else:
-                return False
+
         except Exception as e:
-            logger.error(f"SynthetixPositionMonitor - Error checking if near liquidation price for {symbol}: {e}")
+            logger.error(f"SynthetixPositionMonitor - Error checking if near liquidation price for {position}: {e}")
             return False
 
     def get_funding_rate(self, position) -> float:

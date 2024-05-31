@@ -7,22 +7,25 @@ load_dotenv()
 
 def adjust_collateral_allocation(collateral_amounts: dict, long_exchange: str, short_exchange: str) -> float:
     try:
+        initial_percentage = float(os.getenv('PERCENTAGE_CAPITAL_PER_TRADE'))
+
         if not is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange):
-            logger.error(f"Collateral on exchanges does not meet the minimum ratio requirement - collateral amounts need rebalancing between {long_exchange} and {short_exchange}")
+            logger.error(f"MasterPositionControllerUtils - Collateral on exchanges does not meet the minimum ratio requirement - collateral amounts need rebalancing between {long_exchange} and {short_exchange}")
             return None
 
-        initial_percentage = int(os.getenv('PERCENTAGE_CAPITAL_PER_TRADE'))
-        long_collateral = collateral_amounts['long_exchange']
-        short_collateral = collateral_amounts['short_exchange']
+        long_collateral = float(collateral_amounts['long_exchange'])
+        short_collateral = float(collateral_amounts['short_exchange'])
         smaller_collateral = min(long_collateral, short_collateral)
-        
-        trade_amount = float(smaller_collateral * (initial_percentage / 100))
-        logger.info(f'TRADE AMOUNT = {trade_amount}')
+
+        initial_collateral_percentage: float = initial_percentage / 100
+        trade_amount: float = smaller_collateral * initial_collateral_percentage
+        logger.info(f'MasterPositionControllerUtils - Calculated trade amount = {trade_amount}, initial_collateral_percentage = {initial_collateral_percentage}')
         return trade_amount
 
     except Exception as e:
-        logger.info(f'MasterPositionControllerUtils - Failed to determine trade size in function adjust_collateral_allocation. Error: {e}')
+        logger.error(f'MasterPositionControllerUtils - Failed to determine trade size in adjust_collateral_allocation. Trade size = {trade_amount} Error: {e}')
         return None
+
 
 def is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange, min_ratio=0.01):
     try:

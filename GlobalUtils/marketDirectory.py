@@ -70,19 +70,25 @@ class MarketDirectory:
         }
 
     @classmethod
-    def get_market_params(cls, symbol):
-        market = cls._markets.get(symbol)
-        if market:
-            return market
-        else:
-            raise ValueError(f"MarketDirectory - No data available for market {symbol}.")
+    def get_market_params(cls, symbol: str) -> dict:
+        try:
+            market: dict = cls._markets.get(symbol)
+            if market:
+                return market
+            else:
+                logger.error(f"MarketDirectory - No data available for market {symbol}.")
+                return None
+        
+        except Exception as e:
+            logger.error(f"MarketDirectory - Error while getting market params for {symbol}. market = {market}. Error: {e}")
+            return None
 
     @classmethod
     def get_market_id(cls, symbol: str) -> int:
         market = cls._markets.get(symbol)
         if market:
             return market['market_id']
-        raise ValueError(f"MarketDirectory - Market symbol '{symbol}' not found in MarketDirectory.")
+        logger.error(f"MarketDirectory - Market symbol '{symbol}' not found in MarketDirectory.")
 
     @classmethod
     def calculate_new_funding_velocity(cls, symbol: str, current_skew: float, trade_size: float) -> float:
@@ -93,19 +99,22 @@ class MarketDirectory:
             new_funding_velocity = c * new_skew
             return new_funding_velocity
         except Exception as e:
-            raise ValueError(f"MarketDirectory - Failed to calculate new funding velocity for {symbol}: {e}")
+            logger.error(f"MarketDirectory - Failed to calculate new funding velocity for {symbol}: {e}")
 
     @classmethod
-    def get_maker_taker_fee(cls, symbol: str, skew, is_long):
+    def get_maker_taker_fee(cls, symbol: str, skew: float, is_long: bool) -> float:
         try:
             market = cls.get_market_params(symbol)
             if is_long:
                 fee = market['maker_fee'] if skew < 0 else market['taker_fee']
             else:
                 fee = market['maker_fee'] if skew > 0 else market['taker_fee']
+
+            print(f'MD/get_maker_taker_fee = fee: {fee}')
             return fee
         except Exception as e:
-            raise ValueError(f"MarketDirectory - Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}: {e}")
+            logger.error(f"MarketDirectory - Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}. Error: {e}")
+            return None
 
     @classmethod
     def print_markets(cls):
