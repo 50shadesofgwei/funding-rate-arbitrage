@@ -6,11 +6,11 @@ def run():
     MarketDirectory.initialize()
     x = MasterPositionController()
     exchanges = ['HMX', 'Synthetix']
-    x.close_position_pair(symbol='ETH', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
+    x.close_position_pair(symbol='BTC', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
 
 
 def close_position_pair():
     MarketDirectory.initialize()
     x = MasterPositionController()
     exchanges = ['HMX', 'Synthetix']
-    x.close_position_pair(symbol='ETH', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
+    x.close_position_pair(symbol='BTC', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
