@@ -80,17 +80,19 @@ class MasterPositionController:
     @log_function_call
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
         try:
+            results = []
             logger.error(f'DEBUGGING: MasterPositionController - Closing position pair with args: symbol={symbol}, reason={reason}, exchanges={exchanges}')
             for exchange_name in exchanges:
-                    if exchange_name == 'Binance':
-                        symbol = get_full_symbol_for_binance(symbol)
-                    close_position_method = getattr(self, exchange_name.lower()).close_position
-                    close_position_method(
-                        symbol=symbol, 
-                        reason=reason
-                    )
+                close_position_method = getattr(self, exchange_name.lower()).close_position
+                result = close_position_method(
+                    symbol=symbol, 
+                    reason=reason
+                )
+                logger.error(f"MasterPositionController - result = {result} for exchange: {exchange_name}")
+                results.append(result)
+                return results
         except Exception as e:
-            logger.error(f"MasterPositionController - Failed to close trade pair for symbol {symbol} and exchange pair {exchanges}. Error: {e}")
+            logger.error(f"MasterPositionController - Failed to close trade pair for symbol {symbol} and exchange pair {exchanges} Results = {results}. Error: {e}")
 
     def subscribe_to_events(self):
         pub.subscribe(self.execute_trades, EventsDirectory.OPPORTUNITY_FOUND.value)
@@ -129,7 +131,7 @@ class MasterPositionController:
                 return None
 
             collateral = float(exchange_object.get_available_collateral())
-            logger.info(f'MasterPositionController:get_availablee_collateral_for_exchange - collateral = {collateral} for exchange {exchange}')
+            logger.info(f'MasterPositionController:get_available_collateral_for_exchange - collateral = {collateral} for exchange {exchange}')
             return collateral
             
         except Exception as e:

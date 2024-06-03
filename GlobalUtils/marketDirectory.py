@@ -85,10 +85,16 @@ class MarketDirectory:
 
     @classmethod
     def get_market_id(cls, symbol: str) -> int:
-        market = cls._markets.get(symbol)
-        if market:
-            return market['market_id']
-        logger.error(f"MarketDirectory - Market symbol '{symbol}' not found in MarketDirectory.")
+        try:
+            market = cls._markets.get(symbol)
+            if market:
+                return market['market_id']
+            logger.error(f"MarketDirectory - Market symbol '{symbol}' not found in MarketDirectory.")
+
+        except Exception as e:
+            logger.error(f'Failed to get market id for symbol: {symbol}, market = {market}. Error: {e}')
+            return None
+
 
     @classmethod
     def calculate_new_funding_velocity(cls, symbol: str, current_skew: float, trade_size: float) -> float:
@@ -110,7 +116,6 @@ class MarketDirectory:
             else:
                 fee = market['maker_fee'] if skew > 0 else market['taker_fee']
 
-            print(f'MD/get_maker_taker_fee = fee: {fee}')
             return fee
         except Exception as e:
             logger.error(f"MarketDirectory - Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}. Error: {e}")

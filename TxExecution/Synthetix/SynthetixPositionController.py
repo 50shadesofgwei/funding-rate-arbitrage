@@ -36,7 +36,7 @@ class SynthetixPositionController:
                 logger.info(f"SynthetixPositionController:execute_trade - Response: {response}")
                 
                 if is_transaction_hash(response):
-                    time.sleep(3)
+                    time.sleep(15)
                     position_data = self.handle_position_opened(market_name)
                     return position_data
                 else:
@@ -56,7 +56,6 @@ class SynthetixPositionController:
         selected_markets = get_target_tokens_for_synthetix()
         try:
             for market in selected_markets:
-                market_id = MarketDirectory.get_market_id(symbol=market)
                 try:
                     reason = PositionCloseReason.CLOSE_ALL_POSITIONS
                     close_details = self.close_position(symbol=market, reason=reason)
@@ -90,7 +89,6 @@ class SynthetixPositionController:
                     size = position['position_size']
                     inverse_size = size * -1
                     response = self.client.perps.commit_order(size=inverse_size, market_id=market_id, submit=True)
-                    print(f"RESPONSE = response")
 
                     if is_transaction_hash(response):
                         self.handle_position_closed(position_report=close_position_details)
@@ -318,6 +316,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None
 
-x = SynthetixPositionController()
-y = x.close_position(symbol='BTC', reason=PositionCloseReason.TEST.value)
-print(y)
+# x = SynthetixPositionController()
+# MarketDirectory.initialize()
+# x.close_position('DOGE', PositionCloseReason.TEST.value)

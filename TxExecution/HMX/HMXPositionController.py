@@ -23,23 +23,26 @@ class HMXPositionController:
             if not self.is_already_position_open():
                 symbol = str(opportunity['symbol'])
                 market = get_market_for_symbol(symbol)
-                adjusted_trade_size = self.calculate_adjusted_trade_size(is_long, trade_size)
-                self.client.private.create_market_order(
+                adjusted_trade_size = self.calculate_adjusted_trade_size_usd(is_long, trade_size)
+                trade_size_in_asset = abs(get_asset_amount_for_given_dollar_amount(symbol, adjusted_trade_size))
+                response = self.client.private.create_market_order(
                     0,
                     market_index=market,
                     buy=is_long,
-                    size=adjusted_trade_size,
+                    size=trade_size_in_asset,
                     reduce_only=False,
                     tp_token=COLLATERAL_USDC
                 )
+                print(f'HMX POSITION RESPONSE = {response}')
 
-                time.sleep(7)
+                time.sleep(15)
                 if not self.is_already_position_open():
                     logger.error(f'HMXPositionController - Failed to open position for symbol {symbol}.')
                     return None
 
 
-                position_details = self.handle_position_opened()
+                position_details = self.handle_position_opened(symbol, response)
+                print(f'position details = {position_details}')
 
                 return position_details
 
@@ -145,11 +148,12 @@ class HMXPositionController:
             logger.error(f"HMXPositionController - Error while checking if position is open: {e}")
             return False
 
-    def calculate_adjusted_trade_size(self, is_long: bool, trade_size: float) -> float:
+    def calculate_adjusted_trade_size_usd(self, is_long: bool, trade_size: float) -> float:
         try:
             trade_size_with_leverage = trade_size * self.leverage_factor
             adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)
+
             return adjusted_trade_size
         except Exception as e:
             logger.error(f"HMXPositionController - Failed to calculate adjusted trade size. Error: {e}")
@@ -162,6 +166,7 @@ class HMXPositionController:
             avg_entry_price = float(position_response['avg_entry_price'])
             size = get_position_size_from_response(response, avg_entry_price)
 
+            side: str = None
             if size > 0:
                 side = "LONG"
             elif size < 0:
@@ -199,9 +204,17 @@ class HMXPositionController:
             0,
             market_index,
             )
-        size = position['position_size']
+        size = float(position['position_size'])
+        is_long_var: bool = is_long(size)
+
+        liquidation_price = calculate_liquidation_price()
         return 0.0
 
     def get_available_collateral(self) -> int:
         available_collateral = self.client.public.get_collateral_usd(self.account, 0)
         return available_collateral
+
+
+# x = HMXPositionController()
+# x.close_position('DOGE', PositionCloseReason.TEST.value)
+# print(x.is_already_position_open())

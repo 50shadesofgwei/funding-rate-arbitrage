@@ -20,11 +20,9 @@ class SynthetixEnvVars(Enum):
 
 
 def get_synthetix_client() -> Synthetix:
-    tracking_code = '0x46756e64696e67426f7400000000000000000000000000000000000000000000'
     synthetix_client = Synthetix(
                 provider_rpc=SynthetixEnvVars.BASE_PROVIDER_RPC.get_value(),
                 private_key=SynthetixEnvVars.PRIVATE_KEY.get_value(),
-                tracking_code=tracking_code
     )
     return synthetix_client
 

@@ -18,7 +18,6 @@ class ProfitabilityChecker:
 
     def find_most_profitable_opportunity(self, opportunities: list):
         trade_size_usd = self.default_trade_size_usd
-        print(f'TRADE_SIZE_USD = {trade_size_usd}')
         best_opportunity = None
         max_profit = 0
 
@@ -59,7 +58,6 @@ class ProfitabilityChecker:
 
     def estimate_profit_for_exchange(self, time_period_hours: float, size: float, opportunity: dict, exchange: str) -> float:
         try:
-            print(F'ESTIMATE_PROFIT CALLED W/ ARGS: time_period_hours:{time_period_hours}, size: {size}, opportunity: {opportunity}')
             if exchange == 'Binance':
                 estimated_profit = self.estimate_binance_profit(time_period_hours=time_period_hours, size=size, opportunity=opportunity)
                 print(f'ESTIMATED_BINANCE_PROFIT = {estimated_profit}')

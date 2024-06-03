@@ -57,9 +57,9 @@ def calculate_liquidation_price(position_data: dict, asset_price: float) -> floa
 
         is_long = position_size > 0
         if is_long:
-            liquidation_price = (available_margin - maintenance_margin_requirement + (position_size * asset_price)) / position_size
-        else:
             liquidation_price = (available_margin - maintenance_margin_requirement - (position_size * asset_price)) / position_size
+        else:
+            liquidation_price = (available_margin - maintenance_margin_requirement + (position_size * asset_price)) / position_size
 
         if liquidation_price <= 0:
             logger.error(f"SynthetixPositionControllerUtils - Calculated invalid liquidation price: {liquidation_price}.")
