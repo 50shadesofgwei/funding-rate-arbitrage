@@ -12,7 +12,6 @@ class HMXCaller:
 
         try:
             all_market_data = self.client.public.get_all_market_info()
-            logger.warning(f'all_market_data = {all_market_data}')
             if not all_market_data:
                 logger.error("HMXCaller - Retrieved empty market data from API.")
                 return None
@@ -53,6 +52,7 @@ class HMXCaller:
                         continue
                     
                     funding_rate_8H = float(market_data['funding_rate']['8H'])
+                    funding_rate_as_percentage = funding_rate_8H / 100
                     market_price = float(market_data['price'])
                     borrowing_rate_8H = float(market_data['borrowing_rate']['8H'])
                     skew = float(market_data['long_size']) - float(market_data['short_size'])
@@ -64,7 +64,7 @@ class HMXCaller:
                         'symbol': market,
                         'price': market_price,
                         'skew': skew,
-                        'funding_rate': funding_rate_8H,
+                        'funding_rate': funding_rate_as_percentage,
                         'borrowing_rate': borrowing_rate_8H,
                         'initial_margin_fraction_bps': initial_margin_fraction_bps,
                         'maintenance_margin_fraction_bps': maintenance_margin_fraction_bps

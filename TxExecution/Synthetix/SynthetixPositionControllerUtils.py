@@ -8,7 +8,6 @@ import uuid
 
 def parse_trade_data_from_position_details(position_details: dict) -> dict:
     try:
-        logger.error(f'SynthetixPositionControllerUtils:parse_trade_data_from_position_details - position_details = {position_details}')
         side = get_side(position_details['position']['position_size'])
         symbol = position_details['position']['symbol']
         asset_price = get_price_from_pyth(symbol)

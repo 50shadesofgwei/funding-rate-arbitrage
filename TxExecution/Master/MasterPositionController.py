@@ -4,7 +4,7 @@ from TxExecution.HMX.HMXPositionController import HMXPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.marketDirectory import MarketDirectory
-from APICaller.master.MasterUtils import get_full_symbol_for_binance
+from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from pubsub import pub
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
@@ -198,6 +198,7 @@ class MasterPositionController:
             return False
 
 # x = MasterPositionController()
+# y = TradeLogger()
 # MarketDirectory.initialize()
 # exchanges = ['HMX', 'Synthetix']
 # x.close_position_pair(symbol='ARB', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
