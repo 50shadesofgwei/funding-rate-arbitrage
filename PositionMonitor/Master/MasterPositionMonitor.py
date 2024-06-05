@@ -90,12 +90,10 @@ class MasterPositionMonitor():
 
             position_one = get_open_position_for_exchange(first_exchange)
             position_two = get_open_position_for_exchange(second_exchange)
-            logger.warning(f'MADE IT TO HERE 1 - pos1={position_one}, pos2={position_two}')
 
             first_funding_rate = getattr(self, first_exchange.lower()).get_funding_rate(position_one)
             second_funding_rate = getattr(self, second_exchange.lower()).get_funding_rate(position_two)
 
-            logger.warning(f'MADE IT TO HERE 2 - first_funding_rate: {first_funding_rate}, second_funding_rate: {second_funding_rate}')
             first_position_is_long = position_one['size'] > 0
             second_position_is_long = position_two['size'] > 0
 
@@ -132,8 +130,8 @@ class MasterPositionMonitor():
             symbol = position_one['symbol']
             asset_price = get_price_from_pyth(symbol)
 
-            first_notional_value = float(position_one['size']) * asset_price
-            second_notional_value = float(position_two['size']) * asset_price
+            first_notional_value = float(position_one['size_in_asset']) * asset_price
+            second_notional_value = float(position_two['size_in_asset']) * asset_price
 
             first_notional_value = first_notional_value if first_notional_value['side'].upper() == 'LONG' else -first_notional_value
             second_notional_value = second_notional_value if second_notional_value['side'].upper() == 'LONG' else -second_notional_value
@@ -218,8 +216,8 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error retrieving symbol for open position. Error: {e}")
             return None
 
-x = MasterPositionMonitor()
-exchanges = ['HMX', 'Synthetix']
-y = x.check_profitability_for_open_positions(exchanges)
-print(y)
+# x = MasterPositionMonitor()
+# exchanges = ['HMX', 'Synthetix']
+# y = x.check_profitability_for_open_positions(exchanges)
+# print(y)
 
