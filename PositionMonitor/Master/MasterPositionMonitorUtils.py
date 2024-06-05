@@ -14,14 +14,19 @@ class PositionCloseReason(Enum):
     TEST = "TEST"
     
 def get_dict_from_database_response(response):
-    columns = [
-        'id', 'strategy_execution_id', 'exchange', 'symbol',
-        'side', 'size', 'liquidation_price', 'open_close', 'open_time', 
-        'close_time', 'pnl', 'accrued_funding', 'close_reason'
-    ]
-    response_dict = {columns[i]: response[i] for i in range(len(columns))}
+    try:
+        columns = [
+            'id', 'strategy_execution_id', 'exchange', 'symbol',
+            'side', 'size', 'liquidation_price', 'open_close', 'open_time', 
+            'close_time', 'pnl', 'accrued_funding', 'close_reason'
+        ]
+        response_dict = {columns[i]: response[i] for i in range(len(columns))}
 
-    return response_dict
+        return response_dict
+
+    except Exception as e:
+        logger.error(f'MasterPositionMonitorUtils - Error parsing dict from database response. Error: {e}')
+        return None
 
 def get_percentage_away_from_liquidation_price(position: dict) -> float:
         try:
@@ -66,13 +71,15 @@ def get_open_position_for_exchange(exchange: str) -> dict:
                 cursor = conn.cursor()
                 
                 sql_query = '''
-                    SELECT 1
+                    SELECT id, strategy_execution_id, exchange, symbol,
+                    side, size_in_asset, liquidation_price, open_close, open_time, 
+                    close_time, pnl, accrued_funding, close_reason
                     FROM trade_log 
                     WHERE open_close = 'Open' 
-                      AND exchange = ?;
+                    AND exchange = ?;
                 '''
                 
-                cursor.execute(sql_query, (exchange))
+                cursor.execute(sql_query, (exchange,))
                 open_position = cursor.fetchone()
                 
                 if open_position:
@@ -80,6 +87,11 @@ def get_open_position_for_exchange(exchange: str) -> dict:
                     return position_dict
                 else:
                     return None
+
+        except sqlite3.Error as sqe:
+            logger.error(f"MasterPositionMonitorUtils - SQL Error while searching for open position for exchange {exchange}: {sqe}")
+            return None
+
         except Exception as e:
-            logger.error(f"MasterPositionMonitorUtils - Error while searching for open Binance positions: {e}")
+            logger.error(f"MasterPositionMonitorUtils - Error while searching for open position for exchange {exchange}: {e}")
             return None
