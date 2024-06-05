@@ -23,7 +23,6 @@ TARGET_EXCHANGES = [
 def get_target_exchanges() -> list:
     try:
         exchanges = [exchange["exchange"] for exchange in TARGET_EXCHANGES if exchange["is_target"]]
-        logger.info(f'MasterUtils - Debugging: target exchanges list = {exchanges}')
         return exchanges
     except Exception as e:
         logger.error(f"MasterAPICallerUtils - Error retrieving target exchanges: {e}")

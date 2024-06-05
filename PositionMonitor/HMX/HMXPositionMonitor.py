@@ -6,7 +6,7 @@ from TxExecution.HMX.HMXPositionControllerUtils import *
 import sqlite3
 from GlobalUtils.globalUtils import GLOBAL_HMX_CLIENT
 
-class SynthetixPositionMonitor():
+class HMXPositionMonitor():
     def __init__(self, db_path='trades.db'):
         self.client = GLOBAL_HMX_CLIENT
         self.db_path = db_path
@@ -39,10 +39,8 @@ class SynthetixPositionMonitor():
                 open_positions = cursor.fetchall()
                 if open_positions:
                     position_dict = get_dict_from_database_response(open_positions[0])
-                    logger.info(f'HMXPositionMonitor - Open trade pulled from database: {position_dict}')
                     return position_dict
                 else:
-                    logger.info("HMXPositionMonitor - No open HMX positions found")
                     return None
         except Exception as e:
             logger.error(f"HMXPositionMonitor - Error while searching for open HMX positions: {e}")
@@ -59,10 +57,10 @@ class SynthetixPositionMonitor():
             return False
 
 
-    def get_funding_rate(self, position) -> float:
+    def get_funding_rate(self, position: dict) -> float:
         try:
-            market_id = get_market_for_symbol(position['symbol'])
             symbol = position['symbol']
+            market_id = get_market_for_symbol(symbol)
             market_data = self.client.public.get_market_info(market_id)
             funding_rate = float(market_data['8H_funding_rate'])
             return funding_rate
@@ -82,6 +80,6 @@ class SynthetixPositionMonitor():
                 else:
                     return False
         except Exception as e:
-            logger.error(f"HMXPositionMonitor - Error while searching for open Synthetix positions:", {e})
+            logger.error(f"HMXPositionMonitor - Error while searching for open HMX positions:", {e})
             return None
 

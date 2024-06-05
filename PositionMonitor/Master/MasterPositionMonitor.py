@@ -1,5 +1,6 @@
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import SynthetixPositionMonitor
 from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonitor
+from PositionMonitor.HMX.HMXPositionMonitor import HMXPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
@@ -13,6 +14,7 @@ class MasterPositionMonitor():
     def __init__(self):
         self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
+        self.hmx = HMXPositionMonitor()
         self.health_check_thread = None
         self.stop_health_check = threading.Event()
         
@@ -21,12 +23,10 @@ class MasterPositionMonitor():
 
     def on_position_opened(self, position_data):
         if self.health_check_thread is None or not self.health_check_thread.is_alive():
-            time.sleep(25)
+            time.sleep(60)
             self.stop_health_check.clear()  
             self.health_check_thread = threading.Thread(target=self.start_health_check, daemon=True)
             self.health_check_thread.start()
-        else:
-            logger.info('MasterPositionMonitor - Health check already running.')
 
     def on_position_closed(self, position_report):
         self.stop_health_check.set()
@@ -34,7 +34,7 @@ class MasterPositionMonitor():
     def start_health_check(self):
         while not self.stop_health_check.is_set():
             self.position_health_check()
-            time.sleep(30)
+            time.sleep(15)
 
     def position_health_check(self):
         exchanges = self.get_exchanges_for_open_position()
@@ -44,7 +44,7 @@ class MasterPositionMonitor():
         is_delta_within_bounds = self.is_position_delta_within_bounds(exchanges)
 
         if 'Synthetix' in exchanges:
-            is_funding_velocity_turning = self.is_synthetix_funding_turning_against_trade_in_given_time(30)
+            is_funding_velocity_turning = self.is_synthetix_funding_turning_against_trade_in_given_time(15)
 
         if is_liquidation_risk:
             reason = PositionCloseReason.LIQUIDATION_RISK.value
@@ -85,8 +85,8 @@ class MasterPositionMonitor():
 
     def check_profitability_for_open_positions(self, exchanges: list) -> bool:
         try:
-            first_exchange = exchanges[0]
-            second_exchange = exchanges[1]
+            first_exchange = str(exchanges[0])
+            second_exchange = str(exchanges[1])
 
             position_one = get_open_position_for_exchange(first_exchange)
             position_two = get_open_position_for_exchange(second_exchange)
@@ -143,8 +143,6 @@ class MasterPositionMonitor():
             delta_in_usd = abs(first_notional_value - second_notional_value)
             delta = (delta_in_usd / total_notional_value) if total_notional_value else 0
 
-            logger.info(f'MasterPositionMonitor - Position delta calculated at {delta}. delta_in_usd: {delta_in_usd}, total_notional_value: {total_notional_value}, asset price: {asset_price}')
-
             return not delta > delta_bound
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
@@ -180,24 +178,24 @@ class MasterPositionMonitor():
             with sqlite3.connect('trades.db') as conn:
                 cursor = conn.cursor()
                 query = """
-                        SELECT exchange 
+                        SELECT DISTINCT exchange 
                         FROM trade_log 
-                        WHERE open_close = 'Open'
-                        GROUP BY exchange
-                        HAVING COUNT(*) = 1;
+                        WHERE open_close = 'Open';
                         """
                 cursor.execute(query)
                 exchanges = [exchange[0] for exchange in cursor.fetchall()]
 
-                if len(exchanges) == 2:
-                    logger.info(f"MasterPositionMonitor - Found exchanges with open positions: {exchanges}")
-                    return exchanges
+                if len(exchanges) >= 2:
+                    logger.info(f"MasterPositionMonitor - Found exchanges with open positions: {exchanges[:2]}")
+                    return exchanges[:2] 
                 else:
-                    logger.error(f"MasterPositionMonitor - Expected 2 exchanges with open positions but found {len(exchanges)}: {exchanges}")
-                    return exchanges if len(exchanges) == 2 else []
+                    error_message = f"MasterPositionMonitor - Expected at least 2 exchanges with open positions but found {len(exchanges)}: {exchanges}"
+                    logger.error(error_message)
+                    return []
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Error retrieving exchanges with open positions. Error: {e}")
-            return []
+            return None
+
 
     def get_symbol_for_open_position(self) -> str:
         try:
@@ -213,7 +211,6 @@ class MasterPositionMonitor():
                 symbol = cursor.fetchone() 
 
                 if symbol:
-                    logger.info(f"MasterPositionMonitor - Found open position symbol: {symbol[0]}")
                     return symbol[0]
                 else:
                     logger.error("MasterPositionMonitor - No open position found.")

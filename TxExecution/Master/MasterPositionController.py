@@ -3,6 +3,7 @@ from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionC
 from TxExecution.HMX.HMXPositionController import HMXPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
+from GlobalUtils.marketDirectory import MarketDirectory
 from APICaller.master.MasterUtils import get_full_symbol_for_binance
 from pubsub import pub
 from GlobalUtils.logger import *
@@ -30,7 +31,6 @@ class MasterPositionController:
                 return
 
             trade_size = self.get_trade_size(opportunity)
-            logger.info(f'MasterPositionController:execute_trades - Getting trade size for opportunity: {opportunity}')
             exchanges = {
                 'long_exchange': opportunity['long_exchange'],
                 'short_exchange': opportunity['short_exchange']
@@ -50,9 +50,9 @@ class MasterPositionController:
 
                 if position_data:
                     position_data_dict[role] = position_data
+                    position_data_dict[role]['exchange'] = exchanges['long_exchange'] if role == 'long_exchange' else exchanges['short_exchange']
 
             if len(position_data_dict) == 2:
-                logger.info(f"Publishing POSITION_OPENED with position_data: {position_data_dict}")
                 pub.sendMessage(EventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
                 logger.info("MasterPositionController:execute_trades - Trades executed successfully for opportunity.")
             else:
@@ -80,19 +80,17 @@ class MasterPositionController:
     @log_function_call
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
         try:
-            results = []
             logger.error(f'DEBUGGING: MasterPositionController - Closing position pair with args: symbol={symbol}, reason={reason}, exchanges={exchanges}')
             for exchange_name in exchanges:
                 close_position_method = getattr(self, exchange_name.lower()).close_position
-                result = close_position_method(
+                close_position_method(
                     symbol=symbol, 
                     reason=reason
                 )
-                logger.error(f"MasterPositionController - result = {result} for exchange: {exchange_name}")
-                results.append(result)
-                return results
+
         except Exception as e:
-            logger.error(f"MasterPositionController - Failed to close trade pair for symbol {symbol} and exchange pair {exchanges} Results = {results}. Error: {e}")
+            logger.error(f"MasterPositionController - Failed to close trade pair for symbol {symbol} and exchange pair {exchanges}. Error: {e}")
+            return None
 
     def subscribe_to_events(self):
         pub.subscribe(self.execute_trades, EventsDirectory.OPPORTUNITY_FOUND.value)
@@ -115,7 +113,6 @@ class MasterPositionController:
             collateral_amounts = self.get_available_collateral_for_exchanges(exchanges)
             trade_size = adjust_collateral_allocation(collateral_amounts, long_exchange, short_exchange)
 
-            logger.info(f'MPC - Debugging - exchanges object = {exchanges}, collateral_amounts = {collateral_amounts}, trade_size = {trade_size}.')
             return trade_size
 
         except Exception as e:
@@ -153,8 +150,6 @@ class MasterPositionController:
 
             collateral['long_exchange'] = long_collateral
             collateral['short_exchange'] = short_collateral
-
-            logger.info(f'MasterPositionController - available collateral = {collateral}')
 
             return collateral
         except KeyError as ke:
@@ -202,3 +197,8 @@ class MasterPositionController:
             logger.error(f'MasterPositionController - Unexpected error when checking positions: {e}')
             return False
 
+# x = MasterPositionController()
+# MarketDirectory.initialize()
+# exchanges = ['HMX', 'Synthetix']
+# x.close_position_pair(symbol='ARB', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
+# print(x.is_already_position_open())

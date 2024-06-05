@@ -26,11 +26,20 @@ class matchingEngine:
                     skew1 = rates_by_exchange[ex1][symbol]['skew']
                     skew2 = rates_by_exchange[ex2][symbol]['skew']
 
-                    if rate1 > rate2:
+                    if (rate1 > 0 and rate2 > 0) or (rate1 < 0 and rate2 < 0):
+                        if rate1 > rate2:
+                            long_exchange, short_exchange = ex2, ex1
+                            long_rate, short_rate = rate2, rate1
+                            long_exchange_skew, short_exchange_skew = skew2, skew1
+                        else:
+                            long_exchange, short_exchange = ex1, ex2
+                            long_rate, short_rate = rate1, rate2
+                            long_exchange_skew, short_exchange_skew = skew1, skew2
+                    elif rate1 > 0 and rate2 < 0:
                         long_exchange, short_exchange = ex2, ex1
                         long_rate, short_rate = rate2, rate1
                         long_exchange_skew, short_exchange_skew = skew2, skew1
-                    else:
+                    elif rate1 < 0 and rate2 > 0:
                         long_exchange, short_exchange = ex1, ex2
                         long_rate, short_rate = rate1, rate2
                         long_exchange_skew, short_exchange_skew = skew1, skew2
@@ -47,12 +56,11 @@ class matchingEngine:
                     }
                     arbitrage_opportunities.append(arbitrage_opportunity)
 
-            logger.info(f'MatchingEngine - Debugging: arbitrage_opportunities = {arbitrage_opportunities}')
             return arbitrage_opportunities
 
         except Exception as e:
             logger.error(f'MatchingEngine - Error while finding arbitrage opportunities: {e}')
-            return []
+            return None
 
 
     def find_delta_neutral_arbitrage_opportunities(self, funding_rates) -> list:
@@ -62,10 +70,7 @@ class matchingEngine:
             return opportunities
 
         try:
-            logger.info(f'Debugging - MatchingEngine - funding rates object: {funding_rates}')
-
             rates_by_symbol = group_by_symbol(funding_rates)
-
             for symbol, rates in rates_by_symbol.items():
                 if not rates or not all('symbol' in rate for rate in rates):
                     logger.error(f'Missing "symbol" in one or more rate items for symbol group: {symbol}')
@@ -74,10 +79,7 @@ class matchingEngine:
                 sorted_rates = sort_funding_rates_by_value(rates)
                 if sorted_rates:
                     opportunities.extend(self.find_arbitrage_opportunities_for_symbol(sorted_rates))
-                else:
-                    logger.info(f"No rates available for sorting for symbol {symbol}.")
 
-            logger.info(f'Debugging - MatchingEngine - opportunities: {opportunities}')
         except KeyError as ke:
             logger.error(f'KeyError - Missing key in data processing: {ke}')
         except TypeError as te:

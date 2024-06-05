@@ -15,7 +15,7 @@ class PositionCloseReason(Enum):
     
 def get_dict_from_database_response(response):
     columns = [
-        'id', 'strategy_execution_id', 'order_id', 'exchange', 'symbol',
+        'id', 'strategy_execution_id', 'exchange', 'symbol',
         'side', 'size', 'liquidation_price', 'open_close', 'open_time', 
         'close_time', 'pnl', 'accrued_funding', 'close_reason'
     ]
@@ -79,7 +79,6 @@ def get_open_position_for_exchange(exchange: str) -> dict:
                     position_dict = get_dict_from_database_response(open_position)
                     return position_dict
                 else:
-                    logger.info("MasterPositionMonitorUtils - No open positions found")
                     return None
         except Exception as e:
             logger.error(f"MasterPositionMonitorUtils - Error while searching for open Binance positions: {e}")
