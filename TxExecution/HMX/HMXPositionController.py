@@ -25,9 +25,8 @@ class HMXPositionController:
                 side: str = 'Long' if is_long else 'Short'
                 market = get_market_for_symbol(symbol)
                 adjusted_trade_size_usd = self.calculate_adjusted_trade_size_usd(trade_size)
-
-                
-                response = self.client.private.create_market_order(
+      
+                self.client.private.create_market_order(
                     0,
                     market_index=market,
                     buy=is_long,
@@ -36,14 +35,13 @@ class HMXPositionController:
                     tp_token=COLLATERAL_USDC
                 )
 
-
                 time.sleep(15)
                 if not self.is_already_position_open():
                     logger.error(f'HMXPositionController - Failed to open position for symbol {symbol}.')
                     return None
 
                 size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, adjusted_trade_size_usd)
-                position_details = self.handle_position_opened(symbol, size_in_asset)
+                position_details = self.handle_position_opened(symbol, size_in_asset, side)
 
                 return position_details
 
@@ -76,11 +74,13 @@ class HMXPositionController:
                     )
 
                 if position and position['position_size'] != 0:
+                    funding_fee = float(position['funding_fee'])
+                    accrued_funding = funding_fee * -1
                     close_position_details = {
                         'symbol': symbol,
                         'exchange': 'HMX',
                         'pnl': position['pnl'],
-                        'accrued_funding': position['funding_fee'],
+                        'accrued_funding': accrued_funding,
                         'reason': reason
                     }
 
@@ -234,5 +234,8 @@ class HMXPositionController:
 
 
 # x = HMXPositionController()
-# x.close_position('ARB', PositionCloseReason.TEST.value)
-# print(x.is_already_position_open())
+# # x.close_position('ARB', PositionCloseReason.TEST.value)
+# size_delta: int = 3000*10**30
+
+# y = x.client.public.get_adaptive_fee(size_delta, 15, True)
+# print(y)

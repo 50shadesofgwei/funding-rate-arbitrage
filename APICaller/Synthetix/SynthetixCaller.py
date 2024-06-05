@@ -35,3 +35,8 @@ class SynthetixCaller:
                 except KeyError as e:
                     logger.error(f"SynthetixAPICaller - Error processing market data for {symbol}: {e}")
         return market_funding_rates
+
+
+x = SynthetixCaller()
+y = x.client.perps.get_open_positions()
+print(y)
