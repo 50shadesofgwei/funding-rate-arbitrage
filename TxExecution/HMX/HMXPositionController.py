@@ -22,6 +22,7 @@ class HMXPositionController:
         try:
             if not self.is_already_position_open():
                 symbol = str(opportunity['symbol'])
+                side: str = 'Long' if is_long else 'Short'
                 market = get_market_for_symbol(symbol)
                 adjusted_trade_size_usd = self.calculate_adjusted_trade_size_usd(trade_size)
 
@@ -162,14 +163,8 @@ class HMXPositionController:
             logger.error(f"HMXPositionController - Failed to calculate adjusted trade size. Error: {e}")
             return None
 
-    def handle_position_opened(self, symbol: str, size_in_asset: float):
+    def handle_position_opened(self, symbol: str, size_in_asset: float, side: str):
         try:
-            side: str = None
-            if size_in_asset > 0:
-                side = "LONG"
-            elif size_in_asset < 0:
-                side = "SHORT"
-
             position = self.get_position_object(symbol, side, size_in_asset)
             return position
         

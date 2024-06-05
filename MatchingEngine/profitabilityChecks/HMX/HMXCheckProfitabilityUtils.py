@@ -38,16 +38,16 @@ def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size: float)
             symbol = str(opportunity['symbol'])
             is_long = opportunity['long_exchange'] == 'HMX'
             skew = float(opportunity['long_exchange_skew']) if is_long else float(opportunity['short_exchange_skew'])
-            size_usd = get_dollar_amount_for_given_asset_amount(symbol, size)
-            adjusted_skew = skew + size_usd if is_long else skew - size_usd
+            adjusted_skew = skew + size
             daily_velocity = calculate_daily_funding_velocity(adjusted_skew)
             hourly_velocity: float = daily_velocity / 24 
 
+            logger.warning(f'HMXCheckProfitabilityUtils - debug 1: symbol = {symbol}, skew = {skew}, adjusted_skew = {adjusted_skew}, daily_velocity = {daily_velocity}')
+
             current_funding_rate = float(opportunity['long_exchange_funding_rate']) if is_long else float(opportunity['short_exchange_funding_rate'])
     
-
             if current_funding_rate == 0:
-                logger.error(f"CheckProfitability - Zero funding rate for {symbol}, cannot calculate neutralization time.")
+                logger.error(f"HMXCheckProfitabilityUtils - Zero funding rate for {symbol}, cannot calculate neutralization time.")
                 return None
             
             if hourly_velocity == 0:
@@ -57,7 +57,8 @@ def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size: float)
                 return "No Neutralization"
             else:
                 hours_to_neutralize: float = abs(current_funding_rate / hourly_velocity)
+                logger.warning(f'HMXCheckProfitabilityUtils - Hours to neutralize = {hours_to_neutralize} for symbol {symbol}')
                 return hours_to_neutralize
         except Exception as e:
-            logger.error(f'CheckProfitability - Error estimating time to neutralize funding rate for {symbol}: {e}')
+            logger.error(f'HMXCheckProfitabilityUtils - Error estimating time to neutralize funding rate for {symbol}: {e}')
             return None
