@@ -90,18 +90,17 @@ class MasterPositionMonitor():
 
             position_one = get_open_position_for_exchange(first_exchange)
             position_two = get_open_position_for_exchange(second_exchange)
+            logger.warning(f'MADE IT TO HERE 1 - pos1={position_one}, pos2={position_two}')
 
-            get_first_funding_rate = getattr(self, first_exchange.lower()).get_funding_rate(position_one)
-            first_funding_rate = get_first_funding_rate(position_one)
+            first_funding_rate = getattr(self, first_exchange.lower()).get_funding_rate(position_one)
+            second_funding_rate = getattr(self, second_exchange.lower()).get_funding_rate(position_two)
 
-            get_second_funding_rate = getattr(self, second_exchange.lower()).get_funding_rate(position_two)
-            second_funding_rate = get_second_funding_rate(position_two)
-
+            logger.warning(f'MADE IT TO HERE 2 - first_funding_rate: {first_funding_rate}, second_funding_rate: {second_funding_rate}')
             first_position_is_long = position_one['size'] > 0
             second_position_is_long = position_two['size'] > 0
 
-            first_fee_impact = Decimal(first_funding_rate) * (1 if first_position_is_long else -1)
-            second_fee_impact = Decimal(second_funding_rate) * (1 if second_position_is_long else -1)
+            first_fee_impact = first_funding_rate * (1 if first_position_is_long else -1)
+            second_fee_impact = second_funding_rate * (1 if second_position_is_long else -1)
 
             net_profitability = first_fee_impact + second_fee_impact
 
@@ -219,5 +218,8 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error retrieving symbol for open position. Error: {e}")
             return None
 
-
+x = MasterPositionMonitor()
+exchanges = ['HMX', 'Synthetix']
+y = x.check_profitability_for_open_positions(exchanges)
+print(y)
 

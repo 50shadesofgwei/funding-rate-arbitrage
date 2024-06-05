@@ -62,7 +62,7 @@ class HMXPositionMonitor():
             symbol = position['symbol']
             market_id = get_market_for_symbol(symbol)
             market_data = self.client.public.get_market_info(market_id)
-            funding_rate = float(market_data['8H_funding_rate'])
+            funding_rate = float(market_data['funding_rate']['8H'])
             return funding_rate
             
         except Exception as e:
