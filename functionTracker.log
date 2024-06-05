@@ -353,3 +353,13 @@
 2024-06-04 19:18:05 - [INFO] - Exiting calculate_liquidation_price in SynthetixPositionControllerUtils.py
 2024-06-04 19:18:41 - [INFO] - Entering close_position_pair in MasterPositionController.py
 2024-06-04 19:18:51 - [INFO] - Exiting close_position_pair in MasterPositionController.py
+2024-06-04 19:37:56 - [INFO] - Entering calculate_liquidation_price in SynthetixPositionControllerUtils.py
+2024-06-04 19:37:56 - [INFO] - Exiting calculate_liquidation_price in SynthetixPositionControllerUtils.py
+2024-06-04 19:38:36 - [INFO] - Entering calculate_liquidation_price in HMXPositionControllerUtils.py
+2024-06-04 19:38:36 - [INFO] - Exiting calculate_liquidation_price in HMXPositionControllerUtils.py
+2024-06-04 19:39:44 - [INFO] - Entering close_position_pair in MasterPositionController.py
+2024-06-04 19:40:15 - [INFO] - Exiting close_position_pair in MasterPositionController.py
+2024-06-04 19:49:08 - [INFO] - Entering calculate_liquidation_price in SynthetixPositionControllerUtils.py
+2024-06-04 19:49:08 - [INFO] - Exiting calculate_liquidation_price in SynthetixPositionControllerUtils.py
+2024-06-04 19:49:49 - [INFO] - Entering calculate_liquidation_price in HMXPositionControllerUtils.py
+2024-06-04 19:49:49 - [INFO] - Exiting calculate_liquidation_price in HMXPositionControllerUtils.py

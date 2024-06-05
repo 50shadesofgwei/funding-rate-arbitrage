@@ -5,7 +5,7 @@ TARGET_TOKENS = [
     {"token": "ETH", "is_target": True},
     {"token": "SNX", "is_target": False},
     {"token": "SOL", "is_target": True},
-    {"token": "W", "is_target": True},
+    {"token": "W", "is_target": False},
     {"token": "WIF", "is_target": False},
     {"token": "ARB", "is_target": True},
     {"token": "BNB", "is_target": True},
