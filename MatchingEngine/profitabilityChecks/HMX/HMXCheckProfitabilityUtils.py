@@ -42,8 +42,6 @@ def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size: float)
             daily_velocity = calculate_daily_funding_velocity(adjusted_skew)
             hourly_velocity: float = daily_velocity / 24 
 
-            logger.warning(f'HMXCheckProfitabilityUtils - debug 1: symbol = {symbol}, skew = {skew}, adjusted_skew = {adjusted_skew}, daily_velocity = {daily_velocity}')
-
             current_funding_rate = float(opportunity['long_exchange_funding_rate']) if is_long else float(opportunity['short_exchange_funding_rate'])
     
             if current_funding_rate == 0:
@@ -57,7 +55,6 @@ def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size: float)
                 return "No Neutralization"
             else:
                 hours_to_neutralize: float = abs(current_funding_rate / hourly_velocity)
-                logger.warning(f'HMXCheckProfitabilityUtils - Hours to neutralize = {hours_to_neutralize} for symbol {symbol}')
                 return hours_to_neutralize
         except Exception as e:
             logger.error(f'HMXCheckProfitabilityUtils - Error estimating time to neutralize funding rate for {symbol}: {e}')

@@ -61,33 +61,28 @@ def is_long(size: float) -> bool:
 @log_function_call
 def calculate_liquidation_price(params: dict) -> float:
     try:
-        logger.info(f"HMXPositionControllerUtils - Calculating liquidation price with parameters: {params}")
+        logger.info(f"Calculating liquidation price with parameters: {params}")
 
-        if not params["position_size"]:
-            logger.error("HMXPositionControllerUtils - Invalid position size: Cannot calculate liquidation price.")
-            return None
-        if params["asset_price"] <= 0:
-            logger.error("HMXPositionControllerUtils - Invalid asset price: Cannot calculate liquidation price.")
-            return None
-        if params["available_margin"] <= 0 or params["maintenance_margin_requirement"] < 0:
-            logger.error("HMXPositionControllerUtils - Invalid margin values: Available or Maintenance Requirement.")
+        if params["size_usd"] <= 0 or params["asset_price"] <= 0:
+            logger.error("Invalid size or asset price for liquidation calculation.")
             return None
 
-        base_calculation = float(params["available_margin"]) - float(params["maintenance_margin_requirement"])
-        price_component = float(params["position_size"]) * float(params["asset_price"])
-        liquidation_price = (base_calculation - price_component) if params["is_long"] else (base_calculation + price_component)
-        liquidation_price /= params["position_size"]
+        maintenance_margin_percent = float(params["maintenance_margin_requirement"]) / float(params["size_usd"])
+
+        if params["is_long"]:
+            liquidation_price = float(params["asset_price"]) * (1 - maintenance_margin_percent)
+        else:
+            liquidation_price = float(params["asset_price"]) * (1 + maintenance_margin_percent)
+
         liquidation_price = abs(liquidation_price)
-
         if liquidation_price <= 0:
-            logger.error(f"HMXPositionControllerUtils - Calculated invalid liquidation price: {liquidation_price}.")
+            logger.error(f"Calculated invalid liquidation price: {liquidation_price}")
             return None
 
         return liquidation_price
 
-    except KeyError as ke:
-        logger.error(f"HMXPositionControllerUtils - Key error in input data: {ke}. Data might be incomplete.")
-        return None
     except Exception as e:
-        logger.error(f"HMXPositionControllerUtils - Unexpected error during calculation: {e}")
+        logger.error(f"Error during liquidation price calculation: {e}")
         return None
+
+

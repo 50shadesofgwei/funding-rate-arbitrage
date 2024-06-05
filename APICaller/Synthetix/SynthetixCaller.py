@@ -37,6 +37,6 @@ class SynthetixCaller:
         return market_funding_rates
 
 
-# x = SynthetixCaller()
-# y = x.client.perps.get_open_positions()
-# print(y)
+x = SynthetixCaller()
+y = x.client.perps.get_open_positions()
+print(y)

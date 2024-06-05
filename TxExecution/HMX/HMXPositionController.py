@@ -75,11 +75,16 @@ class HMXPositionController:
 
                 if position and position['position_size'] != 0:
                     funding_fee = float(position['funding_fee'])
+                    trading_fee = position['trading_fee']
+                    borrowing_fee = position['borrowing_fee']
+                    pnl = position['pnl']
+                    pnl = pnl - (trading_fee + borrowing_fee)
+
                     accrued_funding = funding_fee * -1
                     close_position_details = {
                         'symbol': symbol,
                         'exchange': 'HMX',
-                        'pnl': position['pnl'],
+                        'pnl': pnl,
                         'accrued_funding': accrued_funding,
                         'reason': reason
                     }
@@ -205,10 +210,12 @@ class HMXPositionController:
             margin_details = response['margin']
             is_long_var = is_long(float(position['position_size']))
             position_size = float(position['position_size'])
-            maintenance_margin_requirement = float(margin_details['maintenance_margin_fraction_bps']) * 100
+            size_in_asset = position_size * asset_price
+            maintenance_margin_requirement = float(margin_details['maintenance_margin_fraction_bps'])
 
             liquidation_params = {
-                "position_size": position_size,
+                "size_in_asset": size_in_asset,
+                "size_usd": position_size,
                 "is_long": is_long_var,
                 "available_margin": available_collateral,
                 "asset_price": asset_price,
@@ -235,7 +242,7 @@ class HMXPositionController:
 
 # x = HMXPositionController()
 # # x.close_position('ARB', PositionCloseReason.TEST.value)
-# size_delta: int = 3000*10**30
+# # size_delta: int = 3000*10**30
 
-# y = x.client.public.get_adaptive_fee(size_delta, 15, True)
+# y = x.get_liquidation_price("ARB")
 # print(y)
