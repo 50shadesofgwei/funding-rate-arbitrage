@@ -26,14 +26,12 @@ class SynthetixPositionController:
                 adjusted_trade_size_int: int = int(math.floor(adjusted_trade_size))
                 market_name = str(opportunity['symbol'])
 
-                logger.debug(f"Arguments for commitOrder - adjusted_trade_size_int: {adjusted_trade_size_int}, market_name: {market_name}, account_id: {account_id}")
                 response = self.client.perps.commit_order(
                     size=adjusted_trade_size, 
                     market_name=market_name, 
                     account_id=account_id, 
                     submit=True
                 )
-                logger.info(f"SynthetixPositionController:execute_trade - Response: {response}")
                 
                 if is_transaction_hash(response):
                     time.sleep(15)
@@ -43,7 +41,7 @@ class SynthetixPositionController:
                     logger.error(f"SynthetixPositionController - Failed to execute order for {market_name}")
                     return None
             else:
-                logger.info("SynthetixPositionController - execute_trade called while position already open")
+                logger.error("SynthetixPositionController - execute_trade called while position already open")
                 return None
 
         except Exception as e:
@@ -57,7 +55,7 @@ class SynthetixPositionController:
         try:
             for market in selected_markets:
                 try:
-                    reason = PositionCloseReason.CLOSE_ALL_POSITIONS
+                    reason = PositionCloseReason.CLOSE_ALL_POSITIONS.value
                     close_details = self.close_position(symbol=market, reason=reason)
                     if close_details:
                         close_results.append(close_details)
@@ -112,24 +110,19 @@ class SynthetixPositionController:
             time.sleep(1)
             self._approve_collateral_for_spot_market_proxy(amount)
             time.sleep(1)
-            # self._wrap_collateral(amount)
-            # time.sleep(1)
+            self._wrap_collateral(amount)
+            time.sleep(1)
             self._approve_collateral_for_spot_market_proxy(amount)
             time.sleep(1)
-            # self._execute_atomic_order(amount, 'sell')
-            # time.sleep(1)
+            self._execute_atomic_order(amount, 'sell')
+            time.sleep(1)
             self._approve_collateral_for_perps_market_proxy(amount, market_id=0)
             time.sleep(1)
             self._approve_collateral_for_perps_market_proxy(amount, market_id=1)
             time.sleep(1)
-            # self._add_collateral(amount)
+            self._add_collateral(amount)
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
-
-    def blanket_approval(self):
-        perps_market_proxy_address = self.client.perps.market_proxy.address
-        tx_hash = self.client.spot.approve(perps_market_proxy_address, market_name='sUSDC', submit=True)
-        logger.info(f'txHash = {tx_hash}')
 
     def _add_collateral(self, amount: int):
         try:
@@ -237,7 +230,6 @@ class SynthetixPositionController:
             default_account = self.check_for_accounts()
             if default_account:
                 default_account = default_account[0]
-                logger.info(f"SynthetixPositionController - Successfully retrieved default account: {default_account}.")
                 return default_account
             else:
                 logger.error("SynthetixPositionController - No accounts found.")
@@ -254,7 +246,6 @@ class SynthetixPositionController:
                 self._create_account()
                 return self.client.perps.account_ids
             else:
-                logger.info(f"SynthetixPositionController - Accounts checked and found successfully: {account_ids}.")
                 return account_ids
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error checking for or creating accounts: {e}")
@@ -263,20 +254,10 @@ class SynthetixPositionController:
     def calculate_adjusted_trade_size(self, opportunity: dict, is_long: bool, trade_size: float) -> float:
         try:
             symbol = opportunity['symbol']
-            logger.info(f"Starting to calculate adjusted trade size for {symbol}, initial trade size USD: {trade_size}, is_long: {is_long}")
-
-            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, trade_size)
-            logger.info(f"Converted trade size to asset amount for {symbol}: {trade_size_in_asset}")
-
-            trade_size_with_leverage = trade_size_in_asset * self.leverage_factor
-            logger.info(f"Applied leverage, trade size with leverage for {symbol}: {trade_size_with_leverage}")
-
-            adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
-            logger.info(f"Adjusted trade size for direction (raw) for {symbol}: {adjusted_trade_size_raw}")
-
+            trade_size_with_leverage = trade_size * self.leverage_factor
+            trade_size_in_asset_with_leverage = get_asset_amount_for_given_dollar_amount(symbol, trade_size_with_leverage)
+            adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_in_asset_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)
-            logger.info(f"Final adjusted trade size (rounded) for {symbol}: {adjusted_trade_size}")
-            
 
             return adjusted_trade_size
         except Exception as e:
@@ -316,6 +297,6 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None
 
-# x = SynthetixPositionController()
-# MarketDirectory.initialize()
-# x.close_position('DOGE', PositionCloseReason.TEST.value)
+x = SynthetixPositionController()
+MarketDirectory.initialize()
+x.close_all_positions()

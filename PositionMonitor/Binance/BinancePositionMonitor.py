@@ -15,7 +15,7 @@ class BinancePositionMonitor():
             self.conn = sqlite3.connect(self.db_path)
         except Exception as e:
             logger.error(f"BinancePositionMonitor - Error accessing the database: {e}")
-            raise e
+            return None
 
     def is_near_liquidation_price(self, position: dict) -> bool:
         try:

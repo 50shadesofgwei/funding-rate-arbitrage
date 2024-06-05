@@ -6,7 +6,8 @@ from GlobalUtils.marketDirectory import MarketDirectory
 from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
-import math
+from Backtesting.Synthetix.SynthetixBacktesterUtils import calculate_adjusted_funding_rate
+import json
 import os
 
 class ProfitabilityChecker:
@@ -20,13 +21,13 @@ class ProfitabilityChecker:
         trade_size_usd = self.default_trade_size_usd
         best_opportunity = None
         max_profit = 0
+        opportunities_with_profit = []
 
         for opportunity in opportunities:
-            logger.info('CheckProfitability - Evaluating opportunity', opportunity)
             symbol = opportunity['symbol']
             size = get_asset_amount_for_given_dollar_amount(symbol, trade_size_usd)
             size_per_exchange = size / 2
-            total_profit_usd: float = 0
+            total_profit_usd = 0
 
             for role in ['long', 'short']:
                 exchange = opportunity[f'{role}_exchange']
@@ -35,7 +36,6 @@ class ProfitabilityChecker:
 
                 if time_to_neutralize == "No Neutralization":
                     profit_loss = self.default_trade_size_usd * float(opportunity[f'{role}_exchange_funding_rate'])
-                    logger.info(f'No neutralization expected for {role} on {exchange}, using default profit/loss.')
                 else:
                     profit_loss = self.estimate_profit_for_exchange(
                         time_to_neutralize, size_per_exchange, opportunity, exchange)
@@ -45,14 +45,17 @@ class ProfitabilityChecker:
                 total_profit_usd += profit_loss
 
             opportunity['total_profit_usd'] = total_profit_usd
+            opportunities_with_profit.append(opportunity)
+
             if total_profit_usd > max_profit:
                 max_profit = total_profit_usd
-                best_opportunity: dict = opportunity
+                best_opportunity = opportunity
 
-        if best_opportunity:
-            logger.info('CheckProfitabilty:find_most_profitable_opportunities: Most profitable opportunity found', best_opportunity)
-        else:
-            logger.info('No profitable opportunities found.')
+        opportunities_with_profit.sort(key=lambda x: x['total_profit_usd'], reverse=True)
+
+
+        with open('OrderedOpportunities.json', 'w') as file:
+            json.dump(opportunities_with_profit, file, indent=4)
 
         return best_opportunity
 
@@ -60,15 +63,12 @@ class ProfitabilityChecker:
         try:
             if exchange == 'Binance':
                 estimated_profit = self.estimate_binance_profit(time_period_hours=time_period_hours, size=size, opportunity=opportunity)
-                print(f'ESTIMATED_BINANCE_PROFIT = {estimated_profit}')
                 return estimated_profit
             elif exchange == 'Synthetix':
-                estimated_profit = estimate_synthetix_profit(time_period_hours=time_period_hours, size=size, opportunity=opportunity)
-                print(f'ESTIMATED_SYNTHETIX_PROFIT = {estimated_profit}')
+                estimated_profit = self.estimate_synthetix_profit(time_period_hours=time_period_hours, size=size, opportunity=opportunity)
                 return estimated_profit
             elif exchange == 'HMX':
                 estimated_profit = estimate_HMX_profit(time_period_hours=time_period_hours, size=size, opportunity=opportunity)
-                print(f'ESTIMATED_HMX_PROFIT = {estimated_profit}')
                 return estimated_profit
         
         except Exception as e:
@@ -83,6 +83,45 @@ class ProfitabilityChecker:
             time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, size)
             return time_to_neutralize
         else:
+            return None
+
+    def estimate_synthetix_profit(self, time_period_hours: float, size: float, opportunity: dict) -> float:
+        is_long: bool = opportunity['long_exchange'] == 'Synthetix'
+        symbol = str(opportunity['symbol'])
+        skew: float = opportunity['long_exchange_skew'] if is_long else opportunity['short_exchange_skew']
+
+        try:
+            is_long = opportunity['long_exchange'] == 'Synthetix'
+            fee = MarketDirectory.get_maker_taker_fee(symbol, skew, is_long)
+            fee_size = size * fee
+            size_after_fee = size - fee_size
+            
+            premium = self.position_controller.synthetix.calculate_premium(symbol, size_after_fee)
+            if premium is None:
+                logger.error(f"CheckProfitability - Failed to calculate premium for {symbol}.")
+                return None
+
+            size_with_premium = size_after_fee + premium
+            adjusted_size = get_adjusted_size(size_with_premium, is_long)
+
+            current_block_number = get_base_block_number()
+            initial_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
+            funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol=symbol, current_skew=skew, trade_size=adjusted_size)
+
+            end_block_number = current_block_number + floor(BLOCKS_PER_HOUR_BASE * time_period_hours)
+            total_funding = 0
+            for block in range(current_block_number, end_block_number + 1):
+                adjusted_rate = calculate_adjusted_funding_rate(initial_rate, funding_velocity, 1)
+                profit_loss_per_day = adjusted_rate * adjusted_size
+                if (is_long and adjusted_rate < 0) or (not is_long and adjusted_rate > 0):
+                    profit_loss_per_day *= -1
+
+                total_funding += profit_loss_per_day / BLOCKS_PER_DAY_BASE
+
+            return total_funding
+
+        except Exception as e:
+            logger.error(f'SynthetixCheckProfitabilityUtils -  Error estimating Synthetix profit for {symbol}: Error: {e}')
             return None
 
     def estimate_binance_profit(self, time_period_hours: float, size: float, opportunity: dict):
@@ -121,14 +160,12 @@ class ProfitabilityChecker:
             long_profit_loss = 0
             if hours_to_neutralize_long == "No Neutralization":
                 long_profit_loss = self.default_trade_size_usd * float(opportunity['long_exchange_funding_rate'])
-                logger.info(f'CheckProfitability - No neutralization expected for long position on {long_exchange}, assuming default pnl.')
             else:
                 long_profit_loss = self.estimate_profit_for_exchange(hours_to_neutralize_long, size, opportunity, long_exchange)
 
             short_profit_loss = 0
             if hours_to_neutralize_short == "No Neutralization":
                 short_profit_loss = self.default_trade_size_usd * float(opportunity['short_exchange_funding_rate'])
-                logger.info(f'CheckProfitability - No neutralization expected for short position on {short_exchange}, assuming default pnl.')
             else:
                 short_profit_loss = self.estimate_profit_for_exchange(hours_to_neutralize_short, size, opportunity, short_exchange)
 
@@ -140,7 +177,7 @@ class ProfitabilityChecker:
                 'long_exchange_profit_loss': long_profit_loss,
                 'short_exchange_profit_loss': short_profit_loss
             }
-            logger.info(f'CheckProfitability - PnL calculated successfully for {symbol}. pnl_dict={pnl_dict}')
+
             return pnl_dict
 
         except ValueError as ve:
@@ -149,6 +186,7 @@ class ProfitabilityChecker:
         except Exception as e:
             logger.error(f'CheckProfitability - Unexpected error when estimating profit for {symbol}: {e}')
             return None
+
 
 
 

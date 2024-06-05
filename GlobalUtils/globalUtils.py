@@ -31,7 +31,7 @@ def initialise_client() -> Web3:
     try:
         client = Web3(Web3.HTTPProvider(os.getenv('BASE_PROVIDER_RPC')))
     except Exception as e:
-        logger.info(f"GlobalUtils - Error initialising Web3 client: {e}")
+        logger.error(f"GlobalUtils - Error initialising Web3 client: {e}")
         return None 
     return client
 

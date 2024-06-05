@@ -25,32 +25,38 @@ class MasterCaller:
                 "HMX": (self.hmx, self.target_token_list_by_exchange[3])
             }
 
-            logger.info(f'MasterAPICaller - Debugging: all_exchanges list = {all_exchanges}')
-
             filtered_exchanges = {}
             for exchange_name in self.target_exchanges:
                 if exchange_name in all_exchanges:
                     filtered_exchanges[exchange_name] = all_exchanges[exchange_name]
 
-            logger.info(f'MasterAPICaller - Debugging: all_exchanges list = {filtered_exchanges}')
             return filtered_exchanges
         except Exception as e:
             logger.error(f"MasterAPICaller - Error filtering exchanges and tokens: {e}")
             return {}
   
     def get_funding_rates(self) -> list:
-        try:
-            funding_rates = []
-
-            for exchange_name, (exchange, tokens) in self.filtered_exchange_objects_and_tokens.items():
-                try:
-                    rates = exchange.get_funding_rates(tokens)
-                    if rates:
-                        funding_rates.extend(rates)
-                except Exception as inner_e:
-                    logger.error(f"MasterAPICaller - Error getting funding rates from {exchange_name}: {inner_e}")
-
+        funding_rates = []
+        if not self.filtered_exchange_objects_and_tokens:
+            logger.error("MasterAPICaller - No exchanges and tokens available for fetching funding rates.")
             return funding_rates
-        except Exception as e:
-            logger.error(f"MasterAPICaller - Error aggregating funding rates across exchanges: {e}")
-            return []
+
+        for exchange_name, (exchange, tokens) in self.filtered_exchange_objects_and_tokens.items():
+            if not tokens:
+                logger.warning(f"MasterAPICaller - No tokens available for {exchange_name}. Skipping.")
+                continue
+
+            try:
+                rates = exchange.get_funding_rates(tokens)
+                if rates:
+                    funding_rates.extend(rates)
+                else:
+                    logger.warning(f"MasterAPICaller - No funding rates returned from {exchange_name}.")
+            except Exception as e:
+                logger.error(f"MasterAPICaller - Error getting funding rates from {exchange_name}: {e}")
+
+        if not funding_rates:
+            logger.error("MasterAPICaller - No funding rates obtained from any exchanges.")
+            return None
+
+        return funding_rates

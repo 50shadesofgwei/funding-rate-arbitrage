@@ -20,9 +20,8 @@ class MarketDirectory:
                 logger.info('MarketDirectory - Markets Initialized')
                 with open(cls._file_path, 'r') as file:
                     cls._markets = json.load(file)
-            logger.info("MarketDirectory - Loaded markets from file.")
         except FileNotFoundError:
-            logger.info("MarketDirectory - No existing market file found. Starting fresh.")
+            logger.error("MarketDirectory - No existing market file found. Starting fresh.")
         except json.JSONDecodeError:
             logger.error("MarketDirectory - Error decoding JSON. Starting with an empty dictionary.")
 
@@ -31,7 +30,6 @@ class MarketDirectory:
         try:
             with open(cls._file_path, 'w') as file:
                 json.dump(cls._markets, file)
-            logger.info("MarketDirectory - Market saved to file.")
         except Exception as e:
             logger.error(f"MarketDirectory - Failed to save markets to file: {e}")
 
@@ -55,10 +53,6 @@ class MarketDirectory:
     @classmethod
     def update_market_member(cls, market_data):
         symbol = market_data['market_name']
-        if symbol in cls._markets:
-            logger.info(f"MarketDirectory - Updating existing market: {symbol}.")
-        else:
-            logger.info(f"MarketDirectory - Adding new market: {symbol}.")
 
         cls._markets[symbol] = {
             'symbol': symbol,
@@ -121,7 +115,3 @@ class MarketDirectory:
             logger.error(f"MarketDirectory - Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}. Error: {e}")
             return None
 
-    @classmethod
-    def print_markets(cls):
-        for symbol, data in cls._markets.items():
-            logger.info(f"{symbol}: {data}")

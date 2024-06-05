@@ -23,26 +23,26 @@ class HMXPositionController:
             if not self.is_already_position_open():
                 symbol = str(opportunity['symbol'])
                 market = get_market_for_symbol(symbol)
-                adjusted_trade_size = self.calculate_adjusted_trade_size_usd(is_long, trade_size)
-                trade_size_in_asset = abs(get_asset_amount_for_given_dollar_amount(symbol, adjusted_trade_size))
+                adjusted_trade_size_usd = self.calculate_adjusted_trade_size_usd(trade_size)
+
+                
                 response = self.client.private.create_market_order(
                     0,
                     market_index=market,
                     buy=is_long,
-                    size=trade_size_in_asset,
+                    size=adjusted_trade_size_usd,
                     reduce_only=False,
                     tp_token=COLLATERAL_USDC
                 )
-                print(f'HMX POSITION RESPONSE = {response}')
+
 
                 time.sleep(15)
                 if not self.is_already_position_open():
                     logger.error(f'HMXPositionController - Failed to open position for symbol {symbol}.')
                     return None
 
-
-                position_details = self.handle_position_opened(symbol, response)
-                print(f'position details = {position_details}')
+                size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, adjusted_trade_size_usd)
+                position_details = self.handle_position_opened(symbol, size_in_asset)
 
                 return position_details
 
@@ -52,9 +52,14 @@ class HMXPositionController:
 
 
     def close_all_positions(self):
-        tokens = get_target_tokens_for_HMX
-        for token in tokens:
-            self.close_position(token, reason=PositionCloseReason.CLOSE_ALL_POSITIONS.value)
+        try:
+            tokens = get_target_tokens_for_HMX
+            for token in tokens:
+                self.close_position(token, reason=PositionCloseReason.CLOSE_ALL_POSITIONS.value)
+        
+        except Exception as e:
+            logger.error(f'HMXPositionController - Error while closing all trades. Error: {e}')
+            return None
 
     def close_position(self, symbol: str, reason: str):
         max_retries = 2 
@@ -81,18 +86,19 @@ class HMXPositionController:
                     size = float(position['position_size'])
                     inverse_size = size * -1
                     side = is_long(inverse_size)
+                    abs_size = abs(size)
                     self.client.private.create_market_order(
                         0, 
                         market_index=market_index, 
                         buy=side, 
-                        size=inverse_size,
+                        size=abs_size,
                         reduce_only=False,
                         tp_token=COLLATERAL_USDC
                     )
                     
-                    time.sleep(7)
+                    time.sleep(15)
                     if self.is_already_position_open():
-                        logger.error(f'HMXPositionController - Failed to close position for symbol {symbol}.')
+                        logger.error(f'HMXPositionController - Position on HMX still open 15 seconds after attempting to close. Symbol: {symbol}.')
                         return None
 
                     self.handle_position_closed(position_report=close_position_details)
@@ -119,9 +125,7 @@ class HMXPositionController:
         try:
             self.client.private.deposit_erc20_collateral(0, COLLATERAL_USDC, 500)
             response = self.client.private.deposit_erc20_collateral(0, token_address, amount)
-            print(response)
             tx_hash = HexBytes.hex(response['tx'])
-            print(type(tx_hash))
             time.sleep(3)
             if is_transaction_hash(tx_hash):
                 logger.info(f'HMXPositionController - Collateral deposit tx successful. Token Address: {token_address}, Amount = {amount}')
@@ -148,31 +152,25 @@ class HMXPositionController:
             logger.error(f"HMXPositionController - Error while checking if position is open: {e}")
             return False
 
-    def calculate_adjusted_trade_size_usd(self, is_long: bool, trade_size: float) -> float:
+    def calculate_adjusted_trade_size_usd(self, trade_size: float) -> float:
         try:
             trade_size_with_leverage = trade_size * self.leverage_factor
-            adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
-            adjusted_trade_size = round(adjusted_trade_size_raw, 3)
+            adjusted_trade_size_usd = round(trade_size_with_leverage, 3)
 
-            return adjusted_trade_size
+            return adjusted_trade_size_usd
         except Exception as e:
             logger.error(f"HMXPositionController - Failed to calculate adjusted trade size. Error: {e}")
             return None
 
-    def handle_position_opened(self, symbol: str, response: dict):
+    def handle_position_opened(self, symbol: str, size_in_asset: float):
         try:
-            market_id = get_market_for_symbol(symbol)
-            position_response = self.client.public.get_position_info(self.account, 0, market_id)
-            avg_entry_price = float(position_response['avg_entry_price'])
-            size = get_position_size_from_response(response, avg_entry_price)
-
             side: str = None
-            if size > 0:
+            if size_in_asset > 0:
                 side = "LONG"
-            elif size < 0:
+            elif size_in_asset < 0:
                 side = "SHORT"
 
-            position = self.get_position_object(symbol, side, size)
+            position = self.get_position_object(symbol, side, size_in_asset)
             return position
         
         except Exception as e:
@@ -187,34 +185,59 @@ class HMXPositionController:
             return None
 
     def get_position_object(self, symbol: str, side: str, size: float) -> dict:
-        liquidation_price = self.get_liquidation_price()
-        position_object = {
-                'exchange': 'HMX',
-                'symbol': symbol,
-                'side': side,
-                'size': size,
-                'liquidation_price': liquidation_price
-            }
-        return position_object
+        try:
+            liquidation_price = self.get_liquidation_price(symbol)
+            position_object = {
+                    'exchange': 'HMX',
+                    'symbol': symbol,
+                    'side': side,
+                    'size': size,
+                    'liquidation_price': liquidation_price
+                }
+            return position_object
+
+        except Exception as e:
+            logger.error(f"HMXPositionController - Failed to get position object for symbol {symbol}. Error: {e}")
+            return None
 
     def get_liquidation_price(self, symbol: str) -> float:
-        market_index = get_market_for_symbol(symbol)
-        position = self.client.public.get_position_info(
-            self.account,
-            0,
-            market_index,
-            )
-        size = float(position['position_size'])
-        is_long_var: bool = is_long(size)
+        try:
+            market_index = get_market_for_symbol(symbol)
+            position = self.client.public.get_position_info(self.account, 0, market_index)
+            asset_price = get_price_from_pyth(symbol)
+            available_collateral = self.get_available_collateral()
+            response = self.client.public.get_market_info(market_index)
+            margin_details = response['margin']
+            is_long_var = is_long(float(position['position_size']))
+            position_size = float(position['position_size'])
+            maintenance_margin_requirement = float(margin_details['maintenance_margin_fraction_bps']) * 100
 
-        liquidation_price = calculate_liquidation_price()
-        return 0.0
+            liquidation_params = {
+                "position_size": position_size,
+                "is_long": is_long_var,
+                "available_margin": available_collateral,
+                "asset_price": asset_price,
+                "maintenance_margin_requirement": maintenance_margin_requirement
+            }
 
-    def get_available_collateral(self) -> int:
-        available_collateral = self.client.public.get_collateral_usd(self.account, 0)
-        return available_collateral
+            liquidation_price = calculate_liquidation_price(liquidation_params)
+            return liquidation_price
+
+        except Exception as e:
+            logger.error(f"HMXPositionController - Failed to get liquidation price for symbol: {symbol}. Error: {e}")
+            return None
+
+
+    def get_available_collateral(self) -> float:
+        try:
+            available_collateral = self.client.public.get_collateral_usd(self.account, 0)
+            return float(available_collateral)
+
+        except Exception as e:
+            logger.error(f"HMXPositionController - Failed to get available collateral. Error: {e}")
+            return None
 
 
 # x = HMXPositionController()
-# x.close_position('DOGE', PositionCloseReason.TEST.value)
+# x.close_position('ARB', PositionCloseReason.TEST.value)
 # print(x.is_already_position_open())

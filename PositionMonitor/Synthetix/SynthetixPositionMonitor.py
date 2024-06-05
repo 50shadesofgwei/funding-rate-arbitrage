@@ -40,10 +40,9 @@ class SynthetixPositionMonitor():
                 open_positions = cursor.fetchall()
                 if open_positions:
                     position_dict = get_dict_from_database_response(open_positions[0])
-                    logger.info(f'SynthetixPositionMonitor - Open trade pulled from database: {position_dict}')
                     return position_dict
                 else:
-                    logger.info("SynthetixPositionMonitor - No open Synthetix positions found")
+                    logger.error("SynthetixPositionMonitor - No open Synthetix positions found")
                     return None
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")

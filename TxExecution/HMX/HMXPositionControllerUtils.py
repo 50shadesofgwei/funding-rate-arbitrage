@@ -44,7 +44,7 @@ def get_position_size_from_response(response: dict, entry_price: float) -> float
     try:
         size_delta = response['order']['sizeDelta']
         size_usd = size_delta/10**30
-        size = round(entry_price / size_usd, 3)
+        size = round(size_usd / entry_price, 3)
         return size
     except Exception as e:
         logger.error(f'HMXPositionControllerUtils - Failed to calculate position size from response. Entry price={entry_price}, Error: {e}')
@@ -59,40 +59,35 @@ def is_long(size: float) -> bool:
         return None
 
 @log_function_call
-def calculate_liquidation_price(position_data: dict, asset_price: float) -> float:
+def calculate_liquidation_price(params: dict) -> float:
     try:
-        position_size = position_data['position']['position_size']
-        available_margin = position_data['margin_details']['available_margin']
-        maintenance_margin_requirement = position_data['margin_details']['maintenance_margin_requirement']
+        logger.info(f"HMXPositionControllerUtils - Calculating liquidation price with parameters: {params}")
 
-        logger.info(f"HMXPositionControllerUtils - Calculating liquidation price with position_size={position_size}, available_margin={available_margin}, maintenance_margin_requirement={maintenance_margin_requirement}, asset_price={asset_price}")
-
-        if not position_size:
-            logger.error(f"HMXPositionControllerUtils - Invalid position size: {position_size}. Cannot calculate liquidation price.")
+        if not params["position_size"]:
+            logger.error("HMXPositionControllerUtils - Invalid position size: Cannot calculate liquidation price.")
             return None
-        if asset_price <= 0:
-            logger.error(f"HMXPositionControllerUtils - Invalid asset price: {asset_price}. Cannot calculate liquidation price.")
+        if params["asset_price"] <= 0:
+            logger.error("HMXPositionControllerUtils - Invalid asset price: Cannot calculate liquidation price.")
             return None
-        if available_margin <= 0 or maintenance_margin_requirement < 0:
-            logger.error(f"HMXPositionControllerUtils - Invalid margin values: Available={available_margin}, Maintenance Requirement={maintenance_margin_requirement}.")
+        if params["available_margin"] <= 0 or params["maintenance_margin_requirement"] < 0:
+            logger.error("HMXPositionControllerUtils - Invalid margin values: Available or Maintenance Requirement.")
             return None
 
-        is_long = position_size > 0
-        if is_long:
-            liquidation_price = (available_margin - maintenance_margin_requirement - (position_size * asset_price)) / position_size
-        else:
-            liquidation_price = (available_margin - maintenance_margin_requirement + (position_size * asset_price)) / position_size
+        base_calculation = float(params["available_margin"]) - float(params["maintenance_margin_requirement"])
+        price_component = float(params["position_size"]) * float(params["asset_price"])
+        liquidation_price = (base_calculation - price_component) if params["is_long"] else (base_calculation + price_component)
+        liquidation_price /= params["position_size"]
+        liquidation_price = abs(liquidation_price)
 
         if liquidation_price <= 0:
             logger.error(f"HMXPositionControllerUtils - Calculated invalid liquidation price: {liquidation_price}.")
             return None
 
-        logger.info(f"HMXPositionControllerUtils - Liquidation price calculated successfully: {liquidation_price}")
         return liquidation_price
 
     except KeyError as ke:
-        logger.error(f"HMXPositionControllerUtils - Key error in input data during liquidation price calculation: {ke}. Data might be incomplete.")
+        logger.error(f"HMXPositionControllerUtils - Key error in input data: {ke}. Data might be incomplete.")
         return None
     except Exception as e:
-        logger.error(f"HMXPositionControllerUtils - Unexpected error during liquidation price calculation: {e}")
+        logger.error(f"HMXPositionControllerUtils - Unexpected error during calculation: {e}")
         return None
