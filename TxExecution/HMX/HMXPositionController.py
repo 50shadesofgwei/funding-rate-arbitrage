@@ -75,10 +75,8 @@ class HMXPositionController:
 
                 if position and position['position_size'] != 0:
                     funding_fee = float(position['funding_fee'])
-                    trading_fee = position['trading_fee']
-                    borrowing_fee = position['borrowing_fee']
                     pnl = position['pnl']
-                    pnl = pnl - (trading_fee + borrowing_fee)
+                    pnl = pnl - funding_fee
 
                     accrued_funding = funding_fee * -1
                     close_position_details = {
@@ -129,7 +127,6 @@ class HMXPositionController:
         eg. 100.00 = 100 USDC
         """
         try:
-            self.client.private.deposit_erc20_collateral(0, COLLATERAL_USDC, 500)
             response = self.client.private.deposit_erc20_collateral(0, token_address, amount)
             tx_hash = HexBytes.hex(response['tx'])
             time.sleep(3)
@@ -203,20 +200,29 @@ class HMXPositionController:
     def get_liquidation_price(self, symbol: str) -> float:
         try:
             market_index = get_market_for_symbol(symbol)
+            if market_index is None:
+                logger.error(f"No market index found for symbol: {symbol}")
+                return None
+
             position = self.client.public.get_position_info(self.account, 0, market_index)
+            response = self.client.public.get_market_info(market_index)
+
+            pnl = position['pnl']
             asset_price = get_price_from_pyth(symbol)
             available_collateral = self.get_available_collateral()
-            response = self.client.public.get_market_info(market_index)
+            available_collateral = available_collateral + pnl
             margin_details = response['margin']
-            is_long_var = is_long(float(position['position_size']))
+            is_long = get_side_for_open_trade_from_database(symbol)
+
+            maintenance_margin_fraction = float(margin_details['maintenance_margin_fraction_bps']) / 10000 
             position_size = float(position['position_size'])
-            size_in_asset = position_size * asset_price
-            maintenance_margin_requirement = float(margin_details['maintenance_margin_fraction_bps'])
+            size_in_asset = position_size / asset_price
+            maintenance_margin_requirement = size_in_asset * maintenance_margin_fraction
 
             liquidation_params = {
                 "size_in_asset": size_in_asset,
                 "size_usd": position_size,
-                "is_long": is_long_var,
+                "is_long": is_long,
                 "available_margin": available_collateral,
                 "asset_price": asset_price,
                 "maintenance_margin_requirement": maintenance_margin_requirement
@@ -225,8 +231,11 @@ class HMXPositionController:
             liquidation_price = calculate_liquidation_price(liquidation_params)
             return liquidation_price
 
+        except KeyError as ke:
+            logger.error(f"Key error in get_liquidation_price: {ke}. Missing data for symbol: {symbol}")
+            return None
         except Exception as e:
-            logger.error(f"HMXPositionController - Failed to get liquidation price for symbol: {symbol}. Error: {e}")
+            logger.error(f"Unexpected error in get_liquidation_price for symbol: {symbol}. Error: {e}")
             return None
 
 

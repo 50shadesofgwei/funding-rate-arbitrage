@@ -17,10 +17,15 @@ def get_dict_from_database_response(response):
     try:
         columns = [
             'id', 'strategy_execution_id', 'exchange', 'symbol',
-            'side', 'size', 'liquidation_price', 'open_close', 'open_time', 
+            'side', 'size_in_asset', 'liquidation_price', 'open_close', 'open_time', 
             'close_time', 'pnl', 'accrued_funding', 'close_reason'
         ]
-        response_dict = {columns[i]: response[i] for i in range(len(columns))}
+
+        response_list = list(response) if isinstance(response, tuple) else response
+        if len(response_list) < len(columns):
+            response_list.extend([None] * (len(columns) - len(response_list)))
+
+        response_dict = {columns[i]: response_list[i] for i in range(len(columns))}
 
         return response_dict
 
@@ -28,13 +33,14 @@ def get_dict_from_database_response(response):
         logger.error(f'MasterPositionMonitorUtils - Error parsing dict from database response. Error: {e}')
         return None
 
+
 def get_percentage_away_from_liquidation_price(position: dict) -> float:
         try:
             liquidation_price = float(position['liquidation_price'])
             symbol = str(position['symbol'])
             normalized_symbol = normalize_symbol(symbol)
             asset_price = get_price_from_pyth(normalized_symbol)
-            is_long = float(position['size']) > 0
+            is_long = True if position['side'].lower() == 'long' else False
             differential = float(asset_price-liquidation_price) if is_long else float(liquidation_price-asset_price)
             percentage: float = asset_price / differential
             return percentage

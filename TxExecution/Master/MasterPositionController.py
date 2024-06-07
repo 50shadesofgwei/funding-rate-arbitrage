@@ -201,5 +201,5 @@ class MasterPositionController:
 # y = TradeLogger()
 # MarketDirectory.initialize()
 # exchanges = ['HMX', 'Synthetix']
-# x.close_position_pair(symbol='ARB', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
+# x.close_position_pair(symbol='SOL', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
 # print(x.is_already_position_open())
