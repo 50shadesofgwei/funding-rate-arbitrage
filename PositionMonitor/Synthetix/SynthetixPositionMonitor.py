@@ -17,21 +17,6 @@ class SynthetixPositionMonitor():
             logger.error(f"SynthetixPositionMonitor - Error accessing the database: {e}")
             return None
 
-    def position_health_check(self):
-        try:
-            if self.is_open_position():
-                position = self.get_open_position()
-                if self.is_near_liquidation_price(position):
-                    reason = PositionCloseReason.LIQUIDATION_RISK.value
-                    pub.sendMessage('close_positions', reason)
-                else:
-                    return
-            else:
-                return
-        except Exception as e:
-            logger.error(f"SynthetixPositionMonitor - Error checking position health: {e}")
-            return None
-
     def get_open_position(self) -> dict:
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -73,11 +58,11 @@ class SynthetixPositionMonitor():
                 return funding_rate
             else:
                 logger.error(f"SynthetixPositionMonitor - Funding rate not found in market summary for symbol {symbol}.")
-                return 0.0 
+                return None 
             
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
-            return 0.0
+            return None
 
     def is_open_position(self) -> bool:
         try:

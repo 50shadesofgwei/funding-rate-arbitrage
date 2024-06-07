@@ -16,21 +16,6 @@ class HMXPositionMonitor():
             logger.error(f"HMXPositionMonitor - Error accessing the database: {e}")
             return None
 
-    def position_health_check(self):
-        try:
-            if self.is_open_position():
-                position = self.get_open_position()
-                if self.is_near_liquidation_price(position):
-                    reason = PositionCloseReason.LIQUIDATION_RISK.value
-                    pub.sendMessage('close_positions', reason)
-                else:
-                    return
-            else:
-                return
-        except Exception as e:
-            logger.error(f"HMXPositionMonitor - Error checking position health: {e}")
-            return None
-
     def get_open_position(self) -> dict:
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -83,3 +68,6 @@ class HMXPositionMonitor():
             logger.error(f"HMXPositionMonitor - Error while searching for open HMX positions:", {e})
             return None
 
+x = HMXPositionMonitor()
+y = x.get_open_position()
+print(y)

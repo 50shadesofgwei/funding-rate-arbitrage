@@ -30,7 +30,6 @@ def parse_trade_data_from_position_details(position_details: dict) -> dict:
         logger.error(f"SynthetixPositionControllerUtils - An unexpected error occurred in parse_trade_data_from_position_details: {e}")
         return None
 
-@log_function_call
 def calculate_liquidation_price(position_data: dict, asset_price: float) -> float:
     try:
         logger.error(f'SynthetixPositionControllerUtils:calculate_liquidation_price - position_data = {position_data}')
@@ -50,11 +49,12 @@ def calculate_liquidation_price(position_data: dict, asset_price: float) -> floa
 
         is_long = position_size > 0
         if is_long:
-            liquidation_price = (available_margin - maintenance_margin_requirement - (position_size * asset_price)) / position_size
+            price_decrease_needed = (available_margin - maintenance_margin_requirement) / position_size
+            liquidation_price = asset_price - price_decrease_needed
         else:
-            liquidation_price = (available_margin - maintenance_margin_requirement + (position_size * asset_price)) / position_size
-
-        liquidation_price = abs(liquidation_price)
+            price_increase_needed = (available_margin + maintenance_margin_requirement) / abs(position_size)
+            liquidation_price = asset_price + price_increase_needed
+            liquidation_price = abs(liquidation_price)
 
         if liquidation_price <= 0:
             logger.error(f"SynthetixPositionControllerUtils - Calculated invalid liquidation price: {liquidation_price}.")

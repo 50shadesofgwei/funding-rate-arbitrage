@@ -1,10 +1,10 @@
 # Synthetix Funding Rate Arbitrage
 ![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
-> **Version 0.2.1**
+> **Version 0.3.0**
 
 ![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk) ![Static Badge](https://img.shields.io/badge/License-MIT-green)
 
-This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between CEX/DEX perps platforms. Current version focuses on Synthetix vs Binance pairs, opening funding-accruing positions on Synthetix and hedging on Binance. 
+This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between various perps platforms. Current version focuses on Synthetix vs HMX pairs, detecting and executing upon the opportunities that it finds
 
 Given that the repo is under active development, it is recommended that you run the bot on testnet for a while first to ensure that the configuration is correct before putting any capital at stake.
 
@@ -41,15 +41,20 @@ To make sure you can run the project's commands directly from your terminal, run
 
 After this, navigate to the .env file and input the necessary values. You will need:
 
-- An Alchemy API key
+- An Alchemy API key (Base + Arbitrum)
 - The relevant chainId (Base Mainnet: 8453, Base Testnet: 84532)
 - Your wallet address and Private Key (For security reasons you should create a new wallet to use here)
-- A Binance API key + secret
 
 Recommended values for the following vars are as follows:
 - `TRADE_LEVERAGE=5`
 - `DELTA_BOUND=0.03`
 - `PERCENTAGE_CAPITAL_PER_TRADE=25`
+
+The vars:
+- `DEFAULT_TRADE_DURATION_HOURS=8`
+and
+- `DEFAULT_TRADE_SIZE_USD=250`
+are there for determining the most profitable opportinity. The actual size of your trades will be determined by how much collateral is in your accounts, the leverage factor, and the percentage capital per trade.
 
 Trade Leverage specifies the leverage applied to the collateral amount on each trade. Setting this value too high will result in positions being liquidated, so keeping a relatively small cap is a good idea.
 Delta Bound calculates the maximum delta on a trade pair before it will be cancelled by the health checker. The delta between positions will in most cases be 0.0, so this is mostly a failsafe.
@@ -92,7 +97,7 @@ To switch to live trading, simply remove the final argument like so:
 self.client = Client(api_key, api_secret)
 ```
 
-> As of version 0.2.1, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
+> As of version 0.3.0, there are Binance clients initialised in the following files. Make sure all are configured uniformly.
     - BinanceCaller.py
     - BinancePositionController.py
     - BinancePositionMonitor.py
@@ -105,7 +110,7 @@ The bot can be controlled via the CLI using the following commands:
 
 ## Video Walkthrough
 A high level walkthrough can be found via following this link:
-[Watch here](https://drive.google.com/file/d/1QlGKDZIhfQkfegQOnAi7ycPEOlvWn4ye/view?usp=sharing)
+[Watch here](https://www.youtube.com/watch?v=XvzK4EbU8Bk)
 
 ## Profitability Estimations
 As of version 0.2.1, the impact of a potential trade on funding velocity is now taken into consideration when assessing the profitability of a position - maker/taker fees are also taken into account, and 8 new markets have been added to the searcher algorithm (by default, all will be selected). More markets will be added in future releases as they amass sufficient liquidity.
@@ -169,10 +174,10 @@ This inheritance structure is repeated with the Master modules, an instance of e
     - `TradeLogger`
 
 Cross-module communication is handled via event emitters and listeners, a directory of which can be found in GlobalUtils.py.
-Upon confirmation of execution, trades are logged to a database with each side (SNX/Binance) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
+Upon confirmation of execution, trades are logged to a database with each side (SNX/HMX) having its own entry, and are linked via a shared UUID. Upon closing, the entries are updated with relevant PnL, accrued funding and reason for close. 
 
 ## Open Issues / Potential Improvements
-> **Version 0.2.1**
+> **Version 0.3.0**
 
 **Shutdown** 
 

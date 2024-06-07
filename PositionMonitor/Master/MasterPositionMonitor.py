@@ -69,11 +69,8 @@ class MasterPositionMonitor():
             position_one = get_open_position_for_exchange(first_exchange)
             position_two = get_open_position_for_exchange(second_exchange)
         
-            first_is_near_liquidation_method = getattr(self, first_exchange.lower()).is_near_liquidation_price(position_one)
-            second_is_near_liquidation_method = getattr(self, second_exchange.lower()).is_near_liquidation_price(position_two)
-
-            is_first_exchange_risk = first_is_near_liquidation_method()
-            is_second_exchange_risk = second_is_near_liquidation_method()
+            is_first_exchange_risk = getattr(self, first_exchange.lower()).is_near_liquidation_price(position_one)
+            is_second_exchange_risk = getattr(self, second_exchange.lower()).is_near_liquidation_price(position_two)
 
             if is_first_exchange_risk or is_second_exchange_risk:
                 return True
@@ -94,15 +91,13 @@ class MasterPositionMonitor():
             first_funding_rate = getattr(self, first_exchange.lower()).get_funding_rate(position_one)
             second_funding_rate = getattr(self, second_exchange.lower()).get_funding_rate(position_two)
 
-            first_position_is_long = position_one['size'] > 0
-            second_position_is_long = position_two['size'] > 0
+            first_position_is_long = position_one['side'].lower() == 'long'
+            second_position_is_long = position_two['side'].lower() == 'long'
 
             first_fee_impact = first_funding_rate * (1 if first_position_is_long else -1)
             second_fee_impact = second_funding_rate * (1 if second_position_is_long else -1)
 
             net_profitability = first_fee_impact + second_fee_impact
-
-            logger.info(f"MasterPositionMonitor - Net funding fees impact: First = {first_fee_impact}, Second = {second_fee_impact}, Net = {net_profitability}")
 
             is_profitable = net_profitability > 0
             return is_profitable
@@ -127,18 +122,16 @@ class MasterPositionMonitor():
                 logger.error(f"MasterPositionMonitor - Position for exchange {second_exchange}is missing when trying to calculate delta.")
                 return False
 
-            symbol = position_one['symbol']
-            asset_price = get_price_from_pyth(symbol)
+            first_notional_value = float(position_one['size_in_asset'])
+            second_notional_value = float(position_two['size_in_asset'])
 
-            first_notional_value = float(position_one['size_in_asset']) * asset_price
-            second_notional_value = float(position_two['size_in_asset']) * asset_price
-
-            first_notional_value = first_notional_value if first_notional_value['side'].upper() == 'LONG' else -first_notional_value
-            second_notional_value = second_notional_value if second_notional_value['side'].upper() == 'LONG' else -second_notional_value
+            first_notional_value = first_notional_value if position_one['side'].upper() == 'LONG' else -first_notional_value
+            second_notional_value = second_notional_value if position_two['side'].upper() == 'LONG' else -second_notional_value
 
             total_notional_value = abs(first_notional_value) + abs(second_notional_value)
             delta_in_usd = abs(first_notional_value - second_notional_value)
             delta = (delta_in_usd / total_notional_value) if total_notional_value else 0
+
 
             return not delta > delta_bound
         except Exception as e:
@@ -146,14 +139,19 @@ class MasterPositionMonitor():
             return False
 
     def is_synthetix_funding_turning_against_trade_in_given_time(self, mins: int) -> bool:
+        symbol = '' 
         try:
             synthetix_position = self.synthetix.get_open_position()
-            is_long = synthetix_position['size'] > 0
+            if not synthetix_position:
+                logger.error("MasterPositionMonitor - No open position found.")
+                return None
+            
             symbol = str(synthetix_position['symbol'])
+            is_long = synthetix_position['size_in_asset'] > 0
 
             market_data = MarketDirectory.get_market_params(symbol)
             if not market_data:
-                logger.error(f"MasterPositionMonitor:is_synthetix_funding_turning_against_trade_in_given_time - No market data available for symbol: {symbol}")
+                logger.error(f"MasterPositionMonitor - No market data available for symbol: {symbol}")
                 return None
 
             market_summary = self.synthetix.client.perps.get_market_summary(market_data['market_id'])
@@ -164,11 +162,13 @@ class MasterPositionMonitor():
             predicted_funding_rate = funding_rate + (velocity * future_blocks / BLOCKS_PER_DAY_BASE)
 
             if (is_long and predicted_funding_rate < 0) or (not is_long and predicted_funding_rate > 0):
-                return True 
+                return True
             return False
+
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Error checking if funding is turning against trade for {symbol}: {e}")
             return False
+
 
     def get_exchanges_for_open_position(self) -> list:
         try:
@@ -216,8 +216,4 @@ class MasterPositionMonitor():
             logger.error(f"MasterPositionMonitor - Error retrieving symbol for open position. Error: {e}")
             return None
 
-# x = MasterPositionMonitor()
-# exchanges = ['HMX', 'Synthetix']
-# y = x.check_profitability_for_open_positions(exchanges)
-# print(y)
 
