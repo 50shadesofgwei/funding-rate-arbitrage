@@ -36,21 +36,30 @@ class MasterPositionController:
                 'short_exchange': opportunity['short_exchange']
             }
 
+            is_hedge = get_is_hedge(opportunity)
+
             position_data_dict = {}
 
             for role, exchange_name in exchanges.items():
+                is_long=(role == 'long_exchange')
                 execute_trade_method = getattr(self, exchange_name.lower()).execute_trade
                 position_data = execute_trade_method(
                     opportunity, 
-                    is_long=(role == 'long_exchange'), 
+                    is_long, 
                     trade_size=trade_size
                 )
+
+                is_hedge = True if is_long and is_hedge['long'] == True else False
 
                 logger.info(f"MasterPositionController - {exchange_name} trade execution response: {position_data}")
 
                 if position_data:
                     position_data_dict[role] = position_data
                     position_data_dict[role]['exchange'] = exchanges['long_exchange'] if role == 'long_exchange' else exchanges['short_exchange']
+                    if is_hedge == True:
+                        position_data_dict[role]['is_hedge'] = 'True'
+                    elif is_hedge == False:
+                        position_data_dict[role]['is_hedge'] = 'False'
 
             if len(position_data_dict) == 2:
                 pub.sendMessage(EventsDirectory.POSITION_OPENED.value, position_data=position_data_dict)
@@ -201,5 +210,5 @@ class MasterPositionController:
 # y = TradeLogger()
 # MarketDirectory.initialize()
 # exchanges = ['HMX', 'Synthetix']
-# x.close_position_pair(symbol='SOL', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
+# x.close_position_pair(symbol='AVAX', reason=PositionCloseReason.TEST.value, exchanges=exchanges)
 # print(x.is_already_position_open())

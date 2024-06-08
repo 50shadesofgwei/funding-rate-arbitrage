@@ -215,7 +215,7 @@ class HMXPositionController:
             is_long = get_side_for_open_trade_from_database(symbol)
 
             maintenance_margin_fraction = float(margin_details['maintenance_margin_fraction_bps']) / 10000 
-            position_size = float(position['position_size'])
+            position_size = abs(float(position['position_size']))
             size_in_asset = position_size / asset_price
             maintenance_margin_requirement = size_in_asset * maintenance_margin_fraction
 
@@ -250,7 +250,7 @@ class HMXPositionController:
 
 
 # x = HMXPositionController()
-# # x.close_position('ARB', PositionCloseReason.TEST.value)
+# x.close_position('AVAX', PositionCloseReason.TEST.value)
 # # size_delta: int = 3000*10**30
 
 # y = x.get_liquidation_price("ARB")
