@@ -29,6 +29,7 @@ class TradeLogger:
                         exchange TEXT NOT NULL,
                         symbol TEXT NOT NULL,
                         side TEXT NOT NULL,
+                        is_hedge TEXT NOT NULL,
                         size_in_asset REAL NOT NULL,
                         liquidation_price REAL NOT NULL,
                         open_close TEXT NOT NULL,
@@ -55,8 +56,9 @@ class TradeLogger:
                 symbol = trade['symbol']
                 side = trade['side']
                 size = trade['size']
+                is_hedge = trade['is_hedge']
                 liquidation_price = trade['liquidation_price']
-                self.log_open_trade(strategy_execution_id, exchange, symbol, side, size, liquidation_price, open_time)
+                self.log_open_trade(strategy_execution_id, exchange, symbol, side, is_hedge, size, liquidation_price, open_time)
             
             pub.sendMessage(EventsDirectory.TRADE_LOGGED.value, position_data=position_data)
 
@@ -70,22 +72,22 @@ class TradeLogger:
 
 
     def log_open_trade(self, strategy_execution_id, exchange, 
-                       symbol, side, size, liquidation_price, 
+                       symbol, side, is_hedge, size, liquidation_price, 
                        open_time=datetime.now()):
         try:
             with sqlite3.connect(self.db_path) as conn:
                 sql_query = '''
                     INSERT INTO trade_log (
                         strategy_execution_id, exchange, symbol, 
-                        side, size_in_asset, liquidation_price, open_close, open_time
+                        side, is_hedge, size_in_asset, liquidation_price, open_close, open_time
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, 'Open', ?);
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'Open', ?);
                 '''
                 conn.execute(
                     sql_query, 
                     (
                         strategy_execution_id, exchange, symbol, 
-                        side, size, liquidation_price, open_time
+                        side, is_hedge, size, liquidation_price, open_time
                     )
                 )
                 logger.info(f"TradeLogger - Logged open trade for strategy_execution_id: {strategy_execution_id} on exchange: {exchange}")

@@ -72,6 +72,8 @@ class MasterPositionMonitor():
             is_first_exchange_risk = getattr(self, first_exchange.lower()).is_near_liquidation_price(position_one)
             is_second_exchange_risk = getattr(self, second_exchange.lower()).is_near_liquidation_price(position_two)
 
+            logger.info(f'Liquidation risk calculated as follows: {first_exchange} = {is_first_exchange_risk}, {second_exchange} = {is_second_exchange_risk}')
+
             if is_first_exchange_risk or is_second_exchange_risk:
                 return True
             else:
@@ -91,20 +93,22 @@ class MasterPositionMonitor():
             first_funding_rate = getattr(self, first_exchange.lower()).get_funding_rate(position_one)
             second_funding_rate = getattr(self, second_exchange.lower()).get_funding_rate(position_two)
 
-            first_position_is_long = position_one['side'].lower() == 'long'
-            second_position_is_long = position_two['side'].lower() == 'long'
+            first_funding_rate = abs(first_funding_rate)
+            second_funding_rate = abs(second_funding_rate)
 
-            first_fee_impact = first_funding_rate * (1 if first_position_is_long else -1)
-            second_fee_impact = second_funding_rate * (1 if second_position_is_long else -1)
+            first_position_is_hedge = position_one['is_hedge'].lower() == 'True'
+            second_position_is_hedge = position_two['is_hedge'].lower() == 'True'
 
-            net_profitability = first_fee_impact + second_fee_impact
-
-            is_profitable = net_profitability > 0
-            return is_profitable
+            if first_position_is_hedge == True and first_funding_rate > second_funding_rate:
+                return False
+            elif second_position_is_hedge == True and second_funding_rate > first_funding_rate:
+                return False
+            else:
+                return True
 
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
-            return False
+            return None
 
     def is_position_delta_within_bounds(self, exchanges: list) -> bool:
         try:
@@ -122,8 +126,10 @@ class MasterPositionMonitor():
                 logger.error(f"MasterPositionMonitor - Position for exchange {second_exchange}is missing when trying to calculate delta.")
                 return False
 
-            first_notional_value = float(position_one['size_in_asset'])
-            second_notional_value = float(position_two['size_in_asset'])
+            first_notional_value = position_one['size_in_asset']
+            print('First Notional Value', first_notional_value)
+            second_notional_value = position_two['size_in_asset']
+            print('Second Notional Value', second_notional_value)
 
             first_notional_value = first_notional_value if position_one['side'].upper() == 'LONG' else -first_notional_value
             second_notional_value = second_notional_value if position_two['side'].upper() == 'LONG' else -second_notional_value
@@ -147,7 +153,6 @@ class MasterPositionMonitor():
                 return None
             
             symbol = str(synthetix_position['symbol'])
-            is_long = synthetix_position['size_in_asset'] > 0
 
             market_data = MarketDirectory.get_market_params(symbol)
             if not market_data:
@@ -157,11 +162,14 @@ class MasterPositionMonitor():
             market_summary = self.synthetix.client.perps.get_market_summary(market_data['market_id'])
             funding_rate = float(market_summary['current_funding_rate'])
             velocity = float(market_summary['current_funding_velocity'])
+            is_long = synthetix_position['size_in_asset'] > 0
+            is_hedge = True if synthetix_position['is_hedge'] == 'True' else False
 
             future_blocks = mins * 30
             predicted_funding_rate = funding_rate + (velocity * future_blocks / BLOCKS_PER_DAY_BASE)
+            print(f'predicted funding rate = {predicted_funding_rate}')
 
-            if (is_long and predicted_funding_rate < 0) or (not is_long and predicted_funding_rate > 0):
+            if (is_long and not is_hedge and predicted_funding_rate < 0) or (not is_long and is_hedge and predicted_funding_rate > 0):
                 return True
             return False
 
@@ -217,3 +225,7 @@ class MasterPositionMonitor():
             return None
 
 
+# x = MasterPositionMonitor()
+# exchanges = ['HMX', 'Synthetix']
+# y = x.is_position_delta_within_bounds(exchanges)
+# print(y)

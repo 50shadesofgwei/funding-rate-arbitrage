@@ -21,13 +21,13 @@ class SynthetixPositionMonitor():
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('''SELECT 1 FROM trade_log WHERE open_close = 'Open' AND exchange = 'Synthetix';''')
+                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Synthetix';''')
                 open_position = cursor.fetchone()
                 if open_position:
                     position_dict = get_dict_from_database_response(open_position)
                     return position_dict
                 else:
-                    logger.error("SynthetixPositionMonitor - No open Synthetix positions found")
+                    logger.error("SynthetixPositionMonitor - No open Synthetix positions found with details")
                     return None
 
         except sqlite3.Error as sqe:
@@ -37,6 +37,7 @@ class SynthetixPositionMonitor():
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")
             return None
+
 
     def is_near_liquidation_price(self, position: dict) -> bool:
         try:
@@ -77,5 +78,3 @@ class SynthetixPositionMonitor():
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions:", {e})
             raise e
-
-    

@@ -17,7 +17,7 @@ def get_dict_from_database_response(response):
     try:
         columns = [
             'id', 'strategy_execution_id', 'exchange', 'symbol',
-            'side', 'size_in_asset', 'liquidation_price', 'open_close', 'open_time', 
+            'side', 'is_hedge', 'size_in_asset', 'liquidation_price', 'open_close', 'open_time', 
             'close_time', 'pnl', 'accrued_funding', 'close_reason'
         ]
 
@@ -78,7 +78,7 @@ def get_open_position_for_exchange(exchange: str) -> dict:
                 
                 sql_query = '''
                     SELECT id, strategy_execution_id, exchange, symbol,
-                    side, size_in_asset, liquidation_price, open_close, open_time, 
+                    side, is_hedge, size_in_asset, liquidation_price, open_close, open_time, 
                     close_time, pnl, accrued_funding, close_reason
                     FROM trade_log 
                     WHERE open_close = 'Open' 

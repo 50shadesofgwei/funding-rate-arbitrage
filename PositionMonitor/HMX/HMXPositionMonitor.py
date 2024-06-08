@@ -68,6 +68,3 @@ class HMXPositionMonitor():
             logger.error(f"HMXPositionMonitor - Error while searching for open HMX positions:", {e})
             return None
 
-x = HMXPositionMonitor()
-y = x.get_open_position()
-print(y)

@@ -55,3 +55,26 @@ def calculate_adjusted_trade_size(opportunity, is_long: bool, trade_size: float)
             return None
 
 
+def get_is_hedge(opportunity: dict):
+    try:
+        long_rate = abs(opportunity['long_exchange_funding_rate'])
+        short_rate = abs(opportunity['short_exchange_funding_rate'])
+
+        if long_rate > short_rate:
+            is_hedge = {
+                'long': False,
+                'short': True
+            }
+            return is_hedge
+        
+        else:
+            is_hedge = {
+                'long': True,
+                'short': False
+            }
+            return is_hedge
+
+    except Exception as e:
+        logger.error(f"MasterPositionControlerUtils - Failed to calculate which side is the hedge. Error: {e}")
+        return None
+
