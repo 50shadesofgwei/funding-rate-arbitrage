@@ -128,7 +128,7 @@ class HMXPositionController:
         """
         try:
             response = self.client.private.deposit_erc20_collateral(0, token_address, amount)
-            tx_hash = HexBytes.hex(response['tx'])
+            tx_hash: HexBytes = HexBytes.hex(response['tx'])
             time.sleep(3)
             if is_transaction_hash(tx_hash):
                 logger.info(f'HMXPositionController - Collateral deposit tx successful. Token Address: {token_address}, Amount = {amount}')
@@ -247,11 +247,3 @@ class HMXPositionController:
         except Exception as e:
             logger.error(f"HMXPositionController - Failed to get available collateral. Error: {e}")
             return None
-
-
-# x = HMXPositionController()
-# x.close_position('AVAX', PositionCloseReason.TEST.value)
-# # size_delta: int = 3000*10**30
-
-# y = x.get_liquidation_price("ARB")
-# print(y)
