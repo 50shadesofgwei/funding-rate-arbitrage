@@ -4,7 +4,7 @@
 
 ![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk) ![Static Badge](https://img.shields.io/badge/License-MIT-green)
 
-This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between various perps platforms. Current version focuses on Synthetix vs HMX pairs, detecting and executing upon the opportunities that it finds
+This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between various perps platforms. Current version focuses on Synthetix vs HMX pairs, detecting and executing upon the opportunities that it finds. HMX is on Arbitrum and Synthetix v3 is on Base, so you'll need some funds on both exchanges.
 
 Given that the repo is under active development, it is recommended that you run the bot on testnet for a while first to ensure that the configuration is correct before putting any capital at stake.
 
@@ -45,10 +45,10 @@ After this, navigate to the .env file and input the necessary values. You will n
 - The relevant chainId (Base Mainnet: 8453, Base Testnet: 84532)
 - Your wallet address and Private Key (For security reasons you should create a new wallet to use here)
 
-Recommended values for the following vars are as follows:
+Some recommended values for the following vars are as follows:
 - `TRADE_LEVERAGE=5`
 - `DELTA_BOUND=0.03`
-- `PERCENTAGE_CAPITAL_PER_TRADE=25`
+- `PERCENTAGE_CAPITAL_PER_TRADE=50`
 
 The vars:
 - `DEFAULT_TRADE_DURATION_HOURS=8`
@@ -76,6 +76,14 @@ TARGET_TOKENS = [
 ```
 The bot will now only target ETH opportunities.
 
+To switch between which exchanges are targeted, there is a similar array:
+```python
+TARGET_EXCHANGES = [
+    {"exchange": "Synthetix", "is_target": True},
+    {"exchange": "HMX", "is_target": True},
+]
+```
+**It's currently recommended that you run with exchanges Synthetix and HMX.**
 Note that some additional steps are required before executing trades, namely that a Synthetix perps account will have to be created and have some collateral deployed. The code for this is found in the next section.
 
 ## Testnet config
@@ -104,9 +112,10 @@ self.client = Client(api_key, api_secret)
 
 ## Console Scripts
 The bot can be controlled via the CLI using the following commands:
-- `deploy-collateral [token_address] [amount]`
+- `deploy-collateral-synthetix [amount]`
+- `deploy-collateral-hmx [token_address] [amount]`
 - `project-run` (Run this command to start the bot after setup is finished)
-- `close-all-positions`
+- `close-position-pair [symbol]`
 
 ## Video Walkthrough
 A high level walkthrough can be found via following this link:
@@ -182,11 +191,13 @@ Upon confirmation of execution, trades are logged to a database with each side (
 **Shutdown** 
 
 If you're running an instance of the bot and shut it down mid-trade, the positions won't close automatically; you'll have to close them manually either via the respective UIs or by using the CLI command:
-`close-all-positions`
+`close-position-pair` with the desired symbol as the argument, e.g. `close-position-pair ETH`.
 
 **Slippage**
 
 In its current form, the bot uses market orders for both sides of each trade. For Synthetix this is mandated by the smart contracts but for the Binance side, there is a possibility that one could tighten the profit margins on each trade by using limit orders instead of market orders. The slippage is especially pronounced on Binance testnet because there's such little liquidity and therefore the bid/ask spread is very large, which also makes backtesting and + test PnL calculations harder to run off of testnet data.
+
+HMX also uses market price.
 
 **Moving Collateral <> Exchanges**
 

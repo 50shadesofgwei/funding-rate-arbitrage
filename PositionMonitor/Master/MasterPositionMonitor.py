@@ -223,9 +223,3 @@ class MasterPositionMonitor():
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Error retrieving symbol for open position. Error: {e}")
             return None
-
-
-# x = MasterPositionMonitor()
-# exchanges = ['HMX', 'Synthetix']
-# y = x.is_position_delta_within_bounds(exchanges)
-# print(y)

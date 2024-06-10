@@ -104,15 +104,26 @@ class SynthetixPositionController:
                 else:
                     return None
 
-    def approve_and_deposit_collateral(self, amount: int):
+    def approve_and_deposit_collateral(self, token_address: str, amount: int):
         try:
-            self._approve_collateral_for_spot_market_proxy(amount)
+            self._approve_collateral_for_spot_market_proxy(amount, market_id=0)
             time.sleep(1)
-            self._approve_collateral_for_spot_market_proxy(amount)
+            self._approve_collateral_for_spot_market_proxy(amount, market_id=1)
+            time.sleep(1)
+            self._approve_spot_market_to_spend_collateral(token_address, amount)
+            time.sleep(1)
+            self._approve_spot_market_to_spend_collateral('0x09d51516F38980035153a554c26Df3C6f51a23C3', amount*10**18)
+            time.sleep(1)
+            self._approve_collateral_for_spot_market_proxy(amount, market_id=0)
+            time.sleep(1)
+            self._approve_collateral_for_spot_market_proxy(amount, market_id=1)
+            time.sleep(1)
+            self._approve_collateral_for_perps_market_proxy(amount, market_id=0)
+            time.sleep(1)
+            self._approve_collateral_for_perps_market_proxy(amount, market_id=1)
+            time.sleep(1)
             time.sleep(1)
             self._wrap_collateral(amount)
-            time.sleep(1)
-            self._approve_collateral_for_spot_market_proxy(amount)
             time.sleep(1)
             self._execute_atomic_order(amount, 'sell')
             time.sleep(1)
@@ -158,6 +169,24 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Collateral approval for spot market failed. Error: {e}")
 
+    def _approve_spot_market_to_spend_collateral(self, token_address: str, amount: int):
+        try:
+            if token_address == '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913':
+                amount = amount * 10 ** 6
+            spot_market_proxy_address = self.client.spot.market_proxy.address
+            approve_tx = self.client.spot.approve(
+                token_address, 
+                spot_market_proxy_address,
+                amount,
+                submit=True
+            )
+            if is_transaction_hash(approve_tx):
+                logger.info(f"SynthetixPositionController - Approved spot market collateral to spend collateral transaction successful. Transaction ID: {approve_tx}")
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - Spot market spending collateral approval for token: {token_address}, amount: {amount} failed. Error: {e}")
+            return None
+
+
     def _approve_collateral_for_perps_market_proxy(self, amount: int, market_id: int):
         try:
             amount=amount*10**18
@@ -174,11 +203,13 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Collateral approval for perps market failed. Error: {e}")
 
     def _wrap_collateral(self, amount: int):
-        wrap_tx = self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
-        if is_transaction_hash(wrap_tx):
-            logger.info(f"SynthetixPositionController - Wrap tx executed successfully: {wrap_tx}")
+        try:
+            wrap_tx = self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
+            if is_transaction_hash(wrap_tx):
+                logger.info(f"SynthetixPositionController - Wrap tx executed successfully: {wrap_tx}")
 
-        return wrap_tx
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - Failed to wrap USDC <> sUSDC. amount = {amount}. Error: {e}")
 
     def _execute_atomic_order(self, amount: int, side: str):
         order_tx = self.client.spot.atomic_order(side, amount, market_name="sUSDC", submit=True)
@@ -296,7 +327,3 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None
-
-# x = SynthetixPositionController()
-# MarketDirectory.initialize()
-# x.close_position('DOGE', PositionCloseReason.TEST.value)
