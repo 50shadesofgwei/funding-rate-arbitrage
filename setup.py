@@ -14,6 +14,7 @@ setup(
             'deploy-collateral-synthetix = TxExecution.Synthetix.run:main',
             'deploy-collateral-hmx = TxExecution.HMX.run:main',
             'close-position-pair = TxExecution.Master.run:main',
+            'is-position-open = TxExecution.Master.run:is_position_open'
         ],
     },
 

@@ -65,37 +65,35 @@ def is_long(size: float) -> bool:
 
 def calculate_liquidation_price(params: dict) -> float:
     try:
-        logger.info(f"Calculating liquidation price with parameters: {params}")
-
         if params["size_usd"] <= 0 or params["asset_price"] <= 0:
-            logger.error("Invalid size or asset price for liquidation calculation.")
+            logger.error("HMXPositionMonitor - Invalid size or asset price for liquidation calculation.")
             return None
 
         if params["available_margin"] <= 0:
-            logger.error("Invalid available margin for liquidation calculation.")
+            logger.error("HMXPositionMonitor - Invalid available margin for liquidation calculation.")
             return None
 
-        maintenance_margin_percent = float(params["maintenance_margin_requirement"]) / 10000
-        maintenance_margin_amount = params["size_usd"] * params["asset_price"] * maintenance_margin_percent
+        maintenance_margin_requirement = float(params["maintenance_margin_requirement"])
 
         if params["is_long"]:
-            price_decrease_needed = (params["available_margin"] - maintenance_margin_amount) / params["size_usd"]
+            price_decrease_needed = (params["available_margin"] - maintenance_margin_requirement) / params["size_in_asset"]
             liquidation_price = params["asset_price"] - price_decrease_needed
         else:
-            price_increase_needed = (params["available_margin"] + maintenance_margin_amount) / abs(params["size_usd"])
+            price_increase_needed = (params["available_margin"] + maintenance_margin_requirement) / abs(params["size_in_asset"])
             liquidation_price = params["asset_price"] + price_increase_needed
 
         liquidation_price = abs(liquidation_price)
+        logger.warning(f'HMXPositionMonitor - DEBUGGING: liquidation_price = {liquidation_price}, price_increase_needed = {price_increase_needed}, maintenance_margin_requirement = {maintenance_margin_requirement}')
 
         if liquidation_price <= 0:
-            logger.error(f"Calculated invalid liquidation price: {liquidation_price}")
+            logger.error(f"HMXPositionMonitor - Calculated invalid liquidation price: {liquidation_price}")
             return None
 
-        logger.info(f"Liquidation price calculated successfully: {liquidation_price}")
+        logger.info(f"HMXPositionMonitor - Liquidation price calculated successfully: {liquidation_price}")
         return liquidation_price
 
     except Exception as e:
-        logger.error(f"Error during liquidation price calculation: {e}")
+        logger.error(f"HMXPositionMonitor - Error during liquidation price calculation: {e}")
         return None
 
 def get_side_for_open_trade_from_database(symbol: str) -> bool:
@@ -107,7 +105,7 @@ def get_side_for_open_trade_from_database(symbol: str) -> bool:
             if open_position:
                 return open_position[0].lower() == 'long'
             else:
-                logger.info(f"No open positions found for symbol: {symbol}")
+                logger.info(f"HMXPositionMonitor - No open positions found for symbol: {symbol}")
                 return False
     except Exception as e:
         logger.error(f"HMXPositionMonitor - Error while searching for open HMX positions: {e}")

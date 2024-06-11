@@ -35,19 +35,27 @@ def get_dict_from_database_response(response):
 
 
 def get_percentage_away_from_liquidation_price(position: dict) -> float:
-        try:
-            liquidation_price = float(position['liquidation_price'])
-            symbol = str(position['symbol'])
-            normalized_symbol = normalize_symbol(symbol)
-            asset_price = get_price_from_pyth(normalized_symbol)
-            is_long = True if position['side'].lower() == 'long' else False
-            differential = float(asset_price-liquidation_price) if is_long else float(liquidation_price-asset_price)
-            percentage: float = asset_price / differential
-            return percentage
+    try:
+        symbol = position.get('symbol', 'Unknown Symbol')
+        liquidation_price = float(position['liquidation_price'])
+        normalized_symbol = normalize_symbol(symbol)
+        asset_price = get_price_from_pyth(normalized_symbol)
 
-        except Exception as e:
-            logger.error(f"MasterPositionMonitorUtils - Error checking for percentage away from liquidation price for {symbol}: {e}")
+        is_long = position['side'].lower() == 'long'
+        differential = asset_price - liquidation_price if is_long else liquidation_price - asset_price
+
+        if asset_price > 0:
+            percentage = abs(differential / asset_price) * 100
+        else:
+            logger.error(f"MasterPositionMonitorUtils - Current asset price is zero or negative: {asset_price}")
             return None
+
+        logger.info(f'MasterPositionMonitorUtils - Percentage away from liquidation = {percentage}% for {symbol}')
+        return percentage
+
+    except Exception as e:
+        logger.error(f"MasterPositionMonitorUtils - Error checking for percentage away from liquidation price for {symbol}: {e}")
+        return None
 
 def is_open_position_for_symbol_on_exchange(symbol: str, exchange: str) -> bool:
         try:

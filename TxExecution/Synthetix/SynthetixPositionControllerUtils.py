@@ -1,10 +1,6 @@
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
-from decimal import DivisionByZero
-import re
-import uuid
-
 
 def parse_trade_data_from_position_details(position_details: dict) -> dict:
     try:
@@ -17,7 +13,7 @@ def parse_trade_data_from_position_details(position_details: dict) -> dict:
             "exchange": "Synthetix",
             "symbol": position_details['position']['symbol'],
             "side": side,
-            "size": position_details['position']['position_size'],
+            "size_in_asset": position_details['position']['position_size'],
             "liquidation_price": liquidation_price
         }
 
@@ -32,7 +28,6 @@ def parse_trade_data_from_position_details(position_details: dict) -> dict:
 
 def calculate_liquidation_price(position_data: dict, asset_price: float) -> float:
     try:
-        logger.error(f'SynthetixPositionControllerUtils:calculate_liquidation_price - position_data = {position_data}')
         position_size = position_data['position']['position_size']
         available_margin = position_data['margin_details']['available_margin']
         maintenance_margin_requirement = position_data['margin_details']['maintenance_margin_requirement']
@@ -78,4 +73,4 @@ def get_side(size: float) -> str:
             return 'Short'
     except Exception as e:
         logger.error(f"SynthetixPositionControllerUtils - Error determining side from size {size}: {e}")
-        return 'Error'
+        return None
