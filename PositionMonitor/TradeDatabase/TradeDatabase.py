@@ -14,7 +14,7 @@ class TradeLogger:
             self.conn = self.create_or_access_database()
         except Exception as e:
             logger.error(f"TradeLogger - Error accessing the database: {e}")
-            raise e
+            return None
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -26,11 +26,11 @@ class TradeLogger:
             conn.execute('''CREATE TABLE IF NOT EXISTS trade_log (
                         id INTEGER PRIMARY KEY,
                         strategy_execution_id TEXT NOT NULL,
-                        order_id TEXT NOT NULL,
                         exchange TEXT NOT NULL,
                         symbol TEXT NOT NULL,
                         side TEXT NOT NULL,
-                        size REAL NOT NULL,
+                        is_hedge TEXT NOT NULL,
+                        size_in_asset REAL NOT NULL,
                         liquidation_price REAL NOT NULL,
                         open_close TEXT NOT NULL,
                         open_time DATETIME,
@@ -43,39 +43,83 @@ class TradeLogger:
             return conn
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error creating/accessing the database: {e}")
-            raise e
+            return None
 
-    def log_trade_pair(self, position_data):
-        strategy_execution_id = str(uuid.uuid4())
-        open_time = datetime.now()
-        logger.info(f"Logging trade pair with ID: {strategy_execution_id}, data: {position_data}")
+    def log_trade_pair(self, position_data: dict):
+        try:
+            strategy_execution_id = str(uuid.uuid4())
+            open_time = datetime.now()
 
-        for exchange, data in position_data.items():
-            order_id = data.get('order_id')
-            symbol = data.get('symbol')
-            side = data.get('side')
-            size = data.get('size')
-            liquidation_price = data.get('liquidation_price')
-            self.log_open_trade(strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time)
-        
-        pub.sendMessage(EventsDirectory.TRADE_LOGGED.value, position_data=position_data)
+            for key in position_data:
+                trade = position_data[key]
+                exchange = trade['exchange']
+                symbol = trade['symbol']
+                side = trade['side']
+                size = trade['size_in_asset']
+                is_hedge = trade['is_hedge']
+                liquidation_price = trade['liquidation_price']
+                self.log_open_trade(strategy_execution_id, exchange, symbol, side, is_hedge, size, liquidation_price, open_time)
+            
+            pub.sendMessage(EventsDirectory.TRADE_LOGGED.value, position_data=position_data)
 
-    def log_open_trade(self, strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time=datetime.now()):
+        except KeyError as ke:
+            logger.error(f"TradeLogger - KeyError while logging trade pair: {ke}")
+            return None
+
+        except Exception as e:
+            logger.error(f"TradeLogger - Error logging trade pair: {e}")
+            return None
+
+
+    def log_open_trade(self, strategy_execution_id, exchange, 
+                       symbol, side, is_hedge, size, liquidation_price, 
+                       open_time=datetime.now()):
         try:
             with sqlite3.connect(self.db_path) as conn:
-                conn.execute('''INSERT INTO trade_log (strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_close, open_time)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, 'Open', ?);''', (strategy_execution_id, order_id, exchange, symbol, side, size, liquidation_price, open_time))
+                sql_query = '''
+                    INSERT INTO trade_log (
+                        strategy_execution_id, exchange, symbol, 
+                        side, is_hedge, size_in_asset, liquidation_price, open_close, open_time
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'Open', ?);
+                '''
+                conn.execute(
+                    sql_query, 
+                    (
+                        strategy_execution_id, exchange, symbol, 
+                        side, is_hedge, size, liquidation_price, open_time
+                    )
+                )
                 logger.info(f"TradeLogger - Logged open trade for strategy_execution_id: {strategy_execution_id} on exchange: {exchange}")
-        except sqlite3.Error as e:
-            logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
 
+        except sqlite3.Error as sql_e:
+            logger.error(f"TradeLogger - SQL error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {sql_e}")
+            return None
+
+        except Exception as e:
+            logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
+            return None
+
+    @log_function_call
     def log_close_trade(self, position_report: dict):
         try:
-            execution_id = self.get_open_execution_id()
-            reason = position_report['close_reason']
-            self.log_close_trade_pair(reason, execution_id, position_report)
+            with sqlite3.connect(self.db_path) as conn:
+                exchange = position_report['exchange']
+                symbol = position_report['symbol']
+                execution_id = self.get_open_execution_id(symbol, exchange)
+                close_time = datetime.now()
+                pnl = position_report['pnl']
+                accrued_funding = position_report['accrued_funding']
+                close_reason = position_report['reason']
+
+                conn.execute('''UPDATE trade_log 
+                                        SET close_time = ?, pnl = ?, accrued_funding = ?, close_reason = ?, open_close = 'Close' 
+                                        WHERE strategy_execution_id = ? AND exchange = ?;''', 
+                                        (close_time, pnl, accrued_funding, close_reason, execution_id, exchange))
+                logger.info(f"TradeLogger - Logged close trade for symbol {symbol} on exchange {exchange} with strategy_execution_id: {execution_id}")
+
         except sqlite3.Error as e:
-            logger.error(f"TradeLogger - Error closing trades on the database: Error: {e}")
+            logger.error(f"TradeLogger - Error logging closed trade for symbol {symbol} and exchange {exchange} on trade database: Error: {e}")
 
     def log_close_trade_pair(self, close_reason, strategy_execution_id, position_report: dict):
         try:
@@ -106,11 +150,11 @@ class TradeLogger:
           
     def clear_database(self):
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute("DROP TABLE IF EXISTS trade_log")
-            conn.commit()
-            self.create_or_access_database()
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute("DROP TABLE IF EXISTS trade_log")
+                conn.commit()
+                self.create_or_access_database()
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error clearing the database: {e}")
 
@@ -130,11 +174,18 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error retrieving trades for execution id: {strategy_execution_id}, Error: {e}")
             return []
 
-    def get_open_execution_id(self) -> str:
+    def get_open_execution_id(self, symbol: str, exchange: str) -> str:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('''SELECT strategy_execution_id FROM trade_log WHERE open_close = 'Open' GROUP BY strategy_execution_id HAVING COUNT(*) = 2;''')
+                query = """
+                        SELECT strategy_execution_id 
+                        FROM trade_log 
+                        WHERE open_close = 'Open' AND symbol = ? AND exchange = ?
+                        GROUP BY strategy_execution_id
+                        HAVING COUNT(*) = 1;
+                        """
+                cursor.execute(query, (symbol, exchange))
                 execution_ids = cursor.fetchall()
 
                 if execution_ids:
@@ -142,8 +193,10 @@ class TradeLogger:
                     logger.info(f"TradeLogger - Found open strategy execution ID: {strategy_execution_id}")
                     return str(strategy_execution_id)
                 else:
-                    logger.info("TradeLogger - No open trade pairs found.")
+                    logger.error(f"TradeLogger - No open strategy execution ID found for symbol: {symbol} on exchange: {exchange}.")
                     return None
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving execution ID for open trades. Error: {e}")
             return None
+
+    

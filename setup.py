@@ -5,14 +5,16 @@ with open('requirements.txt') as f:
 
 setup(
     name='SynthetixFundingRateArbitrage',
-    version='0.2.1',
+    version='0.3.0',
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
         'console_scripts': [
             'project-run = Main.run:run',
-            'deploy-collateral = TxExecution.Synthetix.run:main',
-            'close-all-positions = TxExecution.Master.run:run'
+            'deploy-collateral-synthetix = TxExecution.Synthetix.run:main',
+            'deploy-collateral-hmx = TxExecution.HMX.run:main',
+            'close-position-pair = TxExecution.Master.run:main',
+            'is-position-open = TxExecution.Master.run:is_position_open'
         ],
     },
 

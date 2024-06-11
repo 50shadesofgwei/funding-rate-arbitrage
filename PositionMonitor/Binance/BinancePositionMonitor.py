@@ -1,8 +1,6 @@
-from APICaller.Binance.binanceUtils import BinanceEnvVars
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from binance.um_futures import UMFutures as Client
 from binance.enums import *
 import sqlite3
 from dotenv import load_dotenv
@@ -11,50 +9,22 @@ load_dotenv()
 
 class BinancePositionMonitor():
     def __init__(self, db_path='trades.db'):
-        api_key = BinanceEnvVars.API_KEY.get_value()
-        api_secret = BinanceEnvVars.API_SECRET.get_value()
-        self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
+        self.client = GLOBAL_BINANCE_CLIENT
         self.db_path = db_path
         try:
             self.conn = sqlite3.connect(self.db_path)
         except Exception as e:
             logger.error(f"BinancePositionMonitor - Error accessing the database: {e}")
-            raise e
+            return None
 
-    def get_open_position(self):
+    def is_near_liquidation_price(self, position: dict) -> bool:
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
-                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Binance';''')
-                open_positions = cursor.fetchall()
-                if open_positions:
-                    position_dict = get_dict_from_database_response(open_positions[0])
-                    logger.info(f'BinancePositionMonitor - Open trade pulled from database: {position_dict}')
-                    return position_dict
-                else:
-                    logger.info(f"BinancePositionMonitor - No open Binance positions found")
-                    return None
-        except Exception as e:
-            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions:", {e})
-            raise e
-
-    def is_near_liquidation_price(self, position) -> bool:
-        try:
-            liquidation_price = float(position['liquidation_price'])
-            symbol = position['symbol']
-            
-            normalized_symbol = normalize_symbol(symbol)
-            asset_price = get_price_from_pyth(normalized_symbol)
-
-            lower_bound = liquidation_price * 0.9
-            upper_bound = liquidation_price * 1.1
-
-            if lower_bound <= asset_price <= upper_bound:
+            percentage_from_liqiudation_price = get_percentage_away_from_liquidation_price(position)
+            if percentage_from_liqiudation_price > float(os.getenv('MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE')):
                 return True
-            else:
-                return False
+
         except Exception as e:
-            logger.error(f"BinancePositionMonitor - Error checking if near liquidation price for {symbol}: {e}")
+            logger.error(f"BinancePositionMonitor - Error checking if near liquidation price for {position}: {e}")
             return False
 
     def get_funding_rate(self, position) -> float:
@@ -74,21 +44,20 @@ class BinancePositionMonitor():
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Binance';''')
+                
+                sql_query = '''
+                    SELECT 1
+                    FROM trade_log
+                    WHERE open_close = 'Open' 
+                      AND exchange = 'Binance';
+                '''
+                
+                cursor.execute(sql_query, ())
                 open_positions = cursor.fetchall()
-                if open_positions:
-                    return True
-                else:
-                    return False
+                
+                return open_positions is not None
+
         except Exception as e:
-            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions:", {e})
-            raise e
-        
+            logger.error(f"BinancePositionMonitor - Error while searching for open Binance positions: {e}")
+            return None
 
-
-
-
-
-
-
-    
