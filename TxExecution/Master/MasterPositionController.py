@@ -3,6 +3,7 @@ from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionC
 from TxExecution.HMX.HMXPositionController import HMXPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
+from GlobalUtils.marketDirectory import MarketDirectory
 from pubsub import pub
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
@@ -86,18 +87,22 @@ class MasterPositionController:
 
     @log_function_call
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
-        try:
-            logger.error(f'DEBUGGING: MasterPositionController - Closing position pair with args: symbol={symbol}, reason={reason}, exchanges={exchanges}')
-            for exchange_name in exchanges:
+        errors = []
+        for exchange_name in exchanges:
+            try:
                 close_position_method = getattr(self, exchange_name.lower()).close_position
-                close_position_method(
-                    symbol=symbol, 
-                    reason=reason
-                )
-
-        except Exception as e:
-            logger.error(f"MasterPositionController - Failed to close trade pair for symbol {symbol} and exchange pair {exchanges}. Error: {e}")
+                close_position_method(symbol=symbol, reason=reason)
+            except Exception as e:
+                error_msg = f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}"
+                logger.error(error_msg)
+                errors.append(error_msg)
+        
+        if errors:
+            all_errors = " | ".join(errors)
+            logger.error(f"MasterPositionController - Errors occurred while closing trade pairs: {all_errors}")
             return None
+        return True
+
 
     def subscribe_to_events(self):
         pub.subscribe(self.execute_trades, EventsDirectory.OPPORTUNITY_FOUND.value)
@@ -198,6 +203,7 @@ class MasterPositionController:
                 logger.info(f"MasterPositionController - Position already open: SNX: {is_synthetix_position}, HMX: {is_hmx_position}, Binance: {is_binance_position}")
                 return True
             else:
+                logger.info(f"MasterPositionController - No positions open.")
                 return False
 
         except Exception as e:

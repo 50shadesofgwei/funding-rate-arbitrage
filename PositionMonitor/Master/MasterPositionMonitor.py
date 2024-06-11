@@ -63,16 +63,23 @@ class MasterPositionMonitor():
 
     def check_liquidation_risk(self, exchanges: list) -> bool:
         try:
-            first_exchange = exchanges[0]
-            second_exchange = exchanges[1]
+            first_exchange = str(exchanges[0])
+            second_exchange = str(exchanges[1])
             
             position_one = get_open_position_for_exchange(first_exchange)
             position_two = get_open_position_for_exchange(second_exchange)
-        
-            is_first_exchange_risk = getattr(self, first_exchange.lower()).is_near_liquidation_price(position_one)
-            is_second_exchange_risk = getattr(self, second_exchange.lower()).is_near_liquidation_price(position_two)
 
-            logger.info(f'Liquidation risk calculated as follows: {first_exchange} = {is_first_exchange_risk}, {second_exchange} = {is_second_exchange_risk}')
+        
+            is_first_exchange_risk: bool = getattr(self, first_exchange.lower()).is_near_liquidation_price(position_one)
+            is_second_exchange_risk: bool = getattr(self, second_exchange.lower()).is_near_liquidation_price(position_two)
+
+            if is_first_exchange_risk == None:
+                logger.error(f'MasterPositionMonitor - is_near_liquidation_price return value for exchange {first_exchange} = None')
+
+            if is_second_exchange_risk == None:
+                logger.error(f'MasterPositionMonitor - is_near_liquidation_price return value for exchange {second_exchange} = None')
+
+            logger.info(f'MasterPositionMonitor - Liquidation risk calculated as follows: {first_exchange} = {is_first_exchange_risk}, {second_exchange} = {is_second_exchange_risk}')
 
             if is_first_exchange_risk or is_second_exchange_risk:
                 return True
@@ -112,37 +119,30 @@ class MasterPositionMonitor():
 
     def is_position_delta_within_bounds(self, exchanges: list) -> bool:
         try:
-            delta_bound = float(os.getenv('DELTA_BOUND'))
-            first_exchange = exchanges[0]
-            second_exchange = exchanges[1]
+            delta_bound = float(os.getenv('DELTA_BOUND', '0.03'))
+            positions = {}
 
-            position_one = get_open_position_for_exchange(first_exchange)
-            position_two = get_open_position_for_exchange(second_exchange)
+            for exchange in exchanges:
+                position = get_open_position_for_exchange(exchange)
+                if not position:
+                    logger.error(f"MasterPositionMonitor - Position for exchange {exchange} is missing when trying to calculate delta.")
+                    return False
+                notional_value = float(position['size_in_asset'])
+                if position['side'].upper() == 'SHORT':
+                    notional_value = -notional_value
+                positions[exchange] = notional_value
 
-            if not position_one:
-                logger.error(f"MasterPositionMonitor - Position for exchange {first_exchange} is missing when trying to calculate delta.")
-                return False
-            elif not position_two:
-                logger.error(f"MasterPositionMonitor - Position for exchange {second_exchange}is missing when trying to calculate delta.")
-                return False
-
-            first_notional_value = position_one['size_in_asset']
-            print('First Notional Value', first_notional_value)
-            second_notional_value = position_two['size_in_asset']
-            print('Second Notional Value', second_notional_value)
-
-            first_notional_value = first_notional_value if position_one['side'].upper() == 'LONG' else -first_notional_value
-            second_notional_value = second_notional_value if position_two['side'].upper() == 'LONG' else -second_notional_value
-
-            total_notional_value = abs(first_notional_value) + abs(second_notional_value)
-            delta_in_usd = abs(first_notional_value - second_notional_value)
-            delta = (delta_in_usd / total_notional_value) if total_notional_value else 0
+            total_absolute_notional_value = sum(abs(value) for value in positions.values())
+            absolute_delta = abs(positions[exchanges[0]] - positions[exchanges[1]])
+            relative_delta = (absolute_delta / total_absolute_notional_value) if total_absolute_notional_value else 0
 
 
-            return not delta > delta_bound
+            return relative_delta - 1 <= delta_bound
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
             return False
+
+
 
     def is_synthetix_funding_turning_against_trade_in_given_time(self, mins: int) -> bool:
         symbol = '' 
@@ -167,7 +167,6 @@ class MasterPositionMonitor():
 
             future_blocks = mins * 30
             predicted_funding_rate = funding_rate + (velocity * future_blocks / BLOCKS_PER_DAY_BASE)
-            print(f'predicted funding rate = {predicted_funding_rate}')
 
             if (is_long and not is_hedge and predicted_funding_rate < 0) or (not is_long and is_hedge and predicted_funding_rate > 0):
                 return True

@@ -112,6 +112,7 @@ self.client = Client(api_key, api_secret)
 
 ## Console Scripts
 The bot can be controlled via the CLI using the following commands:
+- `is-position-open`
 - `deploy-collateral-synthetix [amount]`
 - `deploy-collateral-hmx [token_address] [amount]`
 - `project-run` (Run this command to start the bot after setup is finished)

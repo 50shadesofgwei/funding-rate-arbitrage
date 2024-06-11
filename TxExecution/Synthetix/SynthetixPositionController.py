@@ -23,7 +23,6 @@ class SynthetixPositionController:
             if not self.is_already_position_open():
                 account_id: int = self.get_default_account()
                 adjusted_trade_size: float = self.calculate_adjusted_trade_size(opportunity, is_long, trade_size)
-                adjusted_trade_size_int: int = int(math.floor(adjusted_trade_size))
                 market_name = str(opportunity['symbol'])
 
                 response = self.client.perps.commit_order(
@@ -106,44 +105,36 @@ class SynthetixPositionController:
 
     def approve_and_deposit_collateral(self, token_address: str, amount: int):
         try:
-            self._approve_collateral_for_spot_market_proxy(amount, market_id=0)
-            time.sleep(1)
-            self._approve_collateral_for_spot_market_proxy(amount, market_id=1)
-            time.sleep(1)
+            market_id = self.client.spot.markets_by_name[f"sUSDC"]["market_id"]
+            wrapped_token = self.client.spot.markets_by_id[market_id]["contract"]
             self._approve_spot_market_to_spend_collateral(token_address, amount)
-            time.sleep(1)
-            self._approve_spot_market_to_spend_collateral('0x09d51516F38980035153a554c26Df3C6f51a23C3', amount*10**18)
-            time.sleep(1)
-            self._approve_collateral_for_spot_market_proxy(amount, market_id=0)
-            time.sleep(1)
-            self._approve_collateral_for_spot_market_proxy(amount, market_id=1)
-            time.sleep(1)
-            self._approve_collateral_for_perps_market_proxy(amount, market_id=0)
-            time.sleep(1)
-            self._approve_collateral_for_perps_market_proxy(amount, market_id=1)
-            time.sleep(1)
             time.sleep(1)
             self._wrap_collateral(amount)
             time.sleep(1)
+            self._approve_spot_market_to_spend_collateral(wrapped_token.address, amount)
+            time.sleep(1)
             self._execute_atomic_order(amount, 'sell')
             time.sleep(1)
-            self._approve_collateral_for_perps_market_proxy(amount, market_id=0)
-            time.sleep(1)
-            self._approve_collateral_for_perps_market_proxy(amount, market_id=1)
+            self._approve_collateral_for_perps_market_proxy(amount)
             time.sleep(1)
             self._add_collateral(amount)
+            time.sleep(1)
+
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
+            return None
 
     def _add_collateral(self, amount: int):
         try:
+            account_id = self.get_default_account()
             tx = self.client.perps.modify_collateral(
                 amount=amount, 
-                market_id=0, 
+                market_name="sUSD", 
+                account_id=account_id,
                 submit=True
             )
             if is_transaction_hash(tx):
-                logger.info(f"SynthetixPositionController - Successfully added {amount} to collateral, market_id=0.")
+                logger.info(f"SynthetixPositionController - Successfully added {amount} to collateral, market_name = sUSD.")
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
 
@@ -154,8 +145,9 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Account creation failed. Error: {e}")
 
-    def _approve_collateral_for_spot_market_proxy(self, amount: int, market_id: int):
+    def _approve_collateral_for_spot_market_proxy(self, amount: int):
         try:
+            market_id = self.client.spot.markets_by_name[f"sUSDC"]["market_id"]
             amount=amount*10**18
             spot_market_proxy_address = self.client.spot.market_proxy.address
             approve_tx = self.client.spot.approve(
@@ -171,10 +163,8 @@ class SynthetixPositionController:
 
     def _approve_spot_market_to_spend_collateral(self, token_address: str, amount: int):
         try:
-            if token_address == '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913':
-                amount = amount * 10 ** 6
             spot_market_proxy_address = self.client.spot.market_proxy.address
-            approve_tx = self.client.spot.approve(
+            approve_tx = self.client.approve(
                 token_address, 
                 spot_market_proxy_address,
                 amount,
@@ -187,13 +177,13 @@ class SynthetixPositionController:
             return None
 
 
-    def _approve_collateral_for_perps_market_proxy(self, amount: int, market_id: int):
+    def _approve_collateral_for_perps_market_proxy(self, amount: int):
         try:
             amount=amount*10**18
             perps_market_proxy_address: str = self.client.perps.market_proxy.address
             approve_tx = self.client.spot.approve(
                 target_address=perps_market_proxy_address, 
-                market_id=market_id,
+                market_name="sUSD",
                 amount=amount,
                 submit=True
             )
@@ -204,7 +194,8 @@ class SynthetixPositionController:
 
     def _wrap_collateral(self, amount: int):
         try:
-            wrap_tx = self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
+            market_id = self.client.spot.markets_by_name[f"sUSDC"]["market_id"]
+            wrap_tx = self.client.spot.wrap(amount, market_id, submit=True)
             if is_transaction_hash(wrap_tx):
                 logger.info(f"SynthetixPositionController - Wrap tx executed successfully: {wrap_tx}")
 

@@ -7,3 +7,5 @@ app.log
 SynthetixFundingRateArbitrage.egg-info/
 markets.json
 OrderedOpportunities.json
+trade_database.csv
+functionTracker.log

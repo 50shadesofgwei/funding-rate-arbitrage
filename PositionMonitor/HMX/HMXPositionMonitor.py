@@ -34,8 +34,12 @@ class HMXPositionMonitor():
     def is_near_liquidation_price(self, position: dict) -> bool:
         try:
             percentage_from_liqiudation_price = get_percentage_away_from_liquidation_price(position)
-            if percentage_from_liqiudation_price > float(os.getenv('MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE')):
+            MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE = float(os.getenv('MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE'))
+            if percentage_from_liqiudation_price < MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE:
+                logger.info(f'HMXPositionMonitor - Liquidation risk detected for position, percentage_from_liqiudation_price = {percentage_from_liqiudation_price}, MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE = {MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE}')
                 return True
+            else:
+                return False
 
         except Exception as e:
             logger.error(f"HMXPositionMonitor - Error checking if near liquidation price for HMX position: {position}: Error: {e}")

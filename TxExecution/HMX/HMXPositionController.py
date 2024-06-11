@@ -61,8 +61,8 @@ class HMXPositionController:
             return None
 
     def close_position(self, symbol: str, reason: str):
-        max_retries = 2 
-        retry_delay_in_seconds = 3 
+        max_retries = 3
+        retry_delay_in_seconds = 20
         market_index = get_market_for_symbol(symbol)
         
         for attempt in range(max_retries):
@@ -91,7 +91,7 @@ class HMXPositionController:
                     inverse_size = size * -1
                     side = is_long(inverse_size)
                     abs_size = abs(size)
-                    self.client.private.create_market_order(
+                    x = self.client.private.create_market_order(
                         0, 
                         market_index=market_index, 
                         buy=side, 
@@ -110,7 +110,7 @@ class HMXPositionController:
                     return 
                 else:
                     logger.error('HMXPositionController - Failed to close position. Please check manually.')
-                    raise Exception('HMXPositionController - Commit order failed, no transaction hash returned.')
+                    return None
 
             except Exception as e:
                 logger.error(f"HMXPositionController - An error occurred while trying to close a position: {e}")
@@ -118,7 +118,7 @@ class HMXPositionController:
                     logger.info("HMXPositionController - Attempting to retry closing position after delay...")
                     time.sleep(retry_delay_in_seconds)
                 else:
-                    raise e
+                    return None
 
 
     def deposit_erc20_collateral(self, token_address: str, amount: float):
@@ -188,7 +188,7 @@ class HMXPositionController:
                     'exchange': 'HMX',
                     'symbol': symbol,
                     'side': side,
-                    'size': size,
+                    'size_in_asset': size,
                     'liquidation_price': liquidation_price
                 }
             return position_object
@@ -216,8 +216,8 @@ class HMXPositionController:
 
             maintenance_margin_fraction = float(margin_details['maintenance_margin_fraction_bps']) / 10000 
             position_size = abs(float(position['position_size']))
-            size_in_asset = position_size / asset_price
-            maintenance_margin_requirement = size_in_asset * maintenance_margin_fraction
+            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, position_size)
+            maintenance_margin_requirement = position_size * maintenance_margin_fraction
 
             liquidation_params = {
                 "size_in_asset": size_in_asset,
@@ -225,7 +225,8 @@ class HMXPositionController:
                 "is_long": is_long,
                 "available_margin": available_collateral,
                 "asset_price": asset_price,
-                "maintenance_margin_requirement": maintenance_margin_requirement
+                "maintenance_margin_requirement": maintenance_margin_requirement,
+                "maintenance_margin_fraction": maintenance_margin_fraction
             }
 
             liquidation_price = calculate_liquidation_price(liquidation_params)
