@@ -73,14 +73,20 @@ def calculate_liquidation_price(params: dict) -> float:
             logger.error("HMXPositionMonitor - Invalid available margin for liquidation calculation.")
             return None
 
-        maintenance_margin_requirement = float(params["maintenance_margin_requirement"])
+        print(params)
 
-        if params["is_long"]:
+        maintenance_margin_requirement = float(params["maintenance_margin_requirement"])
+        is_long = bool(params["is_long"])
+        print(is_long)
+
+        if is_long == True:
             price_decrease_needed = (params["available_margin"] - maintenance_margin_requirement) / params["size_in_asset"]
             liquidation_price = params["asset_price"] - price_decrease_needed
+            print('IS LONG')
         else:
             price_increase_needed = (params["available_margin"] + maintenance_margin_requirement) / abs(params["size_in_asset"])
             liquidation_price = params["asset_price"] + price_increase_needed
+            print('IS SHORT')
 
         liquidation_price = abs(liquidation_price)
         logger.warning(f'HMXPositionMonitor - DEBUGGING: liquidation_price = {liquidation_price}, price_increase_needed = {price_increase_needed}, maintenance_margin_requirement = {maintenance_margin_requirement}')

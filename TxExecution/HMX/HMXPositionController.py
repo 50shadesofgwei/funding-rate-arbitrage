@@ -183,7 +183,7 @@ class HMXPositionController:
 
     def get_position_object(self, symbol: str, side: str, size: float) -> dict:
         try:
-            liquidation_price = self.get_liquidation_price(symbol)
+            liquidation_price = self.get_liquidation_price(symbol, side)
             position_object = {
                     'exchange': 'HMX',
                     'symbol': symbol,
@@ -197,7 +197,7 @@ class HMXPositionController:
             logger.error(f"HMXPositionController - Failed to get position object for symbol {symbol}. Error: {e}")
             return None
 
-    def get_liquidation_price(self, symbol: str) -> float:
+    def get_liquidation_price(self, symbol: str, side: str) -> float:
         try:
             market_index = get_market_for_symbol(symbol)
             if market_index is None:
@@ -212,7 +212,7 @@ class HMXPositionController:
             available_collateral = self.get_available_collateral()
             available_collateral = available_collateral + pnl
             margin_details = response['margin']
-            is_long = get_side_for_open_trade_from_database(symbol)
+            is_long = True if side.lower() == 'long' else False
 
             maintenance_margin_fraction = float(margin_details['maintenance_margin_fraction_bps']) / 10000 
             position_size = abs(float(position['position_size']))
