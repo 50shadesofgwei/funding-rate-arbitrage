@@ -1,10 +1,11 @@
 from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
 from GlobalUtils.logger import *
+from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
 
 class SynthetixCaller:
     def __init__(self):
-        self.client = get_synthetix_client()
+        self.client = GLOBAL_SYNTHETIX_CLIENT
 
     def get_funding_rates(self, symbols: list):
         try:

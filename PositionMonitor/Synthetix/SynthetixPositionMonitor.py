@@ -5,66 +5,51 @@ from GlobalUtils.logger import *
 from pubsub import pub
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 import sqlite3
+from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
 
 class SynthetixPositionMonitor():
     def __init__(self, db_path='trades.db'):
-        self.client = get_synthetix_client()
+        self.client = GLOBAL_SYNTHETIX_CLIENT
         self.db_path = db_path
         try:
             self.conn = sqlite3.connect(self.db_path)
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error accessing the database: {e}")
-            raise e
-
-    def position_health_check(self):
-        try:
-            if self.is_open_position():
-                position = self.get_open_position()
-                if self.is_near_liquidation_price(position):
-                    reason = PositionCloseReason.LIQUIDATION_RISK.value
-                    pub.sendMessage('close_positions', reason)
-                else:
-                    return
-            else:
-                return
-        except Exception as e:
-            logger.error(f"SynthetixPositionMonitor - Error checking position health: {e}")
-            raise e
+            return None
 
     def get_open_position(self) -> dict:
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute('''SELECT * FROM trade_log WHERE open_close = 'Open' AND exchange = 'Synthetix';''')
-                open_positions = cursor.fetchall()
-                if open_positions:
-                    position_dict = get_dict_from_database_response(open_positions[0])
-                    logger.info(f'SynthetixPositionMonitor - Open trade pulled from database: {position_dict}')
+                open_position = cursor.fetchone()
+                if open_position:
+                    position_dict = get_dict_from_database_response(open_position)
                     return position_dict
                 else:
-                    logger.info("SynthetixPositionMonitor - No open Synthetix positions found")
+                    logger.error("SynthetixPositionMonitor - No open Synthetix positions found with details")
                     return None
+
+        except sqlite3.Error as sqe:
+            logger.error(f"SynthetixPositionMonitor - Database error while searching for open Synthetix positions: {sqe}")
+            return None
+
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions: {e}")
-            raise e
+            return None
 
-    def is_near_liquidation_price(self, position) -> bool:
+
+    def is_near_liquidation_price(self, position: dict) -> bool:
         try:
-            liquidation_price = float(position['liquidation_price'])
-            symbol = position['symbol']
-            
-            normalized_symbol = normalize_symbol(symbol)
-            asset_price = get_price_from_pyth(normalized_symbol)
-
-            lower_bound = liquidation_price * 0.9
-            upper_bound = liquidation_price * 1.1
-
-            if lower_bound <= asset_price <= upper_bound:
+            percentage_from_liqiudation_price = get_percentage_away_from_liquidation_price(position)
+            MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE = float(os.getenv('MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE'))
+            if percentage_from_liqiudation_price < MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE:
                 return True
             else:
                 return False
+
         except Exception as e:
-            logger.error(f"SynthetixPositionMonitor - Error checking if near liquidation price for {symbol}: {e}")
+            logger.error(f"SynthetixPositionMonitor - Error checking if near liquidation price for {position}: {e}")
             return False
 
     def get_funding_rate(self, position) -> float:
@@ -77,11 +62,11 @@ class SynthetixPositionMonitor():
                 return funding_rate
             else:
                 logger.error(f"SynthetixPositionMonitor - Funding rate not found in market summary for symbol {symbol}.")
-                return 0.0 
+                return None 
             
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
-            return 0.0
+            return None
 
     def is_open_position(self) -> bool:
         try:
@@ -96,5 +81,3 @@ class SynthetixPositionMonitor():
         except Exception as e:
             logger.error(f"SynthetixPositionMonitor - Error while searching for open Synthetix positions:", {e})
             raise e
-
-    
