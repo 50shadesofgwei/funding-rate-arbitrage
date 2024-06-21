@@ -17,7 +17,7 @@ class ProfitabilityChecker:
         self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD')) * float(self.position_controller.synthetix.leverage_factor)
 
 
-    def find_most_profitable_opportunity(self, opportunities: list):
+    def find_most_profitable_opportunity(self, opportunities: list, is_demo: bool):
         trade_size_usd = self.default_trade_size_usd
         best_opportunity = None
         max_profit = 0
@@ -53,11 +53,12 @@ class ProfitabilityChecker:
 
         opportunities_with_profit.sort(key=lambda x: x['total_profit_usd'], reverse=True)
 
-
-        with open('OrderedOpportunities.json', 'w') as file:
-            json.dump(opportunities_with_profit, file, indent=4)
-
-        return best_opportunity
+        if is_demo:
+            return opportunities_with_profit
+        else:
+            with open('OrderedOpportunities.json', 'w') as file:
+                json.dump(opportunities_with_profit, file, indent=4)
+            return best_opportunity
 
     def estimate_profit_for_exchange(self, time_period_hours: float, size: float, opportunity: dict, exchange: str) -> float:
         try:
