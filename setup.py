@@ -11,6 +11,7 @@ setup(
     entry_points={
         'console_scripts': [
             'project-run = Main.run:run',
+            'project-run-demo = Main.run:demo',
             'deploy-collateral-synthetix = TxExecution.Synthetix.run:main',
             'deploy-collateral-hmx = TxExecution.HMX.run:main',
             'close-position-pair = TxExecution.Master.run:main',
