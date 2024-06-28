@@ -74,8 +74,6 @@ class MasterPositionController:
             logger.error(f"MasterPositionController:execute_trades - Failed to process trades for {symbol}. Error: {e}")
             self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=list(exchanges.values()))
 
-
-    @log_function_call
     def close_all_positions(self, reason: str):
         synthetix_position_report = self.synthetix.close_all_positions()
         binance_position_report = self.binance.close_all_positions()
@@ -87,7 +85,6 @@ class MasterPositionController:
         logger.info(f'MasterPositionController - Closing positions with position report: {position_report}')
         pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, position_report=position_report)
 
-    @log_function_call
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
         errors = []
         for exchange_name in exchanges:

@@ -1,7 +1,6 @@
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
 from binance.enums import *
-import os
 
 from dotenv import load_dotenv
 
@@ -32,7 +31,9 @@ class BinanceCaller:
         try:
             for symbol in symbols:
                 funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
+                skew = self.get_skew(symbol)
                 parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
+                parsed_data['skew'] = skew
                 if parsed_data:
                     funding_rates.append(parsed_data)
             return funding_rates
@@ -67,5 +68,20 @@ class BinanceCaller:
             }
         else:
             logger.error(f"BinanceAPICaller - No funding rate data available for symbol: {symbol}")
+            return None
+
+    def get_skew(self, symbol: str) -> float:
+        try:
+            response = self.client.open_interest(symbol)
+            response2 = self.client.long_short_account_ratio(symbol, period='5m')
+            open_interest_in_asset = float(response['openInterest'])
+
+            amount_long = float(response2[0]['longAccount']) * open_interest_in_asset
+            amount_short = float(response2[0]['shortAccount']) * open_interest_in_asset
+
+            skew = amount_long - amount_short
+            return skew
+        except Exception as e:
+            logger.error(f'BinanceAPICaller - Error while calculating skew for symbol {symbol}. Error: {e}')
             return None
 

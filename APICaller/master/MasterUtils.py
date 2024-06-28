@@ -9,17 +9,17 @@ TARGET_TOKENS = [
     {"token": "WIF", "is_target": False},
     {"token": "ARB", "is_target": True},
     {"token": "BNB", "is_target": False},
-    {"token": "ENA", "is_target": False},
-    {"token": "DOGE", "is_target": False},
-    {"token": "AVAX", "is_target": False},
-    {"token": "PENDLE", "is_target": False},
+    {"token": "ENA", "is_target": True},
+    {"token": "DOGE", "is_target": True},
+    {"token": "AVAX", "is_target": True},
+    {"token": "PENDLE", "is_target": True},
 
 ]
 
 TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
-    {"exchange": "Binance", "is_target": False},
-    {"exchange": "ByBit", "is_target": True},
+    {"exchange": "Binance", "is_target": True},
+    {"exchange": "ByBit", "is_target": False},
     {"exchange": "HMX", "is_target": False}
 ]
 

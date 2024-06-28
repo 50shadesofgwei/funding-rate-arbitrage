@@ -100,7 +100,6 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error logging open trade for strategy_execution_id: {strategy_execution_id}, exchange: {exchange}. Error: {e}")
             return None
 
-    @log_function_call
     def log_close_trade(self, position_report: dict):
         try:
             with sqlite3.connect(self.db_path) as conn:
