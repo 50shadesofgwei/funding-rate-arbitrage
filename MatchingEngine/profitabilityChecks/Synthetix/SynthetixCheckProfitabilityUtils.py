@@ -29,10 +29,12 @@ def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, size: 
                 logger.error(f"SynthetixCheckProfitabilityUtils - No change in funding velocity or zero funding rate for {symbol}, cannot calculate neutralization time.")
                 return 'No Neutralization'
 
-            if funding_velocity * current_funding_rate < 0:
+            if current_funding_rate > 0 and current_funding_rate + (funding_velocity * 10) > 0:
+                return 'No Neutralization'
+            elif current_funding_rate < 0 and current_funding_rate + (funding_velocity * 10) < 0:
                 return 'No Neutralization'
 
-            hours_to_neutralize: float = current_funding_rate / funding_velocity_1hr
+            hours_to_neutralize: float = abs(current_funding_rate / funding_velocity_1hr)
             return hours_to_neutralize
             
 

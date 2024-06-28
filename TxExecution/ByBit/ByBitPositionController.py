@@ -19,7 +19,7 @@ class ByBitPositionController:
         self.api_key = os.getenv('BYBIT_API_KEY')
         self.api_secret = os.getenv('BYBIT_API_SECRET')
         self.leverage = os.getenv('TRADE_LEVERAGE')
-        self.set_leverage_for_all_assets(TARGET_TOKENS)
+        # self.set_leverage_for_all_assets(TARGET_TOKENS)
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -67,12 +67,13 @@ class ByBitPositionController:
 
             order_id: str = close_position_response['result']['orderId']
 
+            time.sleep(2)
             if self._was_trade_executed_successfully(order_id):
                 logger.info(f'ByBitPositionController - Order closed successfully for symbol {symbol}, orderId: {order_id}')
                 return None
 
         except Exception as e:
-            logger.error(f"ByBitPositionController - Failed to close position for symbol {symbol}, orderId: {order_id}. Error: {e}")
+            logger.error(f"ByBitPositionController - Failed to close position for symbol {symbol}. Error: {e}")
             return None
             
     def set_leverage_for_all_assets(self, tokens):
@@ -141,16 +142,36 @@ class ByBitPositionController:
             else:
                 logger.error(f"ByBitPositionController - Failed to get open positions. HTTP status code: {response.status_code}")
                 return False
+
         except Exception as e:
             logger.error(f"ByBitPositionController - Error checking if position is open. Error: {e}")
             return False
 
     def _was_trade_executed_successfully(self, order_id: str) -> bool:
-        response = self.client.get_order_history(
-            category="linear",
-            orderId=order_id
-        )
-        pass
+        attempt = 0
+        retries: int = 3
 
-x = ByBitPositionController()
-x.close_position_for_symbol('BTCUSDT')
+        while attempt < retries:
+            try:
+                response = self.client.get_order_history(
+                    category="linear",
+                    orderId=order_id
+                )
+
+                if response and response.get('retCode') == 0 and 'result' in response and 'list' in response['result']:
+                    list = response['result']['list']
+                    order_status = list[0]['orderStatus']
+                    if order_status == 'Filled':
+                        return True
+                    else:
+                        return False
+
+            except Exception as e:
+                logger.error(f"ByBitPositionController - Attempt {attempt + 1} failed to check if trade was executed successfully. Error: {e}")
+            
+            attempt += 1
+
+        logger.error(f"ByBitPositionController - All {retries} attempts failed to check if trade was executed successfully for order_id: {order_id}")
+        return None
+
+
