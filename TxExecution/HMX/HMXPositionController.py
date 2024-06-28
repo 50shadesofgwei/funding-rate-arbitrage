@@ -61,8 +61,8 @@ class HMXPositionController:
             return None
 
     def close_position(self, symbol: str, reason: str):
-        max_retries = 3
-        retry_delay_in_seconds = 20
+        max_retries = 10
+        retry_delay_in_seconds = 30
         market_index = get_market_for_symbol(symbol)
         
         for attempt in range(max_retries):
@@ -91,7 +91,7 @@ class HMXPositionController:
                     inverse_size = size * -1
                     side = is_long(inverse_size)
                     abs_size = abs(size)
-                    x = self.client.private.create_market_order(
+                    self.client.private.create_market_order(
                         0, 
                         market_index=market_index, 
                         buy=side, 
@@ -102,7 +102,7 @@ class HMXPositionController:
                     
                     time.sleep(15)
                     if self.is_already_position_open():
-                        logger.error(f'HMXPositionController - Position on HMX still open 15 seconds after attempting to close. Symbol: {symbol}.')
+                        logger.error(f'HMXPositionController - Position on HMX still open 5 mins after attempting to close. Symbol: {symbol}.')
                         return None
 
                     self.handle_position_closed(position_report=close_position_details)

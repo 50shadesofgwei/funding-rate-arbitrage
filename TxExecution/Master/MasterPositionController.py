@@ -1,6 +1,7 @@
 from TxExecution.Binance.BinancePositionController import BinancePositionController
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 from TxExecution.HMX.HMXPositionController import HMXPositionController
+from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.marketDirectory import MarketDirectory
@@ -13,6 +14,7 @@ class MasterPositionController:
         self.synthetix = SynthetixPositionController()
         self.binance = BinancePositionController()
         self.hmx = HMXPositionController()
+        self.bybit = ByBitPositionController()
 
     #######################
     ### WRITE FUNCTIONS ###

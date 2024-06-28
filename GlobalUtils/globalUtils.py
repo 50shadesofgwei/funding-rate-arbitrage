@@ -9,6 +9,7 @@ from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 from APICaller.Binance.binanceUtils import get_binance_client
 from APICaller.HMX.HMXCallerUtils import get_HMX_client
 import re
+import time
 
 load_dotenv()
 
@@ -165,3 +166,7 @@ def is_transaction_hash(tx_hash) -> bool:
     # Regular expression to match an Ethereum transaction hash
     pattern = r'^0x[a-fA-F0-9]{64}$'
     return re.match(pattern, tx_hash) is not None
+
+def get_milliseconds_until_given_timestamp(timestamp: int) -> int:
+    current_time = int(time.time() * 1000)
+    return timestamp - current_time

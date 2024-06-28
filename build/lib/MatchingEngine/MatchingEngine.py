@@ -66,7 +66,7 @@ class matchingEngine:
     def find_delta_neutral_arbitrage_opportunities(self, funding_rates) -> list:
         opportunities = []
         if not funding_rates:
-            logger.error("Funding rates are empty or not passed correctly.")
+            logger.error("MatchingEngine - Funding rates are empty or not passed correctly.")
             return opportunities
 
         try:
@@ -81,11 +81,11 @@ class matchingEngine:
                     opportunities.extend(self.find_arbitrage_opportunities_for_symbol(sorted_rates))
 
         except KeyError as ke:
-            logger.error(f'KeyError - Missing key in data processing: {ke}')
+            logger.error(f'MatchingEngine - KeyError - Missing key in data processing: {ke}')
         except TypeError as te:
-            logger.error(f'TypeError - Issue with data types during processing: {te}')
+            logger.error(f'MatchingEngine - TypeError - Issue with data types during processing: {te}')
         except Exception as e:
-            logger.error(f'Unexpected error during processing: {e}')
+            logger.error(f'MatchingEngine - Unexpected error during processing: {e}')
 
         return opportunities
 

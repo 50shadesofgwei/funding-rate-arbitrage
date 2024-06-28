@@ -22,3 +22,5 @@ def get_ByBit_client() -> HTTP:
         api_secret=ByBitEnvVars.BYBIT_API_SECRET.get_value(),
     )
     return client
+
+GLOBAL_BYBIT_CLIENT = get_ByBit_client()

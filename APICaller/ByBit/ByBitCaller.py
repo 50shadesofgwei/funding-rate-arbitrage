@@ -1,54 +1,61 @@
 from APICaller.ByBit.ByBitUtils import *
 from GlobalUtils.logger import logger
-from GlobalUtils.globalUtils import normalize_funding_rate_to_8hrs
+from GlobalUtils.globalUtils import *
+import math
 
 class ByBitCaller:
     def __init__(self):
-        self.client = get_ByBit_client()
+        self.client = GLOBAL_BYBIT_CLIENT
 
     def _fetch_funding_rate_data(self, symbol: str):
         try:
-            response = self.client.get_funding_rate_history(
+            response = self.client.get_tickers(
                 category='linear',
                 symbol=symbol,
                 limit='1',
                 fundingInterval='1'
             )
-            if response.get('retCode') == 0:
+            if response.get('retCode') == 0 or '0':
                 return response
             else:
-                raise ValueError(f"API Error for {symbol}: {response.get('retMsg')}")
+                return None
         except Exception as e:
-            logger.error(f"ByBitCaller - Failed to fetch funding rate data for {symbol} from API: {e}")
+            logger.error(f"ByBitCaller - Failed to fetch funding rate data for {symbol} from API. Error: {e}")
             return None
 
-    def _parse_funding_rate_data(self, data: dict, symbol: str):
+    def _parse_funding_rate_data(self, data: dict, symbol: str) -> dict:
         try:
-            if data:
+            if data and data.get('retCode') == 0 and 'result' in data and 'list' in data['result']:
                 return {
                     'exchange': 'ByBit',
-                    'market_name': symbol,
+                    'symbol': symbol,
                     'funding_rate': data['result']['list'][0]['fundingRate'],
                 }
         except Exception as e:
             logger.error(f'ByBitCaller - Error while parsing funding rate data. Data={data}, symbol={symbol}. Error: {e}')
-            return None
+        return None
 
-    def get_funding_rate_for_symbol(self, symbol: str):
-        data = self._fetch_funding_rate_data(symbol)
-        interval = self.get_funding_interval_for_symbol(symbol)
-        if data:
-            funding_rate_info = self._parse_funding_rate_data(data, symbol)
-            rate = float(funding_rate_info['funding_rate'])
-            normalized_rate = normalize_funding_rate_to_8hrs(rate, interval)
-            funding_rate_info['funding_rate'] = normalized_rate
-            if funding_rate_info:
-                return funding_rate_info
-            else:
-                logger.error(f"ByBitCaller - Failed to parse funding rate data for {symbol} from ByBit API.")
-                return None
-        else:
-            logger.error(f"ByBitCaller - Failed to fetch funding rate data for {symbol} from ByBit API.")
+
+    def get_funding_rate_for_symbol(self, symbol: str) -> dict:
+        try:
+            data = self._fetch_funding_rate_data(symbol)
+            interval = self.get_funding_interval_for_symbol(symbol)
+            if data:
+                funding_rate_info = self._parse_funding_rate_data(data, symbol)
+                rate = float(funding_rate_info['funding_rate'])
+                normalized_rate = normalize_funding_rate_to_8hrs(rate, interval)
+                funding_rate_info['funding_rate'] = normalized_rate
+                skew = self.get_skew(symbol)
+                funding_rate_info['skew'] = skew
+
+                if funding_rate_info:
+                    return funding_rate_info
+                else:
+                    logger.error(f"ByBitCaller - Failed to parse funding rate data for {symbol} from ByBit API.")
+                    return None
+
+        except Exception as e:
+            logger.error(f"ByBitCaller - Failed to fetch funding rate data for {symbol} from ByBit API. Error: {e}")
             return None
 
     def get_historical_funding_rate_for_symbol(self, symbol: str) -> list:
@@ -90,6 +97,53 @@ class ByBitCaller:
                 funding_interval_hours = funding_interval_mins / 60
                 return funding_interval_hours
 
+            elif response == None:
+                logger.error(f"ByBitCaller - None response while calling funding interval from API, symbol: {symbol}. Error: {e}")
+                return None
+
         except Exception as e:
             logger.error(f"ByBitCaller - Failed to fetch or parse funding interval for symbol {symbol}. Error: {e}")
+            return None
+
+    def get_skew(self, symbol: str) -> float:
+        try:
+            response = self.client.get_open_interest(
+                category='linear', 
+                symbol=symbol,
+                intervalTime="5min")
+            if response and response.get('retCode') == 0 and 'result' in response and 'list' in response['result']:
+                open_interest_list = response['result']['list']
+                skew = float(open_interest_list[0]['openInterest'])
+                return skew
+            
+        except Exception as e:
+            logger.error(f'ByBitCaller - Error while calculating skew for symbol={symbol}. Error: {e}')
+            return None
+
+
+    def get_next_funding_events_for_time_period(self, symbol: str, time_period_hours: int) -> int:
+        try:
+            interval = self.get_funding_interval_for_symbol(symbol)
+            time_period_minutes = time_period_hours * 60
+            response = self.client.get_tickers(
+                category='linear', 
+                symbol=symbol,
+                intervalTime="5min"
+            )
+
+            if response and response.get('retCode') == 0 and 'result' in response and 'list' in response['result']:
+                list = response['result']['list']
+                next_funding_time = int(list[0]['nextFundingTime'])
+                ms_to_next_funding_event = get_milliseconds_until_given_timestamp(next_funding_time)
+                minutes_to_next_funding_event = ms_to_next_funding_event / 60000
+                
+                remaining_minutes = time_period_minutes - minutes_to_next_funding_event
+                if remaining_minutes < 0:
+                    return 0
+                
+                number_of_events = 1 + math.floor(remaining_minutes / (interval * 60))
+                return number_of_events
+
+        except Exception as e:
+            logger.error(f'ByBitCaller - Error while calculating funding events for symbol={symbol}. Error: {e}')
             return None

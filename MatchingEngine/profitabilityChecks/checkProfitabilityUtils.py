@@ -11,3 +11,4 @@ def get_adjusted_size(size: float, is_long: bool) -> float:
     except Exception as e:
         logger.error(f'CheckProfitabilityUtils - Error while calculating adjusted trade size for size {size}, is_long = {is_long}: {e}')
         return None
+

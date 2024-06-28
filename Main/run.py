@@ -10,4 +10,4 @@ if __name__ == "__main__":
 
 def demo():
     x = Demo()
-    x.start_search()
+    x.search_for_opportunities()

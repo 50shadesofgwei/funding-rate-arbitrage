@@ -5,27 +5,32 @@ from APICaller.HMX.HMXCallerUtils import calculate_daily_funding_velocity
 from math import floor
 
 
-def estimate_HMX_profit(time_period_hours: float, size: float, opportunity: dict):
+def estimate_HMX_profit(time_period_hours: float, size_usd: float, opportunity: dict):
     try:
         is_long = opportunity['long_exchange'] == 'HMX'
         symbol = opportunity['symbol']
         skew = opportunity['long_exchange_skew'] if is_long else opportunity['short_exchange_skew']
-        dollar_size = get_dollar_amount_for_given_asset_amount(symbol, size)
-        total_profit: float = 0
+        adjusted_skew = skew + size_usd if is_long else skew - size_usd
+        funding_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
+        funding_rate = funding_rate / 100
 
-        daily_velocity = calculate_daily_funding_velocity(skew)
-        hourly_velocity = daily_velocity / 24 
-        hourly_funding_rate = hourly_velocity / 100  
+        daily_velocity = calculate_daily_funding_velocity(adjusted_skew)
+        daily_velocity = daily_velocity / 100
+        velocity_per_minute = daily_velocity / (24 * 60)
+        funding_rate_per_minute = funding_rate / (8 * 60)
+        total_profit = 0
+        time_period_mins = time_period_hours * 60
 
-        for hour in range(int(floor(time_period_hours))):
-            hourly_profit = hourly_funding_rate * dollar_size
+        for min in range(int(floor(time_period_mins))):
+            funding_rate_per_minute += velocity_per_minute
+            profit_per_min = funding_rate_per_minute * size_usd
 
             if is_long:
-                hourly_profit = -hourly_profit if hourly_funding_rate > 0 else hourly_profit
+                profit_per_min = -profit_per_min if funding_rate_per_minute > 0 else profit_per_min
             else:
-                hourly_profit = hourly_profit if hourly_funding_rate > 0 else -hourly_profit
+                profit_per_min = profit_per_min if funding_rate_per_minute > 0 else -profit_per_min
 
-            total_profit += hourly_profit
+            total_profit += profit_per_min
 
         return total_profit
 
@@ -33,12 +38,13 @@ def estimate_HMX_profit(time_period_hours: float, size: float, opportunity: dict
         logger.error(f'CheckProfitability - Error estimating HMX profit for {symbol}: {e}')
         return None
 
-def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size: float) -> float | str:
+
+def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size_usd: float) -> float | str:
         try:
             symbol = str(opportunity['symbol'])
             is_long = opportunity['long_exchange'] == 'HMX'
             skew = float(opportunity['long_exchange_skew']) if is_long else float(opportunity['short_exchange_skew'])
-            adjusted_skew = skew + size
+            adjusted_skew = skew + size_usd if is_long else skew - size_usd
             daily_velocity = calculate_daily_funding_velocity(adjusted_skew)
             hourly_velocity: float = daily_velocity / 24 
 
@@ -48,11 +54,10 @@ def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size: float)
                 logger.error(f"HMXCheckProfitabilityUtils - Zero funding rate for {symbol}, cannot calculate neutralization time.")
                 return None
             
-            if hourly_velocity == 0:
-                return "No Neutralization"
-
-            if hourly_velocity * current_funding_rate < 0:
-                return "No Neutralization"
+            if current_funding_rate > 0 and current_funding_rate + (daily_velocity * 10) > 0:
+                return 'No Neutralization'
+            elif current_funding_rate < 0 and current_funding_rate + (daily_velocity * 10) < 0:
+                return 'No Neutralization'
             else:
                 hours_to_neutralize: float = abs(current_funding_rate / hourly_velocity)
                 return hours_to_neutralize

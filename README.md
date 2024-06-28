@@ -116,6 +116,7 @@ The bot can be controlled via the CLI using the following commands:
 - `deploy-collateral-synthetix [amount]`
 - `deploy-collateral-hmx [token_address] [amount]`
 - `project-run` (Run this command to start the bot after setup is finished)
+- `project-run-demo` (This will search for available opportunities but not execute on them)
 - `close-position-pair [symbol]`
 
 ## Video Walkthrough
