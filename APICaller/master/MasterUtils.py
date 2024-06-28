@@ -8,7 +8,7 @@ TARGET_TOKENS = [
     {"token": "W", "is_target": False},
     {"token": "WIF", "is_target": False},
     {"token": "ARB", "is_target": True},
-    {"token": "BNB", "is_target": False},
+    {"token": "BNB", "is_target": True},
     {"token": "ENA", "is_target": True},
     {"token": "DOGE", "is_target": True},
     {"token": "AVAX", "is_target": True},
@@ -18,9 +18,9 @@ TARGET_TOKENS = [
 
 TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
-    {"exchange": "Binance", "is_target": True},
+    {"exchange": "Binance", "is_target": False},
     {"exchange": "ByBit", "is_target": False},
-    {"exchange": "HMX", "is_target": False}
+    {"exchange": "HMX", "is_target": True}
 ]
 
 def get_target_exchanges() -> list:
