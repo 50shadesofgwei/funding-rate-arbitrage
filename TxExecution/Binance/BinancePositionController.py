@@ -53,7 +53,6 @@ class BinancePositionController:
             logger.error(f"BinancePositionController - Error encountered while placing trade for {order_with_amount.get('symbol', 'unknown')}. Error: {e}")
             return None
 
-    @log_function_call
     def close_all_positions(self):
         selected_markets = get_target_tokens_for_binance()
         positions = []
@@ -199,7 +198,6 @@ class BinancePositionController:
             logger.error(f"BinancePositionController - Failed to handle position opening for {response['symbol']}. Error: {e}")
             return None
 
-    @log_function_call
     def handle_position_closed(self, close_position_details: dict):
         try:
             logger.error(f'DEBUGGING: BPC handle_position_closed arg = {close_position_details}')

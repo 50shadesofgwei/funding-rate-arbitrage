@@ -2,7 +2,7 @@ binance_futures_connector==4.0.0
 hexbytes==0.3.1
 hmx_v2_python==1.2.0
 matplotlib==3.8.4
-numpy==1.24.3
+numpy>=1.24.3
 pandas==2.2.2
 pybit==5.6.2
 Pypubsub==4.0.3
