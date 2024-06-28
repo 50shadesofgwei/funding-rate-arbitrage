@@ -17,7 +17,6 @@ class matchingEngine:
 
             arbitrage_opportunities = []
             exchange_pairs = [(ex1, ex2) for i, ex1 in enumerate(list(exchanges)) for ex2 in list(exchanges)[i+1:]]
-            print(f'exchange_pairs = {exchange_pairs}')
 
             for ex1, ex2 in exchange_pairs:
                 common_symbols = set(rates_by_exchange[ex1].keys()) & set(rates_by_exchange[ex2].keys())
