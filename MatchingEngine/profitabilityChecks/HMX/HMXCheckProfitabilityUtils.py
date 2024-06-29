@@ -14,22 +14,24 @@ def estimate_HMX_profit(time_period_hours: float, size_usd: float, opportunity: 
         funding_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
         funding_rate = funding_rate / 100
 
-        daily_velocity = calculate_daily_funding_velocity(adjusted_skew)
+        daily_velocity = calculate_daily_funding_velocity(symbol=symbol, skew_usd=adjusted_skew)
         daily_velocity = daily_velocity / 100
-        velocity_per_minute = daily_velocity / (24 * 60)
+        funding_rate_change_per_minute = daily_velocity / (24 * 60)
         funding_rate_per_minute = funding_rate / (8 * 60)
+        print(f'funding_rate_change_per_minute = {funding_rate_change_per_minute}, funding_rate_per_minute = {funding_rate_per_minute}')
         total_profit = 0
         time_period_mins = time_period_hours * 60
+        print(f'time_period_mins = {time_period_mins}')
 
         for min in range(int(floor(time_period_mins))):
-            funding_rate_per_minute += velocity_per_minute
             profit_per_min = funding_rate_per_minute * size_usd
 
             if is_long:
-                profit_per_min = -profit_per_min if funding_rate_per_minute > 0 else profit_per_min
+                profit_per_min = -profit_per_min if funding_rate_change_per_minute > 0 else profit_per_min
             else:
-                profit_per_min = profit_per_min if funding_rate_per_minute > 0 else -profit_per_min
+                profit_per_min = profit_per_min if funding_rate_change_per_minute > 0 else -profit_per_min
 
+            funding_rate_per_minute += funding_rate_change_per_minute
             total_profit += profit_per_min
 
         return total_profit
@@ -45,7 +47,8 @@ def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size_usd: fl
             is_long = opportunity['long_exchange'] == 'HMX'
             skew = float(opportunity['long_exchange_skew']) if is_long else float(opportunity['short_exchange_skew'])
             adjusted_skew = skew + size_usd if is_long else skew - size_usd
-            daily_velocity = calculate_daily_funding_velocity(adjusted_skew)
+            daily_velocity = calculate_daily_funding_velocity(symbol=symbol, skew_usd=adjusted_skew)
+            daily_velocity = daily_velocity / 100
             hourly_velocity: float = daily_velocity / 24 
 
             current_funding_rate = float(opportunity['long_exchange_funding_rate']) if is_long else float(opportunity['short_exchange_funding_rate'])
