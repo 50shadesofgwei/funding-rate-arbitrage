@@ -302,19 +302,35 @@ class SynthetixPositionController:
             return False
 
     def calculate_premium(self, symbol: str, size: float) -> float:
-        try:
-            market_id = MarketDirectory.get_market_id(symbol)
-            quote_dict = self.client.perps.get_quote(size=size, market_id=market_id)
-            index_price = float(quote_dict['index_price'])
-            fill_price = float(quote_dict['fill_price'])
+        max_retries = 5
+        retries = 0
+        
+        market_id = MarketDirectory.get_market_id(symbol)
+        
+        while retries < max_retries:
+            try:
+                quote_dict = self.client.perps.get_quote(size=size, market_id=market_id)
+                
+                if quote_dict is None:
+                    time.sleep(0.23)
+                    retries += 1
+                    logger.warning(f"SynthetixPositionController - Null quote received, retrying {retries}/{max_retries} for symbol {symbol} with market ID {market_id}")
+                    continue
+                
+                index_price = float(quote_dict['index_price'])
+                fill_price = float(quote_dict['fill_price'])
+                
+                if fill_price == 0:
+                    logger.error(f"SynthetixPositionController - Zero fill price error for symbol {symbol} with market ID {market_id}")
+                    return None
+                
+                premium = (fill_price - index_price) / index_price
+                return premium
             
-            if fill_price == 0:
-                logger.error(f"SynthetixPositionController - Zero fill price error for symbol {symbol} with market ID {market_id}")
+            except Exception as e:
+                logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
                 return None
-            
-            premium = (fill_price - index_price) / index_price
-            return premium
+        
+        logger.error(f"SynthetixPositionController - Failed to get a valid quote after {max_retries} retries for symbol {symbol} with market ID {market_id}")
+        return None
 
-        except Exception as e:
-            logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
-            return None
