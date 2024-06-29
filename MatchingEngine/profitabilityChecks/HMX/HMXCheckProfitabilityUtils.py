@@ -18,10 +18,8 @@ def estimate_HMX_profit(time_period_hours: float, size_usd: float, opportunity: 
         daily_velocity = daily_velocity / 100
         funding_rate_change_per_minute = daily_velocity / (24 * 60)
         funding_rate_per_minute = funding_rate / (8 * 60)
-        print(f'funding_rate_change_per_minute = {funding_rate_change_per_minute}, funding_rate_per_minute = {funding_rate_per_minute}')
         total_profit = 0
         time_period_mins = time_period_hours * 60
-        print(f'time_period_mins = {time_period_mins}')
 
         for min in range(int(floor(time_period_mins))):
             profit_per_min = funding_rate_per_minute * size_usd
