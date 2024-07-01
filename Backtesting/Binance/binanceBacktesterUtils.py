@@ -37,11 +37,11 @@ def extract_funding_events(funding_data: pd.DataFrame, start_block: int, end_blo
         logger.error(f'BinanceBacktesterUtils - Error while extracting funding events for funding data {funding_data}, {e}')
         return None
 
-def calculate_total_funding_impact(funding_events: pd.DataFrame, position_size: float):
+def calculate_total_funding_impact(funding_events: pd.DataFrame, position_size_in_asset: float):
     try:
         total_impact: float = 0
         for index, event in funding_events.iterrows():
-            total_impact += event['funding_rate'] * position_size
+            total_impact += event['funding_rate'] * position_size_in_asset
         return total_impact
     
     except Exception as e:
