@@ -187,7 +187,21 @@ class ProfitabilityChecker:
             logger.error(f'CheckProfitability - Unexpected error when estimating profit for {symbol}: {e}')
             return None
 
+16225161
 
+test_opportunity = {
+    'long_exchange': long_exchange,
+    'short_exchange': short_exchange,
+    'symbol': symbol,
+    'long_exchange_funding_rate': long_rate,
+    'short_exchange_funding_rate': short_rate,
+    'long_exchange_skew': long_exchange_skew,
+    'short_exchange_skew': short_exchange_skew,
+    'block_number': block_number
+}
+
+
+x = ProfitabilityChecker()
 
 
 
