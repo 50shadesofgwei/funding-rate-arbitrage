@@ -13,3 +13,4 @@ setuptools==68.2.2
 synthetix==0.1.10
 web3==6.16.0
 wheel>=0.38.4
+python-okx>=0.3.0
