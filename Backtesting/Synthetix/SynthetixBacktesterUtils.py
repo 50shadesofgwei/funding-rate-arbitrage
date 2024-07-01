@@ -126,14 +126,14 @@ def calculate_adjusted_funding_rate(initial_rate, funding_velocity, blocks_since
         logger.error(f'SynthetixBacktesterUtils - Error while calculating adjusted funding rate for initial rate {initial_rate} and velocity {funding_velocity}, {e}')
         return None
 
-def accumulate_funding_costs(data: pd.DataFrame, start_block, end_block, position_size):
+def accumulate_funding_costs(data: pd.DataFrame, start_block, end_block, position_size_in_asset):
     try:
         total_funding = 0
         relevant_data: pd.DataFrame = data[(data['block_number'] >= start_block) & (data['block_number'] <= end_block)]
         for index, row in relevant_data.iterrows():
             blocks_since_start = row['block_number'] - start_block
             adjusted_rate = row['funding_rate'] + (row['funding_velocity'] / BLOCKS_PER_DAY_BASE) * blocks_since_start
-            total_funding += (adjusted_rate * position_size) / BLOCKS_PER_DAY_BASE
+            total_funding += (adjusted_rate * position_size_in_asset) / BLOCKS_PER_DAY_BASE
         return total_funding
     except Exception as e:
         logger.error(f'SynthetixBacktesterUtils - Error while calculating accumulated funding costs for funding dataframe {data} over block range {start_block} -> {end_block}, {e}')
