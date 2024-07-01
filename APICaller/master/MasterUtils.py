@@ -1,18 +1,27 @@
 from GlobalUtils.logger import logger
 
 TARGET_TOKENS = [
-    {"token": "BTC", "is_target": True},
+    {"token": "BTC", "is_target": False},
     {"token": "ETH", "is_target": True},
     {"token": "SNX", "is_target": False},
-    {"token": "SOL", "is_target": True},
+    {"token": "SOL", "is_target": False},
     {"token": "W", "is_target": False},
     {"token": "WIF", "is_target": False},
+<<<<<<< Updated upstream
     {"token": "ARB", "is_target": True},
     {"token": "BNB", "is_target": True},
     {"token": "ENA", "is_target": True},
     {"token": "DOGE", "is_target": True},
     {"token": "AVAX", "is_target": True},
     {"token": "PENDLE", "is_target": True},
+=======
+    {"token": "ARB", "is_target": False},
+    {"token": "BNB", "is_target": False},
+    {"token": "ENA", "is_target": False},
+    {"token": "DOGE", "is_target": False},
+    {"token": "AVAX", "is_target": False},
+    {"token": "PENDLE", "is_target": False},
+>>>>>>> Stashed changes
 
 ]
 

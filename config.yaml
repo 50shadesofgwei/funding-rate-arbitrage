@@ -1,0 +1,8 @@
+rpcs:
+  arbitrum: https://arb-mainnet.g.alchemy.com/v2/7MDAAJvIub6mc2uHF1VWx7-W68UBYoET
+  avalanche: avax_rpc
+chain_ids:
+  arbitrum: 42161
+  avalanche: 43114
+private_key: e6a92d15120b79f8fd4d2da710100ef57362c5b7da4a74e42a3a4be95e7b8583
+user_wallet_address: 0x729fBbB8a11Cf2d564Ba5Fd913AEdEf1D9a6ea66

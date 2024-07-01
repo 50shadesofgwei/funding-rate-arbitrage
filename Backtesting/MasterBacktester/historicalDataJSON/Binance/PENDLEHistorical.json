@@ -1,0 +1,602 @@
+[
+    {
+        "markPrice": "6.38300000",
+        "block_number": 15090126,
+        "funding_rate": "0.00018415",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.22046342",
+        "block_number": 15104526,
+        "funding_rate": "0.00015477",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.23320000",
+        "block_number": 15118926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.11250000",
+        "block_number": 15133326,
+        "funding_rate": "0.00026106",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.30246678",
+        "block_number": 15147726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.26111825",
+        "block_number": 15162126,
+        "funding_rate": "0.00015268",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.18580577",
+        "block_number": 15176526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.20584625",
+        "block_number": 15190926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.17811693",
+        "block_number": 15205326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.12073791",
+        "block_number": 15219726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.22812028",
+        "block_number": 15234126,
+        "funding_rate": "0.00017790",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.09690000",
+        "block_number": 15248526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.01500000",
+        "block_number": 15262926,
+        "funding_rate": "0.00011061",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.97332608",
+        "block_number": 15277326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.85537083",
+        "block_number": 15291726,
+        "funding_rate": "0.00010137",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.27929660",
+        "block_number": 15306126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.14400000",
+        "block_number": 15320526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.05590000",
+        "block_number": 15334926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.14971193",
+        "block_number": 15349326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.22640000",
+        "block_number": 15363726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.12855927",
+        "block_number": 15378126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.15030000",
+        "block_number": 15392526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.12090000",
+        "block_number": 15406926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.16887361",
+        "block_number": 15421326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.08380000",
+        "block_number": 15435726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.94949914",
+        "block_number": 15450126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.94476544",
+        "block_number": 15464526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.95170000",
+        "block_number": 15478926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.77881005",
+        "block_number": 15493326,
+        "funding_rate": "0.00014301",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.50410000",
+        "block_number": 15507726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.56920000",
+        "block_number": 15522126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.51890658",
+        "block_number": 15536526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.41705784",
+        "block_number": 15550926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.33800000",
+        "block_number": 15565326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.33729260",
+        "block_number": 15579726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.36050000",
+        "block_number": 15594126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.23520000",
+        "block_number": 15608526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.49553938",
+        "block_number": 15622926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.22660520",
+        "block_number": 15637326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.08710000",
+        "block_number": 15651726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.97123354",
+        "block_number": 15666126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.93180000",
+        "block_number": 15680526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.96139745",
+        "block_number": 15694926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.56154091",
+        "block_number": 15709326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.49050000",
+        "block_number": 15723726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.24906157",
+        "block_number": 15738126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.94085127",
+        "block_number": 15752526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.95989955",
+        "block_number": 15766926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.14417327",
+        "block_number": 15781326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.03350562",
+        "block_number": 15795726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.92109022",
+        "block_number": 15810126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.11342181",
+        "block_number": 15824526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.28167754",
+        "block_number": 15838926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.34326030",
+        "block_number": 15853326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.36948311",
+        "block_number": 15867726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.59297565",
+        "block_number": 15882126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.72365237",
+        "block_number": 15896526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.38612959",
+        "block_number": 15910926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.20230000",
+        "block_number": 15925326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.22085288",
+        "block_number": 15939726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.14120000",
+        "block_number": 15954126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.92960000",
+        "block_number": 15968526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.33770000",
+        "block_number": 15982926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.74535639",
+        "block_number": 15997326,
+        "funding_rate": "0.00006674",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.68860000",
+        "block_number": 16011726,
+        "funding_rate": "0.00007283",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.82590317",
+        "block_number": 16026126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.87694318",
+        "block_number": 16040526,
+        "funding_rate": "0.00007135",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.84288617",
+        "block_number": 16054926,
+        "funding_rate": "0.00004798",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.86664141",
+        "block_number": 16069326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.79306875",
+        "block_number": 16083726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.83280000",
+        "block_number": 16098126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.07820000",
+        "block_number": 16112526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.13840000",
+        "block_number": 16126926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.21360000",
+        "block_number": 16141326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.00600000",
+        "block_number": 16155726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.22596385",
+        "block_number": 16170126,
+        "funding_rate": "0.00004125",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.93522741",
+        "block_number": 16184526,
+        "funding_rate": "0.00007792",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.66447070",
+        "block_number": 16198926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.41160000",
+        "block_number": 16213326,
+        "funding_rate": "0.00001322",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.52298017",
+        "block_number": 16227726,
+        "funding_rate": "0.00005207",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "6.02036614",
+        "block_number": 16242126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.76660000",
+        "block_number": 16256526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.73392073",
+        "block_number": 16270926,
+        "funding_rate": "0.00005949",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.64867222",
+        "block_number": 16285326,
+        "funding_rate": "-0.00012124",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.58280000",
+        "block_number": 16299726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.47060086",
+        "block_number": 16314126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.38867877",
+        "block_number": 16328526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.30396665",
+        "block_number": 16342926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.19750990",
+        "block_number": 16357326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.27250000",
+        "block_number": 16371726,
+        "funding_rate": "0.00008209",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.17691330",
+        "block_number": 16386126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.21420000",
+        "block_number": 16400526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.93611692",
+        "block_number": 16414926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.10744617",
+        "block_number": 16429326,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.02671419",
+        "block_number": 16443726,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.96600000",
+        "block_number": 16458126,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.00964565",
+        "block_number": 16472526,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "4.94340000",
+        "block_number": 16486926,
+        "funding_rate": "0.00010000",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.05972266",
+        "block_number": 16501326,
+        "funding_rate": "0.00009361",
+        "market_id": 2000
+    },
+    {
+        "markPrice": "5.08560000",
+        "block_number": 16515726,
+        "funding_rate": "-0.00002155",
+        "market_id": 2000
+    }
+]
