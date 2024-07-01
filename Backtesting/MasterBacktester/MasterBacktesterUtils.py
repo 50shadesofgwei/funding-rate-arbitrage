@@ -18,7 +18,6 @@ def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.D
 
     for index, row in data_snx.iterrows():
         block_number_snx = row['block_number']
-        base_position_size = 5
         nearest_index = np.abs(binance_blocks - block_number_snx).argmin()
         nearest_binance_row = data_binance.iloc[nearest_index]
 
@@ -27,19 +26,16 @@ def determine_trade_entry_exit_points(data_snx: pd.DataFrame, data_binance: pd.D
         discrepancy = snx_rate - binance_rate
 
         if abs(discrepancy) > entry_threshold and not open_trade:
-            snx_position_size = -base_position_size if snx_rate > binance_rate else base_position_size
-            binance_position_size = base_position_size if snx_rate > binance_rate else -base_position_size
             open_trade = {
                 'entry_block_snx': block_number_snx,
                 'entry_block_binance': nearest_binance_row['block_number'],
+                'size_in_asset': row['skew'],
                 'snx_rate_entry': snx_rate,
                 'binance_rate_entry': binance_rate,
                 'discrepancy_entry': discrepancy,
                 'discrepancy_direction': 1 if discrepancy > 0 else -1, 
                 'snx_side': 'short' if snx_rate > binance_rate else 'long',
                 'binance_side': 'long' if snx_rate > binance_rate else 'short',
-                'snx_position_size': snx_position_size,
-                'binance_position_size': binance_position_size
             }
 
         elif open_trade:
@@ -138,8 +134,23 @@ def calculate_effective_APR(trades, total_profit_in_asset, total_capital_usd):
 def log_trade_details(trade):
     logger.info(f"Trade Log: {trade}")
 
-def plot_funding_rates_over_time(synthetix_data, binance_data, symbol: str):
+def plot_funding_rates_over_time(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, symbol: str):
     try:
+        synthetix_data = synthetix_data.dropna(subset=['block_number', 'funding_rate'])
+        binance_data = binance_data.dropna(subset=['block_number', 'funding_rate'])
+
+        synthetix_data['block_number'] = synthetix_data['block_number'].astype(int)
+        synthetix_data['funding_rate'] = synthetix_data['funding_rate'].astype(float)
+        binance_data['block_number'] = binance_data['block_number'].astype(int)
+        binance_data['funding_rate'] = binance_data['funding_rate'].astype(float)
+
+        if synthetix_data.empty:
+            logger.error('No valid Synthetix data to plot')
+            return
+        if binance_data.empty:
+            logger.error('No valid Binance data to plot')
+            return
+
         plt.figure(figsize=(12, 6))
         plt.plot(synthetix_data['block_number'], synthetix_data['funding_rate'], label='Synthetix Funding Rate', color='blue')
         plt.plot(binance_data['block_number'], binance_data['funding_rate'], label='Binance Funding Rate', color='red')
@@ -149,21 +160,22 @@ def plot_funding_rates_over_time(synthetix_data, binance_data, symbol: str):
         plt.legend()
         plt.grid(True)
         plt.show()
-    
+
     except Exception as e:
         logger.error(f'MasterBacktesterUtils - Error plotting historical funding rates for symbol {symbol}: {e}')
         return None
+
 
 def plot_funding_rate_discrepancies_over_time(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, symbol: str):
     try:
         synthetix_data = synthetix_data.sort_values('block_number').reset_index(drop=True)
         binance_data = binance_data.sort_values('block_number').reset_index(drop=True)
 
-        synthetix_data['nearest_block'] = synthetix_data['block_number']
-        binance_data['nearest_block'] = binance_data['block_number']
+        synthetix_data['nearest_block'] = int(synthetix_data['block_number'])
+        binance_data['nearest_block'] = int(binance_data['block_number'])
 
         combined_data = pd.merge_asof(synthetix_data, binance_data, on='nearest_block', suffixes=('_snx', '_binance'), direction='nearest')
-        combined_data['discrepancy'] = combined_data['funding_rate_snx'] - combined_data['funding_rate_binance']
+        combined_data['discrepancy'] = float(combined_data['funding_rate_snx']) - float(combined_data['funding_rate_binance'])
 
         plt.figure(figsize=(12, 6))
         plt.plot(combined_data['nearest_block'], combined_data['discrepancy'], label='Funding Rate Discrepancy', color='blue')

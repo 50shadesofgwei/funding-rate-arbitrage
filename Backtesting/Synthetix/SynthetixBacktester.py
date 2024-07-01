@@ -204,18 +204,20 @@ class SynthetixBacktester:
         try:
             current_block = client.eth.block_number
             start_block = max(current_block - 1000000, 0)
-            step_size = 1000000
+            step_size = 10000
             all_events = []
-            for block in range(start_block, current_block, step_size): 
-                current_end_block = min(block + 1000000, current_block)
+            
+            for block in range(start_block, current_block, step_size):
+                current_end_block = min(block + step_size - 1, current_block)
                 logger.info(f"Fetching events from block {block} to {current_end_block}")
                 events = self.fetch_events_for_block_range(block, current_end_block)
                 if events:
                     parsed_events = parse_event_data(events)
-                    all_events.extend(events)
+                    all_events.extend(parsed_events)
                 else:
                     logger.error(f"SynthetixBacktester - No events found from blocks {block} to {current_end_block}")
-            return parsed_events
+                    
+            return all_events
         except Exception as e:
             logger.error(f"SynthetixBacktester - Error while retrieving historical events from node: {e}")
             return []
