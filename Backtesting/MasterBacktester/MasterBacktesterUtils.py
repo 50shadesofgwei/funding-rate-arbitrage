@@ -131,9 +131,6 @@ def calculate_effective_APR(trades, total_profit_in_asset, total_capital_usd):
         logger.error(f'MasterBacktesterUtils - Error calculating effective APR: {e}')
         return None
 
-def log_trade_details(trade):
-    logger.info(f"Trade Log: {trade}")
-
 def plot_funding_rates_over_time(synthetix_data: pd.DataFrame, binance_data: pd.DataFrame, symbol: str):
     try:
         synthetix_data = synthetix_data.dropna(subset=['block_number', 'funding_rate'])
@@ -145,10 +142,10 @@ def plot_funding_rates_over_time(synthetix_data: pd.DataFrame, binance_data: pd.
         binance_data['funding_rate'] = binance_data['funding_rate'].astype(float)
 
         if synthetix_data.empty:
-            logger.error('No valid Synthetix data to plot')
+            logger.error('MasterBacktesterUtils - No valid Synthetix data to plot - synthetix_data is empty')
             return
         if binance_data.empty:
-            logger.error('No valid Binance data to plot')
+            logger.error('MasterBacktesterUtils - No valid Binance data to plot - binance_data is empty')
             return
 
         plt.figure(figsize=(12, 6))

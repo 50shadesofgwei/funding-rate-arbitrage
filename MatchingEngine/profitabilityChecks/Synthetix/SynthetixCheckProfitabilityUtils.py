@@ -4,7 +4,7 @@ from GlobalUtils.globalUtils import *
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
 
 
-def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, size: float):
+def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, size_usd: float):
         try:
             symbol = str(opportunity['symbol'])
             if not symbol:
@@ -12,17 +12,18 @@ def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, size: 
                 return None
 
             is_long = opportunity['long_exchange'] == 'Synthetix'
-            skew = float(opportunity['long_exchange_skew']) if is_long else float(opportunity['short_exchange_skew'])
-            if skew is None:
+            skew_in_asset = float(opportunity['long_exchange_skew']) if is_long else float(opportunity['short_exchange_skew'])
+            if skew_in_asset is None:
                 logger.error(f"SynthetixCheckProfitabilityUtils - Missing 'skew' in opportunity data: {opportunity}")
                 return None
 
-            fee = MarketDirectory.get_maker_taker_fee(symbol, skew, is_long)
-            size_after_fee = size * (1 - fee)
-            adjusted_size = get_adjusted_size(size_after_fee, is_long)
+            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, size_usd)
+            fee = MarketDirectory.get_maker_taker_fee(symbol, skew_in_asset, is_long)
+            size_in_asset_after_fee = size_in_asset * (1 - fee)
+            adjusted_size_in_asset = get_adjusted_size(size_in_asset_after_fee, is_long)
 
             current_funding_rate: float = float(opportunity['long_exchange_funding_rate']) if is_long else float(opportunity['short_exchange_funding_rate'])
-            funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol, skew, adjusted_size)
+            funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol, skew_in_asset, adjusted_size_in_asset)
             funding_velocity_1hr = funding_velocity / 24
 
             if funding_velocity == 0 or current_funding_rate == 0:

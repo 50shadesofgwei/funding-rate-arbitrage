@@ -62,10 +62,3 @@ class MasterBacktester:
         except Exception as e:
             logger.error(f'MasterBacktester - Error while backtesting arbitrage strategy for symbol {symbol}: {e}')
             return None
-
-x = MasterBacktester()
-MarketDirectory.initialize()
-y = x.backtest_arbitrage_strategy('BTC')
-print(y)
-
-

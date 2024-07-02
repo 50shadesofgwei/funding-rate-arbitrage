@@ -7,12 +7,12 @@ TARGET_TOKENS = [
     {"token": "SOL", "is_target": True},
     {"token": "W", "is_target": False},
     {"token": "WIF", "is_target": False},
-    {"token": "ARB", "is_target": True},
+    {"token": "ARB", "is_target": False},
     {"token": "BNB", "is_target": False},
-    {"token": "ENA", "is_target": True},
-    {"token": "DOGE", "is_target": True},
-    {"token": "AVAX", "is_target": True},
-    {"token": "PENDLE", "is_target": True},
+    {"token": "ENA", "is_target": False},
+    {"token": "DOGE", "is_target": False},
+    {"token": "AVAX", "is_target": False},
+    {"token": "PENDLE", "is_target": False},
 
 ]
 
