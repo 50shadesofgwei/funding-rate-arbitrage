@@ -216,7 +216,7 @@ class ProfitabilityChecker:
             logger.error(f'CheckProfitability - Error estimating ByBit profit for {symbol}: {e}')
             return None
 
-    def estimate_profit_for_time_period(self, hours_to_neutralize_by_exchange: dict, size_usd: float, opportunity: dict) -> dict:
+    def estimate_profit_for_time_period(self, hours_to_neutralize_by_exchange: dict, size_usd_per_side: float, opportunity: dict) -> dict:
         try:
             symbol = opportunity['symbol']
             long_exchange = opportunity['long_exchange']
@@ -234,13 +234,13 @@ class ProfitabilityChecker:
             if hours_to_neutralize_long == "No Neutralization":
                 long_profit_loss = self.default_trade_size_usd * long_exchange_funding_rate_1hr * shortest_time
             else:
-                long_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd, opportunity, long_exchange)
+                long_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd_per_side, opportunity, long_exchange)
 
             short_profit_loss = 0
             if hours_to_neutralize_short == "No Neutralization":
                 short_profit_loss = self.default_trade_size_usd * short_exchange_funding_rate_1hr * shortest_time
             else:
-                short_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd, opportunity, short_exchange)
+                short_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd_per_side, opportunity, short_exchange)
 
             total_profit_loss = long_profit_loss + short_profit_loss
 
@@ -259,8 +259,3 @@ class ProfitabilityChecker:
         except Exception as e:
             logger.error(f'CheckProfitability - Unexpected error when estimating profit for {symbol}: {e}')
             return None
-
-
-
-
-

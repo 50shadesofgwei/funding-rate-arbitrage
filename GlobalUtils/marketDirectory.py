@@ -1,7 +1,7 @@
 from web3 import *
 from dotenv import load_dotenv
 from GlobalUtils.logger import *
-from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
+from GlobalUtils.globalUtils import *
 import json
 
 load_dotenv()
@@ -43,6 +43,7 @@ class MarketDirectory:
             cls._markets = {}
 
     @classmethod
+    @deco_retry
     def update_all_market_parameters(cls):
         client = GLOBAL_SYNTHETIX_CLIENT
         market_data_response = client.perps.markets_by_name

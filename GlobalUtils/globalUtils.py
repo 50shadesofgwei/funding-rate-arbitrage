@@ -8,6 +8,7 @@ from GlobalUtils.logger import *
 from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 from APICaller.Binance.binanceUtils import get_binance_client
 from APICaller.HMX.HMXCallerUtils import get_HMX_client
+import functools
 import re
 import time
 
@@ -170,3 +171,26 @@ def is_transaction_hash(tx_hash) -> bool:
 def get_milliseconds_until_given_timestamp(timestamp: int) -> int:
     current_time = int(time.time() * 1000)
     return timestamp - current_time
+
+def deco_retry(retry: int = 5, retry_sleep: int = 3):
+    def deco_func(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            _retry = 5 if callable(retry) else retry
+            _result = None
+            for _i in range(1, _retry + 1):
+                try:
+                    _result = func(*args, **kwargs)
+                    break
+
+                except Exception as e:
+                    logger.warning(f"{func.__name__}: {_i} :{e}")
+                    if _i == _retry:
+                        raise
+
+                time.sleep(retry_sleep)
+            return _result
+
+        return wrapper
+
+    return deco_func(retry) if callable(retry) else deco_func

@@ -1,6 +1,7 @@
 from gmx_python_sdk.scripts.v2.gmx_utils import ConfigManager
 import time
-import numpy as np
+import sys
+import os
 from numerize import numerize
 from gmx_python_sdk.scripts.v2.get.get_available_liquidity import (
     GetAvailableLiquidity
@@ -10,9 +11,16 @@ from gmx_python_sdk.scripts.v2.get.get_funding_apr import GetFundingFee
 from gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
 from GlobalUtils.logger import logger
 
+def set_paths():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    target_dir = os.path.join(current_dir, '../')
+    sys.path.append(target_dir)
+
+set_paths()
+
+
 arbitrum_config_object = ConfigManager(chain='arbitrum')
 arbitrum_config_object.set_config('/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
-
 
 def get_data(chain: str = 'arbitrum'):
     """
@@ -222,6 +230,3 @@ def check_if_viable_farming_strategy(parameters: dict, ignore_oi_imbalance=False
     usd_earning_per_hour = numerize.numerize(stats["net_rate_per_hour"] / 100 * position_size_usd)
     print("\n\nPosition viable, and will net ${} per hour.".format(usd_earning_per_hour))
     return stats
-
-x = get_opportunities()
-logger.info(x)
