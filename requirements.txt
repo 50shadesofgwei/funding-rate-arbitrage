@@ -1,8 +1,11 @@
 binance_futures_connector==4.0.0
+gmx_python_sdk==0.0.5
 hexbytes==0.3.1
 git+https://github.com/50shadesofgwei/v2-sdk-python.git
 matplotlib==3.8.4
-numpy>=1.24.3
+numerize==0.12
+numpy==2.0.0
+okx==2.1.1
 pandas==2.2.2
 pybit==5.6.2
 Pypubsub==4.0.3
@@ -12,5 +15,3 @@ Requests==2.32.3
 setuptools==68.2.2
 synthetix==0.1.10
 web3==6.16.0
-wheel>=0.38.4
-python-okx>=0.3.0
