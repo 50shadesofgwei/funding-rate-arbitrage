@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from okx.PublicData import okxPublicAPI
+from APICaller.OKX.PublicData import okxPublicAPI
 from okx.TradingData import okxTradingDataAPI
 
 load_dotenv()

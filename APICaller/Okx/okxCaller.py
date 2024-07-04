@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class OkxCaller:
+class OKXCaller:
     # Rate limit: 5 requests per 2 seconds
     # Rate limit rule: IP + instrumentID
     def __init__(self):
