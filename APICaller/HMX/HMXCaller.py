@@ -29,9 +29,6 @@ class HMXCaller:
         except Exception as e:
             logger.error(f"HMXCaller - Unexpected error while processing data for symbol: Error {e}")
 
-
-
-
     def _filter_market_data(self, all_market_data: dict, symbols: list) -> list:
         if not all_market_data:
             logger.error("HMXCaller - No market data provided for filtering.")
@@ -85,3 +82,26 @@ class HMXCaller:
         except Exception as e:
             logger.error(f"HMXCaller - Failed to process market data: {e}")
             return []
+
+    def get_available_markets(self) -> list:
+        try:
+            response = self.client.public.get_all_market_info()
+            markets = []
+            for item in response.items():
+                if not item:
+                    return None
+                elif not item['market']:
+                    pass
+
+                market = item['market']
+                symbol = normalize_symbol(market)
+                markets.append(symbol)
+
+            return markets
+        except Exception as e:
+            logger.error(f"HMXCaller - Failed to get available markets: {e}")
+            return None
+
+x = HMXCaller()
+y = x.get_available_markets()
+print(y)

@@ -35,9 +35,13 @@ def set_paths():
 
 set_paths()
 
+def get_config_object() -> ConfigManager:
+    config_object = ConfigManager(chain='arbitrum')
+    config_object.set_config(filepath='/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
 
-ARBITRUM_CONFIG_OBJECT = ConfigManager(chain='arbitrum')
-ARBITRUM_CONFIG_OBJECT.set_config(filepath='/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
+    return config_object
+
+ARBITRUM_CONFIG_OBJECT = get_config_object()
 
 class GetGMXv2Stats:
 
@@ -50,19 +54,13 @@ class GetGMXv2Stats:
 
         return GetAvailableLiquidity(
             self.config
-        ).get_data(
-            to_csv=self.to_csv,
-            to_json=self.to_json
-        )
+        ).get_data()
 
     def get_borrow_apr(self):
 
         return GetBorrowAPR(
             self.config
-        ).get_data(
-            to_csv=self.to_csv,
-            to_json=self.to_json
-        )
+        ).get_data()
 
     def get_claimable_fees(self):
 
@@ -85,10 +83,7 @@ class GetGMXv2Stats:
 
         return GetFundingFee(
             self.config
-        ).get_data(
-            to_csv=self.to_csv,
-            to_json=self.to_json
-        )
+        ).get_data()
 
     def get_gm_price(self):
 
@@ -109,15 +104,12 @@ class GetGMXv2Stats:
 
         return OpenInterest(
             self.config
-        ).get_data(
-            to_csv=self.to_csv,
-            to_json=self.to_json
-        )
+        ).get_data()
 
     def get_oracle_prices(self):
 
         return OraclePrices(
-            self.config.chain
+            self.config
         ).get_recent_prices()
 
     def get_pool_tvl(self):
@@ -129,13 +121,12 @@ class GetGMXv2Stats:
             to_json=self.to_json
         )
 
-def build_stats_class(chain: str) -> GetGMXv2Stats:
+def build_stats_class() -> GetGMXv2Stats:
     try:
         to_json = True
         to_csv = True
 
-        config = ConfigManager(chain=chain)
-        config.set_config(filepath='/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
+        config = ARBITRUM_CONFIG_OBJECT
 
         stats_class = GetGMXv2Stats(
             config=config,
@@ -155,4 +146,25 @@ def sort_nested_dict(nested_dict: dict):
     
     except Exception as e:
         logger.error(f'GMXCallerUtils - Failed to sort nested dictionary by net rate. Error: {e}')
+        return None
+
+def parse_opportunity_objects_from_response(response: dict) -> list:
+    try:
+        opportunities = []
+        
+        for position_type in response.keys(): 
+            for symbol, details in response[position_type].items():
+                funding_rate = details['net_rate_per_hour'] * 8
+                opportunity = {
+                    'exchange': 'GMX',
+                    'symbol': symbol,
+                    'skew': details['open_interest_imbalance'],
+                    'funding_rate': funding_rate,
+                }
+                opportunities.append(opportunity)
+        
+        return opportunities
+    
+    except Exception as e:
+        logger.error(f'GMXCallerUtils - Failed to parse opportunity objects from API response. Error: {e}')
         return None
