@@ -37,7 +37,7 @@ set_paths()
 
 def get_config_object() -> ConfigManager:
     config_object = ConfigManager(chain='arbitrum')
-    config_object.set_config(filepath='/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
+    config_object.set_config('/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
 
     return config_object
 

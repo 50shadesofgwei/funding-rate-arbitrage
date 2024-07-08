@@ -141,5 +141,3 @@ class GMXCaller:
         except Exception as e:
             logger.error(f'GMXCaller - Failed to collect raw data from GMX. Error: {e}')
             return None
-
-
