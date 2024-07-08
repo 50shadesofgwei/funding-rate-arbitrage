@@ -1,66 +1,24 @@
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
 from APICaller.GMX.GMXCallerUtils import *
-import pandas as pd
 set_paths()
-
-from gmx_python_sdk.scripts.v2.gmx_utils import ConfigManager
 
 class GMXCaller:
     def __init__(self):
-        self.stats_caller = build_stats_class(chain='arbitrum')
-        self.config = ConfigManager(chain='arbitrum')
-        self.config.set_config(filepath='/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
+        self.stats_caller = build_stats_class()
+        self.config = ARBITRUM_CONFIG_OBJECT
 
-    def get_funding_rates(self, symbols: list) -> dict:
-        if not symbols:
-            logger.error("GMXCaller - No symbols provided to fetch funding rates.")
+    def get_funding_rates(self) -> list:
+        try:
+            raw_opportunities = self.get_opportunities_raw()
+            parsed_opportunities = parse_opportunity_objects_from_response(raw_opportunities)
+
+            return parsed_opportunities
+        
+        except Exception as e:
+            logger.error(f'GMXCaller - Failed to get funding rates. Error: {e}')
             return None
 
-    def check_if_viable_farming_strategy(self, parameters: dict, ignore_oi_imbalance=False):
-        asset = parameters['index_token_symbol']
-        collateral = parameters['collateral_token_symbol']
-        is_long = parameters['is_long']
-        is_delta_neutral = parameters['is_delta_neutral']
-        position_size_usd = parameters['size_delta'] / 10**30
-        direction = 'Short'
-        if is_long:
-            direction = 'Long'
-
-        dn_insert = "." if not is_delta_neutral else ", while remaining delta neutral!"
-
-        print("Requesting to open ${} {} on {}{}\n\n".format(
-            numerize.numerize(position_size_usd),
-            direction,
-            asset,
-            dn_insert
-        ))
-        print("---------------------------")
-        if asset not in collateral or direction != "Short":
-            if is_delta_neutral:
-                raise Exception("Asset must = collateral AND direction = short to be Delta Neutral..")
-
-        dict_of_opportunities = self.get_opportunities_raw()
-
-        print("---------------------------")
-
-        try:
-            stats = dict_of_opportunities[direction.lower()][asset]
-        except KeyError:
-            raise Exception('No opportunity for farming "{} {}"!'.format(asset, direction))
-
-        if position_size_usd > stats['open_interest_imbalance'] and not ignore_oi_imbalance:
-            raise Exception("Opening a position size of ${} will tip open interest balance in opposite direction!".format(
-                numerize.numerize(position_size_usd)
-            ))
-
-        if stats["net_rate_per_hour"] < parameters["net_rate_threshold"]:
-            raise Exception("Net Rate of {:.3f} does not meet requirement of {}".format(
-                stats["net_rate_per_hour"], parameters["net_rate_threshold"]
-            ))
-        usd_earning_per_hour = numerize.numerize(stats["net_rate_per_hour"] / 100 * position_size_usd)
-        print("\n\nPosition viable, and will net ${} per hour.".format(usd_earning_per_hour))
-        return stats
 
     def get_opportunities_raw(self):
         try:
@@ -69,14 +27,9 @@ class GMXCaller:
             liquidity = data_raw['liquidity']
             nested = self._create_nested_dict(liquidity, net_rates)
             sorted = self.get_sorted_keys(nested)
-            logger.info(f'sorted keys = {sorted}')
+            open_interest = data_raw['open_interest']
             dict_of_opportunities = self._analyze_opportunities(
-                    sorted, nested, data_raw['open_interest'])
-
-            for name, value in [data_raw, net_rates, nested, sorted]:
-                if value is None:
-                    logger.error(f'GMXCaller - None value returned during data collection in get_opportunities_raw: {name} object = None')
-
+                    sorted, nested, open_interest)
 
             return dict_of_opportunities
 
@@ -168,32 +121,20 @@ class GMXCaller:
     
     def _collect_data_raw(self) -> dict:
         try:
-            markets = self.stats_caller.get_available_markets()
             liquidity = self.stats_caller.get_available_liquidity()
-            liquidity = pd.DataFrame.to_dict(liquidity)
+            time.sleep(0.5)
             borrow_apr = self.stats_caller.get_borrow_apr()
-            borrow_apr = pd.DataFrame.to_dict(borrow_apr)
-            claimable_fees = self.stats_caller.get_claimable_fees()
-            claimable_fees = pd.DataFrame.to_dict(claimable_fees)
+            time.sleep(0.5)
             funding_apr = self.stats_caller.get_funding_apr()
-            funding_apr = pd.DataFrame.to_dict(funding_apr)
-            gm_prices = self.stats_caller.get_gm_price()
+            time.sleep(0.5)
             open_interest = self.stats_caller.get_open_interest()
-            open_interest = pd.DataFrame.to_dict(open_interest)
 
             data_raw = {
-                'markets': markets,
                 'liquidity': liquidity,
                 'borrow_apr': borrow_apr,
-                'claimable_fees': claimable_fees,
                 'funding_apr': funding_apr,
-                'gm_prices': gm_prices,
                 'open_interest': open_interest
             }
-
-            for name, value in data_raw.items():
-                if value is None:
-                    logger.error(f'GMXCaller - None value returned during data collection: {name} object = None')
 
             return data_raw
 
@@ -201,8 +142,4 @@ class GMXCaller:
             logger.error(f'GMXCaller - Failed to collect raw data from GMX. Error: {e}')
             return None
 
-x = GMXCaller()
-y = x.get_opportunities_raw()
-for op in y.items():
-    z = x.check_if_viable_farming_strategy(op)
-    print(z)
+

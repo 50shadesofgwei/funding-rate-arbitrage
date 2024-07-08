@@ -12,8 +12,9 @@ from gmx_python_sdk.scripts.v2.gmx_utils import *
 set_paths()
 
 class GMXPositionController:
-    def __init__(self) -> None:
-        pass
+    def __init__(self):
+        self.config = ARBITRUM_CONFIG_OBJECT
+        self.config.set_config()
 
     def execute_trade(self, opportunity: dict, is_long: bool, trade_size: float):
         try:
@@ -24,14 +25,14 @@ class GMXPositionController:
                 trade_size
             )
             order_parameters = OrderArgumentParser(
-                    ARBITRUM_CONFIG_OBJECT,
+                    self.config,
                     is_increase=True
                 ).process_parameters_dictionary(
                     parameters
             )
 
             order = IncreaseOrder(
-                config=ARBITRUM_CONFIG_OBJECT,
+                config=self.config,
                 market_key=order_parameters['market_key'],
                 collateral_address=order_parameters['start_token_address'],
                 index_token_address=order_parameters['index_token_address'],
@@ -57,13 +58,17 @@ class GMXPositionController:
         try:
             address = ARBITRUM_CONFIG_OBJECT.user_wallet_address
             positions = GetOpenPositions(config=ARBITRUM_CONFIG_OBJECT, address=address).get_data()
-
             if len(positions) > 0:
                 return True
             else:
                 return False
 
+        except KeyError as ke:
+            logger.error(f"GMXPositionController - KeyError while checking if position is open: {ke}")
+            return None
+        except TypeError as te:
+            logger.error(f"GMXPositionController - TypeError while checking if position is open: {te}")
+            return None
         except Exception as e:
-            logger.error(f"GMXPositionController - Error while checking if position is open: {e}")
-            return False
-
+            logger.error(f"GMXPositionController - Error while checking if position is open: {e}", exc_info=True)
+            return None
