@@ -60,7 +60,7 @@ class HMXCaller:
                         'exchange': 'HMX',
                         'symbol': market,
                         'price': market_price,
-                        'skew': skew,
+                        'skew_usd': skew,
                         'funding_rate': funding_rate_as_percentage,
                         'borrowing_rate': borrowing_rate_8H,
                         'initial_margin_fraction_bps': initial_margin_fraction_bps,
@@ -101,7 +101,3 @@ class HMXCaller:
         except Exception as e:
             logger.error(f"HMXCaller - Failed to get available markets: {e}")
             return None
-
-x = HMXCaller()
-y = x.get_available_markets()
-print(y)

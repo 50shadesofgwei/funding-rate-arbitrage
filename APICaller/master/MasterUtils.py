@@ -10,7 +10,7 @@ TARGET_TOKENS = [
     {"token": "ARB", "is_target": False},
     {"token": "BNB", "is_target": False},
     {"token": "ENA", "is_target": False},
-    {"token": "DOGE", "is_target": False},
+    {"token": "DOGE", "is_target": True},
     {"token": "AVAX", "is_target": False},
     {"token": "PENDLE", "is_target": False},
 
@@ -38,11 +38,13 @@ def get_all_target_token_lists() -> list:
         synthetix_token_list = get_target_tokens_for_synthetix()
         bybit_token_list = get_target_tokens_for_bybit()
         hmx_token_list = get_target_tokens_for_HMX()
+        gmx_token_list = get_target_tokens_for_GMX()
         all_target_token_lists = [
             synthetix_token_list,
             binance_token_list,
             bybit_token_list,
-            hmx_token_list
+            hmx_token_list,
+            gmx_token_list
         ]
         return all_target_token_lists
     except Exception as e:
@@ -81,6 +83,18 @@ def get_target_tokens_for_HMX() -> list:
         logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for ByBit: {e}")
         return []
 
-def get_full_symbol_for_binance(symbol: str) -> str:
-    full_symbol = symbol+'USDT'
-    return full_symbol
+def get_target_tokens_for_synthetix() -> list:
+    try:
+        symbols = [token["token"] for token in TARGET_TOKENS if token["is_target"]]
+        return symbols
+    except Exception as e:
+        logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for Synthetix: {e}")
+        return []
+
+def get_target_tokens_for_GMX() -> list:
+    try:
+        symbols = [token["token"] for token in TARGET_TOKENS if token["is_target"]]
+        return symbols
+    except Exception as e:
+        logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for GMX: {e}")
+        return []

@@ -39,13 +39,14 @@ class ByBitCaller:
     def get_funding_rate_for_symbol(self, symbol: str) -> dict:
         try:
             data = self._fetch_funding_rate_data(symbol)
+            price = data['result']['list'][0]['indexPrice']
             interval = self.get_funding_interval_for_symbol(symbol)
             if data:
                 funding_rate_info = self._parse_funding_rate_data(data, symbol)
                 rate = float(funding_rate_info['funding_rate'])
                 normalized_rate = normalize_funding_rate_to_8hrs(rate, interval)
                 funding_rate_info['funding_rate'] = normalized_rate
-                skew = self.get_skew(symbol)
+                skew = self.get_skew(symbol, price)
                 funding_rate_info['skew'] = skew
 
                 if funding_rate_info:
@@ -105,7 +106,7 @@ class ByBitCaller:
             logger.error(f"ByBitCaller - Failed to fetch or parse funding interval for symbol {symbol}. Error: {e}")
             return None
 
-    def get_skew(self, symbol: str) -> float:
+    def get_skew(self, symbol: str, price: float) -> float:
         try:
             response = self.client.get_open_interest(
                 category='linear', 
@@ -114,7 +115,8 @@ class ByBitCaller:
             if response and response.get('retCode') == 0 and 'result' in response and 'list' in response['result']:
                 open_interest_list = response['result']['list']
                 skew = float(open_interest_list[0]['openInterest'])
-                return skew
+                skew_usd = skew * price
+                return skew_usd
             
         except Exception as e:
             logger.error(f'ByBitCaller - Error while calculating skew for symbol={symbol}. Error: {e}')

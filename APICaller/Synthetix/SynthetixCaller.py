@@ -22,7 +22,9 @@ class SynthetixCaller:
                 try:
                     market_data = markets_by_name[symbol]
                     funding_rate_24 = market_data['current_funding_rate']
-                    skew = market_data['skew']
+                    index_price = float(market_data['index_price'])
+                    skew_in_asset = market_data['skew']
+                    skew_usd = skew_in_asset * index_price
                     funding_velocity = market_data['current_funding_velocity']
                     funding_rate = funding_rate_24 / 3 
                     market_funding_rates.append({
@@ -30,8 +32,12 @@ class SynthetixCaller:
                         'symbol': symbol,
                         'funding_rate': funding_rate,
                         'funding_velocity': funding_velocity,
-                        'skew': skew
+                        'skew_usd': skew_usd
                     })
                 except KeyError as e:
                     logger.error(f"SynthetixAPICaller - Error processing market data for {symbol}: {e}")
         return market_funding_rates
+
+# x = SynthetixCaller()
+# y = x.client.perps.get_market_summary(market_name='ETH')
+# print(y)

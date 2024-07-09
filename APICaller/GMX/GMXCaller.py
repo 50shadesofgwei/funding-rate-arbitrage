@@ -8,12 +8,13 @@ class GMXCaller:
         self.stats_caller = build_stats_class()
         self.config = ARBITRUM_CONFIG_OBJECT
 
-    def get_funding_rates(self) -> list:
+    def get_funding_rates(self, symbols: list) -> list:
         try:
             raw_opportunities = self.get_opportunities_raw()
             parsed_opportunities = parse_opportunity_objects_from_response(raw_opportunities)
+            filtered_opportunities = filter_market_data(parsed_opportunities, symbols)
 
-            return parsed_opportunities
+            return filtered_opportunities
         
         except Exception as e:
             logger.error(f'GMXCaller - Failed to get funding rates. Error: {e}')

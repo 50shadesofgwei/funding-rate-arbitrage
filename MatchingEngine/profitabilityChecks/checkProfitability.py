@@ -126,33 +126,20 @@ class ProfitabilityChecker:
 
         try:
             is_long = opportunity['long_exchange'] == 'Synthetix'
-            fee = MarketDirectory.get_maker_taker_fee(symbol, skew, is_long)
-            fee_size = size_usd * fee
-            size_after_fee = size_usd - fee_size
+            opening_fee = MarketDirectory.get_total_opening_fee(symbol, skew, is_long, size_usd)
+            gas_fee_usd = 1
+            premium = self.position_controller.synthetix.calculate_premium_usd(symbol, size_usd)
+
+            total_funding = calculate_expected_funding_for_time_period_usd(
+                opportunity,
+                is_long,
+                size_usd,
+                time_period_hours
+            )
             
-            premium = self.position_controller.synthetix.calculate_premium(symbol, size_after_fee)
-            if premium is None:
-                logger.error(f"CheckProfitability - Failed to calculate premium for {symbol}.")
-                return None
+            total_fees = (opening_fee + premium + gas_fee_usd)
 
-            size_with_premium = size_after_fee + premium
-            adjusted_size = get_adjusted_size(size_with_premium, is_long)
-
-            current_block_number = get_base_block_number()
-            initial_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
-            funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol=symbol, current_skew=skew, trade_size=adjusted_size)
-
-            end_block_number = current_block_number + floor(BLOCKS_PER_HOUR_BASE * time_period_hours)
-            total_funding = 0
-            for block in range(current_block_number, end_block_number + 1):
-                adjusted_rate = calculate_adjusted_funding_rate(initial_rate, funding_velocity, 1)
-                profit_loss_per_day = adjusted_rate * adjusted_size
-                if (is_long and adjusted_rate < 0) or (not is_long and adjusted_rate > 0):
-                    profit_loss_per_day *= -1
-
-                total_funding += profit_loss_per_day / BLOCKS_PER_DAY_BASE
-
-            return total_funding
+            return total_funding - total_fees
 
         except Exception as e:
             logger.error(f'SynthetixCheckProfitabilityUtils -  Error estimating Synthetix profit for {symbol}: Error: {e}')

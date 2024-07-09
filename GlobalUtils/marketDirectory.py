@@ -103,16 +103,103 @@ class MarketDirectory:
             logger.error(f"MarketDirectory - Failed to calculate new funding velocity for {symbol}: {e}")
 
     @classmethod
-    def get_maker_taker_fee(cls, symbol: str, skew: float, is_long: bool) -> float:
+    def get_total_opening_fee(cls, symbol: str, skew_usd: float, is_long: bool, size_usd: float) -> float:
         try:
-            market = cls.get_market_params(symbol)
-            if is_long:
-                fee = market['maker_fee'] if skew < 0 else market['taker_fee']
-            else:
-                fee = market['maker_fee'] if skew > 0 else market['taker_fee']
+            fees = cls.get_maker_taker_fee(
+                symbol,
+                skew_usd,
+                is_long,
+                size_usd
+            )
+        
+            maker_fee_usd = fees[0]['maker_fee'] * fees[0]['size']
+            taker_fee_usd = fees[1]['taker_fee'] * fees[1]['size']
 
-            return fee
+            total_opening_fee_usd = maker_fee_usd + taker_fee_usd
+            return total_opening_fee_usd
+
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to determine fee for {symbol} with skew {skew} and is_long {is_long}. Error: {e}")
+            logger.error(f"MarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd}, size {size_usd} and is_long = {is_long}. Error: {e}")
             return None
 
+    @classmethod
+    def get_maker_taker_fee(cls, symbol: str, skew_usd: float, is_long: bool, size_usd: float) -> list:
+        try:
+            market = cls.get_market_params(symbol)
+            maker_fee = market['maker_fee']
+            taker_fee = market['taker_fee']
+            print(f'Maker fee for {symbol} = {maker_fee}')
+            print(f'Taker fee for {symbol} = {taker_fee}')
+
+            if is_long:
+                trade_impact = size_usd
+            else:
+                trade_impact = -size_usd
+
+            maker_taker_split = cls.calculate_maker_taker_split(skew_usd, trade_impact)
+            maker_size = maker_taker_split['maker_trade_size']
+            taker_size = maker_taker_split['taker_trade_size']
+
+
+            fees = [
+                {'maker_fee': maker_fee, 'size': maker_size},
+                {'taker_fee': taker_fee, 'size': taker_size}
+            ]
+
+            return fees
+
+        except Exception as e:
+            logger.error(f"MarketDirectory - Failed to determine maker/taker fee object for {symbol} with skew {skew_usd}, size {size_usd} and is_long = {is_long}. Error: {e}")
+            return None
+
+    @classmethod        
+    def calculate_maker_taker_split(cls, skew_usd: float, size_usd: float) -> dict:
+        try:
+            # Initialize maker and taker sizes
+            maker_trade_size = 0
+            taker_trade_size = 0
+
+            if (skew_usd > 0 and size_usd < 0) or (skew_usd < 0 and size_usd > 0):
+                # Trade is neutralizing the skew
+                if abs(size_usd) >= abs(skew_usd):
+                    maker_trade_size = abs(skew_usd)
+                    taker_trade_size = abs(size_usd) - abs(skew_usd)
+                else:
+                    maker_trade_size = abs(size_usd)
+            else:
+                # Trade is increasing the skew
+                taker_trade_size = abs(size_usd)
+
+            return {
+                'maker_trade_size': maker_trade_size,
+                'taker_trade_size': taker_trade_size
+            }
+        
+        except Exception as e:
+            logger.error(f"MarketDirectory - Failed to determine maker/taker split for skew {skew_usd} and size {size_usd}. Error: {e}")
+            return None
+
+
+# Opening fee tests
+# TODO: Delete these later
+MarketDirectory.initialize()
+test1 = MarketDirectory.get_total_opening_fee(
+    'DOGE',
+    0,
+    False,
+    5000)
+print(f'expected = 6, result = {test1}')
+
+test2 = MarketDirectory.get_total_opening_fee(
+    'ETH',
+    140000,
+    True,
+    6000)
+print(f'expected = 1, result = {test2}')
+
+test3 = MarketDirectory.get_total_opening_fee(
+    'BTC',
+    63000,
+    False,
+    5500)
+print(f'expected = 1, result = {test3}')

@@ -148,6 +148,7 @@ def sort_nested_dict(nested_dict: dict):
         logger.error(f'GMXCallerUtils - Failed to sort nested dictionary by net rate. Error: {e}')
         return None
 
+# TODO - confirm that open_interest_imbalance is denoted in USD
 def parse_opportunity_objects_from_response(response: dict) -> list:
     try:
         opportunities = []
@@ -158,7 +159,7 @@ def parse_opportunity_objects_from_response(response: dict) -> list:
                 opportunity = {
                     'exchange': 'GMX',
                     'symbol': symbol,
-                    'skew': details['open_interest_imbalance'],
+                    'skew_usd': details['open_interest_imbalance'],
                     'funding_rate': funding_rate,
                 }
                 opportunities.append(opportunity)
@@ -168,3 +169,20 @@ def parse_opportunity_objects_from_response(response: dict) -> list:
     except Exception as e:
         logger.error(f'GMXCallerUtils - Failed to parse opportunity objects from API response. Error: {e}')
         return None
+
+def filter_market_data(data: list, symbols: list) -> list:
+    try:
+        filtered_opportunities = []
+        for market_data in data:
+            market = market_data['symbol']
+            if market not in symbols:
+                continue
+            else:
+                filtered_opportunities.append(market_data)
+        
+        return filtered_opportunities
+    
+    except Exception as e:
+        logger.error(f'GMXCallerUtils - Failed to filter opportunities by selected tokens. Error: {e}')
+        return None
+            

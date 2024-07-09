@@ -1,7 +1,6 @@
 binance_futures_connector==4.0.0
 gmx_python_sdk==0.0.5
 hexbytes==0.3.1
-git+https://github.com/50shadesofgwei/v2-sdk-python.git
 matplotlib==3.8.4
 numerize==0.12
 numpy==2.0.0

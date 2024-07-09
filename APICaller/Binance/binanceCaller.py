@@ -33,7 +33,7 @@ class BinanceCaller:
                 funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
                 skew = self.get_skew(symbol)
                 parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
-                parsed_data['skew'] = skew
+                parsed_data['skew_usd'] = skew
                 if parsed_data:
                     funding_rates.append(parsed_data)
             return funding_rates
@@ -74,12 +74,13 @@ class BinanceCaller:
         try:
             response = self.client.open_interest(symbol)
             response2 = self.client.long_short_account_ratio(symbol, period='5m')
+            price = self.get_price(symbol)
             open_interest_in_asset = float(response['openInterest'])
 
             amount_long = float(response2[0]['longAccount']) * open_interest_in_asset
             amount_short = float(response2[0]['shortAccount']) * open_interest_in_asset
 
-            skew = amount_long - amount_short
+            skew = (amount_long - amount_short) * price
             return skew
         except Exception as e:
             logger.error(f'BinanceAPICaller - Error while calculating skew for symbol {symbol}. Error: {e}')

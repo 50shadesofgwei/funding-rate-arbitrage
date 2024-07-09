@@ -3,6 +3,8 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
+requirements.append('hmx-v2-python @ git+https://github.com/50shadesofgwei/v2-sdk-python.git@main')
+
 setup(
     name='SynthetixFundingRateArbitrage',
     version='0.3.0',
@@ -18,7 +20,6 @@ setup(
             'is-position-open = TxExecution.Master.run:is_position_open'
         ],
     },
-
     description='Delta-neutral funding rate arbitrage searcher',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
