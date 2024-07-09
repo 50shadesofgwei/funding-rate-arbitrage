@@ -20,7 +20,7 @@ TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
     {"exchange": "Binance", "is_target": False},
     {"exchange": "ByBit", "is_target": False},
-    {"exchange": "HMX", "is_target": True},
+    {"exchange": "HMX", "is_target": False},
     {"exchange": "GMX", "is_target": True},
 ]
 

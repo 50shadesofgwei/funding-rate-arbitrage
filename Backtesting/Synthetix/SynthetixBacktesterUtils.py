@@ -119,13 +119,6 @@ def preprocess_rates(rates):
         logger.error(f'SynthetixBacktesterUtils - Error while preprocessing funding rates: {e}')
         return None
 
-def calculate_adjusted_funding_rate(initial_rate, funding_velocity, blocks_since_update):
-    try:
-        return initial_rate + (funding_velocity / BLOCKS_PER_DAY_BASE) * blocks_since_update
-    except Exception as e:
-        logger.error(f'SynthetixBacktesterUtils - Error while calculating adjusted funding rate for initial rate {initial_rate} and velocity {funding_velocity}, {e}')
-        return None
-
 def accumulate_funding_costs(data: pd.DataFrame, start_block, end_block, position_size_in_asset):
     try:
         total_funding = 0

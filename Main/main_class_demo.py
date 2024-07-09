@@ -5,7 +5,7 @@ from MatchingEngine.MatchingEngine import matchingEngine
 from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityChecker
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.globalUtils import *
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 import time
 import json
 

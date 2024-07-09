@@ -6,7 +6,7 @@ from Backtesting.Synthetix.SynthetixBacktesterUtils import *
 from Backtesting.MasterBacktester.MasterBacktesterUtils import *
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from GlobalUtils.logger import logger
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
