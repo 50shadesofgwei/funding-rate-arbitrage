@@ -2,7 +2,7 @@ from Backtesting.utils.backtestingUtils import *
 from Backtesting.Synthetix.SynthetixBacktesterUtils import *
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from GlobalUtils.globalUtils import *
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from web3 import *
 import math

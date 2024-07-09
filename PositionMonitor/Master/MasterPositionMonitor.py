@@ -4,7 +4,7 @@ from PositionMonitor.HMX.HMXPositionMonitor import HMXPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 from pubsub import pub
 import threading
 import sqlite3

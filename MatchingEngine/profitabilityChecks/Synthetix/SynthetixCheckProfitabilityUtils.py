@@ -1,8 +1,7 @@
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
-from Backtesting.Synthetix.SynthetixBacktesterUtils import calculate_adjusted_funding_rate
 from math import floor
 
 

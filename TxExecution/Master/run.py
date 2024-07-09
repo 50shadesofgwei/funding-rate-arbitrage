@@ -1,6 +1,6 @@
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 import argparse
 

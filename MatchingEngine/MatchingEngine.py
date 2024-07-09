@@ -23,8 +23,8 @@ class matchingEngine:
                 for symbol in common_symbols:
                     rate1 = float(rates_by_exchange[ex1][symbol]['funding_rate'])
                     rate2 = float(rates_by_exchange[ex2][symbol]['funding_rate'])
-                    skew1 = rates_by_exchange[ex1][symbol]['skew']
-                    skew2 = rates_by_exchange[ex2][symbol]['skew']
+                    skew1 = rates_by_exchange[ex1][symbol]['skew_usd']
+                    skew2 = rates_by_exchange[ex2][symbol]['skew_usd']
 
                     if (rate1 > 0 and rate2 > 0) or (rate1 < 0 and rate2 < 0):
                         if rate1 > rate2:

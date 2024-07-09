@@ -2,11 +2,10 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
-from Backtesting.Synthetix.SynthetixBacktesterUtils import calculate_adjusted_funding_rate
 from APICaller.ByBit.ByBitCaller import ByBitCaller
 import json
 import os

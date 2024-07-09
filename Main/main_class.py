@@ -8,7 +8,7 @@ from PositionMonitor.Master.MasterPositionMonitor import MasterPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 import time
 
 class Main:

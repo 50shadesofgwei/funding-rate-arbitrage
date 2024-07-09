@@ -4,7 +4,7 @@ from APICaller.master.MasterUtils import get_target_tokens_for_synthetix
 from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
-from GlobalUtils.marketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
 import time
 import math
 from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT

@@ -6,9 +6,9 @@ import json
 
 load_dotenv()
 
-class MarketDirectory:
+class SynthetixMarketDirectory:
     _markets = {}
-    _file_path = 'markets.json'
+    _file_path = 'synthetix_markets.json'
     _is_initialized = False
 
     @classmethod
@@ -178,28 +178,3 @@ class MarketDirectory:
         except Exception as e:
             logger.error(f"MarketDirectory - Failed to determine maker/taker split for skew {skew_usd} and size {size_usd}. Error: {e}")
             return None
-
-
-# Opening fee tests
-# TODO: Delete these later
-MarketDirectory.initialize()
-test1 = MarketDirectory.get_total_opening_fee(
-    'DOGE',
-    0,
-    False,
-    5000)
-print(f'expected = 6, result = {test1}')
-
-test2 = MarketDirectory.get_total_opening_fee(
-    'ETH',
-    140000,
-    True,
-    6000)
-print(f'expected = 1, result = {test2}')
-
-test3 = MarketDirectory.get_total_opening_fee(
-    'BTC',
-    63000,
-    False,
-    5500)
-print(f'expected = 1, result = {test3}')
