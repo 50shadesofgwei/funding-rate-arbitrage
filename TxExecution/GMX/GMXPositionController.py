@@ -90,7 +90,7 @@ class GMXPositionController:
 
     def get_open_positions(self) -> dict:
         try:
-            address = '0xa6D1FEda6fc70680816eF6A23faf5e454e2f9C09'
+            address = self.config.user_wallet_address
             positions = GetOpenPositions(config=self.config, address=address).get_data()
 
             if len(positions) > 0:

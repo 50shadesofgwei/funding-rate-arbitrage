@@ -9,8 +9,9 @@ class OKXCaller:
     # Rate limit: 5 requests per 2 seconds
     # Rate limit rule: IP + instrumentID
     def __init__(self):
-        self.okx_pub_client = GLOBAL_OKX_PUBLIC_CLIENT
-        self.okx_trading_data_client = GLOBAL_OKX_TRADING_DATA_CLIENT
+        # self.okx_pub_client = GLOBAL_OKX_PUBLIC_CLIENT
+        # self.okx_trading_data_client = GLOBAL_OKX_TRADING_DATA_CLIENT
+        pass
 
     def get_price(self, symbol: str) -> float:
         try:

@@ -301,7 +301,7 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
 
-    def calculate_premium(self, symbol: str, size: float) -> float:
+    def calculate_premium_usd(self, symbol: str, size_usd: float) -> float:
         max_retries = 5
         retries = 0
         
@@ -309,7 +309,7 @@ class SynthetixPositionController:
         
         while retries < max_retries:
             try:
-                quote_dict = self.client.perps.get_quote(size=size, market_id=market_id)
+                quote_dict = self.client.perps.get_quote(size=size_usd, market_id=market_id)
                 
                 if quote_dict is None:
                     time.sleep(0.23)
@@ -325,7 +325,8 @@ class SynthetixPositionController:
                     return None
                 
                 premium = (fill_price - index_price) / index_price
-                return premium
+                premium_usd = premium * size_usd
+                return premium_usd
             
             except Exception as e:
                 logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
