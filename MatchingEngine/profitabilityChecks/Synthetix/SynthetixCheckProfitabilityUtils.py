@@ -1,4 +1,4 @@
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
@@ -22,7 +22,7 @@ def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, size_u
             adjusted_size_in_asset = get_adjusted_size(size_in_asset, is_long)
 
             current_funding_rate: float = float(opportunity['long_exchange_funding_rate']) if is_long else float(opportunity['short_exchange_funding_rate'])
-            funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol, skew_in_asset, adjusted_size_in_asset)
+            funding_velocity = SynthetixMarketDirectory.calculate_new_funding_velocity(symbol, skew_in_asset, adjusted_size_in_asset)
             funding_velocity_1hr = funding_velocity / 24
 
             if funding_velocity == 0 or current_funding_rate == 0:
@@ -51,7 +51,7 @@ def calculate_expected_funding_for_time_period_usd(opportunity: dict, is_long: b
         adjusted_size_usd = get_adjusted_size(size_usd, is_long)
         adjusted_size_in_asset = adjusted_size_usd / price
         initial_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
-        funding_velocity_24h = MarketDirectory.calculate_new_funding_velocity(symbol=symbol, current_skew=skew_in_asset, trade_size=adjusted_size_in_asset)
+        funding_velocity_24h = SynthetixMarketDirectory.calculate_new_funding_velocity(symbol=symbol, current_skew=skew_in_asset, trade_size=adjusted_size_in_asset)
 
         total_funding = calculate_profit(
             size_usd,

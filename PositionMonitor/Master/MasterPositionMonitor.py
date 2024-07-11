@@ -4,7 +4,7 @@ from PositionMonitor.HMX.HMXPositionMonitor import HMXPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from pubsub import pub
 import threading
 import sqlite3
@@ -154,7 +154,7 @@ class MasterPositionMonitor():
             
             symbol = str(synthetix_position['symbol'])
 
-            market_data = MarketDirectory.get_market_params(symbol)
+            market_data = SynthetixMarketDirectory.get_market_params(symbol)
             if not market_data:
                 logger.error(f"MasterPositionMonitor - No market data available for symbol: {symbol}")
                 return None

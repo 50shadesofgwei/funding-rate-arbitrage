@@ -2,7 +2,7 @@ from Backtesting.utils.backtestingUtils import *
 from Backtesting.Synthetix.SynthetixBacktesterUtils import *
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from GlobalUtils.globalUtils import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from web3 import *
 import math
@@ -190,7 +190,7 @@ class SynthetixBacktester:
             for token_info in TARGET_TOKENS:
                 symbol = token_info["token"]
                 if token_info["is_target"]:
-                    market_id = MarketDirectory.get_market_id(symbol)
+                    market_id = SynthetixMarketDirectory.get_market_id(symbol)
                     market_events = [event for event in parsed_events if event.get('market_id') == market_id]
                     save_data_to_json(market_events, symbol)
                     logger.info(f"SynthetixBacktester - Processed {len(market_events)} events for symbol {symbol}")

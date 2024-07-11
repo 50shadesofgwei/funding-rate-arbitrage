@@ -4,7 +4,7 @@ from APICaller.master.MasterUtils import get_target_tokens_for_synthetix
 from TxExecution.Synthetix.SynthetixPositionControllerUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 import time
 import math
 from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
@@ -69,7 +69,7 @@ class SynthetixPositionController:
     def close_position(self, symbol: str, reason: str) -> dict:
         max_retries = 2 
         retry_delay_in_seconds = 3 
-        market_id = MarketDirectory.get_market_id(symbol) 
+        market_id = SynthetixMarketDirectory.get_market_id(symbol)
         
         for attempt in range(max_retries):
             try:
@@ -305,7 +305,7 @@ class SynthetixPositionController:
         max_retries = 5
         retries = 0
         
-        market_id = MarketDirectory.get_market_id(symbol)
+        market_id = SynthetixMarketDirectory.get_market_id(symbol)
         
         while retries < max_retries:
             try:
