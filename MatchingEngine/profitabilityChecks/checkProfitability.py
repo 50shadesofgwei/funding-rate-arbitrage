@@ -2,7 +2,7 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
@@ -125,7 +125,7 @@ class ProfitabilityChecker:
 
         try:
             is_long = opportunity['long_exchange'] == 'Synthetix'
-            opening_fee = MarketDirectory.get_total_opening_fee(symbol, skew, is_long, size_usd)
+            opening_fee = SynthetixMarketDirectory.get_total_opening_fee(symbol, skew, is_long, size_usd)
             gas_fee_usd = 1
             premium = self.position_controller.synthetix.calculate_premium_usd(symbol, size_usd)
 

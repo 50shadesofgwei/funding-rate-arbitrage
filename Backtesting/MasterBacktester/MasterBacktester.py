@@ -6,7 +6,7 @@ from Backtesting.Synthetix.SynthetixBacktesterUtils import *
 from Backtesting.MasterBacktester.MasterBacktesterUtils import *
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from GlobalUtils.logger import logger
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -49,7 +49,7 @@ class MasterBacktester:
                 binance_trade_events = extract_funding_events(binance_df, trade['entry_block_binance'], trade['exit_block_binance'])
                 binance_funding_impact = calculate_total_funding_impact(binance_trade_events, trade_size_in_asset)
 
-                new_funding_velocity = MarketDirectory.calculate_new_funding_velocity(symbol, trade_size_in_asset, trade_size_in_asset)
+                new_funding_velocity = SynthetixMarketDirectory.calculate_new_funding_velocity(symbol, trade_size_in_asset, trade_size_in_asset)
                 synthetix_trade_data = synthetix_df[(synthetix_df['block_number'] >= trade['entry_block_snx']) & (synthetix_df['block_number'] <= trade['exit_block_snx'])]
                 synthetix_funding_impact = accumulate_funding_costs(synthetix_trade_data, trade['entry_block_snx'], trade['exit_block_snx'], trade_size_in_asset)
 
