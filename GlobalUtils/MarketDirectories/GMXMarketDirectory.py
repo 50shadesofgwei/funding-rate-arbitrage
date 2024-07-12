@@ -16,7 +16,6 @@ class GMXMarketDirectory:
     def initialize(cls):
         try:
             if not cls._is_initialized:
-                cls._symbol_to_market_id_mapping = cls.build_symbol_to_market_id_mapping()
                 cls.update_all_market_parameters()
                 cls._is_initialized = True
                 logger.info('GMXMarketDirectory - Markets Initialized')
@@ -109,11 +108,10 @@ class GMXMarketDirectory:
     @classmethod
     def build_symbol_to_market_id_mapping(cls) -> dict:
         try:
-            data_getter = GetData(config=ARBITRUM_CONFIG_OBJECT)
             mapping = {}
 
-            for market_key in data_getter.markets.info:
-                symbol = data_getter.markets.get_market_symbol(market_key)
+            for market_key in cls._data_getter.markets.info:
+                symbol = cls._data_getter.markets.get_market_symbol(market_key)
                 mapping[symbol] = market_key
             
             return mapping
@@ -121,6 +119,21 @@ class GMXMarketDirectory:
         except Exception as e:
             logger.error(f"GMXMarketDirectory - Failed to build symbol/marketId mapping. Error: {e}")
             return None
+    
+    @classmethod
+    def get_market_key_for_symbol(cls, symbol: str) -> str:
+        try:
+            market_key = str(cls._symbol_to_market_id_mapping[symbol])
+            return market_key
+        
+        except KeyError as ke:
+            logger.error(f"GMXMarketDirectory - KeyError while calling market key for symbol {symbol}. Error: {ke}")
+            return None
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Error while calling market key for symbol {symbol}. Error: {e}")
+            return None
 
 
-GMXMarketDirectory.update_all_market_parameters()
+# data_getter = GetData(config=ARBITRUM_CONFIG_OBJECT)
+# x = data_getter.markets.info
+# print(x)

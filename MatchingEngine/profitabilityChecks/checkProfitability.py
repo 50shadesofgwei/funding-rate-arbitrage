@@ -2,13 +2,23 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
 from APICaller.ByBit.ByBitCaller import ByBitCaller
 import json
 import os
+
+import matplotlib.pyplot as plt # TODO - delete
+import pandas as pd # TODO - delete
+import seaborn as sns
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.colors as mcolors
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+import numpy as np
 
 class ProfitabilityChecker:
     def __init__(self):
@@ -77,7 +87,7 @@ class ProfitabilityChecker:
                 estimated_profit = self.estimate_binance_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
             elif exchange == 'Synthetix':
-                estimated_profit = self.estimate_synthetix_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
+                estimated_profit = self.estimate_synthetix_profit(time_period_hours=time_period_hours, absolute_size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
             elif exchange == 'HMX':
                 estimated_profit = estimate_HMX_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
@@ -101,7 +111,7 @@ class ProfitabilityChecker:
                     return time_to_neutralize
 
             if exchange == "Synthetix":
-                time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, size_usd)
+                time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, absolute_size_usd=size_usd)
                 if type(time_to_neutralize) == str:
                     time_to_neutralize = self.default_trade_duration
                     return time_to_neutralize
@@ -118,27 +128,31 @@ class ProfitabilityChecker:
             logger.error(f'CheckProfitability - Failed to estimate profit for exchange {exchange}, Error: {e}')
             return None
 
-    def estimate_synthetix_profit(self, time_period_hours: float, size_usd: float, opportunity: dict) -> float:
+    def estimate_synthetix_profit(self, time_period_hours: float, absolute_size_usd: float, opportunity: dict) -> tuple:
         is_long: bool = opportunity['long_exchange'] == 'Synthetix'
         symbol = str(opportunity['symbol'])
-        skew: float = opportunity['long_exchange_skew'] if is_long else opportunity['short_exchange_skew']
+        skew_usd: float = opportunity['long_exchange_skew_usd'] if is_long else opportunity['short_exchange_skew_usd']
 
         try:
             is_long = opportunity['long_exchange'] == 'Synthetix'
-            opening_fee = MarketDirectory.get_total_opening_fee(symbol, skew, is_long, size_usd)
+            size_usd = get_adjusted_size(absolute_size_usd, is_long)
+            skew_usd_after_trade = skew_usd + size_usd
+            opening_fee = SynthetixMarketDirectory.get_total_opening_fee(symbol, skew_usd, is_long, absolute_size_usd)
+            closing_fee = SynthetixMarketDirectory.get_total_closing_fee(symbol, skew_usd_after_trade, is_long, absolute_size_usd)
             gas_fee_usd = 1
             premium = self.position_controller.synthetix.calculate_premium_usd(symbol, size_usd)
 
             total_funding = calculate_expected_funding_for_time_period_usd(
                 opportunity,
                 is_long,
-                size_usd,
+                absolute_size_usd,
                 time_period_hours
             )
             
-            total_fees = (opening_fee + premium + gas_fee_usd)
+            total_fees = (opening_fee + premium + gas_fee_usd + closing_fee)
+            profit_after_fees = total_funding - total_fees
 
-            return total_funding - total_fees
+            return profit_after_fees
 
         except Exception as e:
             logger.error(f'SynthetixCheckProfitabilityUtils -  Error estimating Synthetix profit for {symbol}: Error: {e}')
@@ -148,7 +162,7 @@ class ProfitabilityChecker:
         try:
             symbol = opportunity['symbol']
             is_long = opportunity['long_exchange'] == 'Binance'
-            funding_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
+            funding_rate = opportunity['long_exchange_funding_rate_8hr'] if is_long else opportunity['short_exchange_funding_rate_8hr']
             current_block_number = get_base_block_number()
             size_usd = get_adjusted_size(size_usd, is_long)
 
@@ -174,7 +188,7 @@ class ProfitabilityChecker:
         try:
             symbol = opportunity['symbol'] + 'USDT'
             is_long = opportunity['long_exchange'] == 'ByBit'
-            funding_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
+            funding_rate = opportunity['long_exchange_funding_rate_8hr'] if is_long else opportunity['short_exchange_funding_rate_8hr']
             number_of_funding_events_in_time_period = self.bybit_caller.get_next_funding_events_for_time_period(symbol, time_period_hours)
 
             if is_long:
@@ -209,9 +223,9 @@ class ProfitabilityChecker:
             short_exchange = opportunity['short_exchange']
             hours_to_neutralize_long = hours_to_neutralize_by_exchange['long_exchange']
             hours_to_neutralize_short = hours_to_neutralize_by_exchange['short_exchange']
-            long_exchange_funding_rate = float(opportunity['long_exchange_funding_rate'])
+            long_exchange_funding_rate = float(opportunity['long_exchange_funding_rate_8hr'])
             long_exchange_funding_rate_1hr = long_exchange_funding_rate / 8
-            short_exchange_funding_rate = float(opportunity['short_exchange_funding_rate'])
+            short_exchange_funding_rate = float(opportunity['short_exchange_funding_rate_8hr'])
             short_exchange_funding_rate_1hr = short_exchange_funding_rate / 8
             shortest_time = float(min(hours_to_neutralize_long, hours_to_neutralize_short))
 
@@ -245,3 +259,84 @@ class ProfitabilityChecker:
         except Exception as e:
             logger.error(f'CheckProfitability - Unexpected error when estimating profit for {symbol}: {e}')
             return None
+
+
+# opportunity = {
+#     'long_exchange': 'Synthetix',
+#     'short_exchange': 'ByBit',
+#     'symbol': 'W',
+#     'long_exchange_funding_rate_8hr': -0.001869,
+#     'short_exchange_funding_rate_8hr': 0.0001,
+#     'long_exchange_skew_usd': 0,
+#     'short_exchange_skew_usd': 0,
+#     'block_number': 0
+# }
+
+# SynthetixMarketDirectory.initialize()
+# x = ProfitabilityChecker()
+# overall_results = []
+# for m in range(20):
+#     size_usd = 10000
+#     max_profit_result = None
+
+#     for n in range(20):
+#         time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, size_usd)
+#         if time_to_neutralize == "No Neutralization":
+#             size_usd += 10000
+#             continue
+        
+#         profit, total_fees = x.estimate_synthetix_profit(time_to_neutralize, size_usd, opportunity)
+#         result = {
+#             'symbol': opportunity['symbol'],
+#             'size_usd': size_usd,
+#             'time_to_neutralize': time_to_neutralize,
+#             'profit_after_fees': profit,
+#             'total_fees': total_fees,
+#             'short_exchange_skew_usd': opportunity['short_exchange_skew_usd']
+#         }
+
+#         # Store the result if it is the most profitable one seen so far
+#         if max_profit_result is None or result['profit_after_fees'] > max_profit_result['profit_after_fees']:
+#             max_profit_result = result
+
+#         size_usd += 10000
+
+#     # Add the most profitable result of the current skew iteration to the overall results
+#     if max_profit_result:
+#         overall_results.append(max_profit_result)
+
+#     opportunity['short_exchange_skew_usd'] -= 10000
+
+# # Optionally, write the overall results to a JSON file
+# with open('results.json', 'w') as f:
+#     json.dump(overall_results, f, indent=4)
+
+
+# # Load results from the JSON file
+# with open('results2.json', 'r') as f:
+#     results_list = json.load(f)
+
+# size_usd = 250
+# results = []
+# for n in range(20):
+#         time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, size_usd)
+#         if time_to_neutralize == "No Neutralization":
+#             time_to_neutralize = 24
+        
+#         profit, total_fees = x.estimate_synthetix_profit(time_to_neutralize, size_usd, opportunity)
+#         result = {
+#             'symbol': opportunity['symbol'],
+#             'size_usd': size_usd,
+#             'time_to_neutralize': time_to_neutralize,
+#             'profit_after_fees': profit,
+#             'total_fees': total_fees,
+#             'short_exchange_skew_usd': opportunity['short_exchange_skew_usd']
+#         }
+#         results.append(result)
+
+#         size_usd += 250
+
+# print(results)
+
+# with open('results2.json', 'w') as f:
+#     json.dump(results, f, indent=4)

@@ -46,6 +46,11 @@ SINGLE_SWAP_GAS_LIMIT = create_hash_string("SINGLE_SWAP_GAS_LIMIT")
 SWAP_ORDER_GAS_LIMIT = create_hash_string("SWAP_ORDER_GAS_LIMIT")
 VIRTUAL_TOKEN_ID = create_hash_string("VIRTUAL_TOKEN_ID")
 
+MIN_COLLATERAL_FACTOR = create_hash_string("MIN_COLLATERAL_FACTOR")
+
+
+def minCollateralFactorKey(market: str):
+    return create_hash(["bytes32", "address"], [MIN_COLLATERAL_FACTOR, market])
 
 def accountPositionListKey(account):
     return create_hash(

@@ -8,7 +8,7 @@ from PositionMonitor.Master.MasterPositionMonitor import MasterPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import MarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 import time
 
 class Main:
@@ -21,7 +21,7 @@ class Main:
         self.position_controller.subscribe_to_events()
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
-        MarketDirectory.initialize()
+        SynthetixMarketDirectory.initialize()
     
     def search_for_opportunities(self):
         try:
