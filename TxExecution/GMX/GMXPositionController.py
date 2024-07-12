@@ -9,10 +9,11 @@ from gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 set_paths()
 
+
 class GMXPositionController:
     def __init__(self):
         self.config = ARBITRUM_CONFIG_OBJECT
-        self.config.set_config('/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
+        self.config.set_config(PATH_TO_GMX_CONFIG_FILE)
 
     def execute_trade(self, opportunity: dict, is_long: bool, trade_size: float):
         try:
@@ -84,29 +85,80 @@ class GMXPositionController:
             debug_mode=True
         )
 
+        time.sleep(2)
+        if not self.was_position_opened_successfully(symbol, is_long):
+            pass
+
     ######################
     ### READ FUNCTIONS ###
     ######################
 
+    # def handle_position_opened(self, symbol: str):
+    #     try:
+    #         position = self.get_open_position_for_symbol(symbol)
+    #         collateral = float(position['inital_collateral_amount_usd'])
+    #         position_details = {
+    #             'position': position,
+    #             'margin_details': margin_details
+    #         }
+    #         trade_data = parse_trade_data_from_position_details(position_details)
+    #         return trade_data
+    #     except Exception as e:
+    #         logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
+    #         return None
+
+    def was_position_opened_successfully(self, symbol: str, is_long: bool) -> bool:
+        try:
+            open_positions = self.get_open_positions()
+
+            for key, position in open_positions.items():
+                position_symbol = position['market_symbol'][0]
+                position_is_long = position['is_long']
+                
+                if position_symbol == symbol and position_is_long == is_long:
+                    return True
+
+            return False
+        except Exception as e:
+            logger.error(f"GMXPositionController - Error checking if position was opened successfully for {symbol}. Error: {e}")
+            return False
+
+
     def get_open_positions(self) -> dict:
         try:
-            address = self.config.user_wallet_address
+            address: str = self.config.user_wallet_address
             positions = GetOpenPositions(config=self.config, address=address).get_data()
 
             if len(positions) > 0:
                 return positions
             else:
-                return None
+                return {}
 
         except Exception as e:
             logger.error(f"GMXPositionController - Failed to get open positions: {e}")
             return None
 
+    def get_open_position_for_symbol(self, symbol: str) -> dict:
+        try:
+            positions = self.get_open_positions()
+            for key, position in positions.items():
+                position_symbol = position['market_symbol'][0]
+                
+                if position_symbol == symbol:
+                    return position
+                else:
+                    continue
+            
+            return {}
+
+        except Exception as e:
+            logger.error(f"GMXPositionController - Failed to get open position for symbol {symbol}. Error: {e}")
+            return None
 
     def is_already_position_open(self) -> bool:
         try:
-            address = ARBITRUM_CONFIG_OBJECT.user_wallet_address
-            positions = GetOpenPositions(config=ARBITRUM_CONFIG_OBJECT, address=address).get_data()
+            address = self.config.user_wallet_address
+            positions = GetOpenPositions(config=self.config, address=address).get_data()
             if len(positions) > 0:
                 return True
             else:
@@ -122,3 +174,6 @@ class GMXPositionController:
             logger.error(f"GMXPositionController - Error while checking if position is open: {e}", exc_info=True)
             return None
 
+x = GMXPositionController()
+y = x.was_position_opened_successfully('AAVE', True)
+print(y)

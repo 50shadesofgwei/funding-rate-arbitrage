@@ -92,24 +92,24 @@ class SynthetixMarketDirectory:
 
 
     @classmethod
-    def calculate_new_funding_velocity(cls, symbol: str, current_skew: float, trade_size: float) -> float:
+    def calculate_new_funding_velocity(cls, symbol: str, current_skew_in_asset: float, trade_size_in_asset: float) -> float:
         try:
             market_data = cls.get_market_params(symbol)
             c = market_data['max_funding_velocity'] / market_data['skew_scale']
-            new_skew = current_skew + trade_size
-            new_funding_velocity = c * new_skew
-            return new_funding_velocity
+            new_skew = current_skew_in_asset + trade_size_in_asset
+            new_funding_velocity_as_daily_percent = c * new_skew
+            return new_funding_velocity_as_daily_percent
         except Exception as e:
             logger.error(f"MarketDirectory - Failed to calculate new funding velocity for {symbol}: {e}")
 
     @classmethod
-    def get_total_opening_fee(cls, symbol: str, skew_usd: float, is_long: bool, size_usd: float) -> float:
+    def get_total_opening_fee(cls, symbol: str, skew_usd: float, is_long: bool, absolute_size_usd: float) -> float:
         try:
             fees = cls.get_maker_taker_fee(
                 symbol,
                 skew_usd,
                 is_long,
-                size_usd
+                absolute_size_usd
             )
         
             maker_fee_usd = fees[0]['maker_fee'] * fees[0]['size']
@@ -119,22 +119,40 @@ class SynthetixMarketDirectory:
             return total_opening_fee_usd
 
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd}, size {size_usd} and is_long = {is_long}. Error: {e}")
+            logger.error(f"MarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            return None
+    
+    @classmethod
+    def get_total_closing_fee(cls, symbol: str, skew_usd_after_trade: float, is_long: bool, absolute_size_usd: float) -> float:
+        try:
+            fees = cls.get_maker_taker_fee(
+                symbol,
+                skew_usd_after_trade,
+                is_long,
+                -absolute_size_usd
+            )
+        
+            maker_fee_usd = fees[0]['maker_fee'] * fees[0]['size']
+            taker_fee_usd = fees[1]['taker_fee'] * fees[1]['size']
+
+            total_opening_fee_usd = maker_fee_usd + taker_fee_usd
+            return total_opening_fee_usd
+
+        except Exception as e:
+            logger.error(f"MarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd_after_trade}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
             return None
 
     @classmethod
-    def get_maker_taker_fee(cls, symbol: str, skew_usd: float, is_long: bool, size_usd: float) -> list:
+    def get_maker_taker_fee(cls, symbol: str, skew_usd: float, is_long: bool, absolute_size_usd: float) -> list:
         try:
             market = cls.get_market_params(symbol)
             maker_fee = market['maker_fee']
             taker_fee = market['taker_fee']
-            print(f'Maker fee for {symbol} = {maker_fee}')
-            print(f'Taker fee for {symbol} = {taker_fee}')
 
             if is_long:
-                trade_impact = size_usd
+                trade_impact = absolute_size_usd
             else:
-                trade_impact = -size_usd
+                trade_impact = -absolute_size_usd
 
             maker_taker_split = cls.calculate_maker_taker_split(skew_usd, trade_impact)
             maker_size = maker_taker_split['maker_trade_size']
@@ -149,13 +167,12 @@ class SynthetixMarketDirectory:
             return fees
 
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to determine maker/taker fee object for {symbol} with skew {skew_usd}, size {size_usd} and is_long = {is_long}. Error: {e}")
+            logger.error(f"MarketDirectory - Failed to determine maker/taker fee object for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
             return None
 
     @classmethod        
     def calculate_maker_taker_split(cls, skew_usd: float, size_usd: float) -> dict:
         try:
-            # Initialize maker and taker sizes
             maker_trade_size = 0
             taker_trade_size = 0
 

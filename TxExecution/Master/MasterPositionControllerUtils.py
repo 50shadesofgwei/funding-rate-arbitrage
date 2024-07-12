@@ -26,7 +26,7 @@ def adjust_collateral_allocation(collateral_amounts: dict, long_exchange: str, s
         return None
 
 
-def is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange, min_ratio=0.01):
+def is_collateral_ratio_acceptable(collateral_amounts, min_ratio=0.01):
     try:
         long_collateral = collateral_amounts['long_exchange']
         short_collateral = collateral_amounts['long_exchange']
@@ -57,8 +57,8 @@ def calculate_adjusted_trade_size(opportunity, is_long: bool, trade_size: float)
 
 def get_is_hedge(opportunity: dict):
     try:
-        long_rate = abs(opportunity['long_exchange_funding_rate'])
-        short_rate = abs(opportunity['short_exchange_funding_rate'])
+        long_rate = abs(opportunity['long_exchange_funding_rate_8hr'])
+        short_rate = abs(opportunity['short_exchange_funding_rate_8hr'])
 
         if long_rate > short_rate:
             is_hedge = {
