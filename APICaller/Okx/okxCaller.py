@@ -9,8 +9,8 @@ class OKXCaller:
     # Rate limit: 5 requests per 2 seconds
     # Rate limit rule: IP + instrumentID
     def __init__(self):
-        # self.okx_pub_client = GLOBAL_OKX_PUBLIC_CLIENT
-        # self.okx_trading_data_client = GLOBAL_OKX_TRADING_DATA_CLIENT
+        self.okx_pub_client = GLOBAL_OKX_PUBLIC_CLIENT
+        self.okx_trading_data_client = GLOBAL_OKX_TRADING_DATA_CLIENT
         pass
 
     def get_price(self, symbol: str) -> float:
@@ -36,7 +36,7 @@ class OKXCaller:
                 funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
                 skew = self.get_skew(symbol)
                 parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
-                parsed_data['skew'] = skew
+                parsed_data['skew_usd'] = skew
                 if parsed_data:
                     funding_rates.append(parsed_data)
             return funding_rates
@@ -71,7 +71,7 @@ class OKXCaller:
             ccy = symbol.split('-')[0]
 
             return {
-                'exchange': 'Okx',
+                'exchange': 'OKX',
                 'symbol': ccy,
                 'funding_rate': rate_as_float,
             }
@@ -97,7 +97,7 @@ class OKXCaller:
             amount_long = float(open_interest_in_asset * long_percent)
             amount_short = float(open_interest_in_asset * short_percent)
             skew = amount_long - amount_short
-            return ls_ratio
+            return skew
         except Exception as e:
             logger.error(f'OkxAPICaller - Error while calculating skew for symbol {symbol}. Error: {e}')
             return None
