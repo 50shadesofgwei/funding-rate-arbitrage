@@ -8,6 +8,11 @@ from GlobalUtils.logger import *
 from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 from APICaller.Binance.binanceUtils import get_binance_client
 from APICaller.HMX.HMXCallerUtils import get_HMX_client
+from APICaller.OKX.okxUtils import get_okx_trading_data_client
+from APICaller.OKX.okxUtils import get_okx_pub_client
+from APICaller.OKX.okxUtils import get_okx_account_client
+from APICaller.OKX.okxUtils import get_okx_trade_client
+
 import functools
 import re
 import time
@@ -23,8 +28,10 @@ GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
 GLOBAL_BINANCE_CLIENT = get_binance_client()
 GLOBAL_HMX_CLIENT = get_HMX_client()
 
-# GLOBAL_OKX_PUBLIC_CLIENT = get_okx_pub_client()
-# GLOBAL_OKX_TRADING_DATA_CLIENT = get_okx_trading_data_client()
+GLOBAL_OKX_PUBLIC_CLIENT = get_okx_pub_client()
+GLOBAL_OKX_TRADING_DATA_CLIENT = get_okx_trading_data_client()
+GLOBAL_OKX_ACCOUNT_CLIENT = get_okx_account_client()
+GLOBAL_OKX_TRADE_CLIENT = get_okx_trade_client()
 
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_all_positions"
@@ -177,6 +184,11 @@ def get_milliseconds_until_given_timestamp(timestamp: int) -> int:
     current_time = int(time.time() * 1000)
     return timestamp - current_time
 
+def get_milliseconds_until_given_timestamp_timezone(timestamp: int, shift_timezone: bool) -> int:
+    current_time = int(time.time() * 1000)
+    if shift_timezone:
+        current_time -= time.timezone * 1000
+    return timestamp - current_time
 def deco_retry(retry: int = 5, retry_sleep: int = 3):
     def deco_func(func):
         @functools.wraps(func)
