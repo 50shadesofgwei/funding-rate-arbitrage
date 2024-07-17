@@ -28,6 +28,10 @@ from gmx_python_sdk.scripts.v2.get.get_pool_tvl import GetPoolTVL
 
 from gmx_python_sdk.scripts.v2.gmx_utils import ConfigManager
 
+from dotenv import load_dotenv
+load_dotenv()
+PATH_TO_GMX_CONFIG_FILE = os.getenv('PATH_TO_GMX_CONFIG_FILE')
+
 def set_paths():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     target_dir = os.path.join(current_dir, '../')
@@ -37,11 +41,12 @@ set_paths()
 
 def get_config_object() -> ConfigManager:
     config_object = ConfigManager(chain='arbitrum')
-    config_object.set_config('/Users/jfeasby/SynthetixFundingRateArbitrage/config.yaml')
+    config_object.set_config(PATH_TO_GMX_CONFIG_FILE)
 
     return config_object
 
 ARBITRUM_CONFIG_OBJECT = get_config_object()
+
 
 class GetGMXv2Stats:
 
