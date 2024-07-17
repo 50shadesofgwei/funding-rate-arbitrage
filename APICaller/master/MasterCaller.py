@@ -2,6 +2,7 @@ from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from APICaller.Binance.binanceCaller import BinanceCaller
 from APICaller.ByBit.ByBitCaller import ByBitCaller
 from APICaller.HMX.HMXCaller import HMXCaller
+from APICaller.OKX.okxCaller import OKXCaller
 from APICaller.GMX.GMXCaller import GMXCaller
 from APICaller.master.MasterUtils import get_all_target_token_lists, get_target_exchanges
 from GlobalUtils.logger import *
@@ -25,6 +26,7 @@ class MasterCaller:
                 "ByBit": (self.bybit, self.target_token_list_by_exchange[2]),
                 "HMX": (self.hmx, self.target_token_list_by_exchange[3]),
                 "GMX": (self.gmx, self.target_token_list_by_exchange[4])
+                "OKX": (self.okx, self.target_token_list_by_exchange[5])
             }
 
             filtered_exchanges = {}
