@@ -69,7 +69,7 @@ class SynthetixPositionController:
     def close_position(self, symbol: str, reason: str) -> dict:
         max_retries = 2 
         retry_delay_in_seconds = 3 
-        market_id = SynthetixMarketDirectory.get_market_id(symbol)
+        market_id = SynthetixMarketDirectory.get_market_id(symbol) 
         
         for attempt in range(max_retries):
             try:
@@ -301,37 +301,25 @@ class SynthetixPositionController:
             logger.error(f"SynthetixPositionController - Error while checking if position is open: {e}")
             return False
 
+    @deco_retry
     def calculate_premium_usd(self, symbol: str, size_usd: float) -> float:
-        max_retries = 5
-        retries = 0
-        
-        market_id = SynthetixMarketDirectory.get_market_id(symbol)
-        
-        while retries < max_retries:
-            try:
-                quote_dict = self.client.perps.get_quote(size=size_usd, market_id=market_id)
-                
-                if quote_dict is None:
-                    time.sleep(0.23)
-                    retries += 1
-                    logger.warning(f"SynthetixPositionController - Null quote received, retrying {retries}/{max_retries} for symbol {symbol} with market ID {market_id}")
-                    continue
-                
-                index_price = float(quote_dict['index_price'])
-                fill_price = float(quote_dict['fill_price'])
-                
-                if fill_price == 0:
-                    logger.error(f"SynthetixPositionController - Zero fill price error for symbol {symbol} with market ID {market_id}")
-                    return None
-                
-                premium = (fill_price - index_price) / index_price
-                premium_usd = premium * size_usd
-                return premium_usd
+        try:
+            market_id = SynthetixMarketDirectory.get_market_id(symbol)
+            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, size_usd)
+            quote_dict = self.client.perps.get_quote(size=size_in_asset, market_id=market_id)
             
-            except Exception as e:
-                logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
+            index_price = float(quote_dict['index_price'])
+            fill_price = float(quote_dict['fill_price'])
+            
+            if fill_price == 0:
+                logger.error(f"SynthetixPositionController - Zero fill price error for symbol {symbol} with market ID {market_id}")
                 return None
+            
+            premium = (fill_price - index_price) / index_price
+            premium_usd = premium * size_usd
+            return premium_usd
         
-        logger.error(f"SynthetixPositionController - Failed to get a valid quote after {max_retries} retries for symbol {symbol} with market ID {market_id}")
-        return None
+        except Exception as e:
+            logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
+            return None
 

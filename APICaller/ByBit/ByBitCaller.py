@@ -39,7 +39,7 @@ class ByBitCaller:
     def get_funding_rate_for_symbol(self, symbol: str) -> dict:
         try:
             data = self._fetch_funding_rate_data(symbol)
-            price = data['result']['list'][0]['indexPrice']
+            price = float(data['result']['list'][0]['indexPrice'])
             interval = self.get_funding_interval_for_symbol(symbol)
             if data:
                 funding_rate_info = self._parse_funding_rate_data(data, symbol)
@@ -47,7 +47,7 @@ class ByBitCaller:
                 normalized_rate = normalize_funding_rate_to_8hrs(rate, interval)
                 funding_rate_info['funding_rate'] = normalized_rate
                 skew = self.get_skew(symbol, price)
-                funding_rate_info['skew'] = skew
+                funding_rate_info['skew_usd'] = skew
 
                 if funding_rate_info:
                     return funding_rate_info

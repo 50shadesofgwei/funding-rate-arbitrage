@@ -9,9 +9,9 @@ def estimate_HMX_profit(time_period_hours: float, size_usd: float, opportunity: 
     try:
         is_long = opportunity['long_exchange'] == 'HMX'
         symbol = opportunity['symbol']
-        skew = opportunity['long_exchange_skew'] if is_long else opportunity['short_exchange_skew']
+        skew = opportunity['long_exchange_skew_usd'] if is_long else opportunity['short_exchange_skew_usd']
         adjusted_skew = skew + size_usd if is_long else skew - size_usd
-        funding_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
+        funding_rate = opportunity['long_exchange_funding_rate_8hr'] if is_long else opportunity['short_exchange_funding_rate_8hr']
         funding_rate = funding_rate / 100
 
         daily_velocity = calculate_daily_funding_velocity(symbol=symbol, skew_usd=adjusted_skew)
@@ -43,13 +43,13 @@ def estimate_time_to_neutralize_funding_rate_hmx(opportunity: dict, size_usd: fl
         try:
             symbol = str(opportunity['symbol'])
             is_long = opportunity['long_exchange'] == 'HMX'
-            skew = float(opportunity['long_exchange_skew']) if is_long else float(opportunity['short_exchange_skew'])
+            skew = float(opportunity['long_exchange_skew_usd']) if is_long else float(opportunity['short_exchange_skew_usd'])
             adjusted_skew = skew + size_usd if is_long else skew - size_usd
             daily_velocity = calculate_daily_funding_velocity(symbol=symbol, skew_usd=adjusted_skew)
             daily_velocity = daily_velocity / 100
             hourly_velocity: float = daily_velocity / 24 
 
-            current_funding_rate = float(opportunity['long_exchange_funding_rate']) if is_long else float(opportunity['short_exchange_funding_rate'])
+            current_funding_rate = float(opportunity['long_exchange_funding_rate_8hr']) if is_long else float(opportunity['short_exchange_funding_rate_8hr'])
     
             if current_funding_rate == 0:
                 logger.error(f"HMXCheckProfitabilityUtils - Zero funding rate for {symbol}, cannot calculate neutralization time.")

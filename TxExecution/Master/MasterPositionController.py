@@ -26,9 +26,6 @@ class MasterPositionController:
 
     def execute_trades(self, opportunity: dict):
         symbol: str = opportunity['symbol']
-        if not symbol:
-            logger.error("MasterPositionController:execute_trades - Opportunity does not include 'symbol'.")
-            return
 
         try:
             if self.is_already_position_open():

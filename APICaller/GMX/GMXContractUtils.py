@@ -4,6 +4,7 @@ from gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 
 DATASTORE_CONTRACT_OBJECT = get_datastore_contract(ARBITRUM_CONFIG_OBJECT)
+READER_CONTRACT_OBJECT = get_reader_contract(ARBITRUM_CONFIG_OBJECT)
 
 FUNDING_FACTOR = create_hash_string("FUNDING_FACTOR")
 FUNDING_EXPONENT_FACTOR = create_hash_string("FUNDING_EXPONENT_FACTOR")
@@ -46,6 +47,16 @@ SINGLE_SWAP_GAS_LIMIT = create_hash_string("SINGLE_SWAP_GAS_LIMIT")
 SWAP_ORDER_GAS_LIMIT = create_hash_string("SWAP_ORDER_GAS_LIMIT")
 VIRTUAL_TOKEN_ID = create_hash_string("VIRTUAL_TOKEN_ID")
 
+MIN_COLLATERAL_FACTOR = create_hash_string("MIN_COLLATERAL_FACTOR")
+MIN_COLLATERAL_USD = create_hash_string("MIN_COLLATERAL_USD")
+MIN_POSITION_SIZE_USD = create_hash_string("MIN_POSITION_SIZE_USD")
+
+
+def minCollateralFactorKey(market: str):
+    return create_hash(["bytes32", "address"], [MIN_COLLATERAL_FACTOR, market])
+
+def minCollateralUsdKey(market: str):
+    return create_hash(["bytes32", "address"], [MIN_COLLATERAL_FACTOR, market])
 
 def accountPositionListKey(account):
     return create_hash(
@@ -253,3 +264,6 @@ class GetFundingCalculationData(GetData):
             self.output['short'][symbol] = short_funding_fee
 
         return self.output
+
+reader = READER_CONTRACT_OBJECT
+x = reader.functions['']

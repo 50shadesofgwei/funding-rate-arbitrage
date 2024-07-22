@@ -48,10 +48,10 @@ class matchingEngine:
                         'long_exchange': long_exchange,
                         'short_exchange': short_exchange,
                         'symbol': symbol,
-                        'long_exchange_funding_rate': long_rate,
-                        'short_exchange_funding_rate': short_rate,
-                        'long_exchange_skew': long_exchange_skew,
-                        'short_exchange_skew': short_exchange_skew,
+                        'long_exchange_funding_rate_8hr': long_rate,
+                        'short_exchange_funding_rate_8hr': short_rate,
+                        'long_exchange_skew_usd': long_exchange_skew,
+                        'short_exchange_skew_usd': short_exchange_skew,
                         'block_number': block_number
                     }
                     arbitrage_opportunities.append(arbitrage_opportunity)
