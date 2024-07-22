@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class OkxPositionController:
+class OKXPositionController:
     def __init__(self):
         self.account_client = GLOBAL_OKX_ACCOUNT_CLIENT
         self.trade_client = GLOBAL_OKX_TRADE_CLIENT
