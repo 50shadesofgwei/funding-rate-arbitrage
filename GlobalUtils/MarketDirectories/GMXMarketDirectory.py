@@ -4,23 +4,26 @@ from GlobalUtils.globalUtils import *
 from gmx_python_sdk.scripts.v2.get.get import GetData
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
+from APICaller.GMX.GMXContractUtils import *
 
 class GMXMarketDirectory:
     _markets = {}
-    _file_path = 'gmx_markets.json'
+    _file_path = 'GMXmarkets.json'
     _is_initialized = False
-    _symbol_to_market_id_mapping = {}
+    _symbol_to_market_key_mapping = {}
     _data_getter = GetData(config=ARBITRUM_CONFIG_OBJECT)
 
     @classmethod
     def initialize(cls):
         try:
             if not cls._is_initialized:
+                cls._symbol_to_market_key_mapping = cls.build_symbol_to_market_id_mapping()
                 cls.update_all_market_parameters()
                 cls._is_initialized = True
                 logger.info('GMXMarketDirectory - Markets Initialized')
                 with open(cls._file_path, 'r') as file:
                     cls._markets = json.load(file)
+                    
         except FileNotFoundError:
             logger.error("GMXMarketDirectory - No existing market file found. Starting fresh.")
         except json.JSONDecodeError:
@@ -37,14 +40,13 @@ class GMXMarketDirectory:
     @classmethod
     def load_markets_from_file(cls):
         try:
-            with open('markets.json', 'r') as f:
+            with open('GMXmarkets.json', 'r') as f:
                 cls._markets = json.load(f)
         except FileNotFoundError:
             logger.error("MarketDirectory - Market file not found. Starting with an empty dictionary.")
             cls._markets = {}
     
     @classmethod
-    @deco_retry
     def update_all_market_parameters(cls):
         try:
             mapper = []
@@ -78,32 +80,45 @@ class GMXMarketDirectory:
                 mapper
             ):
 
-                print(output[5])
+                market_key = cls._symbol_to_market_key_mapping[symbol]
+                market = cls.get_symbol_for_market_key(market_key)
+                min_collateral_factor_key = minCollateralFactorKey(market_key)
+                min_collateral_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(min_collateral_factor_key)
+                min_collateral_factor = min_collateral_factor_func.call()
+                min_collateral_factor_normalized = min_collateral_factor / 10**30
+                
                 market_info_dict = {
-                    "market_token": output[0][0],
-                    "index_token": output[0][1],
-                    "long_token": output[0][2],
-                    "short_token": output[0][3],
-                    "is_long_pays_short": output[4][0],
-                    "funding_factor_per_second": output[4][1]
+                    "market": market,
+                    "market_key": market_key,
+                    "maker_fee_percent": 0.05,
+                    "taker_fee_percent": 0.07,
+                    "min_collateral_factor": min_collateral_factor_normalized
                 }
 
+                cls._markets[symbol] = market_info_dict
+            
+            cls.save_market_to_file()
+            return
+            
         except Exception as e:
             logger.error(f"GMXMarketDirectory - Failed to fetch market parameters. Error: {e}", exc_info=True)
             return None
 
     @classmethod
-    def update_market_member(cls, market_data):
-        symbol = market_data['market_name']
+    def get_market_params(cls, symbol: str) -> dict:
+        try:
+            for key, value in cls._markets.items():
+                    if key == symbol:
+                        return value
+            return None
+        
+        except KeyError as ke:
+            logger.error(f"GMXMarketDirectory - KeyError while getting market params for {symbol} Error: {ke}")
+            return None
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to get market parameters for symbol from local storage. Error: {e}", exc_info=True)
+            return None
 
-        cls._markets[symbol] = {
-            'symbol': symbol,
-            'market_id': market_data['market_id'],
-            'max_funding_velocity': market_data['max_funding_velocity'],
-            'skew_scale': market_data['skew_scale'],
-            'maker_fee': market_data['maker_fee'],
-            'taker_fee': market_data['taker_fee']
-        }
     
     @classmethod
     def build_symbol_to_market_id_mapping(cls) -> dict:
@@ -123,7 +138,7 @@ class GMXMarketDirectory:
     @classmethod
     def get_market_key_for_symbol(cls, symbol: str) -> str:
         try:
-            market_key = str(cls._symbol_to_market_id_mapping[symbol])
+            market_key = str(cls._symbol_to_market_key_mapping[symbol])
             return market_key
         
         except KeyError as ke:
@@ -132,8 +147,113 @@ class GMXMarketDirectory:
         except Exception as e:
             logger.error(f"GMXMarketDirectory - Error while calling market key for symbol {symbol}. Error: {e}")
             return None
+    
+    @classmethod
+    def get_symbol_for_market_key(cls, market_key: str) -> str:
+        try:
+            for key, value in cls._symbol_to_market_key_mapping.items():
+                if value == market_key:
+                    return key
+            return None
+
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Error while getting symbol for market key {market_key}. Error: {e}")
+            return None        
+
+    @classmethod
+    def get_total_opening_fee(cls, symbol: str, skew_usd: float, is_long: bool, absolute_size_usd: float) -> float:
+        try:
+            fees = cls.get_maker_taker_fee(
+                symbol,
+                skew_usd,
+                is_long,
+                absolute_size_usd
+            )
+        
+            maker_fee_usd = fees[0]['maker_fee'] * fees[0]['size']
+            taker_fee_usd = fees[1]['taker_fee'] * fees[1]['size']
+
+            total_opening_fee_usd = maker_fee_usd + taker_fee_usd
+            return total_opening_fee_usd
+
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            return None
+    
+    @classmethod
+    def get_total_closing_fee(cls, symbol: str, skew_usd_after_trade: float, is_long: bool, absolute_size_usd: float) -> float:
+        try:
+            fees = cls.get_maker_taker_fee(
+                symbol,
+                skew_usd_after_trade,
+                is_long,
+                -absolute_size_usd
+            )
+        
+            maker_fee_usd = fees[0]['maker_fee'] * fees[0]['size']
+            taker_fee_usd = fees[1]['taker_fee'] * fees[1]['size']
+
+            total_opening_fee_usd = maker_fee_usd + taker_fee_usd
+            return total_opening_fee_usd
+
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd_after_trade}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            return None
+
+    @classmethod
+    def get_maker_taker_fee(cls, symbol: str, skew_usd: float, is_long: bool, absolute_size_usd: float) -> list:
+        try:
+            market = cls.get_market_params(symbol)
+            maker_fee = market['maker_fee_percent']
+            taker_fee = market['taker_fee_percent']
+
+            if is_long:
+                trade_impact = absolute_size_usd
+            else:
+                trade_impact = -absolute_size_usd
+
+            maker_taker_split = cls.calculate_maker_taker_split(skew_usd, trade_impact)
+            maker_size = maker_taker_split['maker_trade_size']
+            taker_size = maker_taker_split['taker_trade_size']
 
 
-# data_getter = GetData(config=ARBITRUM_CONFIG_OBJECT)
-# x = data_getter.markets.info
-# print(x)
+            fees = [
+                {'maker_fee': maker_fee, 'size': maker_size},
+                {'taker_fee': taker_fee, 'size': taker_size}
+            ]
+
+            return fees
+
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to determine maker/taker fee object for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            return None
+
+    @classmethod        
+    def calculate_maker_taker_split(cls, skew_usd: float, size_usd: float) -> dict:
+        try:
+            maker_trade_size = 0
+            taker_trade_size = 0
+
+            if (skew_usd > 0 and size_usd < 0) or (skew_usd < 0 and size_usd > 0):
+                # Trade is neutralizing the skew
+                if abs(size_usd) >= abs(skew_usd):
+                    maker_trade_size = abs(skew_usd)
+                    taker_trade_size = abs(size_usd) - abs(skew_usd)
+                else:
+                    maker_trade_size = abs(size_usd)
+            else:
+                # Trade is increasing the skew
+                taker_trade_size = abs(size_usd)
+
+            return {
+                'maker_trade_size': maker_trade_size,
+                'taker_trade_size': taker_trade_size
+            }
+        
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to determine maker/taker split for skew {skew_usd} and size {size_usd}. Error: {e}")
+            return None
+
+GMXMarketDirectory.initialize()
+x = GMXMarketDirectory.get_market_key_for_symbol('ETH')
+print(x)

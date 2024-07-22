@@ -7,6 +7,7 @@ from gmx_python_sdk.scripts.v2.order.create_increase_order import IncreaseOrder
 from gmx_python_sdk.scripts.v2.order.create_decrease_order import DecreaseOrder
 from gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
 from gmx_python_sdk.scripts.v2.gmx_utils import *
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 set_paths()
 
 
@@ -107,6 +108,9 @@ class GMXPositionController:
     #         logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
     #         return None
 
+    def calculate_liquidation_price(self, symbol: str, is_long: bool) -> float:
+        pass
+
     def was_position_opened_successfully(self, symbol: str, is_long: bool) -> bool:
         try:
             open_positions = self.get_open_positions()
@@ -149,10 +153,10 @@ class GMXPositionController:
                 else:
                     continue
             
-            return {}
+            return None
 
         except Exception as e:
-            logger.error(f"GMXPositionController - Failed to get open position for symbol {symbol}. Error: {e}")
+            logger.error(f"GMXPositionController - Failed to get open position for symbol {symbol}. Error: {e}", exc_info=True)
             return None
 
     def is_already_position_open(self) -> bool:
@@ -174,6 +178,3 @@ class GMXPositionController:
             logger.error(f"GMXPositionController - Error while checking if position is open: {e}", exc_info=True)
             return None
 
-x = GMXPositionController()
-y = x.was_position_opened_successfully('AAVE', True)
-print(y)
