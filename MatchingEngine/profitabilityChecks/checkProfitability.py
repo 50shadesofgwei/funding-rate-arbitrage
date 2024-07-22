@@ -63,7 +63,8 @@ class ProfitabilityChecker:
                         opportunity['trade_duration_estimate'] = time_to_neutralize
 
                 pnl_dict = self.estimate_profit_for_time_period(hours_to_neutralize_by_exchange, trade_size_usd, opportunity)
-                opportunity['total_profit_usd'] = float(pnl_dict['total_profit_loss'])
+                total_profit_usd = float(pnl_dict['total_profit_loss'])
+                opportunity['total_profit_usd'] = total_profit_usd
                 opportunity['long_exchange_profit_usd'] = float(pnl_dict['long_exchange_profit_loss'])
                 opportunity['short_exchange_profit_usd'] = float(pnl_dict['short_exchange_profit_loss'])
                 opportunities_with_profit.append(opportunity)
