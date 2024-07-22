@@ -7,6 +7,7 @@ from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
 from APICaller.ByBit.ByBitCaller import ByBitCaller
+from APICaller.OKX.okxCaller import OKXCaller
 import json
 import os
 
@@ -14,6 +15,8 @@ class ProfitabilityChecker:
     def __init__(self):
         self.position_controller = MasterPositionController()
         self.bybit_caller = ByBitCaller()
+        self.okx_caller = OKXCaller()
+
         self.default_trade_duration = float(os.getenv('DEFAULT_TRADE_DURATION_HOURS'))
         self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD')) * float(self.position_controller.synthetix.leverage_factor)
 
@@ -33,8 +36,8 @@ class ProfitabilityChecker:
                 for role in ['long', 'short']:
                     exchange = opportunity[f'{role}_exchange']
                     time_to_neutralize = self.estimate_time_to_neutralize_funding_rate_for_exchange(
-                        opportunity, 
-                        size_per_exchange, 
+                        opportunity,
+                        size_per_exchange,
                         exchange
                     )
 
@@ -67,7 +70,7 @@ class ProfitabilityChecker:
                 with open('OrderedOpportunities.json', 'w') as file:
                     json.dump(opportunities_with_profit, file, indent=4)
                 return best_opportunity
-        
+
         except Exception as e:
             logger.error(f'CheckProfitability - Failed to find most profitable opportunity. Error: {e}')
 
@@ -84,8 +87,10 @@ class ProfitabilityChecker:
                 return estimated_profit
             elif exchange == 'ByBit':
                 estimated_profit = self.estimate_bybit_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
+            elif exchange == 'OKX':
+                estimated_profit = self.estimate_okx_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
-        
+
         except Exception as e:
             logger.error(f'CheckProfitability - Failed to estimate profit for exchange {exchange}, Error: {e}')
             return None
@@ -114,6 +119,9 @@ class ProfitabilityChecker:
             elif exchange == "Binance":
                 return "No Neutralization"
 
+            elif exchange == "OKX":
+                return "No Neutralization"
+
         except Exception as e:
             logger.error(f'CheckProfitability - Failed to estimate profit for exchange {exchange}, Error: {e}')
             return None
@@ -131,11 +139,12 @@ class ProfitabilityChecker:
 
             total_funding = calculate_expected_funding_for_time_period_usd(
                 opportunity,
+                skew,
                 is_long,
                 size_usd,
                 time_period_hours
             )
-            
+
             total_fees = (opening_fee + premium + gas_fee_usd)
 
             return total_funding - total_fees
@@ -161,7 +170,7 @@ class ProfitabilityChecker:
                     profit_loss_per_event = funding_rate * size_usd
                     if (is_long and funding_rate > 0) or (not is_long and funding_rate < 0):
                         profit_loss_per_event *= -1
-                    
+
                     total_profit_loss += profit_loss_per_event
 
             return total_profit_loss
@@ -201,6 +210,39 @@ class ProfitabilityChecker:
         except Exception as e:
             logger.error(f'CheckProfitability - Error estimating ByBit profit for {symbol}: {e}')
             return None
+
+    def estimate_okx_profit(self, time_period_hours: float, size_usd: float, opportunity: dict) -> float:
+        try:
+            symbol = opportunity['symbol'] + '-USDT-SWAP'
+            is_long = opportunity['long_exchange'] == 'OKX'
+            funding_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
+            number_of_funding_events_in_time_period = self.okx_caller.get_next_funding_events_for_time_period(symbol, time_period_hours)
+
+            if is_long:
+                if funding_rate > 0:
+                    # rate positive, long
+                    profit_loss_usd_per_event = size_usd * funding_rate
+                    profit_loss_usd_per_event = -profit_loss_usd_per_event
+                else:
+                    # rate negative, long
+                    profit_loss_usd_per_event = size_usd * abs(funding_rate)
+            else:
+                if funding_rate > 0:
+                    # rate positive, short
+                    profit_loss_usd_per_event = size_usd * funding_rate
+                else:
+                    # rate negative, short
+                    profit_loss_usd_per_event = size_usd * abs(funding_rate)
+                    profit_loss_usd_per_event = -profit_loss_usd_per_event
+
+            profit_loss_usd_for_time_period = profit_loss_usd_per_event * number_of_funding_events_in_time_period
+
+            return profit_loss_usd_for_time_period
+
+        except Exception as e:
+            logger.error(f'CheckProfitability - Error estimating OKX profit for {symbol}: {e}')
+            return None
+
 
     def estimate_profit_for_time_period(self, hours_to_neutralize_by_exchange: dict, size_usd_per_side: float, opportunity: dict) -> dict:
         try:
