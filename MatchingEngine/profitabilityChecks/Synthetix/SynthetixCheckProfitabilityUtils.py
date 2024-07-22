@@ -42,10 +42,11 @@ def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, size_u
             logger.error(f'SynthetixCheckProfitabilityUtils - Error estimating time to neutralize funding rate for {symbol}: {e}')
             return None
 
-def calculate_expected_funding_for_time_period_usd(opportunity: dict, is_long: bool, size_usd: float, time_period_hours: float):
+def calculate_expected_funding_for_time_period_usd(opportunity: dict, skew: float, is_long: bool, size_usd: float, time_period_hours: float):
     symbol = opportunity['symbol']
     try:
-        skew_usd = opportunity['skew_usd']
+        # skew_usd = opportunity['skew_usd']
+        skew_usd = skew
         price = get_price_from_pyth(symbol)
         skew_in_asset = skew_usd / price
         adjusted_size_usd = get_adjusted_size(size_usd, is_long)
