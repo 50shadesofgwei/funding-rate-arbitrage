@@ -19,8 +19,9 @@ TARGET_TOKENS = [
 TARGET_EXCHANGES = [
     {"exchange": "Synthetix", "is_target": True},
     {"exchange": "Binance", "is_target": False},
-    {"exchange": "ByBit", "is_target": True},
-    {"exchange": "HMX", "is_target": False},
+    {"exchange": "ByBit", "is_target": False},
+    {"exchange": "HMX", "is_target": True},
+    {"exchange": "OKX", "is_target": True},
     {"exchange": "GMX", "is_target": False},
 ]
 
@@ -39,12 +40,14 @@ def get_all_target_token_lists() -> list:
         bybit_token_list = get_target_tokens_for_bybit()
         hmx_token_list = get_target_tokens_for_HMX()
         gmx_token_list = get_target_tokens_for_GMX()
+        okx_token_list = get_target_tokens_for_OKX()
         all_target_token_lists = [
             synthetix_token_list,
             binance_token_list,
             bybit_token_list,
             hmx_token_list,
-            gmx_token_list
+            gmx_token_list,
+            okx_token_list
         ]
         return all_target_token_lists
     except Exception as e:
@@ -58,6 +61,15 @@ def get_target_tokens_for_binance() -> list:
     except Exception as e:
         logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for Binance: {e}")
         return []
+
+def get_target_tokens_for_OKX() -> list:
+    try:
+        symbols = [token["token"] + "-USDT-SWAP" for token in TARGET_TOKENS if token["is_target"]]
+        return symbols
+    except Exception as e:
+        logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for OKX: {e}")
+        return []
+
 
 def get_target_tokens_for_synthetix() -> list:
     try:

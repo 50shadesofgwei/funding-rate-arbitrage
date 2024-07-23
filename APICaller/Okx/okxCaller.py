@@ -1,6 +1,6 @@
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-
+import math
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,8 +9,8 @@ class OKXCaller:
     # Rate limit: 5 requests per 2 seconds
     # Rate limit rule: IP + instrumentID
     def __init__(self):
-        # self.okx_pub_client = GLOBAL_OKX_PUBLIC_CLIENT
-        # self.okx_trading_data_client = GLOBAL_OKX_TRADING_DATA_CLIENT
+        self.okx_pub_client = GLOBAL_OKX_PUBLIC_CLIENT
+        self.okx_trading_data_client = GLOBAL_OKX_TRADING_DATA_CLIENT
         pass
 
     def get_price(self, symbol: str) -> float:
@@ -36,7 +36,7 @@ class OKXCaller:
                 funding_rate_data = self._fetch_funding_rate_for_symbol(symbol)
                 skew = self.get_skew(symbol)
                 parsed_data = self._parse_funding_rate_data(funding_rate_data, symbol)
-                parsed_data['skew'] = skew
+                parsed_data['skew_usd'] = skew
                 if parsed_data:
                     funding_rates.append(parsed_data)
             return funding_rates
@@ -55,7 +55,31 @@ class OKXCaller:
         except Exception as e:
             logger.error(f'OkxAPICaller - Error while calling historical rates for symbol {symbol}, limit: {limit}, {e}')
             return None
-    
+
+    def get_next_funding_events_for_time_period(self, symbol: str, time_period_hours: int) -> int:
+        time_period_minutes = time_period_hours * 60
+        try:
+            response = self.okx_pub_client.get_funding_rate(instId=symbol)
+            response_data = response['data'][0]
+
+            last_funding_time = int(response_data['fundingTime'])
+            next_funding_time = int(response_data['nextFundingTime'])
+            min_interval = (next_funding_time - last_funding_time) / 60000
+            hour_interval = min_interval / 60
+
+            ms_to_next_funding_event = get_milliseconds_until_given_timestamp_timezone(next_funding_time, True)
+            minutes_to_next_funding_event = ms_to_next_funding_event / 60000
+
+            remaining_minutes = time_period_minutes - minutes_to_next_funding_event
+            if remaining_minutes < 0:
+                return 0
+
+            number_of_events = 1 + math.floor(remaining_minutes / min_interval)
+            return number_of_events
+        except Exception as e:
+            logger.error(f'OKXCaller - Error while calculating funding events for symbol={symbol}. Error: {e}')
+            return None
+
     def _fetch_funding_rate_for_symbol(self, symbol: str):
         try:
             futures_funding_rate = self.okx_pub_client.get_funding_rate(instId=symbol)
@@ -71,7 +95,7 @@ class OKXCaller:
             ccy = symbol.split('-')[0]
 
             return {
-                'exchange': 'Okx',
+                'exchange': 'OKX',
                 'symbol': ccy,
                 'funding_rate': rate_as_float,
             }
@@ -97,7 +121,7 @@ class OKXCaller:
             amount_long = float(open_interest_in_asset * long_percent)
             amount_short = float(open_interest_in_asset * short_percent)
             skew = amount_long - amount_short
-            return ls_ratio
+            return skew
         except Exception as e:
             logger.error(f'OkxAPICaller - Error while calculating skew for symbol {symbol}. Error: {e}')
             return None

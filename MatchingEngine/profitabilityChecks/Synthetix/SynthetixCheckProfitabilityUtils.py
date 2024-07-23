@@ -15,6 +15,7 @@ def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, absolu
             size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, absolute_size_usd)
             adjusted_size_in_asset = get_adjusted_size(size_in_asset, is_long)
 
+
             current_funding_rate: float = float(opportunity['long_exchange_funding_rate_8hr']) if is_long else float(opportunity['short_exchange_funding_rate_8hr'])
             current_funding_rate_24h = current_funding_rate * 3
             funding_velocity = SynthetixMarketDirectory.calculate_new_funding_velocity(
@@ -41,6 +42,7 @@ def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, absolu
         except Exception as e:
             logger.error(f'SynthetixCheckProfitabilityUtils - Error estimating time to neutralize funding rate for {symbol}: {e}')
             return None
+
 
 def calculate_expected_funding_for_time_period_usd(opportunity: dict, is_long: bool, absolute_size_usd: float, time_period_hours: float):
     symbol = opportunity['symbol']
