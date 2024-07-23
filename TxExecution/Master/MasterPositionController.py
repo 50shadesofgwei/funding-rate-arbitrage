@@ -2,7 +2,10 @@ from TxExecution.Binance.BinancePositionController import BinancePositionControl
 from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionController
 from TxExecution.HMX.HMXPositionController import HMXPositionController
 from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
+from TxExecution.OKX.OKXPositionController import OKXPositionController
+
 from TxExecution.Master.MasterPositionControllerUtils import *
+
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from APICaller.master.MasterUtils import get_target_exchanges
 from pubsub import pub
@@ -15,6 +18,7 @@ class MasterPositionController:
         self.binance = BinancePositionController()
         self.hmx = HMXPositionController()
         self.bybit = ByBitPositionController()
+        self.okx = OKXPositionController()
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -180,6 +184,7 @@ class MasterPositionController:
             is_hmx_target = 'HMX' in target_exchange_list
             is_binance_target = 'Binance' in target_exchange_list
             is_bybit_target = 'ByBit' in target_exchange_list
+            is_okx_target = 'OKX' in target_exchange_list
 
             try:
                 if is_synthetix_target:
@@ -205,15 +210,22 @@ class MasterPositionController:
             except Exception as e:
                 logger.error(f'MasterPositionController:is_already_position_open - Error checking HMX position: {e}')
 
+            try:
+                if is_okx_target:
+                    is_okx_position = self.okx.is_already_position_open()
+            except Exception as e:
+                logger.error(f'MasterPositionController:is_already_position_open - Error checking OKX position: {e}')
+
             positions_open = [
                 is_synthetix_position,
                 is_hmx_position,
                 is_binance_position,
-                is_bybit_position
+                is_bybit_position,
+                is_okx_position
             ]
 
             if any(positions_open):
-                logger.info(f"MasterPositionController - Position already open: SNX: {is_synthetix_position}, HMX: {is_hmx_position}, Binance: {is_binance_position}, ByBit: {is_bybit_position}")
+                logger.info(f"MasterPositionController - Position already open: SNX: {is_synthetix_position}, HMX: {is_hmx_position}, Binance: {is_binance_position}, ByBit: {is_bybit_position}, Okx: {is_okx_position}")
                 return True
             else:
                 logger.info(f"MasterPositionController - No positions open.")
