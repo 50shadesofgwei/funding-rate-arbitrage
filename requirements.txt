@@ -4,7 +4,7 @@ hexbytes==0.3.1
 matplotlib==3.8.4
 numerize==0.12
 numpy==2.0.0
-okx==2.1.1
+python-okx==0.3.1
 pandas==2.2.2
 pybit==5.6.2
 Pypubsub==4.0.3
