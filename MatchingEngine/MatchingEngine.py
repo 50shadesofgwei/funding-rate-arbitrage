@@ -26,23 +26,50 @@ class matchingEngine:
                     skew1 = rates_by_exchange[ex1][symbol]['skew_usd']
                     skew2 = rates_by_exchange[ex2][symbol]['skew_usd']
 
-                    if (rate1 > 0 and rate2 > 0) or (rate1 < 0 and rate2 < 0):
-                        if rate1 > rate2:
+                    if rate1 == 0 and rate2 == 0:
+                        continue  # Both rates are zero, no opportunity
+
+                    if rate1 == 0:
+                        # Only rate1 is zero
+                        if rate2 > 0:
                             long_exchange, short_exchange = ex2, ex1
                             long_rate, short_rate = rate2, rate1
                             long_exchange_skew, short_exchange_skew = skew2, skew1
-                        else:
+                        else:  # rate2 <= 0
                             long_exchange, short_exchange = ex1, ex2
                             long_rate, short_rate = rate1, rate2
                             long_exchange_skew, short_exchange_skew = skew1, skew2
-                    elif rate1 > 0 and rate2 < 0:
-                        long_exchange, short_exchange = ex2, ex1
-                        long_rate, short_rate = rate2, rate1
-                        long_exchange_skew, short_exchange_skew = skew2, skew1
-                    elif rate1 < 0 and rate2 > 0:
-                        long_exchange, short_exchange = ex1, ex2
-                        long_rate, short_rate = rate1, rate2
-                        long_exchange_skew, short_exchange_skew = skew1, skew2
+
+                    elif rate2 == 0:
+                        # Only rate2 is zero
+                        if rate1 > 0:
+                            long_exchange, short_exchange = ex1, ex2
+                            long_rate, short_rate = rate1, rate2
+                            long_exchange_skew, short_exchange_skew = skew1, skew2
+                        else:  # rate1 <= 0
+                            long_exchange, short_exchange = ex2, ex1
+                            long_rate, short_rate = rate2, rate1
+                            long_exchange_skew, short_exchange_skew = skew2, skew1
+
+                    else:
+                        # Both rates are non-zero
+                        if (rate1 > 0 and rate2 > 0) or (rate1 < 0 and rate2 < 0):
+                            if rate1 > rate2:
+                                long_exchange, short_exchange = ex2, ex1
+                                long_rate, short_rate = rate2, rate1
+                                long_exchange_skew, short_exchange_skew = skew2, skew1
+                            else:
+                                long_exchange, short_exchange = ex1, ex2
+                                long_rate, short_rate = rate1, rate2
+                                long_exchange_skew, short_exchange_skew = skew1, skew2
+                        elif rate1 > 0 and rate2 < 0:
+                            long_exchange, short_exchange = ex2, ex1
+                            long_rate, short_rate = rate2, rate1
+                            long_exchange_skew, short_exchange_skew = skew2, skew1
+                        elif rate1 < 0 and rate2 > 0:
+                            long_exchange, short_exchange = ex1, ex2
+                            long_rate, short_rate = rate1, rate2
+                            long_exchange_skew, short_exchange_skew = skew1, skew2
 
                     arbitrage_opportunity = {
                         'long_exchange': long_exchange,
