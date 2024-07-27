@@ -98,6 +98,7 @@ class ProfitabilityChecker:
                 return estimated_profit
             elif exchange == 'ByBit':
                 estimated_profit = self.estimate_bybit_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
+                return estimated_profit
             elif exchange == 'OKX':
                 estimated_profit = self.estimate_okx_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
@@ -155,7 +156,6 @@ class ProfitabilityChecker:
 
             total_funding = calculate_expected_funding_for_time_period_usd(
                 opportunity,
-                skew,
                 is_long,
                 absolute_size_usd,
                 time_period_hours
@@ -233,7 +233,7 @@ class ProfitabilityChecker:
         try:
             symbol = opportunity['symbol'] + '-USDT-SWAP'
             is_long = opportunity['long_exchange'] == 'OKX'
-            funding_rate = opportunity['long_exchange_funding_rate'] if is_long else opportunity['short_exchange_funding_rate']
+            funding_rate = opportunity['long_exchange_funding_rate_8hr'] if is_long else opportunity['short_exchange_funding_rate_8hr']
             number_of_funding_events_in_time_period = self.okx_caller.get_next_funding_events_for_time_period(symbol, time_period_hours)
 
             if is_long:
