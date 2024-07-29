@@ -2,6 +2,9 @@ from gmx_python_sdk.scripts.v2.gmx_utils import *
 from gmx_python_sdk.scripts.v2.get.get import GetData
 from gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
+from GlobalUtils.logger import logger
+from decimal import Decimal, getcontext
+getcontext().prec = 50
 
 DATASTORE_CONTRACT_OBJECT = get_datastore_contract(ARBITRUM_CONFIG_OBJECT)
 READER_CONTRACT_OBJECT = get_reader_contract(ARBITRUM_CONFIG_OBJECT)
@@ -56,13 +59,37 @@ def minCollateralFactorKey(market: str):
     return create_hash(["bytes32", "address"], [MIN_COLLATERAL_FACTOR, market])
 
 def minCollateralUsdKey(market: str):
-    return create_hash(["bytes32", "address"], [MIN_COLLATERAL_FACTOR, market])
+    return create_hash(["bytes32", "address"], [MIN_COLLATERAL_USD, market])
 
 def accountPositionListKey(account):
     return create_hash(
         ["bytes32", "address"],
         [ACCOUNT_POSITION_LIST, account]
     )
+
+def funding_factor_key(market: str):
+    return create_hash(["bytes32", "address"], [FUNDING_FACTOR, market])
+
+def funding_exponent_factor_key(market: str):
+    return create_hash(["bytes32", "address"], [FUNDING_EXPONENT_FACTOR, market])
+
+def funding_increase_factor_key(market: str):
+    return create_hash(["bytes32", "address"], [FUNDING_INCREASE_FACTOR_PER_SECOND, market])
+
+def funding_decrease_factor_key(market: str):
+    return create_hash(["bytes32", "address"], [FUNDING_DECREASE_FACTOR_PER_SECOND, market])
+
+def threshold_for_stable_funding_key(market: str):
+    return create_hash(["bytes32", "address"], [THRESHOLD_FOR_STABLE_FUNDING, market])
+
+def threshold_for_decrease_funding_key(market: str):
+    return create_hash(["bytes32", "address"], [THRESHOLD_FOR_DECREASE_FUNDING, market])
+
+def open_interest_in_tokens_key(market: str, collateral_token: str, is_long: bool):
+  return create_hash(
+    ["bytes32", "address", "address", "bool"],
+    [OPEN_INTEREST_IN_TOKENS, market, collateral_token, is_long]
+  )
 
 
 def claimable_fee_amount_key(market: str, token: str):
@@ -184,7 +211,6 @@ class GetFundingCalculationData(GetData):
             config=self.config
         ).get_data(to_json=False)
 
-
         # define empty lists to pass to zip iterater later on
         mapper = []
         output_list = []
@@ -194,76 +220,152 @@ class GetFundingCalculationData(GetData):
         # loop markets
         for market_key in self.markets.info:
             symbol = self.markets.get_market_symbol(market_key)
-            index_token_address = self.markets.get_index_token_address(
-                market_key
-            )
+            index_token_address = self.markets.get_index_token_address(market_key)
             self._get_token_addresses(market_key)
 
-            output = self._get_oracle_prices(
-                market_key,
-                index_token_address,
-            )
+            output = self._get_oracle_prices(market_key, index_token_address)
 
             mapper.append(symbol)
             output_list.append(output)
-            long_interest_usd_list = (
-                long_interest_usd_list +
-                [
-                    open_interest['long'][symbol] * 10 ** 30
-                ]
-            )
-            short_interest_usd_list = (
-                short_interest_usd_list +
-                [
-                    open_interest['short'][symbol] * 10 ** 30
-                ]
-            )
+            long_interest_usd_list.append(open_interest['long'][symbol] * 10 ** 30)
+            short_interest_usd_list.append(open_interest['short'][symbol] * 10 ** 30)
 
-        # Multithreaded call on contract
-        threaded_output = execute_threading(output_list)
-        for (
-            output,
-            long_interest_usd,
-            short_interest_usd,
-            symbol
-        ) in zip(
-            threaded_output,
-            long_interest_usd_list,
-            short_interest_usd_list,
-            mapper
-        ):
+            # Multithreaded call on contract for each block number
+            threaded_output = execute_threading(output_list)
 
-            market_info_dict = {
-                "market_token": output[0][0],
-                "index_token": output[0][1],
-                "long_token": output[0][2],
-                "short_token": output[0][3],
-                "long_borrow_fee": output[1],
-                "short_borrow_fee": output[2],
-                "is_long_pays_short": output[4][0],
-                "funding_factor_per_second": output[4][1]
-            }
-
-            long_funding_fee = get_funding_factor_per_period(
-                market_info_dict,
-                True,
-                3600 * 8,
+            for (
+                output,
                 long_interest_usd,
-                short_interest_usd
-            )
+                short_interest_usd,
+                symbol
+            ) in zip(
+                threaded_output,
+                long_interest_usd_list,
+                short_interest_usd_list,
+                mapper
+            ):
 
-            short_funding_fee = get_funding_factor_per_period(
-                market_info_dict,
-                False,
-                3600 * 8,
-                long_interest_usd,
-                short_interest_usd
-            )
+                market_info_dict = {
+                    "market_token": output[0][0],
+                    "index_token": output[0][1],
+                    "long_token": output[0][2],
+                    "short_token": output[0][3],
+                    "long_borrow_fee": output[1],
+                    "short_borrow_fee": output[2],
+                    "is_long_pays_short": output[4][0],
+                    "funding_factor_per_second": output[4][1]
+                }
+
+                long_funding_fee = get_funding_factor_per_period(
+                    market_info_dict,
+                    True,
+                    3600 * 8,
+                    long_interest_usd,
+                    short_interest_usd
+                )
+
+                short_funding_fee = get_funding_factor_per_period(
+                    market_info_dict,
+                    False,
+                    3600 * 8,
+                    long_interest_usd,
+                    short_interest_usd
+                )
 
             self.output['long'][symbol] = long_funding_fee
             self.output['short'][symbol] = short_funding_fee
 
         return self.output
 
-reader = READER_CONTRACT_OBJECT
-x = reader.functions['']
+def get_min_collateral_factor(market: str) -> float:
+    try:
+        min_collateral_factor_key = minCollateralFactorKey(market)
+        min_collateral_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(min_collateral_factor_key)
+        min_collateral_factor = min_collateral_func.call()
+        min_collateral_factor = min_collateral_factor / 10**30
+
+        return min_collateral_factor
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call min_collateral_factor from datastore contract. Error: {e}')
+        return None
+
+def get_funding_exponent(market: str) -> float:
+    try:
+        funding_exponent_key = funding_exponent_factor_key(market)
+        funding_exponent_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(funding_exponent_key)
+        funding_exponent = funding_exponent_func.call()
+        funding_exponent = funding_exponent / 10**30
+
+        return funding_exponent
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_exponent from datastore contract. Error: {e}')
+        return None
+
+def get_funding_factor(market: str) -> float:
+    try:
+        funding_factor_key_variable = funding_factor_key(market)
+        funding_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(funding_factor_key_variable)
+        funding_factor = funding_factor_func.call()
+        funding_factor = funding_factor / 10**30
+
+        return funding_factor
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_factor from datastore contract. Error: {e}')
+        return None
+
+def get_funding_increase_factor(market: str) -> float:
+    try:
+        funding_increase_factor_key_variable = funding_increase_factor_key(market)
+        funding_increase_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(funding_increase_factor_key_variable)
+        funding_increase_factor = funding_increase_factor_func.call()
+        funding_increase_factor = funding_increase_factor / 10**30
+
+        return funding_increase_factor
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        return None
+
+def get_funding_decrease_factor(market: str) -> float:
+    try:
+        funding_decrease_factor_key_variable = funding_decrease_factor_key(market)
+        funding_decrease_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(funding_decrease_factor_key_variable)
+        funding_decrease_factor = funding_decrease_factor_func.call()
+        funding_decrease_factor = funding_decrease_factor / Decimal("10")**30
+        funding_decrease_factor = float(funding_decrease_factor)
+
+        return funding_decrease_factor
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        return None
+
+def get_threshold_for_stable_funding(market: str) -> float:
+    try:
+        threshold_for_stable_key = threshold_for_stable_funding_key(market)
+        threshold_for_stable_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(threshold_for_stable_key)
+        threshold_for_stable = threshold_for_stable_func.call()
+        threshold_for_stable = threshold_for_stable / 10**30
+
+        return threshold_for_stable
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        return None
+
+def get_threshold_for_decrease_funding(market: str) -> float:
+    try:
+        threshold_for_decrease_key = threshold_for_stable_funding_key(market)
+        threshold_for_decrease_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(threshold_for_decrease_key)
+        threshold_for_decrease = threshold_for_decrease_func.call()
+        threshold_for_decrease = threshold_for_decrease / 10**30
+        
+
+        return threshold_for_decrease
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        return None

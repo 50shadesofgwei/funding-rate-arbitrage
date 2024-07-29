@@ -17,13 +17,13 @@ class SynthetixMarketDirectory:
             if not cls._is_initialized:
                 cls.update_all_market_parameters()
                 cls._is_initialized = True
-                logger.info('MarketDirectory - Markets Initialized')
+                logger.info('SynthetixMarketDirectory - Markets Initialized')
                 with open(cls._file_path, 'r') as file:
                     cls._markets = json.load(file)
         except FileNotFoundError:
-            logger.error("MarketDirectory - No existing market file found. Starting fresh.")
+            logger.error("SynthetixMarketDirectory - No existing market file found. Starting fresh.")
         except json.JSONDecodeError:
-            logger.error("MarketDirectory - Error decoding JSON. Starting with an empty dictionary.")
+            logger.error("SynthetixMarketDirectory - Error decoding JSON. Starting with an empty dictionary.")
 
     @classmethod
     def save_market_to_file(cls):
@@ -31,7 +31,7 @@ class SynthetixMarketDirectory:
             with open(cls._file_path, 'w') as file:
                 json.dump(cls._markets, file)
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to save markets to file: {e}")
+            logger.error(f"SynthetixMarketDirectory - Failed to save markets to file: {e}")
 
     @classmethod
     def load_markets_from_file(cls):
@@ -39,7 +39,7 @@ class SynthetixMarketDirectory:
             with open('markets.json', 'r') as f:
                 cls._markets = json.load(f)
         except FileNotFoundError:
-            logger.error("MarketDirectory - Market file not found. Starting with an empty dictionary.")
+            logger.error("SynthetixMarketDirectory - Market file not found. Starting with an empty dictionary.")
             cls._markets = {}
 
     @classmethod
@@ -71,11 +71,11 @@ class SynthetixMarketDirectory:
             if market:
                 return market
             else:
-                logger.error(f"MarketDirectory - No data available for market {symbol}.")
+                logger.error(f"SynthetixMarketDirectory - No data available for market {symbol}.")
                 return None
         
         except Exception as e:
-            logger.error(f"MarketDirectory - Error while getting market params for {symbol}. market = {market}. Error: {e}")
+            logger.error(f"SynthetixMarketDirectory - Error while getting market params for {symbol}. market = {market}. Error: {e}")
             return None
 
     @classmethod
@@ -84,10 +84,10 @@ class SynthetixMarketDirectory:
             market = cls._markets.get(symbol)
             if market:
                 return market['market_id']
-            logger.error(f"MarketDirectory - Market symbol '{symbol}' not found in MarketDirectory.")
+            logger.error(f"SynthetixMarketDirectory - Market symbol '{symbol}' not found in MarketDirectory.")
 
         except Exception as e:
-            logger.error(f'Failed to get market id for symbol: {symbol}, market = {market}. Error: {e}')
+            logger.error(f'SynthetixMarketDirectory - Failed to get market id for symbol: {symbol}, market = {market}. Error: {e}')
             return None
 
 
@@ -100,7 +100,7 @@ class SynthetixMarketDirectory:
             new_funding_velocity_as_daily_percent = c * new_skew
             return new_funding_velocity_as_daily_percent
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to calculate new funding velocity for {symbol}: {e}")
+            logger.error(f"SynthetixMarketDirectory - Failed to calculate new funding velocity for {symbol}: {e}")
 
     @classmethod
     def get_total_opening_fee(cls, symbol: str, skew_usd: float, is_long: bool, absolute_size_usd: float) -> float:
@@ -119,7 +119,7 @@ class SynthetixMarketDirectory:
             return total_opening_fee_usd
 
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            logger.error(f"SynthetixMarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
             return None
     
     @classmethod
@@ -139,7 +139,7 @@ class SynthetixMarketDirectory:
             return total_opening_fee_usd
 
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd_after_trade}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            logger.error(f"SynthetixMarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd_after_trade}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
             return None
 
     @classmethod
@@ -167,7 +167,7 @@ class SynthetixMarketDirectory:
             return fees
 
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to determine maker/taker fee object for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            logger.error(f"SynthetixMarketDirectory - Failed to determine maker/taker fee object for {symbol} with skew {skew_usd}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
             return None
 
     @classmethod        
@@ -193,5 +193,5 @@ class SynthetixMarketDirectory:
             }
         
         except Exception as e:
-            logger.error(f"MarketDirectory - Failed to determine maker/taker split for skew {skew_usd} and size {size_usd}. Error: {e}")
+            logger.error(f"SynthetixMarketDirectory - Failed to determine maker/taker split for skew {skew_usd} and size {size_usd}. Error: {e}")
             return None

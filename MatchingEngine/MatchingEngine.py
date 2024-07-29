@@ -19,6 +19,8 @@ class matchingEngine:
             exchange_pairs = [(ex1, ex2) for i, ex1 in enumerate(list(exchanges)) for ex2 in list(exchanges)[i+1:]]
 
             for ex1, ex2 in exchange_pairs:
+                if ex1 == None or ex2 == None:
+                    pass
                 common_symbols = set(rates_by_exchange[ex1].keys()) & set(rates_by_exchange[ex2].keys())
                 for symbol in common_symbols:
                     rate1 = float(rates_by_exchange[ex1][symbol]['funding_rate'])

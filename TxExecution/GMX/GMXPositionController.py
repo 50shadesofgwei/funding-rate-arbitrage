@@ -1,4 +1,5 @@
 from APICaller.GMX.GMXCallerUtils import *
+from GlobalUtils.globalUtils import *
 from TxExecution.GMX.GMXPositionControllerUtils import *
 from gmx_python_sdk.scripts.v2.order.order_argument_parser import (
     OrderArgumentParser
@@ -8,6 +9,8 @@ from gmx_python_sdk.scripts.v2.order.create_decrease_order import DecreaseOrder
 from gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+from APICaller.GMX.GMXContractUtils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
 set_paths()
 
 
@@ -51,44 +54,54 @@ class GMXPositionController:
             return None
 
     def close_position(self, symbol: str, reason: str = None):
-        out_token = "USDC"
-        slippage_percent = 0.003
-        amount_of_position_to_close = 1
-        amount_of_collateral_to_remove = 1
+        try:
+            out_token = "USDC"
+            slippage_percent = 0.003
+            amount_of_position_to_close = 1
+            amount_of_collateral_to_remove = 1
 
-        positions = self.get_open_positions(self.config)
-        position = filter_positions_by_symbol(positions, symbol)
-        is_long = position['is_long']
+            position = self.get_open_positions()
+            for key, position in position.items():
+                is_long = position['is_long']
+                market = key
+            
+            position_as_nested_dict = {
+                market: position
+            }
 
-        order_parameters = transform_open_position_to_order_parameters(
-            self.config,
-            positions,
-            symbol,
-            is_long,
-            slippage_percent,
-            out_token,
-            amount_of_position_to_close,
-            amount_of_collateral_to_remove)
+            order_parameters = transform_open_position_to_order_parameters(
+                self.config,
+                position_as_nested_dict,
+                symbol,
+                is_long,
+                slippage_percent,
+                out_token,
+                amount_of_position_to_close,
+                amount_of_collateral_to_remove)
 
+            DecreaseOrder(
+                config=self.config,
+                market_key=order_parameters['market_key'],
+                collateral_address=order_parameters['collateral_address'],
+                index_token_address=order_parameters['index_token_address'],
+                is_long=order_parameters['is_long'],
+                size_delta=order_parameters['size_delta'],
+                initial_collateral_delta_amount=(
+                    order_parameters['initial_collateral_delta']
+                ),
+                slippage_percent=order_parameters['slippage_percent'],
+                swap_path=order_parameters['swap_path'],
+                debug_mode=False
+            )
 
-        DecreaseOrder(
-            config=self.config,
-            market_key=order_parameters['market_key'],
-            collateral_address=order_parameters['collateral_address'],
-            index_token_address=order_parameters['index_token_address'],
-            is_long=order_parameters['is_long'],
-            size_delta=order_parameters['size_delta'],
-            initial_collateral_delta_amount=(
-                order_parameters['initial_collateral_delta']
-            ),
-            slippage_percent=order_parameters['slippage_percent'],
-            swap_path=order_parameters['swap_path'],
-            debug_mode=True
-        )
-
-        time.sleep(2)
-        if not self.was_position_opened_successfully(symbol, is_long):
-            pass
+            time.sleep(5)
+            if not self.was_position_closed_successfully(symbol, is_long):
+                logger.error(f'GMXPositionController - Position not closed after 5 second delay.')
+                return None
+        
+        except Exception as e:
+            logger.error(f"GMXPositionController - Error closing position for {symbol}. Error: {e}", exc_info=True)
+            return None
 
     ######################
     ### READ FUNCTIONS ###
@@ -108,8 +121,14 @@ class GMXPositionController:
     #         logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
     #         return None
 
-    def calculate_liquidation_price(self, symbol: str, is_long: bool) -> float:
-        pass
+    def get_available_collateral(self) -> float:
+        try:
+            usdc_balance = get_arbitrum_usdc_balance()
+            return usdc_balance
+        
+        except Exception as e:
+            logger.error(f"GMXPositionController - Error getting available USDC balance from smart contract. Error: {e}")
+            return None
 
     def was_position_opened_successfully(self, symbol: str, is_long: bool) -> bool:
         try:
@@ -123,6 +142,27 @@ class GMXPositionController:
                     return True
 
             return False
+        except Exception as e:
+            logger.error(f"GMXPositionController - Error checking if position was opened successfully for {symbol}. Error: {e}")
+            return False
+    
+    def was_position_closed_successfully(self, symbol: str, is_long: bool) -> bool:
+        try:
+            open_positions = self.get_open_positions()
+            if len(open_positions) == 0:
+                return True
+
+            for key, position in open_positions.items():
+                position_symbol = position['market_symbol'][0]
+                position_is_long = position['is_long']
+                
+                if position_symbol == symbol and position_is_long == is_long:
+                    if position['position_size'] != 0:
+                        return False
+
+            # TODO - implement better checks here
+            logger.info(f'GMXPositionController - No conditions met while checking if position closed, returning True')
+            return True
         except Exception as e:
             logger.error(f"GMXPositionController - Error checking if position was opened successfully for {symbol}. Error: {e}")
             return False
