@@ -1,7 +1,11 @@
 from GlobalUtils.logger import *
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from gmx_python_sdk.scripts.v2.get.get_markets import Markets
-from decimal import Decimal
+from decimal import Decimal, getcontext
+from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
+from APICaller.GMX.GMXContractUtils import *
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+import web3
 
 def get_params_object_from_opportunity_dict(opportunity: dict, is_long: bool, trade_size: float) -> dict:
     try:
@@ -74,9 +78,13 @@ def transform_open_position_to_order_parameters(
                 collateral_address,
                 out_token_address
             )[0]
-        size_delta = int(int(
-            (Decimal(raw_position_data['position_size']) * (Decimal(10)**30))
-        ) * amount_of_position_to_close)
+
+        getcontext().prec = 50
+        size = Decimal(str(raw_position_data['position_size']))
+        delta_factor = Decimal('10') ** 30
+        size_delta = int(
+            size * delta_factor * amount_of_position_to_close
+        )
 
         return {
             "chain": config.chain,
@@ -109,4 +117,34 @@ def filter_positions_by_symbol(positions: dict, symbol: str) -> dict:
     
     except Exception as e:
         logger.error(f'GMXPositionControllerUtils - Failed to filter positions by symbol. Symbol: {symbol}, Error: {e}')
+        return None
+
+def get_remaining_collateral_for_position(position: dict) -> float:
+    try: 
+        position_size_usd = float(position['position_size'])
+        position_size_in_tokens = float(position['size_in_tokens']) / 10**18
+        funding_fee_per_size = float(position['funding_fee_amount_per_size'])
+        funding_fee = funding_fee_per_size * position_size_in_tokens
+
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to calculate remaining collateral for position. Error: {e}')
+        return None
+
+def get_arbitrum_usdc_balance():
+    try:
+        provider = os.getenv('ARBITRUM_PROVIDER_RPC')
+        web3_obj = Web3(Web3.HTTPProvider(provider))
+        usdc_address = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
+        with open('USDCArbitrum.json', 'r') as abi_file:
+            token_abi = json.load(abi_file)
+        
+        contract = web3_obj.eth.contract(address=usdc_address, abi=token_abi)
+        balance = contract.functions.balanceOf(ARBITRUM_CONFIG_OBJECT.user_wallet_address).call()
+        decimals = 6
+        human_readable_balance = balance / (10 ** decimals)
+
+        return human_readable_balance
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to fetch USDC balance for address {ARBITRUM_CONFIG_OBJECT.user_wallet_address}. Error: {e}')
         return None

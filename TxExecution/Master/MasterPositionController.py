@@ -18,7 +18,7 @@ class MasterPositionController:
         self.binance = BinancePositionController()
         self.hmx = HMXPositionController()
         self.bybit = ByBitPositionController()
-        self.okx = OKXPositionController()
+        # self.okx = OKXPositionController()
 
     #######################
     ### WRITE FUNCTIONS ###

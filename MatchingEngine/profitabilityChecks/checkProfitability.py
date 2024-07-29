@@ -11,21 +11,11 @@ from APICaller.OKX.okxCaller import OKXCaller
 import json
 import os
 
-import matplotlib.pyplot as plt # TODO - delete
-import pandas as pd # TODO - delete
-import seaborn as sns
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn.preprocessing import MinMaxScaler
-import matplotlib.colors as mcolors
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
-import numpy as np
-
 class ProfitabilityChecker:
     def __init__(self):
         self.position_controller = MasterPositionController()
         self.bybit_caller = ByBitCaller()
-        self.okx_caller = OKXCaller()
+        # self.okx_caller = OKXCaller()
 
         self.default_trade_duration = float(os.getenv('DEFAULT_TRADE_DURATION_HOURS'))
         self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD')) * float(self.position_controller.synthetix.leverage_factor)
@@ -155,7 +145,6 @@ class ProfitabilityChecker:
 
             total_funding = calculate_expected_funding_for_time_period_usd(
                 opportunity,
-                skew,
                 is_long,
                 absolute_size_usd,
                 time_period_hours
@@ -305,84 +294,3 @@ class ProfitabilityChecker:
         except Exception as e:
             logger.error(f'CheckProfitability - Unexpected error when estimating profit for {symbol}: {e}')
             return None
-
-
-# opportunity = {
-#     'long_exchange': 'Synthetix',
-#     'short_exchange': 'ByBit',
-#     'symbol': 'W',
-#     'long_exchange_funding_rate_8hr': -0.001869,
-#     'short_exchange_funding_rate_8hr': 0.0001,
-#     'long_exchange_skew_usd': 0,
-#     'short_exchange_skew_usd': 0,
-#     'block_number': 0
-# }
-
-# SynthetixMarketDirectory.initialize()
-# x = ProfitabilityChecker()
-# overall_results = []
-# for m in range(20):
-#     size_usd = 10000
-#     max_profit_result = None
-
-#     for n in range(20):
-#         time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, size_usd)
-#         if time_to_neutralize == "No Neutralization":
-#             size_usd += 10000
-#             continue
-        
-#         profit, total_fees = x.estimate_synthetix_profit(time_to_neutralize, size_usd, opportunity)
-#         result = {
-#             'symbol': opportunity['symbol'],
-#             'size_usd': size_usd,
-#             'time_to_neutralize': time_to_neutralize,
-#             'profit_after_fees': profit,
-#             'total_fees': total_fees,
-#             'short_exchange_skew_usd': opportunity['short_exchange_skew_usd']
-#         }
-
-#         # Store the result if it is the most profitable one seen so far
-#         if max_profit_result is None or result['profit_after_fees'] > max_profit_result['profit_after_fees']:
-#             max_profit_result = result
-
-#         size_usd += 10000
-
-#     # Add the most profitable result of the current skew iteration to the overall results
-#     if max_profit_result:
-#         overall_results.append(max_profit_result)
-
-#     opportunity['short_exchange_skew_usd'] -= 10000
-
-# # Optionally, write the overall results to a JSON file
-# with open('results.json', 'w') as f:
-#     json.dump(overall_results, f, indent=4)
-
-
-# # Load results from the JSON file
-# with open('results2.json', 'r') as f:
-#     results_list = json.load(f)
-
-# size_usd = 250
-# results = []
-# for n in range(20):
-#         time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, size_usd)
-#         if time_to_neutralize == "No Neutralization":
-#             time_to_neutralize = 24
-        
-#         profit, total_fees = x.estimate_synthetix_profit(time_to_neutralize, size_usd, opportunity)
-#         result = {
-#             'symbol': opportunity['symbol'],
-#             'size_usd': size_usd,
-#             'time_to_neutralize': time_to_neutralize,
-#             'profit_after_fees': profit,
-#             'total_fees': total_fees,
-#             'short_exchange_skew_usd': opportunity['short_exchange_skew_usd']
-#         }
-#         results.append(result)
-
-#         size_usd += 250
-
-# print(results)
-
-# with open('results2.json', 'w') as f:
-#     json.dump(results, f, indent=4)

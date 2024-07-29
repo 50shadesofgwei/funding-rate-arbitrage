@@ -28,10 +28,10 @@ GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
 GLOBAL_BINANCE_CLIENT = get_binance_client()
 GLOBAL_HMX_CLIENT = get_HMX_client()
 
-GLOBAL_OKX_PUBLIC_CLIENT = get_okx_pub_client()
-GLOBAL_OKX_TRADING_DATA_CLIENT = get_okx_trading_data_client()
-GLOBAL_OKX_ACCOUNT_CLIENT = get_okx_account_client()
-GLOBAL_OKX_TRADE_CLIENT = get_okx_trade_client()
+# GLOBAL_OKX_PUBLIC_CLIENT = get_okx_pub_client()
+# GLOBAL_OKX_TRADING_DATA_CLIENT = get_okx_trading_data_client()
+# GLOBAL_OKX_ACCOUNT_CLIENT = get_okx_account_client()
+# GLOBAL_OKX_TRADE_CLIENT = get_okx_trade_client()
 
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_all_positions"

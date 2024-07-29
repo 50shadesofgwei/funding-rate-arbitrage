@@ -81,18 +81,26 @@ class GMXMarketDirectory:
             ):
 
                 market_key = cls._symbol_to_market_key_mapping[symbol]
-                market = cls.get_symbol_for_market_key(market_key)
-                min_collateral_factor_key = minCollateralFactorKey(market_key)
-                min_collateral_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(min_collateral_factor_key)
-                min_collateral_factor = min_collateral_factor_func.call()
-                min_collateral_factor_normalized = min_collateral_factor / 10**30
+                min_collateral_factor = get_min_collateral_factor(market_key)
+                funding_exponent = get_funding_exponent(market_key)
+                funding_factor = get_funding_factor(market_key)
+                funding_increase_factor = get_funding_increase_factor(market_key)
+                funding_decrease_factor = get_funding_decrease_factor(market_key)
+                threshold_for_stable_funding = get_threshold_for_decrease_funding(market_key)
+                threshold_for_decrease_funding = get_threshold_for_decrease_funding(market_key)
                 
                 market_info_dict = {
-                    "market": market,
+                    "market": symbol,
                     "market_key": market_key,
                     "maker_fee_percent": 0.05,
                     "taker_fee_percent": 0.07,
-                    "min_collateral_factor": min_collateral_factor_normalized
+                    "min_collateral_factor": min_collateral_factor,
+                    "funding_exponent": funding_exponent,
+                    "funding_factor": funding_factor,
+                    "funding_increase_factor": funding_increase_factor,
+                    "funding_decrease_factor": funding_decrease_factor,
+                    "threshold_for_stable_funding": threshold_for_stable_funding,
+                    "threshold_for_decrease_funding": threshold_for_decrease_funding
                 }
 
                 cls._markets[symbol] = market_info_dict
@@ -102,6 +110,63 @@ class GMXMarketDirectory:
             
         except Exception as e:
             logger.error(f"GMXMarketDirectory - Failed to fetch market parameters. Error: {e}", exc_info=True)
+            return None
+    
+    @classmethod
+    def calculate_new_funding_velocity(cls, symbol: str, absolute_trade_size_usd: float, is_long: bool) -> float:
+        try:
+            market = cls.get_market_key_for_symbol(symbol)
+            threshold_for_decrease_funding = get_threshold_for_decrease_funding(market)
+            threshold_for_stable_funding = get_threshold_for_stable_funding(market)
+            funding_increase_factor = get_funding_increase_factor(market)
+            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
+            long_open_interest = open_interest['long'][symbol]
+            short_open_interest = open_interest['short'][symbol]
+
+            if is_long:
+                long_open_interest += absolute_trade_size_usd
+            else:
+                short_open_interest += absolute_trade_size_usd
+
+            is_long_side_heavier: bool = long_open_interest > short_open_interest
+
+            if is_long_side_heavier:
+                imbalance = (long_open_interest / short_open_interest) - 1
+            else:
+                imbalance = (short_open_interest / long_open_interest) - 1
+    
+
+            if is_long_side_heavier and imbalance > threshold_for_stable_funding:
+                print(f'condition 1: funding_increase_factor = {funding_increase_factor}, imbalance = {imbalance}')
+                funding_velocity_24h = funding_increase_factor * imbalance * 86400 
+            if not is_long_side_heavier and imbalance > threshold_for_decrease_funding:
+                print(f'condition 2: funding_increase_factor = {funding_increase_factor}, imbalance = {imbalance}')
+                funding_velocity_24h = funding_increase_factor * imbalance * 86400
+            if is_long_side_heavier and imbalance < threshold_for_stable_funding:
+                funding_velocity_24h = 0
+            if not is_long_side_heavier and imbalance < threshold_for_decrease_funding:
+                funding_velocity_24h = 0
+
+            return funding_velocity_24h
+                
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to calculate new funding velocity for symbol {symbol}. Error: {e}", exc_info=True)
+            return None
+
+    @classmethod
+    def get_open_interest_imbalance_percentage(cls, market: str) -> float:
+        try:
+            symbol = cls.get_symbol_for_market_key(market)
+            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
+            long_open_interest = open_interest['long'][symbol]
+            short_open_interest = open_interest['short'][symbol]
+            imbalance = (long_open_interest / short_open_interest) - 1
+            imbalance_percentage = imbalance * 100
+
+            return imbalance_percentage
+        
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to fetch open interest imbalance. Error: {e}", exc_info=True)
             return None
 
     @classmethod
@@ -255,5 +320,9 @@ class GMXMarketDirectory:
             return None
 
 GMXMarketDirectory.initialize()
-x = GMXMarketDirectory.get_market_key_for_symbol('ETH')
-print(x)
+x = GMXMarketDirectory.calculate_new_funding_velocity(
+    'ETH',
+    2000000,
+    True
+)
+print(f'new funding velocity = {x}')
