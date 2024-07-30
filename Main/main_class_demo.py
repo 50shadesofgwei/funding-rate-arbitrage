@@ -6,6 +6,7 @@ from MatchingEngine.profitabilityChecks.checkProfitability import ProfitabilityC
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
 import json
 
@@ -16,6 +17,7 @@ class Demo:
         self.matching_engine = matchingEngine()
         self.profitability_checker = ProfitabilityChecker()
         SynthetixMarketDirectory.initialize()
+        GMXMarketDirectory.initialize()
     
     def search_for_opportunities(self):
         try:

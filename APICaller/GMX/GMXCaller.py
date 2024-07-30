@@ -62,7 +62,6 @@ class GMXCaller:
                     "open_interest_imbalance": oi_imbalance
                 }
 
-
             return dict_of_opportunities
 
         except KeyError as ke:
@@ -140,5 +139,8 @@ class GMXCaller:
             return data_raw
 
         except Exception as e:
-            logger.error(f'GMXCaller - Failed to collect raw data from GMX. Error: {e}')
+            logger.error(f'GMXCaller - Failed to collect raw data from GMX. Error: {e}', exc_info=True)
             return None
+
+# x = Markets(ARBITRUM_CONFIG_OBJECT).get_available_markets()
+# print(x)

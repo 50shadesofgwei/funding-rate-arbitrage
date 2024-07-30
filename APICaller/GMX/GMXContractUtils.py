@@ -9,6 +9,8 @@ getcontext().prec = 50
 DATASTORE_CONTRACT_OBJECT = get_datastore_contract(ARBITRUM_CONFIG_OBJECT)
 READER_CONTRACT_OBJECT = get_reader_contract(ARBITRUM_CONFIG_OBJECT)
 
+DATASTORE_ADDRESS = '0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8'
+
 FUNDING_FACTOR = create_hash_string("FUNDING_FACTOR")
 FUNDING_EXPONENT_FACTOR = create_hash_string("FUNDING_EXPONENT_FACTOR")
 FUNDING_INCREASE_FACTOR_PER_SECOND = create_hash_string("FUNDING_INCREASE_FACTOR_PER_SECOND")
@@ -84,6 +86,10 @@ def threshold_for_stable_funding_key(market: str):
 
 def threshold_for_decrease_funding_key(market: str):
     return create_hash(["bytes32", "address"], [THRESHOLD_FOR_DECREASE_FUNDING, market])
+
+def max_funding_factor_key(market: str):
+    return create_hash(["bytes32", "address"], [MAX_FUNDING_FACTOR_PER_SECOND_LIMIT, market])
+
 
 def open_interest_in_tokens_key(market: str, collateral_token: str, is_long: bool):
   return create_hash(
@@ -277,6 +283,31 @@ class GetFundingCalculationData(GetData):
 
         return self.output
 
+INDEX_TOKEN_ADDRESSES = {
+    "BTC": '0x47904963fc8b2340414262125aF798B9655E58Cd',
+    "ETH": '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+    "SOL": '0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07',
+    "ARB": '0x912CE59144191C1204E64559FE8253a0e49E6548',
+    "LINK": '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4',
+    "UNI": '0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0',
+    "LTC": '0xB46A094Bc4B0adBD801E14b9DB95e05E28962764',
+    "BNB": '0xa9004A5421372E1D83fB1f85b0fc986c912f91f3',
+    "DOGE": '0xC4da4c24fd591125c3F47b340b6f4f76111883d8',
+    "AVAX": '0x565609fAF65B92F7be02468acF86f8979423e514',
+    "NEAR": '0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C',
+    "AAVE": '0xba5DdD1f9d7F570dc94a51479a000E3BCE967196',
+    "ATOM": '0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA',
+    "XRP": '0xc14e065b0067dE91534e032868f5Ac6ecf2c6868',
+    "AAVE": '0xba5DdD1f9d7F570dc94a51479a000E3BCE967196',
+    "OP": '0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A',
+    "GMX": '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a',
+    "PEPE": '0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00',
+    "WIF": '0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d',
+}
+
+def get_index_token_address_for_symbol(symbol):
+    return INDEX_TOKEN_ADDRESSES.get(symbol, None)
+
 def get_min_collateral_factor(market: str) -> float:
     try:
         min_collateral_factor_key = minCollateralFactorKey(market)
@@ -365,6 +396,19 @@ def get_threshold_for_decrease_funding(market: str) -> float:
         
 
         return threshold_for_decrease
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        return None
+
+def get_max_funding_factor_for_market(market: str) -> float:
+    try:
+        max_funding_factor_key_variable = max_funding_factor_key(market)
+        max_funding_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(max_funding_factor_key_variable)
+        max_funding_factor = max_funding_factor_func.call()
+        max_funding_factor = max_funding_factor / 10**30
+        
+        return max_funding_factor
     
     except Exception as e:
         logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
