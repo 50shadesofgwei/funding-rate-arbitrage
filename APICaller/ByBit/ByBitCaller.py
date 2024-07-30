@@ -39,6 +39,8 @@ class ByBitCaller:
     def get_funding_rate_for_symbol(self, symbol: str) -> dict:
         try:
             data = self._fetch_funding_rate_data(symbol)
+            if not data:
+                return None
             price = float(data['result']['list'][0]['indexPrice'])
             interval = self.get_funding_interval_for_symbol(symbol)
             if data:
@@ -81,6 +83,8 @@ class ByBitCaller:
                 funding_rate_data = self.get_funding_rate_for_symbol(symbol)
                 if funding_rate_data:
                     funding_rates.append(funding_rate_data)
+                else:
+                    continue
 
             return funding_rates
         except Exception as e:

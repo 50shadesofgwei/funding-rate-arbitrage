@@ -41,6 +41,34 @@ class EventsDirectory(Enum):
     POSITION_CLOSED = "position_closed"
     TRADE_LOGGED = "trade_logged"
 
+DECIMALS = {
+    "BTC": 8,
+    "ETH": 18,
+    "SNX": 18,
+    "SOL": 9,
+    "W": 18,
+    "WIF": 6,
+    "ARB": 18,
+    "BNB": 18,
+    "ENA": 18,
+    "DOGE": 8,
+    "AVAX": 18,
+    "PENDLE": 18,
+    "NEAR": 24,
+    "AAVE": 18,
+    "ATOM": 6,
+    "XRP": 6,
+    "LINK": 18,
+    "UNI": 18,
+    "LTC": 8,
+    "OP": 18,
+    "GMX": 18,
+    "PEPE": 18,
+}
+
+def get_decimals_for_symbol(symbol):
+    return DECIMALS.get(symbol, None)
+
 def initialise_client() -> Web3:
     try:
         client = Web3(Web3.HTTPProvider(os.getenv('BASE_PROVIDER_RPC')))
@@ -189,6 +217,7 @@ def get_milliseconds_until_given_timestamp_timezone(timestamp: int, shift_timezo
     if shift_timezone:
         current_time -= time.timezone * 1000
     return timestamp - current_time
+
 def deco_retry(retry: int = 5, retry_sleep: int = 3):
     def deco_func(func):
         @functools.wraps(func)
@@ -211,3 +240,4 @@ def deco_retry(retry: int = 5, retry_sleep: int = 3):
         return wrapper
 
     return deco_func(retry) if callable(retry) else deco_func
+

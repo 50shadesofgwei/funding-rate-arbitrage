@@ -9,6 +9,7 @@ from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
 
 class Main:
@@ -22,6 +23,7 @@ class Main:
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
         SynthetixMarketDirectory.initialize()
+        GMXMarketDirectory.initialize()
     
     def search_for_opportunities(self):
         try:

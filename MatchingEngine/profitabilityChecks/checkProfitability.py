@@ -3,11 +3,16 @@ from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+from MatchingEngine.profitabilityChecks.GMX.GMXCheckProfitabilityUtils import *
 from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
 from APICaller.ByBit.ByBitCaller import ByBitCaller
 from APICaller.OKX.okxCaller import OKXCaller
+from gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
+from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
+from APICaller.master.MasterUtils import get_target_exchanges
 import json
 import os
 
@@ -16,6 +21,7 @@ class ProfitabilityChecker:
         self.position_controller = MasterPositionController()
         self.bybit_caller = ByBitCaller()
         # self.okx_caller = OKXCaller()
+        self.gmx_prices = {}
 
         self.default_trade_duration = float(os.getenv('DEFAULT_TRADE_DURATION_HOURS'))
         self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD')) * float(self.position_controller.synthetix.leverage_factor)
@@ -27,6 +33,8 @@ class ProfitabilityChecker:
             best_opportunity = None
             max_profit = 0
             opportunities_with_profit = []
+            if 'GMX' in get_target_exchanges():
+                self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
 
             for opportunity in opportunities:
                 size_per_exchange = trade_size_usd / 2
@@ -73,7 +81,7 @@ class ProfitabilityChecker:
                 return best_opportunity
 
         except Exception as e:
-            logger.error(f'CheckProfitability - Failed to find most profitable opportunity. Error: {e}')
+            logger.error(f'CheckProfitability - Failed to find most profitable opportunity. Error: {e}', exc_info=True)
 
     def estimate_profit_for_exchange(self, time_period_hours: float, size_usd: float, opportunity: dict, exchange: str) -> float:
         try:
@@ -82,6 +90,9 @@ class ProfitabilityChecker:
                 return estimated_profit
             elif exchange == 'Synthetix':
                 estimated_profit = self.estimate_synthetix_profit(time_period_hours=time_period_hours, absolute_size_usd=size_usd, opportunity=opportunity)
+                return estimated_profit
+            elif exchange == 'GMX':
+                estimated_profit = self.estimate_GMX_profit(time_period_hours=time_period_hours, absolute_size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
             elif exchange == 'HMX':
                 estimated_profit = estimate_HMX_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
@@ -108,6 +119,14 @@ class ProfitabilityChecker:
 
             if exchange == "Synthetix":
                 time_to_neutralize = estimate_time_to_neutralize_funding_rate_synthetix(opportunity, absolute_size_usd=size_usd)
+                if type(time_to_neutralize) == str:
+                    time_to_neutralize = self.default_trade_duration
+                    return time_to_neutralize
+                else:
+                    return time_to_neutralize
+            
+            if exchange == "GMX":
+                time_to_neutralize = estimate_time_to_neutralize_funding_rate_gmx(opportunity, absolute_size_usd=size_usd)
                 if type(time_to_neutralize) == str:
                     time_to_neutralize = self.default_trade_duration
                     return time_to_neutralize
@@ -250,6 +269,42 @@ class ProfitabilityChecker:
             logger.error(f'CheckProfitability - Error estimating OKX profit for {symbol}: {e}')
             return None
 
+    def estimate_GMX_profit(self, time_period_hours: float, absolute_size_usd: float, opportunity: dict) -> float:
+        is_long: bool = opportunity['long_exchange'] == 'GMX'
+        symbol = str(opportunity['symbol'])
+
+        try:
+            skew_usd = GMXMarketDirectory.get_skew_usd_for_market(symbol)
+            adjusted_size_usd = get_adjusted_size(absolute_size_usd, is_long)
+            skew_usd_after_trade = skew_usd + adjusted_size_usd
+            opening_fee = GMXMarketDirectory.get_total_opening_fee(symbol, skew_usd, is_long, absolute_size_usd)
+            closing_fee = GMXMarketDirectory.get_total_closing_fee(symbol, skew_usd_after_trade, is_long, absolute_size_usd)
+
+            gas_fee_usd = 1
+            price_impact = GMXMarketDirectory.get_price_impact_for_trade(
+                opportunity,
+                is_long,
+                absolute_size_usd,
+                self.gmx_prices
+            )
+
+            total_funding = calculate_expected_funding_for_time_period_usd(
+                opportunity,
+                is_long,
+                absolute_size_usd,
+                time_period_hours
+            )
+
+            
+            total_fees = (opening_fee + price_impact + gas_fee_usd + closing_fee)
+            profit_after_fees = total_funding - total_fees
+
+            return profit_after_fees
+
+        except Exception as e:
+            logger.error(f'SynthetixCheckProfitabilityUtils -  Error estimating GMX profit for {symbol}: Error: {e}')
+            return None
+
 
     def estimate_profit_for_time_period(self, hours_to_neutralize_by_exchange: dict, size_usd_per_side: float, opportunity: dict) -> dict:
         try:
@@ -292,5 +347,5 @@ class ProfitabilityChecker:
             logger.error(f'CheckProfitability - Validation Error: {ve}')
             return None
         except Exception as e:
-            logger.error(f'CheckProfitability - Unexpected error when estimating profit for {symbol}: {e}')
+            logger.error(f'CheckProfitability - Unexpected error when estimating profit for {symbol}: {e}', exc_info=True)
             return None

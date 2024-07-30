@@ -5,6 +5,7 @@ from gmx_python_sdk.scripts.v2.get.get import GetData
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.GMX.GMXContractUtils import *
+from TxExecution.GMX.GMXPositionControllerUtils import get_params_object_from_opportunity_dict
 
 class GMXMarketDirectory:
     _markets = {}
@@ -18,7 +19,7 @@ class GMXMarketDirectory:
         try:
             if not cls._is_initialized:
                 cls._symbol_to_market_key_mapping = cls.build_symbol_to_market_id_mapping()
-                cls.update_all_market_parameters()
+                # cls.update_all_market_parameters()
                 cls._is_initialized = True
                 logger.info('GMXMarketDirectory - Markets Initialized')
                 with open(cls._file_path, 'r') as file:
@@ -120,6 +121,7 @@ class GMXMarketDirectory:
             threshold_for_stable_funding = get_threshold_for_stable_funding(market)
             funding_increase_factor = get_funding_increase_factor(market)
             open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
+            print(open_interest)
             long_open_interest = open_interest['long'][symbol]
             short_open_interest = open_interest['short'][symbol]
 
@@ -138,10 +140,10 @@ class GMXMarketDirectory:
 
             if is_long_side_heavier and imbalance > threshold_for_stable_funding:
                 print(f'condition 1: funding_increase_factor = {funding_increase_factor}, imbalance = {imbalance}')
-                funding_velocity_24h = funding_increase_factor * imbalance * 86400 
+                funding_velocity_24h = (funding_increase_factor * imbalance) * 60 * 60 * 24
             if not is_long_side_heavier and imbalance > threshold_for_decrease_funding:
                 print(f'condition 2: funding_increase_factor = {funding_increase_factor}, imbalance = {imbalance}')
-                funding_velocity_24h = funding_increase_factor * imbalance * 86400
+                funding_velocity_24h = (funding_increase_factor * imbalance) * 60 * 60 * 24
             if is_long_side_heavier and imbalance < threshold_for_stable_funding:
                 funding_velocity_24h = 0
             if not is_long_side_heavier and imbalance < threshold_for_decrease_funding:
@@ -160,10 +162,65 @@ class GMXMarketDirectory:
             open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
             long_open_interest = open_interest['long'][symbol]
             short_open_interest = open_interest['short'][symbol]
-            imbalance = (long_open_interest / short_open_interest) - 1
-            imbalance_percentage = imbalance * 100
+            total_open_interest = long_open_interest + short_open_interest
+            imbalance = abs(long_open_interest - short_open_interest) / total_open_interest
 
-            return imbalance_percentage
+            return imbalance
+        
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to fetch open interest imbalance. Error: {e}", exc_info=True)
+            return None
+    
+    @classmethod
+    def get_price_impact_for_trade(cls, opportunity: dict, is_long: bool, absolute_trade_size_usd: float, prices: dict) -> float:
+        try:
+            symbol = opportunity['symbol']
+            index_token_address = get_index_token_address_for_symbol(symbol)
+            market = cls.get_market_key_for_symbol(symbol)
+            decimals = get_decimals_for_symbol(symbol)
+            size_delta = int(absolute_trade_size_usd * 10**30)
+            if not is_long:
+                size_delta = size_delta * -1
+
+            params = {
+                'data_store_address': (
+                    contract_map[ARBITRUM_CONFIG_OBJECT.chain]["datastore"]['contract_address']
+                ),
+                'market_key': market,
+                'index_token_price': [
+                    int(prices[index_token_address]['maxPriceFull']),
+                    int(prices[index_token_address]['minPriceFull'])
+                ],
+                'position_size_in_usd': 0,
+                'position_size_in_tokens': 0,
+                'size_delta': size_delta,
+                'is_long': is_long
+            }
+
+            execution_price_data = get_execution_price_and_price_impact(
+                ARBITRUM_CONFIG_OBJECT,
+                params,
+                decimals
+            )
+
+            price_impact = execution_price_data['price_impact_usd']
+
+            return price_impact
+        
+        except Exception as e:
+            logger.error(f"GMXMarketDirectory - Failed to calculate price impact for trade. Error: {e}", exc_info=True)
+            return None
+    
+    @classmethod
+    def get_skew_usd_for_market(cls, symbol: str) -> float:
+        try:
+            market = cls.get_market_key_for_symbol(symbol)
+            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
+            long_open_interest = open_interest['long'][symbol]
+            short_open_interest = open_interest['short'][symbol]
+            skew_usd = long_open_interest - short_open_interest
+
+            return skew_usd
         
         except Exception as e:
             logger.error(f"GMXMarketDirectory - Failed to fetch open interest imbalance. Error: {e}", exc_info=True)
@@ -319,10 +376,21 @@ class GMXMarketDirectory:
             logger.error(f"GMXMarketDirectory - Failed to determine maker/taker split for skew {skew_usd} and size {size_usd}. Error: {e}")
             return None
 
-GMXMarketDirectory.initialize()
-x = GMXMarketDirectory.calculate_new_funding_velocity(
-    'ETH',
-    2000000,
-    True
-)
-print(f'new funding velocity = {x}')
+# opp = {
+#     'long_exchange': 'GMX',
+#     'short_exchange': 'Synthetix',
+#     'symbol': 'ETH',
+#     'long_exchange_funding_rate_8hr': 0.001,
+#     'short_exchange_funding_rate_8hr': 0.001,
+#     'long_exchange_skew_usd': 800000,
+#     'short_exchange_skew_usd': 20000,
+#     'block_number': 111
+# }
+
+# GMXMarketDirectory.initialize()
+# x = GMXMarketDirectory.get_price_impact_for_trade(
+#     opp,
+#     1500000,
+#     False
+# )
+# print(f'new funding velocity = {x}')

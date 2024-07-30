@@ -4,8 +4,7 @@ from gmx_python_sdk.scripts.v2.get.get_markets import Markets
 from decimal import Decimal, getcontext
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.GMX.GMXContractUtils import *
-from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
-import web3
+
 
 def get_params_object_from_opportunity_dict(opportunity: dict, is_long: bool, trade_size: float) -> dict:
     try:

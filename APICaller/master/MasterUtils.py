@@ -6,14 +6,22 @@ TARGET_TOKENS = [
     {"token": "SNX", "is_target": False},
     {"token": "SOL", "is_target": True},
     {"token": "W", "is_target": False},
-    {"token": "WIF", "is_target": False},
-    {"token": "ARB", "is_target": False},
-    {"token": "BNB", "is_target": False},
+    {"token": "WIF", "is_target": True},
+    {"token": "ARB", "is_target": True},
+    {"token": "BNB", "is_target": True},
     {"token": "ENA", "is_target": False},
-    {"token": "DOGE", "is_target": False},
-    {"token": "AVAX", "is_target": False},
+    {"token": "DOGE", "is_target": True},
+    {"token": "AVAX", "is_target": True},
     {"token": "PENDLE", "is_target": False},
-
+    {"token": "NEAR", "is_target": True},
+    {"token": "AAVE", "is_target": True},
+    {"token": "ATOM", "is_target": True},
+    {"token": "LINK", "is_target": True},
+    {"token": "UNI", "is_target": True},
+    {"token": "LTC", "is_target": True},
+    {"token": "OP", "is_target": True},
+    {"token": "GMX", "is_target": True},
+    {"token": "PEPE", "is_target": True},
 ]
 
 TARGET_EXCHANGES = [
