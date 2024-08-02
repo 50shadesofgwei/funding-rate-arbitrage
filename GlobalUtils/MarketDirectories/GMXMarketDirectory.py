@@ -114,14 +114,11 @@ class GMXMarketDirectory:
             return None
     
     @classmethod
-    def calculate_new_funding_velocity(cls, symbol: str, absolute_trade_size_usd: float, is_long: bool) -> float:
+    def calculate_new_funding_velocity(cls, symbol: str, absolute_trade_size_usd: float, is_long: bool, open_interest: dict) -> float:
         try:
-            market = cls.get_market_key_for_symbol(symbol)
-            threshold_for_decrease_funding = get_threshold_for_decrease_funding(market)
-            threshold_for_stable_funding = get_threshold_for_stable_funding(market)
-            funding_increase_factor = get_funding_increase_factor(market)
-            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
-            print(open_interest)
+            threshold_for_decrease_funding = cls._markets[symbol]['threshold_for_decrease_funding']
+            threshold_for_stable_funding = cls._markets[symbol]['threshold_for_stable_funding']
+            funding_increase_factor = cls._markets[symbol]['funding_increase_factor']
             long_open_interest = open_interest['long'][symbol]
             short_open_interest = open_interest['short'][symbol]
 
@@ -139,10 +136,8 @@ class GMXMarketDirectory:
     
 
             if is_long_side_heavier and imbalance > threshold_for_stable_funding:
-                print(f'condition 1: funding_increase_factor = {funding_increase_factor}, imbalance = {imbalance}')
                 funding_velocity_24h = (funding_increase_factor * imbalance) * 60 * 60 * 24
             if not is_long_side_heavier and imbalance > threshold_for_decrease_funding:
-                print(f'condition 2: funding_increase_factor = {funding_increase_factor}, imbalance = {imbalance}')
                 funding_velocity_24h = (funding_increase_factor * imbalance) * 60 * 60 * 24
             if is_long_side_heavier and imbalance < threshold_for_stable_funding:
                 funding_velocity_24h = 0
@@ -156,10 +151,8 @@ class GMXMarketDirectory:
             return None
 
     @classmethod
-    def get_open_interest_imbalance_percentage(cls, market: str) -> float:
+    def get_open_interest_imbalance_percentage(cls, symbol: str, open_interest: dict) -> float:
         try:
-            symbol = cls.get_symbol_for_market_key(market)
-            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
             long_open_interest = open_interest['long'][symbol]
             short_open_interest = open_interest['short'][symbol]
             total_open_interest = long_open_interest + short_open_interest
@@ -204,6 +197,7 @@ class GMXMarketDirectory:
             )
 
             price_impact = execution_price_data['price_impact_usd']
+            price_impact = -price_impact
 
             return price_impact
         
@@ -212,10 +206,8 @@ class GMXMarketDirectory:
             return None
     
     @classmethod
-    def get_skew_usd_for_market(cls, symbol: str) -> float:
+    def get_skew_usd_from_open_interest(cls, symbol: str, open_interest: dict) -> float:
         try:
-            market = cls.get_market_key_for_symbol(symbol)
-            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(market)
             long_open_interest = open_interest['long'][symbol]
             short_open_interest = open_interest['short'][symbol]
             skew_usd = long_open_interest - short_open_interest
@@ -305,29 +297,36 @@ class GMXMarketDirectory:
     @classmethod
     def get_total_closing_fee(cls, symbol: str, skew_usd_after_trade: float, is_long: bool, absolute_size_usd: float) -> float:
         try:
+            if is_long == True:
+                is_long = False
+            else:
+                is_long = True
+
             fees = cls.get_maker_taker_fee(
                 symbol,
                 skew_usd_after_trade,
                 is_long,
-                -absolute_size_usd
+                absolute_size_usd
             )
         
             maker_fee_usd = fees[0]['maker_fee'] * fees[0]['size']
             taker_fee_usd = fees[1]['taker_fee'] * fees[1]['size']
 
-            total_opening_fee_usd = maker_fee_usd + taker_fee_usd
-            return total_opening_fee_usd
+            total_closing_fee_usd = maker_fee_usd + taker_fee_usd
+            return total_closing_fee_usd
 
         except Exception as e:
-            logger.error(f"GMXMarketDirectory - Failed to determine total opening fee for {symbol} with skew {skew_usd_after_trade}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
+            logger.error(f"GMXMarketDirectory - Failed to determine total closing fee for {symbol} with skew {skew_usd_after_trade}, size {absolute_size_usd} and is_long = {is_long}. Error: {e}")
             return None
 
     @classmethod
     def get_maker_taker_fee(cls, symbol: str, skew_usd: float, is_long: bool, absolute_size_usd: float) -> list:
         try:
             market = cls.get_market_params(symbol)
-            maker_fee = market['maker_fee_percent']
-            taker_fee = market['taker_fee_percent']
+            maker_fee_percent = market['maker_fee_percent']
+            maker_fee = maker_fee_percent / 100
+            taker_fee_percent = market['taker_fee_percent']
+            taker_fee = taker_fee_percent / 100
 
             if is_long:
                 trade_impact = absolute_size_usd
@@ -375,22 +374,3 @@ class GMXMarketDirectory:
         except Exception as e:
             logger.error(f"GMXMarketDirectory - Failed to determine maker/taker split for skew {skew_usd} and size {size_usd}. Error: {e}")
             return None
-
-# opp = {
-#     'long_exchange': 'GMX',
-#     'short_exchange': 'Synthetix',
-#     'symbol': 'ETH',
-#     'long_exchange_funding_rate_8hr': 0.001,
-#     'short_exchange_funding_rate_8hr': 0.001,
-#     'long_exchange_skew_usd': 800000,
-#     'short_exchange_skew_usd': 20000,
-#     'block_number': 111
-# }
-
-# GMXMarketDirectory.initialize()
-# x = GMXMarketDirectory.get_price_impact_for_trade(
-#     opp,
-#     1500000,
-#     False
-# )
-# print(f'new funding velocity = {x}')

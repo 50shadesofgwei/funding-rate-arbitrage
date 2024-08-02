@@ -8,6 +8,7 @@ class GMXCaller:
         self.stats_caller = build_stats_class()
         self.config = ARBITRUM_CONFIG_OBJECT
 
+    @log_function_call
     def get_funding_rates(self, symbols: list) -> list:
         try:
             raw_opportunities = self.get_opportunities_raw()
@@ -20,7 +21,7 @@ class GMXCaller:
             logger.error(f'GMXCaller - Failed to get funding rates. Error: {e}')
             return None
 
-
+    @log_function_call
     def get_opportunities_raw(self):
         try:
             data_raw = self._collect_data_raw()
@@ -38,6 +39,7 @@ class GMXCaller:
             logger.error(f'GMXCaller - Failed to get raw opportunities object. Error: {e}')
             return None
 
+    @log_function_call
     def _analyze_opportunities(self, sorted_keys: list, nested_dict: dict, open_interest_data: dict):
         try:
             dict_of_opportunities = {"long": {}, "short": {}}
@@ -100,7 +102,7 @@ class GMXCaller:
             logger.error(f'GMXCaller - KeyError encountered while creating nested dictionary from available_liquidity and net_rate_dict objects. Error: {ke}')
             return None
         except Exception as e:
-            logger.error(f'GMXCaller - Failed to create nested dictionary from available_liquidity and net_rate_dict objects. Error: {e}')
+            logger.error(f'GMXCaller - Failed to create nested dictionary from available_liquidity and net_rate_dict objects. Error: {e}', exc_info=True)
             return None
 
     def _calculate_net_rates(self, borrow_data: dict, funding_data: dict) -> dict:
@@ -119,15 +121,15 @@ class GMXCaller:
             logger.error(f'GMXCaller - Failed to calculate net rates from raw data from GMX. Error: {e}')
             return None
     
+    @log_function_call
     def _collect_data_raw(self) -> dict:
         try:
-            liquidity = self.stats_caller.get_available_liquidity()
-            time.sleep(0.5)
-            borrow_apr = self.stats_caller.get_borrow_apr()
-            time.sleep(0.5)
-            funding_apr = self.stats_caller.get_funding_apr()
-            time.sleep(0.5)
-            open_interest = self.stats_caller.get_open_interest()
+            oracle_prices = OraclePrices(ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
+            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(oracle_prices)
+            liquidity = self.stats_caller.get_available_liquidity(open_interest, oracle_prices)
+            borrow_apr = self.stats_caller.get_borrow_apr(oracle_prices)
+            funding_apr = self.stats_caller.get_funding_apr(open_interest, oracle_prices)
+
 
             data_raw = {
                 'liquidity': liquidity,

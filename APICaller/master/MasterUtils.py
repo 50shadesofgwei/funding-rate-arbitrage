@@ -6,7 +6,7 @@ TARGET_TOKENS = [
     {"token": "SNX", "is_target": False},
     {"token": "SOL", "is_target": True},
     {"token": "W", "is_target": False},
-    {"token": "WIF", "is_target": True},
+    {"token": "WIF", "is_target": False},
     {"token": "ARB", "is_target": True},
     {"token": "BNB", "is_target": True},
     {"token": "ENA", "is_target": False},
@@ -21,7 +21,7 @@ TARGET_TOKENS = [
     {"token": "LTC", "is_target": True},
     {"token": "OP", "is_target": True},
     {"token": "GMX", "is_target": True},
-    {"token": "PEPE", "is_target": True},
+    {"token": "PEPE", "is_target": False},
 ]
 
 TARGET_EXCHANGES = [
@@ -78,7 +78,6 @@ def get_target_tokens_for_OKX() -> list:
         logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for OKX: {e}")
         return []
 
-
 def get_target_tokens_for_synthetix() -> list:
     try:
         symbols = [token["token"] for token in TARGET_TOKENS if token["is_target"]]
@@ -101,14 +100,6 @@ def get_target_tokens_for_HMX() -> list:
         return symbols
     except Exception as e:
         logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for ByBit: {e}")
-        return []
-
-def get_target_tokens_for_synthetix() -> list:
-    try:
-        symbols = [token["token"] for token in TARGET_TOKENS if token["is_target"]]
-        return symbols
-    except Exception as e:
-        logger.error(f"MasterAPICallerUtils - Error retrieving target tokens for Synthetix: {e}")
         return []
 
 def get_target_tokens_for_GMX() -> list:

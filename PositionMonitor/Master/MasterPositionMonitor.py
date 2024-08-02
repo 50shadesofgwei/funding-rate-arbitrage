@@ -1,6 +1,7 @@
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import SynthetixPositionMonitor
 from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonitor
 from PositionMonitor.HMX.HMXPositionMonitor import HMXPositionMonitor
+from PositionMonitor.GMX.GMXPositionMonitor import GMXPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *

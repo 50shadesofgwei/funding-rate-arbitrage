@@ -90,6 +90,10 @@ def threshold_for_decrease_funding_key(market: str):
 def max_funding_factor_key(market: str):
     return create_hash(["bytes32", "address"], [MAX_FUNDING_FACTOR_PER_SECOND_LIMIT, market])
 
+def borrow_factor_key(market: str):
+    return create_hash(["bytes32", "address"], [BORROWING_FACTOR, market])
+
+
 
 def open_interest_in_tokens_key(market: str, collateral_token: str, is_long: bool):
   return create_hash(
@@ -204,84 +208,6 @@ def virtualTokenIdKey(token: str):
 
 def withdraw_gas_limit_key():
     return WITHDRAWAL_GAS_LIMIT
-
-
-class GetFundingCalculationData(GetData):
-    def __init__(self, config):
-        super().__init__(config)
-        self.config = config
-
-    def _get_data_processing(self):
-
-        open_interest = OpenInterest(
-            config=self.config
-        ).get_data(to_json=False)
-
-        # define empty lists to pass to zip iterater later on
-        mapper = []
-        output_list = []
-        long_interest_usd_list = []
-        short_interest_usd_list = []
-
-        # loop markets
-        for market_key in self.markets.info:
-            symbol = self.markets.get_market_symbol(market_key)
-            index_token_address = self.markets.get_index_token_address(market_key)
-            self._get_token_addresses(market_key)
-
-            output = self._get_oracle_prices(market_key, index_token_address)
-
-            mapper.append(symbol)
-            output_list.append(output)
-            long_interest_usd_list.append(open_interest['long'][symbol] * 10 ** 30)
-            short_interest_usd_list.append(open_interest['short'][symbol] * 10 ** 30)
-
-            # Multithreaded call on contract for each block number
-            threaded_output = execute_threading(output_list)
-
-            for (
-                output,
-                long_interest_usd,
-                short_interest_usd,
-                symbol
-            ) in zip(
-                threaded_output,
-                long_interest_usd_list,
-                short_interest_usd_list,
-                mapper
-            ):
-
-                market_info_dict = {
-                    "market_token": output[0][0],
-                    "index_token": output[0][1],
-                    "long_token": output[0][2],
-                    "short_token": output[0][3],
-                    "long_borrow_fee": output[1],
-                    "short_borrow_fee": output[2],
-                    "is_long_pays_short": output[4][0],
-                    "funding_factor_per_second": output[4][1]
-                }
-
-                long_funding_fee = get_funding_factor_per_period(
-                    market_info_dict,
-                    True,
-                    3600 * 8,
-                    long_interest_usd,
-                    short_interest_usd
-                )
-
-                short_funding_fee = get_funding_factor_per_period(
-                    market_info_dict,
-                    False,
-                    3600 * 8,
-                    long_interest_usd,
-                    short_interest_usd
-                )
-
-            self.output['long'][symbol] = long_funding_fee
-            self.output['short'][symbol] = short_funding_fee
-
-        return self.output
 
 INDEX_TOKEN_ADDRESSES = {
     "BTC": '0x47904963fc8b2340414262125aF798B9655E58Cd',
@@ -410,6 +336,19 @@ def get_max_funding_factor_for_market(market: str) -> float:
         
         return max_funding_factor
     
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        return None
+
+def get_borrow_rate_for_market(market: str) -> float:
+    try:
+            borrow_rate_key_variable = borrow_factor_key(market)
+            borrow_rate_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(borrow_rate_key_variable)
+            borrow_rate_factor = borrow_rate_factor_func.call()
+            borrow_rate_factor = borrow_rate_factor / 10**30
+            
+            return borrow_rate_factor
+        
     except Exception as e:
         logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
         return None
