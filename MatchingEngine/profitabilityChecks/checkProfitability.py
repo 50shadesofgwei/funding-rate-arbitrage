@@ -22,11 +22,12 @@ class ProfitabilityChecker:
         self.bybit_caller = ByBitCaller()
         # self.okx_caller = OKXCaller()
         self.gmx_prices = {}
+        self.gmx_open_interest = {}
 
         self.default_trade_duration = float(os.getenv('DEFAULT_TRADE_DURATION_HOURS'))
-        self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD')) * float(self.position_controller.synthetix.leverage_factor)
+        self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD'))
 
-
+    @log_function_call
     def find_most_profitable_opportunity(self, opportunities: list, is_demo: bool):
         try:
             trade_size_usd = self.default_trade_size_usd
@@ -35,8 +36,10 @@ class ProfitabilityChecker:
             opportunities_with_profit = []
             if 'GMX' in get_target_exchanges():
                 self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
+                self.gmx_open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(self.gmx_prices)
 
             for opportunity in opportunities:
+                symbol = opportunity['symbol']
                 size_per_exchange = trade_size_usd / 2
                 total_profit_usd = 0
                 hours_to_neutralize_by_exchange = {}
@@ -61,6 +64,10 @@ class ProfitabilityChecker:
                         opportunity['trade_duration_estimate'] = time_to_neutralize
 
                 pnl_dict = self.estimate_profit_for_time_period(hours_to_neutralize_by_exchange, trade_size_usd, opportunity)
+                if not pnl_dict or pnl_dict['total_profit_loss'] == None:
+                    logger.warning(f'CheckProfitability - No (or incomplete) Pnl data returned for symbol {symbol}')
+                    continue
+
                 total_profit_usd = float(pnl_dict['total_profit_loss'])
                 opportunity['total_profit_usd'] = total_profit_usd
                 opportunity['long_exchange_profit_usd'] = float(pnl_dict['long_exchange_profit_loss'])
@@ -85,6 +92,7 @@ class ProfitabilityChecker:
 
     def estimate_profit_for_exchange(self, time_period_hours: float, size_usd: float, opportunity: dict, exchange: str) -> float:
         try:
+            estimated_profit = None
             if exchange == 'Binance':
                 estimated_profit = self.estimate_binance_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
@@ -92,16 +100,20 @@ class ProfitabilityChecker:
                 estimated_profit = self.estimate_synthetix_profit(time_period_hours=time_period_hours, absolute_size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
             elif exchange == 'GMX':
-                estimated_profit = self.estimate_GMX_profit(time_period_hours=time_period_hours, absolute_size_usd=size_usd, opportunity=opportunity)
+                estimated_profit = self.estimate_GMX_profit(time_period_hours=time_period_hours, absolute_size_usd=size_usd, opportunity=opportunity, open_interest=self.gmx_open_interest)
                 return estimated_profit
             elif exchange == 'HMX':
                 estimated_profit = estimate_HMX_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
             elif exchange == 'ByBit':
                 estimated_profit = self.estimate_bybit_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
+                return estimated_profit
             elif exchange == 'OKX':
                 estimated_profit = self.estimate_okx_profit(time_period_hours=time_period_hours, size_usd=size_usd, opportunity=opportunity)
                 return estimated_profit
+
+            if not estimated_profit:
+                return None
 
         except Exception as e:
             logger.error(f'CheckProfitability - Failed to estimate profit for exchange {exchange}, Error: {e}')
@@ -126,7 +138,12 @@ class ProfitabilityChecker:
                     return time_to_neutralize
             
             if exchange == "GMX":
-                time_to_neutralize = estimate_time_to_neutralize_funding_rate_gmx(opportunity, absolute_size_usd=size_usd)
+                time_to_neutralize = estimate_time_to_neutralize_funding_rate_gmx(
+                    opportunity, 
+                    absolute_size_usd=size_usd, 
+                    open_interest=self.gmx_open_interest
+                    )
+
                 if type(time_to_neutralize) == str:
                     time_to_neutralize = self.default_trade_duration
                     return time_to_neutralize
@@ -176,7 +193,7 @@ class ProfitabilityChecker:
             return profit_after_fees
 
         except Exception as e:
-            logger.error(f'SynthetixCheckProfitabilityUtils -  Error estimating Synthetix profit for {symbol}: Error: {e}')
+            logger.error(f'CheckProfitability -  Error estimating Synthetix profit for {symbol}: Error: {e}')
             return None
 
     def estimate_binance_profit(self, time_period_hours: float, size_usd: float, opportunity: dict):
@@ -269,17 +286,24 @@ class ProfitabilityChecker:
             logger.error(f'CheckProfitability - Error estimating OKX profit for {symbol}: {e}')
             return None
 
-    def estimate_GMX_profit(self, time_period_hours: float, absolute_size_usd: float, opportunity: dict) -> float:
+    def estimate_GMX_profit(self, time_period_hours: float, absolute_size_usd: float, opportunity: dict, open_interest: dict) -> float:
         is_long: bool = opportunity['long_exchange'] == 'GMX'
         symbol = str(opportunity['symbol'])
+        initial_funding_rate_8h = opportunity['long_exchange_funding_rate_8hr'] if is_long else opportunity['short_exchange_funding_rate_8hr']
+        initial_funding_rate_24h = initial_funding_rate_8h * 3
 
         try:
-            skew_usd = GMXMarketDirectory.get_skew_usd_for_market(symbol)
+            skew_usd = GMXMarketDirectory.get_skew_usd_from_open_interest(symbol, open_interest)
+            new_funding_velocity_24h = GMXMarketDirectory.calculate_new_funding_velocity(
+                symbol,
+                absolute_size_usd,
+                is_long,
+                open_interest
+                )
             adjusted_size_usd = get_adjusted_size(absolute_size_usd, is_long)
             skew_usd_after_trade = skew_usd + adjusted_size_usd
             opening_fee = GMXMarketDirectory.get_total_opening_fee(symbol, skew_usd, is_long, absolute_size_usd)
             closing_fee = GMXMarketDirectory.get_total_closing_fee(symbol, skew_usd_after_trade, is_long, absolute_size_usd)
-
             gas_fee_usd = 1
             price_impact = GMXMarketDirectory.get_price_impact_for_trade(
                 opportunity,
@@ -287,22 +311,25 @@ class ProfitabilityChecker:
                 absolute_size_usd,
                 self.gmx_prices
             )
+            logger.error(f'DEBUG - price_impact = {price_impact}')
 
-            total_funding = calculate_expected_funding_for_time_period_usd(
-                opportunity,
-                is_long,
+            total_funding = calculate_profit_gmx(
                 absolute_size_usd,
-                time_period_hours
+                time_period_hours,
+                new_funding_velocity_24h,
+                initial_funding_rate_24h
             )
-
             
             total_fees = (opening_fee + price_impact + gas_fee_usd + closing_fee)
             profit_after_fees = total_funding - total_fees
+            logger.error(f'DEBUG - total_fees = (opening_fee = {opening_fee} + price_impact = {price_impact} + closing_fee = {closing_fee})')
+            logger.error(f'DEBUG - total_funding = {total_funding}')
+            logger.error(f'DEBUG - profit_after_fees = {profit_after_fees}')
 
             return profit_after_fees
 
         except Exception as e:
-            logger.error(f'SynthetixCheckProfitabilityUtils -  Error estimating GMX profit for {symbol}: Error: {e}')
+            logger.error(f'CheckProfitability -  Error estimating GMX profit for {symbol}: Error: {e}', exc_info=True)
             return None
 
 
@@ -325,13 +352,16 @@ class ProfitabilityChecker:
                 long_profit_loss = self.default_trade_size_usd * long_exchange_funding_rate_1hr * shortest_time
             else:
                 long_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd_per_side, opportunity, long_exchange)
+            logger.error(f'DEBUG - long_profit_loss = {long_profit_loss} for symbol {symbol}')
 
             short_profit_loss = 0
             if hours_to_neutralize_short == "No Neutralization":
                 short_profit_loss = self.default_trade_size_usd * short_exchange_funding_rate_1hr * shortest_time
             else:
                 short_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd_per_side, opportunity, short_exchange)
+            logger.error(f'DEBUG - short_profit_loss = {short_profit_loss} for symbol {symbol}')
 
+            logger.error(f'DEBUG - long_profit_loss = {long_profit_loss}, short_profit_loss = {short_profit_loss} where long_exchange = {long_exchange} and short_exchange = {short_exchange}')
             total_profit_loss = long_profit_loss + short_profit_loss
 
             pnl_dict = {

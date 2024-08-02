@@ -13,5 +13,5 @@ python_okx==0.3.1
 Requests==2.32.3
 scikit_learn==1.5.1
 setuptools==68.2.2
-synthetix==0.1.10
+synthetix>=0.1.13
 web3==6.16.0
