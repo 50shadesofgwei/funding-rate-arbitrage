@@ -3,6 +3,7 @@ from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionC
 from TxExecution.HMX.HMXPositionController import HMXPositionController
 from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.OKX.OKXPositionController import OKXPositionController
+from TxExecution.GMX.GMXPositionController import GMXPositionController
 
 from TxExecution.Master.MasterPositionControllerUtils import *
 
@@ -19,6 +20,7 @@ class MasterPositionController:
         self.hmx = HMXPositionController()
         self.bybit = ByBitPositionController()
         # self.okx = OKXPositionController()
+        self.gmx = GMXPositionController()
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -123,12 +125,16 @@ class MasterPositionController:
             }
 
             collateral_amounts = self.get_available_collateral_for_exchanges(exchanges)
-            trade_size = adjust_collateral_allocation(collateral_amounts, long_exchange, short_exchange)
+            trade_size = adjust_collateral_allocation(
+                collateral_amounts, 
+                long_exchange, 
+                short_exchange
+            )
 
             return trade_size
 
         except Exception as e:
-            logger.error(f"MasterPositionController:get_trade_size - Failed while getting trade size. trade_size: to error: {e}")
+            logger.error(f"MasterPositionController:get_trade_size - Failed to calculate trade size for exchanges {exchanges}. Error: {e}", exc_info=True)
             return None
 
 
@@ -185,6 +191,7 @@ class MasterPositionController:
             is_binance_target = 'Binance' in target_exchange_list
             is_bybit_target = 'ByBit' in target_exchange_list
             is_okx_target = 'OKX' in target_exchange_list
+            is_gmx_target = 'GMX' in target_exchange_list
 
             try:
                 if is_synthetix_target:
@@ -212,20 +219,28 @@ class MasterPositionController:
 
             try:
                 if is_okx_target:
-                    is_okx_position = self.okx.is_already_position_open()
+                    # is_okx_position = self.okx.is_already_position_open()
+                    pass
             except Exception as e:
                 logger.error(f'MasterPositionController:is_already_position_open - Error checking OKX position: {e}')
+
+            try:    
+                if is_gmx_target:
+                    is_gmx_position = self.gmx.is_already_position_open()
+            except Exception as e:
+                logger.error(f'MasterPositionController:is_already_position_open - Error checking GMX position: {e}')
 
             positions_open = [
                 is_synthetix_position,
                 is_hmx_position,
                 is_binance_position,
                 is_bybit_position,
-                is_okx_position
+                # is_okx_position
+                is_gmx_position
             ]
 
             if any(positions_open):
-                logger.info(f"MasterPositionController - Position already open: SNX: {is_synthetix_position}, HMX: {is_hmx_position}, Binance: {is_binance_position}, ByBit: {is_bybit_position}, Okx: {is_okx_position}")
+                logger.info(f"MasterPositionController - Position already open: SNX: {is_synthetix_position}, HMX: {is_hmx_position}, Binance: {is_binance_position}, ByBit: {is_bybit_position}, GMX: {is_gmx_position}")
                 return True
             else:
                 logger.info(f"MasterPositionController - No positions open.")

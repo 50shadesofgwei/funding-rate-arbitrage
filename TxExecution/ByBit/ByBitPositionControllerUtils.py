@@ -48,3 +48,9 @@ def parse_close_order_data_from_position_response(APIresponse: dict) -> dict:
 
     return close_order
 
+def normalize_qty_step(qty_step: float) -> int:
+    decimal_str = str(qty_step)
+    if '.' in decimal_str:
+        return len(decimal_str.split('.')[1])
+    else:
+        return 0

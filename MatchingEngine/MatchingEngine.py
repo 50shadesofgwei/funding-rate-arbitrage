@@ -64,7 +64,6 @@ class matchingEngine:
             logger.error(f'MatchingEngine - Error while finding arbitrage opportunities: {e}')
             return None
 
-
     def find_delta_neutral_arbitrage_opportunities(self, funding_rates) -> list:
         opportunities = []
         if not funding_rates:

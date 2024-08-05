@@ -1,6 +1,6 @@
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from APICaller.master.MasterUtils import get_target_tokens_for_okx
+from APICaller.master.MasterUtils import get_target_tokens_for_OKX
 from TxExecution.OKX.OKXPositionControllerUtils import *
 import os
 import time
@@ -99,7 +99,7 @@ class OKXPositionController:
             return None
 
     def close_all_positions(self):
-        selected_markets = get_target_tokens_for_okx()
+        selected_markets = get_target_tokens_for_OKX()
         positions = []
         for market in selected_markets:
             close_details = self.close_position(market, reason="TEST")
@@ -159,7 +159,7 @@ class OKXPositionController:
 
         try:
             if(len(tokens) == 0):
-                tokens = get_target_tokens_for_okx()
+                tokens = get_target_tokens_for_OKX()
 
             for token in tokens:
                 if token["is_target"]:
@@ -212,7 +212,7 @@ class OKXPositionController:
     def is_already_position_open(self) -> bool:
         # TODO: log all open positions or only log the first one?
         try:
-            selected_markets = get_target_tokens_for_okx()
+            selected_markets = get_target_tokens_for_OKX()
             response = self.account_client.get_positions()
             positions = response['data']
             holding_tokens = [x['instId'] for x in positions if float(x['availPos']) > 0]

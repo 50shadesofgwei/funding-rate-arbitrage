@@ -27,7 +27,6 @@ class ProfitabilityChecker:
         self.default_trade_duration = float(os.getenv('DEFAULT_TRADE_DURATION_HOURS'))
         self.default_trade_size_usd = float(os.getenv('DEFAULT_TRADE_SIZE_USD'))
 
-    @log_function_call
     def find_most_profitable_opportunity(self, opportunities: list, is_demo: bool):
         try:
             trade_size_usd = self.default_trade_size_usd
@@ -311,7 +310,6 @@ class ProfitabilityChecker:
                 absolute_size_usd,
                 self.gmx_prices
             )
-            logger.error(f'DEBUG - price_impact = {price_impact}')
 
             total_funding = calculate_profit_gmx(
                 absolute_size_usd,
@@ -322,9 +320,6 @@ class ProfitabilityChecker:
             
             total_fees = (opening_fee + price_impact + gas_fee_usd + closing_fee)
             profit_after_fees = total_funding - total_fees
-            logger.error(f'DEBUG - total_fees = (opening_fee = {opening_fee} + price_impact = {price_impact} + closing_fee = {closing_fee})')
-            logger.error(f'DEBUG - total_funding = {total_funding}')
-            logger.error(f'DEBUG - profit_after_fees = {profit_after_fees}')
 
             return profit_after_fees
 
@@ -352,16 +347,13 @@ class ProfitabilityChecker:
                 long_profit_loss = self.default_trade_size_usd * long_exchange_funding_rate_1hr * shortest_time
             else:
                 long_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd_per_side, opportunity, long_exchange)
-            logger.error(f'DEBUG - long_profit_loss = {long_profit_loss} for symbol {symbol}')
 
             short_profit_loss = 0
             if hours_to_neutralize_short == "No Neutralization":
                 short_profit_loss = self.default_trade_size_usd * short_exchange_funding_rate_1hr * shortest_time
             else:
                 short_profit_loss = self.estimate_profit_for_exchange(shortest_time, size_usd_per_side, opportunity, short_exchange)
-            logger.error(f'DEBUG - short_profit_loss = {short_profit_loss} for symbol {symbol}')
 
-            logger.error(f'DEBUG - long_profit_loss = {long_profit_loss}, short_profit_loss = {short_profit_loss} where long_exchange = {long_exchange} and short_exchange = {short_exchange}')
             total_profit_loss = long_profit_loss + short_profit_loss
 
             pnl_dict = {

@@ -9,7 +9,7 @@ def adjust_collateral_allocation(collateral_amounts: dict, long_exchange: str, s
     try:
         initial_percentage = float(os.getenv('PERCENTAGE_CAPITAL_PER_TRADE'))
 
-        if not is_collateral_ratio_acceptable(collateral_amounts, long_exchange, short_exchange):
+        if not is_collateral_ratio_acceptable(collateral_amounts):
             logger.error(f"MasterPositionControllerUtils - Collateral on exchanges does not meet the minimum ratio requirement - collateral amounts need rebalancing between {long_exchange} and {short_exchange}")
             return None
 
@@ -17,16 +17,17 @@ def adjust_collateral_allocation(collateral_amounts: dict, long_exchange: str, s
         short_collateral = float(collateral_amounts['short_exchange'])
         smaller_collateral = min(long_collateral, short_collateral)
 
-        initial_collateral_percentage: float = initial_percentage / 100
-        trade_amount: float = smaller_collateral * initial_collateral_percentage
+        initial_collateral_percentage = initial_percentage / 100
+        trade_amount = smaller_collateral * initial_collateral_percentage
+
         return trade_amount
 
     except Exception as e:
-        logger.error(f'MasterPositionControllerUtils - Failed to determine trade size in adjust_collateral_allocation. Trade size = {trade_amount} Error: {e}')
+        logger.error(f'MasterPositionControllerUtils - Failed to determine trade size in adjust_collateral_allocation. Error: {e}')
         return None
 
 
-def is_collateral_ratio_acceptable(collateral_amounts, min_ratio=0.01):
+def is_collateral_ratio_acceptable(collateral_amounts: dict, min_ratio=0.01):
     try:
         long_collateral = collateral_amounts['long_exchange']
         short_collateral = collateral_amounts['long_exchange']
@@ -42,7 +43,7 @@ def is_collateral_ratio_acceptable(collateral_amounts, min_ratio=0.01):
         logger.error(f'MasterPositionControllerUtils - Failed to calculate whether collateral ratio across exchanges met the minimum requirement. Ratio: {ratio}, Minimum: {min_ratio} Error: {e}')
         return False
 
-def calculate_adjusted_trade_size(opportunity, is_long: bool, trade_size: float) -> float:
+def calculate_adjusted_trade_size(opportunity: dict, is_long: bool, trade_size: float) -> float:
         try:
             leverage_factor = float(os.getenv('TRADE_LEVERAGE'))
             trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size)

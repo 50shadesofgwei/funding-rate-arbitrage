@@ -54,21 +54,18 @@ class GetGMXv2Stats:
         self.to_json = to_json
         self.to_csv = to_csv
 
-    @log_function_call
     def get_available_liquidity(self, open_interest: dict, oracle_prices: dict):
 
         return GetAvailableLiquidity(
             self.config
         )._get_data_processing(open_interest, oracle_prices)
 
-    @log_function_call
     def get_borrow_apr(self, oracle_prices: dict):
 
         return GetBorrowAPR(
             self.config
         )._get_data_processing(oracle_prices)
 
-    @log_function_call
     def get_claimable_fees(self):
 
         return GetClaimableFees(
@@ -78,7 +75,6 @@ class GetGMXv2Stats:
             to_json=self.to_json
         )
 
-    @log_function_call
     def get_contract_tvl(self):
 
         return ContractTVL(
@@ -87,14 +83,12 @@ class GetGMXv2Stats:
             to_json=self.to_json
         )
 
-    @log_function_call
     def get_funding_apr(self, open_interest: dict, oracle_prices: dict):
 
         return GetFundingFee(
             self.config
         )._get_data_processing(open_interest, oracle_prices)
 
-    @log_function_call
     def get_gm_price(self):
 
         return GMPrices(
@@ -104,28 +98,24 @@ class GetGMXv2Stats:
             to_json=self.to_json
         )
 
-    @log_function_call
     def get_available_markets(self):
 
         return Markets(
             self.config
         ).get_available_markets()
 
-    @log_function_call
     def get_open_interest(self):
 
         return OpenInterest(
             self.config
         ).get_data()
 
-    @log_function_call
     def get_oracle_prices(self):
 
         return OraclePrices(
             self.config
         ).get_recent_prices()
 
-    @log_function_call
     def get_pool_tvl(self):
 
         return GetPoolTVL(
@@ -169,6 +159,8 @@ def parse_opportunity_objects_from_response(response: dict) -> list:
         for position_type in response.keys(): 
             for symbol, details in response[position_type].items():
                 funding_rate = details['net_rate_per_hour'] * 8
+                if position_type == 'long':
+                    funding_rate = funding_rate * -1
                 funding_rate = funding_rate / 100
                 opportunity = {
                     'exchange': 'GMX',

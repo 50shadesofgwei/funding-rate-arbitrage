@@ -18,14 +18,16 @@ class GMXPositionController:
     def __init__(self):
         self.config = ARBITRUM_CONFIG_OBJECT
         self.config.set_config(PATH_TO_GMX_CONFIG_FILE)
+        self.leverage = float(os.getenv('TRADE_LEVERAGE'))
 
     def execute_trade(self, opportunity: dict, is_long: bool, trade_size: float):
         try:
             symbol = opportunity['symbol']
+            trade_size_with_leverage = trade_size * self.leverage
             parameters = get_params_object_from_opportunity_dict(
                 opportunity,
                 is_long,
-                trade_size
+                trade_size_with_leverage
             )
             order_parameters = OrderArgumentParser(
                     self.config,
@@ -49,6 +51,26 @@ class GMXPositionController:
                 debug_mode=True
             )
 
+            time.sleep(4)
+            if self.was_position_opened_successfully(
+                symbol,
+                is_long
+            ):
+                logger.info(f"GMXPositionController - Trade executed: symbol={symbol} side={'Long' if is_long else 'Short'}, Size USD={trade_size_with_leverage}")
+                try:
+                    position_object = self.get_position_object(
+                    opportunity,
+                    is_long,
+                    trade_size_with_leverage
+                    )
+                    return position_object
+                except Exception as ie:
+                    logger.error(f"ByBitPositionController - Failed to build position object, despite trade executing successfully for symbol {symbol}. Error: {ie}")
+                    return position_object 
+            else:
+                logger.info("GMXPositionController - Order not filled after 4 seconds.")
+                return None
+
         except Exception as e:
             logger.error(f'GMXPositionController - Failed to execute trade for symbol {symbol}. Error: {e}')
             return None
@@ -59,11 +81,14 @@ class GMXPositionController:
             slippage_percent = 0.003
             amount_of_position_to_close = 1
             amount_of_collateral_to_remove = 1
+            market = ''
 
             position = self.get_open_positions()
             for key, position in position.items():
                 is_long = position['is_long']
                 market = key
+            
+        
             
             position_as_nested_dict = {
                 market: position
@@ -106,20 +131,6 @@ class GMXPositionController:
     ######################
     ### READ FUNCTIONS ###
     ######################
-
-    # def handle_position_opened(self, symbol: str):
-    #     try:
-    #         position = self.get_open_position_for_symbol(symbol)
-    #         collateral = float(position['inital_collateral_amount_usd'])
-    #         position_details = {
-    #             'position': position,
-    #             'margin_details': margin_details
-    #         }
-    #         trade_data = parse_trade_data_from_position_details(position_details)
-    #         return trade_data
-    #     except Exception as e:
-    #         logger.error(f"SynthetixPositionController - Failed to retrieve position data upon opening. Error: {e}")
-    #         return None
 
     def get_available_collateral(self) -> float:
         try:
@@ -216,5 +227,23 @@ class GMXPositionController:
             return None
         except Exception as e:
             logger.error(f"GMXPositionController - Error while checking if position is open: {e}", exc_info=True)
+            return None
+    
+    def get_position_object(self, opportunity: dict, is_long: bool, size_usd: float) -> dict:
+        try:
+            symbol = opportunity['symbol']
+            side = 'Long' if is_long else 'Short'
+            liquidation_price = self.client.get_liquidation_price()
+
+            return {
+                'exchange': 'GMX',
+                'symbol': symbol,
+                'side': side,
+                'size': size_usd,
+                'liquidation_price': liquidation_price
+            }
+        
+        except Exception as e:
+            logger.error(f"GMXPositionController - Failed to generate position object for {symbol}. Error: {e}")
             return None
 

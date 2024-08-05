@@ -19,6 +19,7 @@ MIN_FUNDING_FACTOR_PER_SECOND_LIMIT = create_hash_string("MIN_FUNDING_FACTOR_PER
 MAX_FUNDING_FACTOR_PER_SECOND_LIMIT = create_hash_string("MAX_FUNDING_FACTOR_PER_SECOND_LIMIT")
 THRESHOLD_FOR_STABLE_FUNDING = create_hash_string("THRESHOLD_FOR_STABLE_FUNDING")
 THRESHOLD_FOR_DECREASE_FUNDING = create_hash_string("THRESHOLD_FOR_DECREASE_FUNDING")
+SAVED_FUNDING_FACTOR_PER_SECOND = create_hash_string("SAVED_FUNDING_FACTOR_PER_SECOND");
 
 OPTIMAL_USAGE_FACTOR = create_hash_string("OPTIMAL_USAGE_FACTOR")
 BASE_BORROWING_FACTOR = create_hash_string("BASE_BORROWING_FACTOR")
@@ -93,7 +94,8 @@ def max_funding_factor_key(market: str):
 def borrow_factor_key(market: str):
     return create_hash(["bytes32", "address"], [BORROWING_FACTOR, market])
 
-
+def saved_funding_factor_key(market: str):
+    return create_hash(["bytes32", "address"], [SAVED_FUNDING_FACTOR_PER_SECOND, market])
 
 def open_interest_in_tokens_key(market: str, collateral_token: str, is_long: bool):
   return create_hash(
@@ -265,6 +267,7 @@ def get_funding_factor(market: str) -> float:
         funding_factor_key_variable = funding_factor_key(market)
         funding_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(funding_factor_key_variable)
         funding_factor = funding_factor_func.call()
+        print(funding_factor)
         funding_factor = funding_factor / 10**30
 
         return funding_factor
@@ -297,7 +300,7 @@ def get_funding_decrease_factor(market: str) -> float:
         return funding_decrease_factor
     
     except Exception as e:
-        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        logger.error(f'GMXPositionControllerUtils - Failed to call funding_decrease_factor from datastore contract. Error: {e}')
         return None
 
 def get_threshold_for_stable_funding(market: str) -> float:
@@ -310,7 +313,7 @@ def get_threshold_for_stable_funding(market: str) -> float:
         return threshold_for_stable
     
     except Exception as e:
-        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        logger.error(f'GMXPositionControllerUtils - Failed to call threshold_for_stable_funding from datastore contract. Error: {e}')
         return None
 
 def get_threshold_for_decrease_funding(market: str) -> float:
@@ -320,11 +323,10 @@ def get_threshold_for_decrease_funding(market: str) -> float:
         threshold_for_decrease = threshold_for_decrease_func.call()
         threshold_for_decrease = threshold_for_decrease / 10**30
         
-
         return threshold_for_decrease
     
     except Exception as e:
-        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        logger.error(f'GMXPositionControllerUtils - Failed to call threshold_for_decrease from datastore contract. Error: {e}')
         return None
 
 def get_max_funding_factor_for_market(market: str) -> float:
@@ -337,18 +339,31 @@ def get_max_funding_factor_for_market(market: str) -> float:
         return max_funding_factor
     
     except Exception as e:
-        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        logger.error(f'GMXPositionControllerUtils - Failed to call max_funding_factor from datastore contract. Error: {e}')
         return None
 
 def get_borrow_rate_for_market(market: str) -> float:
     try:
-            borrow_rate_key_variable = borrow_factor_key(market)
-            borrow_rate_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(borrow_rate_key_variable)
-            borrow_rate_factor = borrow_rate_factor_func.call()
-            borrow_rate_factor = borrow_rate_factor / 10**30
-            
-            return borrow_rate_factor
+        borrow_rate_key_variable = borrow_factor_key(market)
+        borrow_rate_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(borrow_rate_key_variable)
+        borrow_rate_factor = borrow_rate_factor_func.call()
+        borrow_rate_factor = borrow_rate_factor / 10**30
+        
+        return borrow_rate_factor
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to call borrow_rate_factor from datastore contract. Error: {e}')
+        return None
+
+def get_current_funding_rate_for_market(market: str) -> float:
+    try:
+        current_funding_rate_key_variable = saved_funding_factor_key(market)
+        current_funding_rate_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getInt(current_funding_rate_key_variable)
+        current_funding_rate_factor = current_funding_rate_factor_func.call()
+        current_funding_rate_factor = current_funding_rate_factor / 10**30
+        
+        return current_funding_rate_factor
         
     except Exception as e:
-        logger.error(f'GMXPositionControllerUtils - Failed to call funding_increase_factor from datastore contract. Error: {e}')
+        logger.error(f'GMXPositionControllerUtils - Failed to call current_funding_rate_factor from datastore contract. Error: {e}')
         return None
