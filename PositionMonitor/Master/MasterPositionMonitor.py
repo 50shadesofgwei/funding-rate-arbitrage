@@ -16,6 +16,7 @@ class MasterPositionMonitor():
         self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
         self.hmx = HMXPositionMonitor()
+        self.gmx = GMXPositionMonitor()
         self.health_check_thread = None
         self.stop_health_check = threading.Event()
         

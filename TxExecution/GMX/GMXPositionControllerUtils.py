@@ -134,7 +134,7 @@ def get_arbitrum_usdc_balance():
         provider = os.getenv('ARBITRUM_PROVIDER_RPC')
         web3_obj = Web3(Web3.HTTPProvider(provider))
         usdc_address = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
-        with open('USDCArbitrum.json', 'r') as abi_file:
+        with open('GlobalUtils/ABIs/USDCArbitrum.json', 'r') as abi_file:
             token_abi = json.load(abi_file)
         
         contract = web3_obj.eth.contract(address=usdc_address, abi=token_abi)

@@ -1,6 +1,7 @@
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
 from APICaller.GMX.GMXCallerUtils import *
+from APICaller.master.MasterUtils import get_target_tokens_for_GMX
 set_paths()
 
 class GMXCaller:
@@ -8,7 +9,6 @@ class GMXCaller:
         self.stats_caller = build_stats_class()
         self.config = ARBITRUM_CONFIG_OBJECT
 
-    @log_function_call
     def get_funding_rates(self, symbols: list) -> list:
         try:
             raw_opportunities = self.get_opportunities_raw()
@@ -21,7 +21,6 @@ class GMXCaller:
             logger.error(f'GMXCaller - Failed to get funding rates. Error: {e}')
             return None
 
-    @log_function_call
     def get_opportunities_raw(self):
         try:
             data_raw = self._collect_data_raw()
@@ -39,7 +38,6 @@ class GMXCaller:
             logger.error(f'GMXCaller - Failed to get raw opportunities object. Error: {e}')
             return None
 
-    @log_function_call
     def _analyze_opportunities(self, sorted_keys: list, nested_dict: dict, open_interest_data: dict):
         try:
             dict_of_opportunities = {"long": {}, "short": {}}
@@ -120,8 +118,7 @@ class GMXCaller:
         except Exception as e:
             logger.error(f'GMXCaller - Failed to calculate net rates from raw data from GMX. Error: {e}')
             return None
-    
-    @log_function_call
+
     def _collect_data_raw(self) -> dict:
         try:
             oracle_prices = OraclePrices(ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
@@ -143,6 +140,3 @@ class GMXCaller:
         except Exception as e:
             logger.error(f'GMXCaller - Failed to collect raw data from GMX. Error: {e}', exc_info=True)
             return None
-
-# x = Markets(ARBITRUM_CONFIG_OBJECT).get_available_markets()
-# print(x)

@@ -15,10 +15,10 @@ load_dotenv()
 class ByBitPositionController:
     
     def __init__(self):
-        self.client = get_ByBit_client()
+        self.client = GLOBAL_BYBIT_CLIENT
         self.api_key = os.getenv('BYBIT_API_KEY')
         self.api_secret = os.getenv('BYBIT_API_SECRET')
-        self.leverage = os.getenv('TRADE_LEVERAGE')
+        self.leverage = float(os.getenv('TRADE_LEVERAGE'))
         # self.set_leverage_for_all_assets(TARGET_TOKENS)
 
     #######################
@@ -30,16 +30,42 @@ class ByBitPositionController:
             symbol = opportunity['symbol']
             side = get_side(is_long)
             trade_size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, trade_size)
-            self.client.place_order(
+            trade_size_with_leverage = trade_size_in_asset * self.leverage
+            full_symbol = symbol+'USDT'
+            qty_step_raw = self.get_qty_step(full_symbol)
+            qty_step = normalize_qty_step(qty_step_raw)
+            truncated_value = str(f"{trade_size_with_leverage:.{qty_step}f}")
+
+            response = self.client.place_order(
                 category="linear",
-                symbol=symbol+'USDT',
+                symbol=full_symbol,
                 side=side,
                 orderType="Market",
-                qty=trade_size_in_asset,
+                qty=truncated_value,
             )
-            logger.info(f"ByBitPositionController - Trade executed: symbol={symbol} side={'Long' if is_long else 'Short'}, Size={trade_size_in_asset}")
+
+            order_id = response['result']['orderId']
+
+            time.sleep(2)
+            if self._was_trade_executed_successfully(order_id):
+                logger.info(f"ByBitPositionController - Trade executed: symbol={symbol} side={'Long' if is_long else 'Short'}, Size={truncated_value}")
+                try:
+                    position_object = self.get_position_object(
+                    opportunity,
+                    response,
+                    is_long,
+                    truncated_value
+                    )
+                    return position_object
+                except Exception as ie:
+                    logger.error(f"ByBitPositionController - Failed to build position object, despite trade executing successfully for symbol {symbol}. Error: {ie}")
+                    return response 
+            else:
+                logger.info("BinancePositionController - Order not filled after 2 seconds.")
+                return None
+        
         except Exception as e:
-            logger.error(f"ByBitPositionController - Failed to execute trade for {symbol}. Error: {e}")
+            logger.error(f"ByBitPositionController - Failed to execute trade for {symbol}. Error: {e}", exc_info=True)
             return None
 
     def close_all_positions(self):
@@ -49,7 +75,7 @@ class ByBitPositionController:
         except Exception as e:
             logger.error(f"ByBitPositionController - Failed to close all positions. Error: {e}")
 
-    def close_position_for_symbol(self, symbol: str):
+    def close_position(self, symbol: str):
         try:
             response = self.client.get_positions(
                 category="linear",
@@ -125,24 +151,17 @@ class ByBitPositionController:
             logger.error(f"ByBitPositionController - Error retrieving available USDT collateral. Error: {e}")
             return 0.0
 
-    def is_already_position_open(self) -> bool:
+    def is_already_position_open(self):
         try:
-            url = "https://api.bybit.com/private/linear/position/list"
-            headers = {
-                "X-Api-Key": self.api_key,
-                "X-Api-Secret": self.api_secret
-            }
-            response = requests.get(url, headers=headers)
-            if response.status_code == 200:
-                positions = response.json().get('result', [])
-                for position in positions:
-                    if position.get('size', 0) > 0:
-                        return True
-                return False
-            else:
-                logger.error(f"ByBitPositionController - Failed to get open positions. HTTP status code: {response.status_code}")
-                return False
+            response = self.client.get_positions(
+                category="linear",
+                settleCoin='USDT'
+            )
 
+            positions = response.get('result', {}).get('list', [])
+            if positions:
+                return True
+            return False
         except Exception as e:
             logger.error(f"ByBitPositionController - Error checking if position is open. Error: {e}")
             return False
@@ -174,4 +193,67 @@ class ByBitPositionController:
         logger.error(f"ByBitPositionController - All {retries} attempts failed to check if trade was executed successfully for order_id: {order_id}")
         return None
 
+    def get_position_object(self, opportunity: dict, response: dict, is_long: bool, truncated_value: str) -> dict:
+        try:
+            symbol = opportunity['symbol']
+            result = response['result']
+            order_id = result.get('orderId', None)
+            side = 'Long' if is_long else 'Short'
+            size = float(truncated_value)
+            liquidation_price = self.get_liquidation_price(symbol)
 
+            return {
+                'exchange': 'ByBit',
+                'symbol': symbol,
+                'side': side,
+                'size': size,
+                'order_id': order_id,
+                'liquidation_price': liquidation_price
+            }
+        
+        except Exception as e:
+            logger.error(f"ByBitPositionController - Failed to generate position object for {symbol}. Error: {e}")
+            return None
+    
+    def get_liquidation_price(self, symbol: str) -> float:
+        try:
+            response = self.client.get_positions(
+                category='linear',
+                symbol=symbol)
+            positions = response.get('result', {}).get('list', [])
+            if not positions:
+                return None
+            
+            liq_price_str = positions[0].get('liqPrice', None)
+
+            if liq_price_str is not None:
+                return float(liq_price_str)
+            else:
+                return None
+        except (ValueError, TypeError) as vte:
+            logger.error(f'ByBitPositionController - Value or Type error while calling liquidation price for symbol {symbol}. Error: {vte}')
+            return None
+        except Exception as e:
+            logger.error(f'ByBitPositionController - Error while calling liquidation price for symbol {symbol}. Error: {e}')
+            return None
+    
+    def get_qty_step(self, symbol: str) -> float:
+        try:
+            response = self.client.get_instruments_info(
+                category='linear',
+                symbol=symbol
+            )
+
+            instruments = response.get('result', {}).get('list', [])
+            if not instruments:
+                return None
+            
+            qty_step_str = instruments[0].get('lotSizeFilter', {}).get('qtyStep', None)
+
+            if qty_step_str is not None:
+                return float(qty_step_str)
+            else:
+                return None
+        except Exception as e:
+            logger.error(f'ByBitPositionController - Error while retrieving qtyStep for symbol {symbol}. Error: {e}')
+            return None

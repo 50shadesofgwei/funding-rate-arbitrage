@@ -2,6 +2,7 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from APICaller.GMX.GMXContractUtils import *
+from APICaller.GMX.GMXCallerUtils import *
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import sqlite3
 
@@ -52,17 +53,39 @@ class GMXPositionMonitor():
     def get_funding_rate(self, position: dict) -> float:
         try:
             symbol = position['symbol']
+            is_long = position['is_long']
             market = GMXMarketDirectory.get_market_key_for_symbol(symbol)
-            funding_rate_raw = get_funding_factor(market)
-            borrow_rate = get_borrow_rate_for_market(market)
-            borrow_rate = borrow_rate * -1
-            funding_rate_per_second = funding_rate_raw + borrow_rate
-            funding_rate_24hr = funding_rate_per_second * 60 * 60 * 24
+            oracle_prices = OraclePrices(ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
+            open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(
+                oracle_prices,
+                market
+            )
 
-            return funding_rate_24hr
+            funding_rate = GetFundingFee(ARBITRUM_CONFIG_OBJECT)._get_data_processing(
+                open_interest,
+                oracle_prices,
+                market
+            )
+
+            borrow_rate = GetBorrowAPR(ARBITRUM_CONFIG_OBJECT)._get_data_processing(
+                oracle_prices,
+                market
+            )
+
+            if is_long:
+                funding = funding_rate['long'][symbol]
+                borrow = borrow_rate['long'][symbol]
+                net = funding - borrow
+            
+            else:
+                funding = funding_rate['short'][symbol]
+                borrow = borrow_rate['short'][symbol]
+                net = funding - borrow
+
+            return net
             
         except Exception as e:
-            logger.error(f"GMXPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}")
+            logger.error(f"GMXPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}", exc_info=True)
             return None
 
     def is_open_position(self) -> bool:
