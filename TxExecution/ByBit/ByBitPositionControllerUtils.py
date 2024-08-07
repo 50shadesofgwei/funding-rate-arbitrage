@@ -54,3 +54,13 @@ def normalize_qty_step(qty_step: float) -> int:
         return len(decimal_str.split('.')[1])
     else:
         return 0
+
+def build_close_position_details(reason: str, symbol: str, pnl: float) -> dict:
+        close_position_details = {
+                        'symbol': symbol,
+                        'exchange': 'ByBit',
+                        'pnl': pnl,
+                        'accrued_funding': 0.0,
+                        'reason': reason
+                    }
+        return close_position_details

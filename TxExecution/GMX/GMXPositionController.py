@@ -273,7 +273,3 @@ class GMXPositionController:
     def get_liquidation_price(self, symbol: str) -> float:
         return 0.0
 
-x = GMXPositionController()
-GMXMarketDirectory.initialize()
-z = get_claimable_funding_for_symbol('AAVE')
-print(z)
