@@ -1,12 +1,15 @@
 from GlobalUtils.logger import *
+from GlobalUtils.globalUtils import *
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from gmx_python_sdk.scripts.v2.get.get_markets import Markets
 from decimal import Decimal, getcontext
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.GMX.GMXContractUtils import *
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+from APICaller.GMX.GMXContractUtils import get_claimable_funding_amount, get_index_token_address_for_symbol
 
 
-def get_params_object_from_opportunity_dict(opportunity: dict, is_long: bool, trade_size: float) -> dict:
+def get_params_object_from_opportunity_dict(opportunity: dict, is_long: bool, trade_size: float, leverage: int) -> dict:
     try:
         symbol = opportunity['symbol']
         parameters = {
@@ -16,7 +19,7 @@ def get_params_object_from_opportunity_dict(opportunity: dict, is_long: bool, tr
             "start_token_symbol": "USDC",
             "is_long": is_long,
             "size_delta_usd": trade_size,
-            "leverage": 1,
+            "leverage": leverage,
             "slippage_percent": 0.003
         }
         return parameters
@@ -118,17 +121,6 @@ def filter_positions_by_symbol(positions: dict, symbol: str) -> dict:
         logger.error(f'GMXPositionControllerUtils - Failed to filter positions by symbol. Symbol: {symbol}, Error: {e}')
         return None
 
-def get_remaining_collateral_for_position(position: dict) -> float:
-    try: 
-        position_size_usd = float(position['position_size'])
-        position_size_in_tokens = float(position['size_in_tokens']) / 10**18
-        funding_fee_per_size = float(position['funding_fee_amount_per_size'])
-        funding_fee = funding_fee_per_size * position_size_in_tokens
-
-    except Exception as e:
-        logger.error(f'GMXPositionControllerUtils - Failed to calculate remaining collateral for position. Error: {e}')
-        return None
-
 def get_arbitrum_usdc_balance():
     try:
         provider = os.getenv('ARBITRUM_PROVIDER_RPC')
@@ -146,4 +138,50 @@ def get_arbitrum_usdc_balance():
     
     except Exception as e:
         logger.error(f'GMXPositionControllerUtils - Failed to fetch USDC balance for address {ARBITRUM_CONFIG_OBJECT.user_wallet_address}. Error: {e}')
+        return None
+
+def get_claimable_funding_for_symbol(symbol: str) -> dict:
+    try:
+        market = GMXMarketDirectory.get_market_key_for_symbol(symbol)
+        index_token_address = get_index_token_address_for_symbol(symbol)
+        token_decimals = get_decimals_for_symbol(symbol)
+        account = ARBITRUM_CONFIG_OBJECT.user_wallet_address
+        usdc_token_address = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
+
+        claimable_usdc = get_claimable_funding_amount(
+            market,
+            usdc_token_address,
+            account
+        )
+        claimable_usdc = claimable_usdc / 10**6
+
+        claimable_token = get_claimable_funding_amount(
+            market,
+            index_token_address,
+            account
+        )
+        claimable_token = claimable_token / 10**token_decimals
+
+        claimable_amounts_by_token = {
+            symbol: claimable_token,
+            'USDC': claimable_usdc
+        }
+
+        return claimable_amounts_by_token
+
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to fetch claimable funding amounts for symbol {symbol}. Error: {e}')
+        return None
+
+def get_pnl_from_position_object(position: dict) -> float:
+    try:
+        initial_collateral_amount_usd = float(position['inital_collateral_amount_usd'][0])
+        percent_profit = float(position['percent_profit'] / 100)
+        percent_profit = percent_profit * -1
+        pnl_usd = initial_collateral_amount_usd * percent_profit
+
+        return pnl_usd
+    
+    except Exception as e:
+        logger.error(f'GMXPositionControllerUtils - Failed to calculate pnl from position object. Position: {position}. Error: {e}')
         return None

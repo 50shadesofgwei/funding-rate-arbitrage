@@ -5,7 +5,6 @@ from gmx_python_sdk.scripts.v2.get.get import GetData
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.GMX.GMXContractUtils import *
-from TxExecution.GMX.GMXPositionControllerUtils import get_params_object_from_opportunity_dict
 
 class GMXMarketDirectory:
     _markets = {}

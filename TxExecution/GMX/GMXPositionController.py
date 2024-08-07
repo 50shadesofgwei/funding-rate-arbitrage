@@ -10,7 +10,6 @@ from gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 from APICaller.GMX.GMXContractUtils import *
-from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
 set_paths()
 
 
@@ -18,7 +17,7 @@ class GMXPositionController:
     def __init__(self):
         self.config = ARBITRUM_CONFIG_OBJECT
         self.config.set_config(PATH_TO_GMX_CONFIG_FILE)
-        self.leverage = float(os.getenv('TRADE_LEVERAGE'))
+        self.leverage = int(os.getenv('TRADE_LEVERAGE'))
 
     def execute_trade(self, opportunity: dict, is_long: bool, trade_size: float):
         try:
@@ -27,7 +26,8 @@ class GMXPositionController:
             parameters = get_params_object_from_opportunity_dict(
                 opportunity,
                 is_long,
-                trade_size_with_leverage
+                trade_size_with_leverage,
+                self.leverage
             )
             order_parameters = OrderArgumentParser(
                     self.config,
@@ -48,10 +48,10 @@ class GMXPositionController:
                 ),
                 slippage_percent=order_parameters['slippage_percent'],
                 swap_path=order_parameters['swap_path'],
-                debug_mode=True
+                debug_mode=False
             )
 
-            time.sleep(4)
+            time.sleep(10)
             if self.was_position_opened_successfully(
                 symbol,
                 is_long
@@ -66,9 +66,9 @@ class GMXPositionController:
                     return position_object
                 except Exception as ie:
                     logger.error(f"ByBitPositionController - Failed to build position object, despite trade executing successfully for symbol {symbol}. Error: {ie}")
-                    return position_object 
+                    return None 
             else:
-                logger.info("GMXPositionController - Order not filled after 4 seconds.")
+                logger.info("GMXPositionController - Order not filled after 10 seconds.")
                 return None
 
         except Exception as e:
@@ -81,14 +81,11 @@ class GMXPositionController:
             slippage_percent = 0.003
             amount_of_position_to_close = 1
             amount_of_collateral_to_remove = 1
-            market = ''
+            market = GMXMarketDirectory.get_market_key_for_symbol(symbol)
 
-            position = self.get_open_positions()
-            for key, position in position.items():
-                is_long = position['is_long']
-                market = key
-            
-        
+            position = self.get_open_position_for_symbol(symbol)
+            pnl = get_pnl_from_position_object(position)
+            is_long = position['is_long']
             
             position_as_nested_dict = {
                 market: position
@@ -102,7 +99,8 @@ class GMXPositionController:
                 slippage_percent,
                 out_token,
                 amount_of_position_to_close,
-                amount_of_collateral_to_remove)
+                amount_of_collateral_to_remove
+            )
 
             DecreaseOrder(
                 config=self.config,
@@ -123,6 +121,9 @@ class GMXPositionController:
             if not self.was_position_closed_successfully(symbol, is_long):
                 logger.error(f'GMXPositionController - Position not closed after 5 second delay.')
                 return None
+
+            position_close_object = self.build_position_closed_object(symbol, reason, pnl)
+            self.handle_position_closed(position_close_object)
         
         except Exception as e:
             logger.error(f"GMXPositionController - Error closing position for {symbol}. Error: {e}", exc_info=True)
@@ -177,7 +178,14 @@ class GMXPositionController:
         except Exception as e:
             logger.error(f"GMXPositionController - Error checking if position was opened successfully for {symbol}. Error: {e}")
             return False
-
+        
+    def handle_position_closed(self, close_position_details: dict):
+        try:
+            pub.sendMessage(topicName=EventsDirectory.POSITION_CLOSED.value, position_report=close_position_details)
+            return 
+        except Exception as e:
+            logger.error(f"GMXPositionController - Failed to handle position closed with details: {close_position_details}. Error: {e}")
+            return None
 
     def get_open_positions(self) -> dict:
         try:
@@ -233,7 +241,7 @@ class GMXPositionController:
         try:
             symbol = opportunity['symbol']
             side = 'Long' if is_long else 'Short'
-            liquidation_price = self.client.get_liquidation_price()
+            liquidation_price = self.get_liquidation_price()
 
             return {
                 'exchange': 'GMX',
@@ -246,4 +254,26 @@ class GMXPositionController:
         except Exception as e:
             logger.error(f"GMXPositionController - Failed to generate position object for {symbol}. Error: {e}")
             return None
+    
+    def build_position_closed_object(self, symbol: str, reason: str, pnl: float) -> dict:
+        try:
+            claimable_funding = get_claimable_funding_for_symbol(symbol)
+            close_position_details = {
+                'symbol': symbol,
+                'exchange': 'GMX',
+                'pnl': pnl,
+                'accrued_funding': claimable_funding['USDC'],
+                'reason': reason
+            }
 
+        except Exception as e:
+            logger.error(f"GMXPositionController - Failed to handle position closed with details: {close_position_details}. Error: {e}")
+            return None
+    
+    def get_liquidation_price(self, symbol: str) -> float:
+        return 0.0
+
+x = GMXPositionController()
+GMXMarketDirectory.initialize()
+z = get_claimable_funding_for_symbol('AAVE')
+print(z)
