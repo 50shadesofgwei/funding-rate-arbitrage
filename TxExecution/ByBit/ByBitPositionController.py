@@ -1,14 +1,12 @@
-from pybit.unified_trading import HTTP
 from APICaller.ByBit.ByBitUtils import *
 from pubsub import pub
 import os
-import json
 from dotenv import load_dotenv
-import requests
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
-from APICaller.master.MasterUtils import TARGET_TOKENS
 from TxExecution.ByBit.ByBitPositionControllerUtils import *
+from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
+
 
 load_dotenv()
 
@@ -75,29 +73,39 @@ class ByBitPositionController:
         except Exception as e:
             logger.error(f"ByBitPositionController - Failed to close all positions. Error: {e}")
 
-    def close_position(self, symbol: str, reason: str):
+    def close_position(self, symbol: str, reason: str = None):
         try:
             response = self.client.get_positions(
                 category="linear",
-                symbol=symbol
+                symbol=symbol+'USDT'
             )
-            close_order_details = parse_close_order_data_from_position_response(response)
+            cum_realized_pnl = float(response['result']['list'][0]['cumRealisedPnl'])
+            unrealized_pnl = float(response['result']['list'][0]['unrealisedPnl'])
+            total_pnl = cum_realized_pnl + unrealized_pnl
+
+            close_order = parse_close_order_data_from_position_response(response)
             
             close_position_response = self.client.place_order(
                 category="linear",
-                symbol=symbol,
-                side=close_order_details['side'],
+                symbol=symbol+'USDT',
+                side=close_order['side'],
                 orderType="Market",
-                qty=close_order_details['size']
+                qty=close_order['size']
             )
 
             order_id: str = close_position_response['result']['orderId']
+            close_position_details = build_close_position_details(
+                reason,
+                symbol,
+                total_pnl
+            )
 
             time.sleep(2)
             if self._was_trade_executed_successfully(order_id):
                 logger.info(f'ByBitPositionController - Order closed successfully for symbol {symbol}, orderId: {order_id}')
+                self.handle_position_closed(close_position_details)
                 return None
-
+            
         except Exception as e:
             logger.error(f"ByBitPositionController - Failed to close position for symbol {symbol}. Error: {e}")
             return None
@@ -124,6 +132,14 @@ class ByBitPositionController:
     ### READ FUNCTIONS ###
     ######################
 
+    def handle_position_closed(self, close_position_details: dict):
+        try:
+            pub.sendMessage(topicName=EventsDirectory.POSITION_CLOSED.value, position_report=close_position_details)
+            return 
+        except Exception as e:
+            logger.error(f"ByBitPositionController - Failed to handle position closed with details: {close_position_details}. Error: {e}")
+            return None
+
     def get_leverage_factor_for_token(self, symbol: str) -> float:
         try:
             response = self.client.get_positions(category='linear', symbol=symbol)
@@ -136,7 +152,6 @@ class ByBitPositionController:
         except Exception as e:
             logger.error(f"ByBitPositionController - Error retrieving leverage factor for {symbol}. Error: {e}")
             return 0.0
-
 
     def get_available_collateral(self) -> float:
         try:
@@ -183,11 +198,12 @@ class ByBitPositionController:
                     if order_status == 'Filled':
                         return True
                     else:
-                        return False
+                        continue
 
             except Exception as e:
                 logger.error(f"ByBitPositionController - Attempt {attempt + 1} failed to check if trade was executed successfully. Error: {e}")
             
+            time.sleep(1)
             attempt += 1
 
         logger.error(f"ByBitPositionController - All {retries} attempts failed to check if trade was executed successfully for order_id: {order_id}")
@@ -257,3 +273,4 @@ class ByBitPositionController:
         except Exception as e:
             logger.error(f'ByBitPositionController - Error while retrieving qtyStep for symbol {symbol}. Error: {e}')
             return None
+
