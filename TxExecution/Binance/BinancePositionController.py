@@ -200,7 +200,6 @@ class BinancePositionController:
 
     def handle_position_closed(self, close_position_details: dict):
         try:
-            logger.error(f'DEBUGGING: BPC handle_position_closed arg = {close_position_details}')
             pub.sendMessage(topicName=EventsDirectory.POSITION_CLOSED.value, position_report=close_position_details)
             return 
         except Exception as e:

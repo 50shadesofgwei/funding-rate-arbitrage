@@ -75,7 +75,7 @@ class ByBitPositionController:
         except Exception as e:
             logger.error(f"ByBitPositionController - Failed to close all positions. Error: {e}")
 
-    def close_position(self, symbol: str):
+    def close_position(self, symbol: str, reason: str):
         try:
             response = self.client.get_positions(
                 category="linear",
@@ -219,7 +219,7 @@ class ByBitPositionController:
         try:
             response = self.client.get_positions(
                 category='linear',
-                symbol=symbol)
+                symbol=symbol+'USDT')
             positions = response.get('result', {}).get('list', [])
             if not positions:
                 return None

@@ -19,7 +19,8 @@ MIN_FUNDING_FACTOR_PER_SECOND_LIMIT = create_hash_string("MIN_FUNDING_FACTOR_PER
 MAX_FUNDING_FACTOR_PER_SECOND_LIMIT = create_hash_string("MAX_FUNDING_FACTOR_PER_SECOND_LIMIT")
 THRESHOLD_FOR_STABLE_FUNDING = create_hash_string("THRESHOLD_FOR_STABLE_FUNDING")
 THRESHOLD_FOR_DECREASE_FUNDING = create_hash_string("THRESHOLD_FOR_DECREASE_FUNDING")
-SAVED_FUNDING_FACTOR_PER_SECOND = create_hash_string("SAVED_FUNDING_FACTOR_PER_SECOND");
+SAVED_FUNDING_FACTOR_PER_SECOND = create_hash_string("SAVED_FUNDING_FACTOR_PER_SECOND")
+CLAIMABLE_FUNDING_AMOUNT = create_hash_string("CLAIMABLE_FUNDING_AMOUNT") 
 
 OPTIMAL_USAGE_FACTOR = create_hash_string("OPTIMAL_USAGE_FACTOR")
 BASE_BORROWING_FACTOR = create_hash_string("BASE_BORROWING_FACTOR")
@@ -103,6 +104,8 @@ def open_interest_in_tokens_key(market: str, collateral_token: str, is_long: boo
     [OPEN_INTEREST_IN_TOKENS, market, collateral_token, is_long]
   )
 
+def claimableFundingAmountKey(market: str, token: str, account: str):
+  return create_hash(["bytes32", "address", "address", "address"], [CLAIMABLE_FUNDING_AMOUNT, market, token, account])
 
 def claimable_fee_amount_key(market: str, token: str):
     return create_hash(
@@ -355,15 +358,18 @@ def get_borrow_rate_for_market(market: str) -> float:
         logger.error(f'GMXPositionControllerUtils - Failed to call borrow_rate_factor from datastore contract. Error: {e}')
         return None
 
-def get_current_funding_rate_for_market(market: str) -> float:
+def get_claimable_funding_amount(market: str, token: str, account: str) -> float:
     try:
-        current_funding_rate_key_variable = saved_funding_factor_key(market)
-        current_funding_rate_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getInt(current_funding_rate_key_variable)
-        current_funding_rate_factor = current_funding_rate_factor_func.call()
-        current_funding_rate_factor = current_funding_rate_factor / 10**30
+        claimable_funding_amount_key = claimableFundingAmountKey(
+            market,
+            token,
+            account
+        )
+        claimable_funding_amount_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(claimable_funding_amount_key)
+        claimable_funding_amount = claimable_funding_amount_func.call()
         
-        return current_funding_rate_factor
-        
+        return claimable_funding_amount
+    
     except Exception as e:
-        logger.error(f'GMXPositionControllerUtils - Failed to call current_funding_rate_factor from datastore contract. Error: {e}')
+        logger.error(f'GMXPositionControllerUtils - Failed to call claimable funding amount from datastore contract. Error: {e}')
         return None
