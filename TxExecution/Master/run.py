@@ -8,7 +8,7 @@ def run(args):
     SynthetixMarketDirectory.initialize()
     x = MasterPositionController()
     y = TradeLogger()
-    exchanges = ['HMX', 'Synthetix']
+    exchanges = ['GMX', 'ByBit']
     x.close_position_pair(symbol=args.symbol, reason=PositionCloseReason.TEST.value, exchanges=exchanges)
 
 def main():

@@ -216,13 +216,14 @@ class ByBitPositionController:
             order_id = result.get('orderId', None)
             side = 'Long' if is_long else 'Short'
             size = float(truncated_value)
+            size_usd = get_dollar_amount_for_given_asset_amount(symbol, size)
             liquidation_price = self.get_liquidation_price(symbol)
 
             return {
                 'exchange': 'ByBit',
                 'symbol': symbol,
                 'side': side,
-                'size': size,
+                'size': size_usd,
                 'order_id': order_id,
                 'liquidation_price': liquidation_price
             }

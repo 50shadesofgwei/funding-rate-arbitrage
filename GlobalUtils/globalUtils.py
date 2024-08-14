@@ -8,10 +8,10 @@ from GlobalUtils.logger import *
 from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 from APICaller.Binance.binanceUtils import get_binance_client
 from APICaller.HMX.HMXCallerUtils import get_HMX_client
-from APICaller.OKX.okxUtils import get_okx_trading_data_client
-from APICaller.OKX.okxUtils import get_okx_pub_client
-from APICaller.OKX.okxUtils import get_okx_account_client
-from APICaller.OKX.okxUtils import get_okx_trade_client
+# from APICaller.OKX.okxUtils import get_okx_trading_data_client
+# from APICaller.OKX.okxUtils import get_okx_pub_client
+# from APICaller.OKX.okxUtils import get_okx_account_client
+# from APICaller.OKX.okxUtils import get_okx_trade_client
 
 import functools
 import re
