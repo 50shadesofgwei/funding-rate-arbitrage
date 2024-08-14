@@ -102,13 +102,13 @@ def transform_open_position_to_order_parameters(
             "slippage_percent": slippage_percent,
             "swap_path": swap_path
         }
-    except KeyError:
-        raise Exception(
-            "Couldn't find a {} {} for given user".format(
-                market_symbol, direction
-            )
-        )
-
+    except KeyError as ke:
+        logger.error(f"GMXPositionControllerUtils - Couldn't find a {market_symbol} {direction} for wallet address. Error: {ke}", exc_info=True)
+        return None
+    except Exception as e:
+        logger.error(f"GMXPositionControllerUtils - Failed to transform open position to order parameters. Error: {e}", exc_info=True)
+        return None
+        
 def filter_positions_by_symbol(positions: dict, symbol: str) -> dict:
     try:
         filtered_data = {}
@@ -185,3 +185,4 @@ def get_pnl_from_position_object(position: dict) -> float:
     except Exception as e:
         logger.error(f'GMXPositionControllerUtils - Failed to calculate pnl from position object. Position: {position}. Error: {e}')
         return None
+

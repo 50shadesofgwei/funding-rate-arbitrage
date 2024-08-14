@@ -20,7 +20,7 @@ class matchingEngine:
 
             for ex1, ex2 in exchange_pairs:
                 if ex1 == None or ex2 == None:
-                    pass
+                    continue
                 common_symbols = set(rates_by_exchange[ex1].keys()) & set(rates_by_exchange[ex2].keys())
                 for symbol in common_symbols:
                     rate1 = float(rates_by_exchange[ex1][symbol]['funding_rate'])
@@ -61,7 +61,7 @@ class matchingEngine:
             return arbitrage_opportunities
 
         except Exception as e:
-            logger.error(f'MatchingEngine - Error while finding arbitrage opportunities: {e}')
+            logger.error(f'MatchingEngine - Error while finding arbitrage opportunities: {e}', exc_info=True)
             return None
 
     def find_delta_neutral_arbitrage_opportunities(self, funding_rates) -> list:

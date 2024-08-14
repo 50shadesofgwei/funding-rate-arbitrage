@@ -2,6 +2,7 @@ from PositionMonitor.Synthetix.SynthetixPositionMonitor import SynthetixPosition
 from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonitor
 from PositionMonitor.HMX.HMXPositionMonitor import HMXPositionMonitor
 from PositionMonitor.GMX.GMXPositionMonitor import GMXPositionMonitor
+from PositionMonitor.ByBit.ByBitPositionMonitor import ByBitPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
@@ -17,6 +18,7 @@ class MasterPositionMonitor():
         self.binance = BinancePositionMonitor()
         self.hmx = HMXPositionMonitor()
         self.gmx = GMXPositionMonitor()
+        self.bybit = ByBitPositionMonitor()
         self.health_check_thread = None
         self.stop_health_check = threading.Event()
         
@@ -45,6 +47,7 @@ class MasterPositionMonitor():
         is_profitable = self.check_profitability_for_open_positions(exchanges)
         is_delta_within_bounds = self.is_position_delta_within_bounds(exchanges)
 
+        is_funding_velocity_turning = False
         if 'Synthetix' in exchanges:
             is_funding_velocity_turning = self.is_synthetix_funding_turning_against_trade_in_given_time(15)
 
@@ -112,11 +115,13 @@ class MasterPositionMonitor():
                 return False
             elif second_position_is_hedge == True and second_funding_rate > first_funding_rate:
                 return False
+            elif first_position_is_hedge == False and second_position_is_hedge == False:
+                return True
             else:
                 return True
 
         except Exception as e:
-            logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}")
+            logger.error(f"MasterPositionMonitor - Error checking overall profitability for open positions: {e}", exc_info=True)
             return None
 
     def is_position_delta_within_bounds(self, exchanges: list) -> bool:

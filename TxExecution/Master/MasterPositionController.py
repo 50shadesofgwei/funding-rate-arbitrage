@@ -77,39 +77,22 @@ class MasterPositionController:
             logger.error(f"MasterPositionController:execute_trades - Failed to process trades for {symbol}. Error: {e}")
             self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=list(exchanges.values()))
 
-    def close_all_positions(self, reason: str):
-        synthetix_position_report = self.synthetix.close_all_positions()
-        binance_position_report = self.binance.close_all_positions()
-        position_report = {
-            'Synthetix': synthetix_position_report,
-            'Binance': binance_position_report,
-            'close_reason': reason
-        }
-        logger.info(f'MasterPositionController - Closing positions with position report: {position_report}')
-        pub.sendMessage(EventsDirectory.POSITION_CLOSED.value, position_report=position_report)
-
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
-        errors = []
         for exchange_name in exchanges:
             try:
                 close_position_method = getattr(self, exchange_name.lower()).close_position
                 close_position_method(symbol=symbol, reason=reason)
+
             except Exception as e:
-                error_msg = f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}"
-                logger.error(error_msg)
-                errors.append(error_msg)
-        
-        if errors:
-            all_errors = " | ".join(errors)
-            logger.error(f"MasterPositionController - Errors occurred while closing trade pairs: {all_errors}")
-            return None
+                logger.error(f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}")
+                return None
+
         return True
 
 
     def subscribe_to_events(self):
         pub.subscribe(self.execute_trades, EventsDirectory.OPPORTUNITY_FOUND.value)
         pub.subscribe(self.close_position_pair, EventsDirectory.CLOSE_POSITION_PAIR.value)
-        pub.subscribe(self.close_all_positions, EventsDirectory.CLOSE_ALL_POSITIONS.value)
 
     ######################
     ### READ FUNCTIONS ###

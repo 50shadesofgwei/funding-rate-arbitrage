@@ -55,7 +55,7 @@ class TradeLogger:
                 exchange = trade['exchange']
                 symbol = trade['symbol']
                 side = trade['side']
-                size = trade['size_in_asset']
+                size = trade['size']
                 is_hedge = trade['is_hedge']
                 liquidation_price = trade['liquidation_price']
                 self.log_open_trade(strategy_execution_id, exchange, symbol, side, is_hedge, size, liquidation_price, open_time)

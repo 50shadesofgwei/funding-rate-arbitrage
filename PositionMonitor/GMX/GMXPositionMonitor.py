@@ -53,7 +53,7 @@ class GMXPositionMonitor():
     def get_funding_rate(self, position: dict) -> float:
         try:
             symbol = position['symbol']
-            is_long = position['is_long']
+            is_long = True if position['side'] == 'Long' else False
             market = GMXMarketDirectory.get_market_key_for_symbol(symbol)
             oracle_prices = OraclePrices(ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
             open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(
@@ -82,7 +82,7 @@ class GMXPositionMonitor():
                 borrow = borrow_rate['short'][symbol]
                 net = funding - borrow
 
-            return net
+            return float(net)
             
         except Exception as e:
             logger.error(f"GMXPositionMonitor - Error fetching funding rate for symbol {symbol}: {e}", exc_info=True)

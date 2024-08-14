@@ -21,6 +21,9 @@ THRESHOLD_FOR_STABLE_FUNDING = create_hash_string("THRESHOLD_FOR_STABLE_FUNDING"
 THRESHOLD_FOR_DECREASE_FUNDING = create_hash_string("THRESHOLD_FOR_DECREASE_FUNDING")
 SAVED_FUNDING_FACTOR_PER_SECOND = create_hash_string("SAVED_FUNDING_FACTOR_PER_SECOND")
 CLAIMABLE_FUNDING_AMOUNT = create_hash_string("CLAIMABLE_FUNDING_AMOUNT") 
+MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY = create_hash_string(
+    "MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS"
+)
 
 OPTIMAL_USAGE_FACTOR = create_hash_string("OPTIMAL_USAGE_FACTOR")
 BASE_BORROWING_FACTOR = create_hash_string("BASE_BORROWING_FACTOR")
@@ -113,6 +116,12 @@ def claimable_fee_amount_key(market: str, token: str):
         [CLAIMABLE_FEE_AMOUNT, market, token]
     )
 
+def min_collateral():
+    return MIN_COLLATERAL_USD
+
+def max_position_impact_factor_for_liquidations_key(market):
+    return create_hash(["bytes32", "address"],
+        [MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY, market])
 
 def decrease_order_gas_limit_key():
     return DECREASE_ORDER_GAS_LIMIT
