@@ -45,18 +45,19 @@ class matchingEngine:
                         long_exchange, short_exchange = ex1, ex2
                         long_rate, short_rate = rate1, rate2
                         long_exchange_skew, short_exchange_skew = skew1, skew2
-
-                    arbitrage_opportunity = {
-                        'long_exchange': long_exchange,
-                        'short_exchange': short_exchange,
-                        'symbol': symbol,
-                        'long_exchange_funding_rate_8hr': long_rate,
-                        'short_exchange_funding_rate_8hr': short_rate,
-                        'long_exchange_skew_usd': long_exchange_skew,
-                        'short_exchange_skew_usd': short_exchange_skew,
-                        'block_number': block_number
-                    }
-                    arbitrage_opportunities.append(arbitrage_opportunity)
+                    
+                    if long_exchange is not None:
+                        arbitrage_opportunity = {
+                            'long_exchange': long_exchange,
+                            'short_exchange': short_exchange,
+                            'symbol': symbol,
+                            'long_exchange_funding_rate_8hr': long_rate,
+                            'short_exchange_funding_rate_8hr': short_rate,
+                            'long_exchange_skew_usd': long_exchange_skew,
+                            'short_exchange_skew_usd': short_exchange_skew,
+                            'block_number': block_number
+                        }
+                        arbitrage_opportunities.append(arbitrage_opportunity)
 
             return arbitrage_opportunities
 
