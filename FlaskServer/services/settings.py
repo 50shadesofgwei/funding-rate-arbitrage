@@ -5,6 +5,9 @@ from GlobalUtils.globalUtils import \
     set_binance_config, set_hmx_config, set_okx_config, set_synthetix_config, set_bybit_config
 
 from typing import Dict, Any
+from APICaller.master.MasterUtils import get_target_exchanges
+from TxExecution.Master.MasterPositionController import MasterPositionController
+
 
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -58,3 +61,16 @@ def set_exchange_config():
         return jsonify(error), 500
     else:
         return jsonify({"success"}), 200
+
+"""
+    Get Collateral in each Perps Market
+"""
+@settings_blueprint.route('/collateral/<exchange>')
+def get_deployed_collateral(exchange: str):
+    target_exchanges = get_target_exchanges()
+    if exchange in target_exchanges:
+        master_position_caller = MasterPositionController()
+        collateral: float = master_position_caller.get_available_collateral_for_exchange(exchange=exchange)
+        return jsonify(collateral), 200
+    else:
+        return jsonify("Invalid Exchange!"), 400

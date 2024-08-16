@@ -8,14 +8,13 @@ from GlobalUtils.logger import *
 from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
 from APICaller.Binance.binanceUtils import get_binance_client
 from APICaller.HMX.HMXCallerUtils import get_HMX_client
-# from APICaller.OKX.okxUtils import get_okx_trading_data_client
-# from APICaller.OKX.okxUtils import get_okx_pub_client
-# from APICaller.OKX.okxUtils import get_okx_account_client
-# from APICaller.OKX.okxUtils import get_okx_trade_client
+from APICaller.ByBit.ByBitUtils import get_ByBit_client
 
 import functools
 import re
 import time
+import json
+from typing import Tuple
 
 load_dotenv()
 
@@ -24,15 +23,11 @@ NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 BLOCKS_PER_DAY_BASE = 43200
 BLOCKS_PER_HOUR_BASE = 1800
 
-# Global variables to store client instances
-GLOBAL_SYNTHETIX_CLIENT = None
-GLOBAL_BINANCE_CLIENT = None
-GLOBAL_HMX_CLIENT = None
+# TODO: Fix the GLOBAL client initalization
+GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
+GLOBAL_BYBIT_CLIENT = get_ByBit_client()
+GLOBAL_HMX_CLIENT = get_HMX_client()
 
-# GLOBAL_OKX_PUBLIC_CLIENT = get_okx_pub_client()
-# GLOBAL_OKX_TRADING_DATA_CLIENT = get_okx_trading_data_client()
-# GLOBAL_OKX_ACCOUNT_CLIENT = get_okx_account_client()
-# GLOBAL_OKX_TRADE_CLIENT = get_okx_trade_client()
 
 ### Initialize Clients -> prevents double initialization
 def initialize_synthetix_client():

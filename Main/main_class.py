@@ -9,7 +9,7 @@ from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
-from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+# from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
 
 class Main:
@@ -23,13 +23,17 @@ class Main:
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
         SynthetixMarketDirectory.initialize()
-        GMXMarketDirectory.initialize()
+        # GMXMarketDirectory.initialize()
     
     def search_for_opportunities(self):
+        
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
             opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities, is_demo=False)
+            print(funding_rates)
+            print(opportunity)
+            print(opportunities)
             if opportunity is not None:
                 pub.sendMessage(EventsDirectory.OPPORTUNITY_FOUND.value, opportunity=opportunity)
             else:

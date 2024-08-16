@@ -23,6 +23,12 @@ class matchingEngine:
                     continue
                 common_symbols = set(rates_by_exchange[ex1].keys()) & set(rates_by_exchange[ex2].keys())
                 for symbol in common_symbols:
+                    long_exchange = None
+                    short_exchange= None
+                    long_rate = None
+                    short_rate = None
+                    long_exchange_skew = None
+                    short_exchange_skew = None
                     rate1 = float(rates_by_exchange[ex1][symbol]['funding_rate'])
                     rate2 = float(rates_by_exchange[ex2][symbol]['funding_rate'])
                     skew1 = rates_by_exchange[ex1][symbol]['skew_usd']

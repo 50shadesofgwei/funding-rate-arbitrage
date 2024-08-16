@@ -3,7 +3,7 @@ from TxExecution.Synthetix.SynthetixPositionController import SynthetixPositionC
 from TxExecution.HMX.HMXPositionController import HMXPositionController
 from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.OKX.OKXPositionController import OKXPositionController
-from TxExecution.GMX.GMXPositionController import GMXPositionController
+# from TxExecution.GMX.GMXPositionController import GMXPositionController
 
 from TxExecution.Master.MasterPositionControllerUtils import *
 
@@ -16,11 +16,11 @@ from GlobalUtils.globalUtils import *
 class MasterPositionController:
     def __init__(self):
         self.synthetix = SynthetixPositionController()
-        self.binance = BinancePositionController()
+        # self.binance = BinancePositionController()
         self.hmx = HMXPositionController()
         self.bybit = ByBitPositionController()
         # self.okx = OKXPositionController()
-        self.gmx = GMXPositionController()
+        # self.gmx = GMXPositionController()
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -122,6 +122,9 @@ class MasterPositionController:
 
 
     def get_available_collateral_for_exchange(self, exchange: str) -> float:
+        """
+        Gets the `exchange_object` from `self` then calls the `get_available_collateral()` function
+        """
         try:
             exchange_object = getattr(self, exchange.lower(), None)
             if not callable(getattr(exchange_object, 'get_available_collateral', None)):
@@ -207,11 +210,11 @@ class MasterPositionController:
             except Exception as e:
                 logger.error(f'MasterPositionController:is_already_position_open - Error checking OKX position: {e}')
 
-            try:    
-                if is_gmx_target:
-                    is_gmx_position = self.gmx.is_already_position_open()
-            except Exception as e:
-                logger.error(f'MasterPositionController:is_already_position_open - Error checking GMX position: {e}')
+            # try:    
+            #     if is_gmx_target is not None:
+            #         is_gmx_position = self.gmx.is_already_position_open()
+            # except Exception as e:
+            #     logger.error(f'MasterPositionController:is_already_position_open - Error checking GMX position: {e}')
 
             positions_open = [
                 is_synthetix_position,
@@ -219,7 +222,7 @@ class MasterPositionController:
                 is_binance_position,
                 is_bybit_position,
                 # is_okx_position
-                is_gmx_position
+                # is_gmx_position
             ]
 
             if any(positions_open):
