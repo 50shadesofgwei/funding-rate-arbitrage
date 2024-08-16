@@ -13,6 +13,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
+            'project-run-ui = FlaskServer.run:run',
             'project-run = Main.run:run',
             'project-run-demo = Main.run:demo',
             'deploy-collateral-synthetix = TxExecution.Synthetix.run:main',
