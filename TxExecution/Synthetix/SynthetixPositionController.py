@@ -104,21 +104,45 @@ class SynthetixPositionController:
                     return None
 
     def approve_and_deposit_collateral(self, token_address: str, amount: int):
+        """
+            Checks if Synthetix client's SUSD balance is greater than or equal to amount.
+
+            Directly call `_add_collateral` if there is existing sUSD balance.
+
+            If not:
+            - approve spot market to spend collateral
+            - wrap collateral
+            - approve spot market to spend collateral
+            - execute atomic order
+            - approve collateral for perps market proxy
+            - add collateral
+
+            :param str token_address: An instance of the Synthetix class.
+            :param int amount: Collateral to deposit to Perps account 
+
+            :return: void
+        """
         try:
-            market_id = self.client.spot.markets_by_name[f"sUSDC"]["market_id"]
-            wrapped_token = self.client.spot.markets_by_id[market_id]["contract"]
-            self._approve_spot_market_to_spend_collateral(token_address, amount)
-            time.sleep(1)
-            self._wrap_collateral(amount)
-            time.sleep(1)
-            self._approve_spot_market_to_spend_collateral(wrapped_token.address, amount)
-            time.sleep(1)
-            self._execute_atomic_order(amount, 'sell')
-            time.sleep(1)
-            self._approve_collateral_for_perps_market_proxy(amount)
-            time.sleep(1)
-            self._add_collateral(amount)
-            time.sleep(1)
+            susd_balance = self.client.get_susd_balance()
+
+            if susd_balance['balance'] >= amount:
+                self._add_collateral(amount)
+                time.sleep(1)
+            else:
+                market_id = self.client.spot.markets_by_name[f"sUSDC"]["market_id"]
+                wrapped_token = self.client.spot.markets_by_id[market_id]["contract"]
+                self._approve_spot_market_to_spend_collateral(token_address, amount)
+                time.sleep(1)
+                self._wrap_collateral(amount)
+                time.sleep(1)
+                self._approve_spot_market_to_spend_collateral(wrapped_token.address, amount)
+                time.sleep(1)
+                self._execute_atomic_order(amount, 'sell')
+                time.sleep(1)
+                self._approve_collateral_for_perps_market_proxy(amount)
+                time.sleep(1)
+                self._add_collateral(amount)
+                time.sleep(1)
 
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while attempting to add collateral: {e}")
