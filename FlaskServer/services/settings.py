@@ -7,17 +7,34 @@ from GlobalUtils.globalUtils import \
 from typing import Dict, Any
 from APICaller.master.MasterUtils import get_target_exchanges
 from TxExecution.Master.MasterPositionController import MasterPositionController
+import os
 
+# TODO: File-based storage for Version 1
+
+# TODO: Cloud Database storage with wallet integration for Version 2
 
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
+
 @settings_blueprint.route('/get', methods=['GET'])
 def get_settings():
-    bot_settings = get_bot_settings()
-    if (bot_settings is None):
-        return jsonify({"error": "Error getting settings"}), 500
+    """
+    Check if there is an existing `bot_settings.json`:
+    1. If not generates bot_settings file:
+    
+    2. Front-end will do an onboarding experience.
+    """
+    if os.access(path='./bot_settings.json', mode=os.R_OK) \
+    and os.access(path='./bot_settings.json', mode=os.W_OK):
+        bot_settings = get_bot_settings()
+        if (bot_settings is None):
+            return jsonify({"error": "Error getting settings"}), 500
+        else:
+            return jsonify(bot_settings), 200
     else:
-        return jsonify(bot_settings), 200
+        return jsonify('No file found!'), 404
+        # Invoke on-boarding experience to the user
+    
 
 @settings_blueprint.route('/set', methods=['POST'])
 def set_settings():
