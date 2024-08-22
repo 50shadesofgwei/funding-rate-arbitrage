@@ -27,7 +27,7 @@ class MasterCaller:
                 "Synthetix": (self.synthetix, self.target_token_list_by_exchange[0]),
                 # "Binance": (self.binance, self.target_token_list_by_exchange[1]),
                 "ByBit": (self.bybit, self.target_token_list_by_exchange[2]),
-                "HMX": (self.hmx, self.target_token_list_by_exchange[3]),
+                # "HMX": (self.hmx, self.target_token_list_by_exchange[3]),
                 # "GMX": (self.gmx, self.target_token_list_by_exchange[4]),
                 # "OKX": (self.okx, self.target_token_list_by_exchange[5])
             }

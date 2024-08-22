@@ -25,27 +25,6 @@ def clear():
     else:
         return jsonify({"error": "Can't clear logs"}), 500
 
-@log_blueprint.route('/log', methods=['POST'])
-def add_log():
-    data = request.json
-    level = data.get('level', 'info').lower()
-    message = data.get('message', '')
-
-    if level == 'debug':
-        logger.debug(message)
-    elif level == 'info':
-        logger.info(message)
-    elif level == 'warning':
-        logger.warning(message)
-    elif level == 'error':
-        logger.error(message)
-    elif level == 'critical':
-        logger.critical(message)
-    else:
-        return jsonify({'error': 'Invalid log level'}), 400
-    
-    return jsonify({'message': 'Logged'}), 201
-
 @log_blueprint.route('/function_log', methods=['POST'])
 def add_function_log():
     data = request.json

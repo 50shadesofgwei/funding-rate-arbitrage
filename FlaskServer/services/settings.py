@@ -11,10 +11,7 @@ import os
 
 # TODO: File-based storage for Version 1
 
-# TODO: Cloud Database storage with wallet integration for Version 2
-
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
-
 
 @settings_blueprint.route('/get', methods=['GET'])
 def get_settings():
@@ -32,7 +29,7 @@ def get_settings():
         else:
             return jsonify(bot_settings), 200
     else:
-        return jsonify('No file found!'), 404
+        return jsonify('No file found!'), 500
         # Invoke on-boarding experience to the user
     
 
