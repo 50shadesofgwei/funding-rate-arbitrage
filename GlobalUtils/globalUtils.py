@@ -86,6 +86,7 @@ DECIMALS = {
 def get_decimals_for_symbol(symbol):
     return DECIMALS.get(symbol, None)
 
+# TODO: Check whether client is initialized or not before calling the function in MainClass
 def initialise_client() -> Web3:
     try:
         client = Web3(Web3.HTTPProvider(os.getenv('BASE_PROVIDER_RPC')))
@@ -269,19 +270,19 @@ def check_bot_settings(bot_settings: dict) -> bool:
     try:
         settings = bot_settings['settings']
         if (settings['max_allowable_percentage_away_from_liquidation_price'] < 5)  or (settings['max_allowable_percentage_away_from_liquidation_price'] > 30):
-            logger.error("MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE must be between 5 and 30")
+            logger.error("GlobalUtils - MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE must be between 5 and 30")
             return False
         if (settings['trade_leverage'] > 10 ):
-            logger.error("TRADE_LEVERAGE must be greater than 10")
+            logger.error("GlobalUtils - TRADE_LEVERAGE must be greater than 10")
             return False
         if (settings['percentage_capital_per_trade'] < 0 or settings['percentage_capital_per_trade'] > 100):
-            logger.error("PERCENTAGE_CAPITAL_PER_TRADE must be between 0 and 100")
+            logger.error("GlobalUtils - PERCENTAGE_CAPITAL_PER_TRADE must be between 0 and 100")
             return False
         if (settings['default_trade_duration_hours'] < 6 or settings['default_trade_duration_hours'] > 24):
-            logger.error("DEFAULT_TRADE_DURATION_HOURS must be greater than 0")
+            logger.error("GlobalUtils - DEFAULT_TRADE_DURATION_HOURS must be greater than 0")
             return False
         if (settings['default_trade_size_usd'] < 50 or settings['default_trade_size_usd'] > 1_000_000):
-            logger.error("DEFAULT_TRADE_SIZE_USD must be between 50 and 1,000,000")
+            logger.error("GlobalUtils - DEFAULT_TRADE_SIZE_USD must be between 50 and 1,000,000")
             return False
     except KeyError:
         logger.error("KeyError: Check whether all required settings are present")
@@ -441,29 +442,27 @@ def set_env_settings(settings: json) -> bool:
 def set_synthetix_config() -> bool:
     print("synth config")
 
-def set_binance_config(BINANCE_API_KEY, BINANCE_API_SECRET) -> bool:
+def set_binance_config(api_key, api_secret) -> bool:
+    """
+        Sets .env file's `BINANCE_API_KEY` and `BINANCE_API_SECRET`
+    """
+    try:
+        binanceSettings = get_bot_settings["envSettings"]["BinanceSettings"]
+        binanceSettings["apiKey"] = api_key
+        binanceSettings["apiSecret"] = api_secret
+    except Exception as e:
+        logger.error("GlobalUtils - Failed to update binance config.")
+
+def set_bybit_config(api_key, api_secret) -> bool:
     """
     Sets .env file's `BINANCE_API_KEY` and `BINANCE_API_SECRET`
     """
-    print("binance config")
-
-
-def set_bybit_config() -> bool:
-    """
-    Sets .env file's `BINANCE_API_KEY` and `BINANCE_API_SECRET`
-    """
-    print("bybit config")
-    
-
-def set_hmx_config() -> bool:
-    """
-    Communicates with config.yaml file
-    """
-    print("hmx config")
-
-def set_okx_config() -> bool:
-    print("okx config")
-    
+    try:
+        byBit = get_bot_settings["envSettings"]["BinanceSettings"]
+        byBit["apiKey"] = api_key
+        byBit["apiSecret"] = api_secret
+    except Exception as e:
+        logger.error("GlobalUtils - Failed to update ByBit config.")
 
 ### Bot Logs
 def get_app_logs() -> str | bool:
