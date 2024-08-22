@@ -8,11 +8,12 @@ from APICaller.master.MasterUtils import get_all_target_token_lists, get_target_
 from GlobalUtils.logger import *
 
 class MasterCaller:
+    # Initialization based on get_target_exchanges -> Work on this in new branch
     def __init__(self):
         self.synthetix = SynthetixCaller()
         # self.binance = BinanceCaller()
         self.bybit = ByBitCaller()
-        self.hmx = HMXCaller()
+        # self.hmx = HMXCaller()
         # self.gmx = GMXCaller()
         # self.okx = OKXCaller()
         self.target_token_list_by_exchange = get_all_target_token_lists()
