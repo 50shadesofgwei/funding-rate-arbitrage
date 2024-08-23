@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from GlobalUtils.logger import logger, function_logger
+from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import get_app_logs, clear_logs
 
 log_blueprint = Blueprint('log_routes', __name__, url_prefix='/logs')
@@ -25,12 +25,8 @@ def clear():
     else:
         return jsonify({"error": "Can't clear logs"}), 500
 
-@log_blueprint.route('/function_log', methods=['POST'])
-def add_function_log():
-    data = request.json
-    message = data.get('message', '')
-    function_logger.info(message)
-    return jsonify({'message': 'Function log added successfully'}), 201
 
-
-# TODO: Make the log route output a JSON object instead of string
+@log_blueprint.route('/log/<message>', methods=['POST'])
+def log(message):
+    logger.info("FlaskServer.services.log_routes - " + message)
+    return jsonify({"status": "Logged"}), 200

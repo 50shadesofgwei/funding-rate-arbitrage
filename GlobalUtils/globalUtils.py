@@ -18,6 +18,8 @@ from typing import Tuple
 
 load_dotenv()
 
+# app.log file path
+log_path = logger.handlers[0].__dict__["baseFilename"]
 NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 BLOCKS_PER_DAY_BASE = 43200
