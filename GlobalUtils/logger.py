@@ -2,6 +2,7 @@ import logging
 import inspect
 from pubsub import pub
 from functools import wraps
+from flask_socketio import SocketIO, emit
 
 # Setup for the general application logger
 logger = logging.getLogger(__name__)
@@ -53,3 +54,12 @@ def log_function_call(func):
         function_logger.info(f"Exiting {func.__name__} in {file_name}")
         return result
     return wrapper
+
+# Socket IO events
+@sio.event
+def log(data):
+    """Emits log data to the client.
+    Client should listen for 'log' event.
+    Log data should be popped on LogsTable component in front-end.
+    """
+    emit('log', data)
