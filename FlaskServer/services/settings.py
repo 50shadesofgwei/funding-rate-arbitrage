@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request
 from GlobalUtils.logger import logger
+
 from GlobalUtils.globalUtils import \
     set_bot_settings, get_bot_settings, \
-    set_binance_config, set_hmx_config, set_okx_config, set_synthetix_config, set_bybit_config
+    set_binance_config, set_bybit_config
 
 from typing import Dict, Any
 from APICaller.master.MasterUtils import get_target_exchanges
