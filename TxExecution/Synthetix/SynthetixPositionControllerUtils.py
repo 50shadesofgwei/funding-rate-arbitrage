@@ -8,6 +8,8 @@ def parse_trade_data_from_position_details(position_details: dict) -> dict:
         symbol = position_details['position']['symbol']
         asset_price = get_price_from_pyth(symbol)
         liquidation_price = calculate_liquidation_price(position_details, asset_price)
+        if liquidation_price is None:
+            liquidation_price = 0
 
         trade_data = {
             "exchange": "Synthetix",
