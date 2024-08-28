@@ -29,6 +29,3 @@ def create_app(test_config=None):
         app.config.update(test_config)
     
     return socketio, app
-
-# TODO: Write Route Unit Tests
-    # - read advanced flask testing docs
