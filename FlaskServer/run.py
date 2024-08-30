@@ -1,5 +1,4 @@
 from FlaskServer import create_app
-from flask_socketio import SocketIO, emit
 import logging
 from GlobalUtils.logger import logger, app_formatter, setup_topics
 from pubsub import pub
