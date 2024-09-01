@@ -212,17 +212,5 @@ class TradeLogger:
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving all trades. Error: {e}")
             return []
-        
-    def get_schema(self):
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
-                query = '''SELECT sql FROM sqlite_schema WHERE name = 'trade_log';'''
-                cursor.execute(query)
-                schema = cursor.fetchall()
-                logger.info("TradeLogger - Retrieved 'trade_log' schema")
-                return schema
-        except sqlite3.Error as e:
-            logger.error(f"TradeLogger - Error retrieving 'trade_log' schema. Error: {e}")
-            return []
+
         

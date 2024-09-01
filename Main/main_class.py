@@ -23,10 +23,11 @@ class Main:
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
         SynthetixMarketDirectory.initialize()
-        # GMXMarketDirectory.initialize()
+        pub.subscribe(self.stop_bot, "stop_bot")
+        self.running = True
+        # self.pause = false    TODO: Implement Stack queue pause mechanism
     
     def search_for_opportunities(self):
-        
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
@@ -41,11 +42,19 @@ class Main:
             
     def start_search(self):
         try:
-            while True:
+            while self.running:
                 if not self.position_controller.is_already_position_open():
                     self.search_for_opportunities()
                 time.sleep(30) 
+            logger.info("MainClass - Bot stopped.")
         
         except Exception as e:
             logger.error(f"MainClass - An error occurred during start_search: {e}", exc_info=True)
+    
+    def stop_bot(self):
+        logger.info("MainClass - Recieved stop_bot signal.")
+        self.running = False
+        pub.sendMessage("bot_stopped")
+        logger.info("MainClass - Bot Stopped")
+        
 
