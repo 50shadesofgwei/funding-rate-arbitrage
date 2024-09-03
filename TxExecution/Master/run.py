@@ -1,13 +1,13 @@
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
-# from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 import argparse
 
 def run(args):
     SynthetixMarketDirectory.initialize()
-    # GMXMarketDirectory.initialize()
+    GMXMarketDirectory.initialize()
     x = MasterPositionController()
     y = TradeLogger()
     exchanges = ['GMX', 'ByBit']

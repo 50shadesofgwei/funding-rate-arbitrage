@@ -8,9 +8,10 @@ from PositionMonitor.Master.MasterPositionMonitor import MasterPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
-# from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+# from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
+
 
 class Main:
     def __init__(self):
@@ -22,10 +23,12 @@ class Main:
         self.position_controller.subscribe_to_events()
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
-        SynthetixMarketDirectory.initialize()
+        # SynthetixMarketDirectory.initialize()
+        GMXMarketDirectory.initialize()
         pub.subscribe(self.stop_bot, "stop_bot")
         self.running = True
         # self.pause = false    TODO: Implement Stack queue pause mechanism
+        self.queue = []
     
     def search_for_opportunities(self):
         try:
@@ -43,13 +46,19 @@ class Main:
     def start_search(self):
         try:
             while self.running:
+                if len(self.queue) > 0:
+                    # close a position / open position (from the opportunity.json)
+                    pass    
                 if not self.position_controller.is_already_position_open():
                     self.search_for_opportunities()
                 time.sleep(30) 
             logger.info("MainClass - Bot stopped.")
+            
         
         except Exception as e:
             logger.error(f"MainClass - An error occurred during start_search: {e}", exc_info=True)
+            if self.running:
+                pub.sendMessage("stop_bot")
     
     def stop_bot(self):
         logger.info("MainClass - Recieved stop_bot signal.")

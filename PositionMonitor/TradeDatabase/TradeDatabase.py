@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime
 from GlobalUtils.logger import *
-from GlobalUtils.globalUtils import *
+from GlobalUtils.globalUtils import EventsDirectory
 from pubsub import pub
 import uuid
 
