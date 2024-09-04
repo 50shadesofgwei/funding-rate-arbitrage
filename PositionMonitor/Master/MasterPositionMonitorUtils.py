@@ -1,6 +1,7 @@
 from enum import Enum
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
+from APICaller.Synthetix.SynthetixUtils import GLOBAL_SYNTHETIX_CLIENT
 import sqlite3
 
 class PositionCloseReason(Enum):
@@ -39,7 +40,7 @@ def get_percentage_away_from_liquidation_price(position: dict) -> float:
         symbol = position.get('symbol', 'Unknown Symbol')
         liquidation_price = float(position['liquidation_price'])
         normalized_symbol = normalize_symbol(symbol)
-        asset_price = get_price_from_pyth(normalized_symbol)
+        asset_price = get_price_from_pyth(normalized_symbol, GLOBAL_SYNTHETIX_CLIENT)
 
         is_long = position['side'].lower() == 'long'
         differential = asset_price - liquidation_price if is_long else liquidation_price - asset_price

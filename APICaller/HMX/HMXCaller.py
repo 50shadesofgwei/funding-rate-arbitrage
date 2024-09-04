@@ -1,9 +1,10 @@
 from GlobalUtils.globalUtils import *
+from APICaller.HMX.HMXCallerUtils import get_HMX_client
 from GlobalUtils.logger import logger
 
 class HMXCaller:
     def __init__(self):
-        self.client = GLOBAL_HMX_CLIENT
+        self.client = get_HMX_client()
 
     def get_funding_rates(self, symbols: list) -> dict:
         if not symbols:

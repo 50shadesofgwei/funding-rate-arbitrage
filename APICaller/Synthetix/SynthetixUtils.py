@@ -29,4 +29,6 @@ def get_synthetix_client() -> Synthetix:
     )
     return synthetix_client
 
+GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
+
 

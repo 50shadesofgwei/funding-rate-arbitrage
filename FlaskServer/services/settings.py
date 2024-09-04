@@ -2,24 +2,17 @@ from flask import Blueprint, jsonify, request
 from GlobalUtils.logger import logger
 from typing import Dict, Any
 from APICaller.master.MasterUtils import get_target_exchanges
-from TxExecution.Master.MasterPositionController import MasterPositionController
 import os, yaml
-from dotenv import set_key, find_dotenv, get_key
+from dotenv import set_key, find_dotenv, get_key, dotenv_values
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
 
 @settings_blueprint.route('/find', methods=['GET'])
 def find_settings():
-    if os.access(path='./bot_settings.json', mode=os.R_OK) \
-    and os.access(path='./bot_settings.json', mode=os.W_OK):
-        bot_settings = get_bot_settings()
-        if (bot_settings is None):
-            return jsonify({"error": "Error getting settings"}), 500
-        else:
-            return jsonify(bot_settings), 200
+    if is_env_valid():
+        return jsonify("valid"), 200
     else:
-        return jsonify('No file found!'), 404
-    
+        return jsonify({"error": "Error getting settings"}), 404
     
 
 @settings_blueprint.route('/bot-settings/get', methods=['GET'])
@@ -103,22 +96,25 @@ def set_wallet_settings():
     else:
         return jsonify({"error": "Invalid Request"}), 400
 
-@settings_blueprint.route('/collateral/<exchange>')
-def get_deployed_collateral(exchange: str):
-    """
-        Get Collateral in each Perps Market
-    """
-    target_exchanges = get_target_exchanges()
-    if exchange in target_exchanges:
-        master_position_caller = MasterPositionController()
-        collateral: float = master_position_caller.get_available_collateral_for_exchange(exchange=exchange)
-        return jsonify(collateral), 200
-    else:
-        return jsonify("Invalid Exchange!"), 400
-    
+
 ####################
 #  Settings f(x)   #
 ####################
+def is_env_valid() -> bool:
+    try:
+        if os.access(path='./.env', mode=os.R_OK) \
+        and os.access(path='./.env', mode=os.W_OK):
+            env_settings = dotenv_values('.env')
+            if _check_wallet_settings(env_settings):
+                return True
+            else:
+                return False
+        else:
+            return False
+    except Exception as e:
+        logger.error(f"Error reading .env file: {e}")
+        return False
+
 def _check_bot_settings(bot_settings: dict) -> bool: # TODO: Fix
     try:
         settings = bot_settings['settings']
@@ -154,9 +150,15 @@ def _check_exchange_settings(exchange_settings: dict) -> bool: # TODO: Fix
         return False
     return True
 
-def _check_wallet_settings(wallet_settings: dict) -> bool: # TODO: Fix
+def _check_wallet_settings(wallet_settings: dict) -> bool: # TODO: Fix make tests better
     try:
         if len(wallet_settings["wallet_address"]) < 10 or len(wallet_settings["wallet_private_key"]) < 10:
+            return False
+        if len(wallet_settings["base_provider_rpc"]) < 10 or len(wallet_settings["arbitrum_provider_rpc"]) < 10:
+            return False
+        if len(wallet_settings["chain_id_base"]) < 1:
+            return False
+        if len(wallet_settings["chain_id_arbitrum"]) < 1:
             return False
     except Exception as e:
         logger.error(f"Error checking wallet settings: {e}")
@@ -190,3 +192,4 @@ def _create_gmx_config_file():
     }
     with open('config.yaml', 'w') as file:
         yaml.dump(yaml_config, file)
+

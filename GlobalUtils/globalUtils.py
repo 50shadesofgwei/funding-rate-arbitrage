@@ -23,27 +23,6 @@ BLOCKS_PER_DAY_BASE = 43200
 BLOCKS_PER_HOUR_BASE = 1800
 
 
-### Initialize Clients -> prevents double initialization
-def initialize_synthetix_client():
-    global GLOBAL_SYNTHETIX_CLIENT
-    if GLOBAL_SYNTHETIX_CLIENT is None:
-        GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
-
-def initialize_binance_client():
-    global GLOBAL_BINANCE_CLIENT
-    if GLOBAL_BINANCE_CLIENT is None:
-        GLOBAL_BINANCE_CLIENT = get_binance_client()
-
-def initialize_HMX_client():
-    global GLOBAL_HMX_CLIENT
-    if GLOBAL_HMX_CLIENT is None:
-        GLOBAL_HMX_CLIENT = get_HMX_client()
-
-def initialize_exchange_clients():
-    initialize_binance_client()
-    initialize_HMX_client()
-    initialize_synthetix_client()
-
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_all_positions"
     CLOSE_POSITION_PAIR = "close_position_pair"
@@ -101,9 +80,9 @@ def get_gas_price() -> float:
             return None
     return 0.0
 
-def get_price_from_pyth(symbol: str):
+def get_price_from_pyth(symbol: str, pyth_client):
     try:
-        response = GLOBAL_SYNTHETIX_CLIENT.pyth.get_price_from_symbols([symbol])
+        response = pyth_client.pyth.get_price_from_symbols([symbol])
         
         feed_id = next(iter(response['meta']))
         meta_data = response['meta'].get(feed_id, {})
@@ -120,10 +99,10 @@ def get_price_from_pyth(symbol: str):
         return None
 
 
-def calculate_transaction_cost_usd(total_gas: int) -> float:
+def calculate_transaction_cost_usd(total_gas: int, pyth_client) -> float:
     try:
         gas_price_gwei = get_gas_price()
-        eth_price_usd = get_price_from_pyth('ETH')
+        eth_price_usd = get_price_from_pyth('ETH', pyth_client)
         gas_cost_eth = (gas_price_gwei * total_gas) / Decimal('1e9')
         transaction_cost_usd = float(gas_cost_eth) * eth_price_usd
         return transaction_cost_usd
@@ -131,18 +110,18 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
         logger.error(f"GlobalUtils - Error calculating transaction cost: {e}")
     return 0.0
 
-def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
+def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float, pyth_client) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        asset_price = get_price_from_pyth(asset, pyth_client)
         asset_amount = dollar_amount / asset_price
         return asset_amount
     except ZeroDivisionError:
         logger.error(f"GlobalUtils - Error calculating asset amount for {asset}: Price is zero")
     return 0.0
 
-def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
+def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float, pyth_client) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        asset_price = get_price_from_pyth(asset, pyth_client)
         dollar_amount = asset_amount * asset_price
         return dollar_amount
     except Exception as e:
@@ -252,13 +231,6 @@ def deco_retry(retry: int = 5, retry_sleep: int = 3):
         return wrapper
 
     return deco_func(retry) if callable(retry) else deco_func
-
-###############################################################
-#                                                             #
-#  Getter and Setter Functions for files in Parent Directory  #
-#                                                             #
-###############################################################
-FLASK_APP_SECRET_KEY = os.getenv('FLASK_APP_SECRET_KEY')
 
 
 ### Bot Logs

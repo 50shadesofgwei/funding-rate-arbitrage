@@ -202,11 +202,11 @@ class MasterPositionController:
             except Exception as e:
                 logger.error(f'MasterPositionController:is_already_position_open - Error checking OKX position: {e}')
 
-            # try:    
-            #     if is_gmx_target is not None:
-            #         is_gmx_position = self.gmx.is_already_position_open()
-            # except Exception as e:
-            #     logger.error(f'MasterPositionController:is_already_position_open - Error checking GMX position: {e}')
+            try:    
+                if is_gmx_target is not None:
+                    is_gmx_position = self.gmx.is_already_position_open()
+            except Exception as e:
+                logger.error(f'MasterPositionController:is_already_position_open - Error checking GMX position: {e}')
 
             positions_open = [
                 is_synthetix_position,
@@ -214,7 +214,7 @@ class MasterPositionController:
                 is_binance_position,
                 is_bybit_position,
                 # is_okx_position
-                # is_gmx_position
+                is_gmx_position
             ]
 
             if any(positions_open):
