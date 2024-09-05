@@ -13,7 +13,7 @@ import time
 
 class MasterPositionMonitor():
     def __init__(self):
-        # self.synthetix = SynthetixPositionMonitor()
+        self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
         self.gmx = GMXPositionMonitor()
         self.bybit = ByBitPositionMonitor()

@@ -2,7 +2,6 @@ from synthetix import *
 from APICaller.Synthetix.SynthetixUtils import *
 from GlobalUtils.logger import *
 
-
 class SynthetixCaller:
     def __init__(self):
         self.client = GLOBAL_SYNTHETIX_CLIENT

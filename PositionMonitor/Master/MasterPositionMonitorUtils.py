@@ -42,6 +42,7 @@ def get_percentage_away_from_liquidation_price(position: dict) -> float:
         normalized_symbol = normalize_symbol(symbol)
         asset_price = get_price_from_pyth(normalized_symbol, GLOBAL_SYNTHETIX_CLIENT)
 
+
         is_long = position['side'].lower() == 'long'
         differential = asset_price - liquidation_price if is_long else liquidation_price - asset_price
 

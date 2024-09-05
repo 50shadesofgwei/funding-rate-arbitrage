@@ -114,9 +114,6 @@ class MasterPositionController:
 
 
     def get_available_collateral_for_exchange(self, exchange: str) -> float:
-        """
-        Gets the `exchange_object` from `self` then calls the `get_available_collateral()` function
-        """
         try:
             exchange_object = getattr(self, exchange.lower(), None)
             if not callable(getattr(exchange_object, 'get_available_collateral', None)):

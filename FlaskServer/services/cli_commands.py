@@ -19,7 +19,6 @@ def stop():
     '''
         If bot is running transmit signal to stop the bot
     '''
-    # TODO: Check bot-status from database
     pub.sendMessage("stop_bot")
     return jsonify({"status": "Signal transmitted"}), 200
 

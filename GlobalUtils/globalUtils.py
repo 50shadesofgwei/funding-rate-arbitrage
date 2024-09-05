@@ -6,6 +6,10 @@ from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
 
+import functools
+import re
+import time
+
 
 import functools
 import re
@@ -57,6 +61,7 @@ DECIMALS = {
 
 def get_decimals_for_symbol(symbol):
     return DECIMALS.get(symbol, None)
+
 
 # TODO: Check whether client is initialized or not before calling the function in MainClass
 def initialise_client() -> Web3:

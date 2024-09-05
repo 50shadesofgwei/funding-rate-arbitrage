@@ -216,7 +216,6 @@ class ByBitPositionController:
             order_id = result.get('orderId', None)
             side = 'Long' if is_long else 'Short'
             size = float(truncated_value)
-
             liquidation_price = self.get_liquidation_price(symbol)
 
             return {

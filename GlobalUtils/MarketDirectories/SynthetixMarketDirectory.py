@@ -2,7 +2,10 @@ from web3 import *
 from dotenv import load_dotenv
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
+<<<<<<< HEAD
 from APICaller.Synthetix.SynthetixUtils import GLOBAL_SYNTHETIX_CLIENT
+=======
+>>>>>>> cf7ca7ede36799f280a76d1e99f339ee871bc50f
 import json
 
 load_dotenv()

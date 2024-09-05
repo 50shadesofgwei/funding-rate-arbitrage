@@ -8,10 +8,9 @@ from PositionMonitor.Master.MasterPositionMonitor import MasterPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
-# from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
-
 
 class Main:
     def __init__(self):
@@ -23,12 +22,8 @@ class Main:
         self.position_controller.subscribe_to_events()
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
-        # SynthetixMarketDirectory.initialize()
+        SynthetixMarketDirectory.initialize()
         GMXMarketDirectory.initialize()
-        pub.subscribe(self.stop_bot, "stop_bot")
-        self.running = True
-        # self.pause = false    TODO: Implement Stack queue pause mechanism
-        self.queue = []
     
     def search_for_opportunities(self):
         try:
