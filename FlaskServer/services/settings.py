@@ -4,6 +4,8 @@ from typing import Dict, Any
 from APICaller.master.MasterUtils import get_target_exchanges
 import os, yaml
 from dotenv import set_key, find_dotenv, get_key, dotenv_values
+import json
+
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
 
@@ -36,36 +38,6 @@ def get_bot_settings(): # TODO: Fix
         logger.error(f"Error getting settings: {e}")
         return None
 
-@settings_blueprint.route('/bot-settings/set', methods=['POST']) # TODO: Fix
-def set_bot_settings(body):
-    try:
-        if _check_bot_settings(body):
-            for key, value in body.items():
-                set_key(find_dotenv(), str(key).upper(), value)
-            return jsonify({"success": "Settings updated"}), 200
-    except Exception as e:
-        logger.error(f"Error setting settings: {e}")
-        return False
-    
-@settings_blueprint.route('/exchange-settings/set', methods=['POST'])
-def set_exchange_settings(): # TODO: Fix
-    try:
-        data: Dict[str, Any] = request.get_json()
-        if not data:
-            return jsonify({"error": "Invalid Request bad body"}), 400
-        if "exchange" in data and "settings" in data:
-            exchange = data["exchange"]
-            settings = data["settings"]
-            if _check_exchange_settings(settings):
-                for key, value in settings.items():
-                    set_key(find_dotenv(), key, value)
-                return jsonify({"success": "Settings updated"}), 200
-            else:
-                return jsonify({"error": "Invalid settings"}), 400
-        else:
-            return jsonify({"error": "Invalid Request"}), 400
-    except Exception as error:
-        return jsonify(error), 500
 
 @settings_blueprint.route('/wallet-settings/get', methods=['GET'])
 def get_wallet_settings(): # TODO: Fix
@@ -79,24 +51,79 @@ def get_wallet_settings(): # TODO: Fix
     wallet_settings['chain_id_base'] = get_key(find_dotenv(), "CHAIN_ID_BASE")
     return jsonify(wallet_settings), 200
 
+@settings_blueprint.route('/complete-onboarding', methods=['POST'])
+def complete_onboarding():
+    try:
+        data: Dict[str, Any] = request.get_json()
+        if not data:
+            return jsonify({"error": "Invalid Request: bad body"}), 400
+        
+        # Validate the structure of the incoming data
+        if not all(key in data for key in ['walletSettings', 'exchangeSettings', 'botSettings']):
+            return jsonify({"error": "Invalid Request: missing required settings"}), 400
+
+        # Set Wallet Settings
+        wallet_result = set_wallet_settings(data['walletSettings'])
+        if wallet_result['status'] != 'success':
+            return jsonify(wallet_result), 400
+
+        # Set Exchange Settings
+        exchange_result = set_exchange_settings(data['exchangeSettings'])[0].json()
+        if exchange_result['status'] != 'success':
+            return jsonify(exchange_result), 400
+
+        # Set Bot Settings
+        bot_result = set_bot_settings(data['botSettings'])[0].json()
+        if bot_result['status'] != 'success':
+            return jsonify(bot_result), 400
+
+        # If all settings were successfully updated
+        return jsonify({
+            "status": "success",
+            "message": "Onboarding completed successfully",
+            "wallet": wallet_result['message'],
+            "exchange": exchange_result['message'],
+            "bot": bot_result['message']
+        }), 200
+
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500
+
 @settings_blueprint.route('/wallet-settings/set', methods=['POST'])
-def set_wallet_settings():
-    """
-    Set Wallet Settings
-    """
-    data: Dict[str, Any] = request.get_json()
-    if not data:
-        return jsonify({"error": "Invalid Request bad body"}), 400
-    if _check_wallet_settings(data):
-        address = data["wallet_address"]
-        private_key = data["private_key"]
-        set_key(find_dotenv(), "ADDRESS", address)
-        set_key(find_dotenv(), "PRIVATE_KEY", private_key)
-        return jsonify({"success": "Wallet Settings updated"}), 200
-    else:
-        return jsonify({"error": "Invalid Request"}), 400
+def set_wallet_settings_route():
+    try:
+        settings = request.json
+        set_wallet_settings(settings)
+        return jsonify({"message": "Wallet settings updated successfully"}), 200
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500
 
 
+@settings_blueprint.route('/exchange-settings/set', methods=['POST'])
+def set_exchange_settings_route():
+    try:
+        settings = request.json
+        response = set_exchange_settings(settings)
+
+        if response['status'] == 'success':
+            return jsonify({"message": "Exchange settings updated successfully"}), 200
+        else:
+            return jsonify(response), 400
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500
+
+@settings_blueprint.route('/bot-settings/set', methods=['POST'])
+def set_bot_settings_route():
+    try:
+        settings = request.json
+        response = set_bot_settings(settings)
+
+        if response['status'] == 'success':
+            return jsonify({"message": "Bot settings updated successfully"}), 200
+        else:
+            return jsonify(response), 400
+    except Exception as error:
+        return jsonify({"error": str(error)}), 500
 ####################
 #  Settings f(x)   #
 ####################
@@ -114,6 +141,7 @@ def is_env_valid() -> bool:
     except Exception as e:
         logger.error(f"Error reading .env file: {e}")
         return False
+
 
 def _check_bot_settings(bot_settings: dict) -> bool: # TODO: Fix
     try:
@@ -193,3 +221,85 @@ def _create_gmx_config_file():
     with open('config.yaml', 'w') as file:
         yaml.dump(yaml_config, file)
 
+def set_wallet_settings(data: Dict[str, Any]):
+    try:
+        data: Dict[str, Any] = request.get_json()
+        if not data or not isinstance(data, dict):
+            return json.loads({"error": "Invalid request body"})
+
+        # Validate required fields
+        required_fields = ['address', 'arbitrum_rpc', 'network']
+        if not all(field in data for field in required_fields):
+            return json.loads({"error": "Missing required fields"})
+
+        # Update .env file
+        set_key('.env', 'WALLET_ADDRESS', data['address'])
+        set_key('.env', 'ARBITRUM_RPC', data['arbitrum_rpc'])
+        set_key('.env', 'NETWORK', str(data['network']))
+
+        return json.loads({
+            "status": "success",
+            "message": "Wallet settings updated successfully"
+        })
+
+    except Exception as error:
+        return json.loads({"error": str(error)})
+
+def set_exchange_settings(data: Dict[str, Any]):
+    try:
+        data: Dict[str, Any] = request.get_json()
+        if not data or not isinstance(data, dict):
+            return json.loads({"error": "Invalid request body"})
+
+        # Validate required fields
+        required_exchanges = ['bybit', 'binance']
+        for exchange in required_exchanges:
+            if exchange not in data:
+                return json.loads({"error": f"Missing settings for {exchange}"})
+            if not all(key in data[exchange] for key in ['apiKey', 'apiSecret', 'enabled']):
+                return json.loads({"error": f"Invalid settings for {exchange}"})
+
+        # Update .env file
+        for exchange in required_exchanges:
+            set_key('.env', f'{exchange.upper()}_API_KEY', data[exchange]['apiKey'])
+            set_key('.env', f'{exchange.upper()}_API_SECRET', data[exchange]['apiSecret'])
+            set_key('.env', f'{exchange.upper()}_ENABLED', str(data[exchange]['enabled']).lower())
+
+        return json.loads({
+            "status": "success",
+            "message": "Exchange settings updated successfully"
+        })
+
+    except Exception as error:
+        return json.loads({"error": str(error)}), 500
+
+def set_bot_settings(data: Dict[str, Any]):
+    try:
+        data: Dict[str, Any] = request.get_json()
+        if not data or not isinstance(data, dict):
+            return json.loads({"error": "Invalid request body"})
+
+        # Validate required fields
+        required_fields = [
+            'max_allowable_percentage_away_from_liquidation_price',
+            'trade_leverage',
+            'percentage_capital_per_trade',
+            'default_trade_duration_hours',
+            'default_trade_size_usd'
+        ]
+        if not all(field in data for field in required_fields):
+            return json.loads({"error": "Missing required fields"})
+        if not _check_bot_settings(data):
+            return json.loads({"error": "Invalid bot settings check upper and lower bounds"})
+        # Update .env file
+        for field in required_fields:
+            env_key = field.upper()
+            set_key('.env', env_key, str(data[field]))
+
+        return json.loads({
+            "status": "success",
+            "message": "Bot settings updated successfully"
+        })
+
+    except Exception as error:
+        return json({"error": str(error)})

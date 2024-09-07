@@ -12,8 +12,8 @@ load_dotenv()
 # Function will be for setting up configurations for the Flask app
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}) # TODO: Learn more about CORS 
-    socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
+    CORS(app, resources={r"/*": {"origins": "https://urchin-app-mwigp.ondigitalocean.app"}}) # TODO: Learn more about CORS 
+    socketio = SocketIO(app, cors_allowed_origins="https://urchin-app-mwigp.ondigitalocean.app")
     
     app.register_blueprint(settings.settings_blueprint)
 
