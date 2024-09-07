@@ -3,7 +3,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 import os
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 from FlaskServer.services import settings
 
 
@@ -12,7 +12,7 @@ load_dotenv()
 # Function will be for setting up configurations for the Flask app
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    CORS(app, resources={r"/*": {"origins": "https://urchin-app-mwigp.ondigitalocean.app"}}) # TODO: Learn more about CORS 
+    CORS(app, resources={r"/*": {"origins": "https://urchin-app-mwigp.ondigitalocean.app"}})
     socketio = SocketIO(app, cors_allowed_origins="https://urchin-app-mwigp.ondigitalocean.app")
     
     app.register_blueprint(settings.settings_blueprint)
