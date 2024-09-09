@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime
 from GlobalUtils.logger import *
-from GlobalUtils.globalUtils import *
+from GlobalUtils.globalUtils import EventsDirectory
 from pubsub import pub
 import uuid
 
@@ -55,7 +55,7 @@ class TradeLogger:
                 exchange = trade['exchange']
                 symbol = trade['symbol']
                 side = trade['side']
-                size = trade['size']
+                size = trade['size_in_asset']
                 is_hedge = trade['is_hedge']
                 liquidation_price = trade['liquidation_price']
                 self.log_open_trade(strategy_execution_id, exchange, symbol, side, is_hedge, size, liquidation_price, open_time)
@@ -207,23 +207,9 @@ class TradeLogger:
                 cursor.execute(query)
                 positions = cursor.fetchall()
                 logger.info("TradeLogger - Retrieved all trades.")
-                print(f"Position: {positions}")
 
                 return positions
         except sqlite3.Error as e:
             logger.error(f"TradeLogger - Error retrieving all trades. Error: {e}")
             return []
-        
-    def get_schema(self):
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
-                query = '''SELECT sql FROM sqlite_schema WHERE name = 'trade_log';'''
-                cursor.execute(query)
-                schema = cursor.fetchall()
-                logger.info("TradeLogger - Retrieved 'trade_log' schema")
-                return schema
-        except sqlite3.Error as e:
-            logger.error(f"TradeLogger - Error retrieving 'trade_log' schema. Error: {e}")
-            return []
-        
+

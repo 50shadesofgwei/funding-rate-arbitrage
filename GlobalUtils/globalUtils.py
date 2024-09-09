@@ -5,16 +5,18 @@ import requests
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
-from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
-from APICaller.Binance.binanceUtils import get_binance_client
-from APICaller.HMX.HMXCallerUtils import get_HMX_client
-from APICaller.ByBit.ByBitUtils import get_ByBit_client
 
 import functools
 import re
 import time
 import json
 from typing import Tuple
+
+
+import functools
+import re
+import time
+
 
 load_dotenv()
 
@@ -25,32 +27,6 @@ NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 BLOCKS_PER_DAY_BASE = 43200
 BLOCKS_PER_HOUR_BASE = 1800
 
-# TODO: Fix the GLOBAL client initalization
-GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
-GLOBAL_BYBIT_CLIENT = get_ByBit_client()
-GLOBAL_HMX_CLIENT = get_HMX_client()
-
-
-### Initialize Clients -> prevents double initialization
-def initialize_synthetix_client():
-    global GLOBAL_SYNTHETIX_CLIENT
-    if GLOBAL_SYNTHETIX_CLIENT is None:
-        GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
-
-def initialize_binance_client():
-    global GLOBAL_BINANCE_CLIENT
-    if GLOBAL_BINANCE_CLIENT is None:
-        GLOBAL_BINANCE_CLIENT = get_binance_client()
-
-def initialize_HMX_client():
-    global GLOBAL_HMX_CLIENT
-    if GLOBAL_HMX_CLIENT is None:
-        GLOBAL_HMX_CLIENT = get_HMX_client()
-
-def initialize_exchange_clients():
-    initialize_binance_client()
-    initialize_HMX_client()
-    initialize_synthetix_client()
 
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_all_positions"
@@ -88,6 +64,7 @@ DECIMALS = {
 def get_decimals_for_symbol(symbol):
     return DECIMALS.get(symbol, None)
 
+
 # TODO: Check whether client is initialized or not before calling the function in MainClass
 def initialise_client() -> Web3:
     try:
@@ -109,9 +86,9 @@ def get_gas_price() -> float:
             return None
     return 0.0
 
-def get_price_from_pyth(symbol: str):
+def get_price_from_pyth(symbol: str, pyth_client):
     try:
-        response = GLOBAL_SYNTHETIX_CLIENT.pyth.get_price_from_symbols([symbol])
+        response = pyth_client.pyth.get_price_from_symbols([symbol])
         
         feed_id = next(iter(response['meta']))
         meta_data = response['meta'].get(feed_id, {})
@@ -128,10 +105,10 @@ def get_price_from_pyth(symbol: str):
         return None
 
 
-def calculate_transaction_cost_usd(total_gas: int) -> float:
+def calculate_transaction_cost_usd(total_gas: int, pyth_client) -> float:
     try:
         gas_price_gwei = get_gas_price()
-        eth_price_usd = get_price_from_pyth('ETH')
+        eth_price_usd = get_price_from_pyth('ETH', pyth_client)
         gas_cost_eth = (gas_price_gwei * total_gas) / Decimal('1e9')
         transaction_cost_usd = float(gas_cost_eth) * eth_price_usd
         return transaction_cost_usd
@@ -139,18 +116,18 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
         logger.error(f"GlobalUtils - Error calculating transaction cost: {e}")
     return 0.0
 
-def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
+def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float, pyth_client) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        asset_price = get_price_from_pyth(asset, pyth_client)
         asset_amount = dollar_amount / asset_price
         return asset_amount
     except ZeroDivisionError:
         logger.error(f"GlobalUtils - Error calculating asset amount for {asset}: Price is zero")
     return 0.0
 
-def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
+def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float, pyth_client) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        asset_price = get_price_from_pyth(asset, pyth_client)
         dollar_amount = asset_amount * asset_price
         return dollar_amount
     except Exception as e:
@@ -261,210 +238,6 @@ def deco_retry(retry: int = 5, retry_sleep: int = 3):
 
     return deco_func(retry) if callable(retry) else deco_func
 
-###############################################################
-#                                                             #
-#  Getter and Setter Functions for files in Parent Directory  #
-#                                                             #
-###############################################################
-FLASK_APP_SECRET_KEY = os.getenv('FLASK_APP_SECRET_KEY')
-### Bot Settings
-def check_bot_settings(bot_settings: dict) -> bool:
-    try:
-        settings = bot_settings['settings']
-        if (settings['max_allowable_percentage_away_from_liquidation_price'] < 5)  or (settings['max_allowable_percentage_away_from_liquidation_price'] > 30):
-            logger.error("GlobalUtils - MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE must be between 5 and 30")
-            return False
-        if (settings['trade_leverage'] > 10 ):
-            logger.error("GlobalUtils - TRADE_LEVERAGE must be greater than 10")
-            return False
-        if (settings['percentage_capital_per_trade'] < 0 or settings['percentage_capital_per_trade'] > 100):
-            logger.error("GlobalUtils - PERCENTAGE_CAPITAL_PER_TRADE must be between 0 and 100")
-            return False
-        if (settings['default_trade_duration_hours'] < 6 or settings['default_trade_duration_hours'] > 24):
-            logger.error("GlobalUtils - DEFAULT_TRADE_DURATION_HOURS must be greater than 0")
-            return False
-        if (settings['default_trade_size_usd'] < 50 or settings['default_trade_size_usd'] > 1_000_000):
-            logger.error("GlobalUtils - DEFAULT_TRADE_SIZE_USD must be between 50 and 1,000,000")
-            return False
-    except KeyError:
-        logger.error("KeyError: Check whether all required settings are present")
-        return False
-    else:
-        return True
-    
-def set_bot_settings(settings: json) -> bool:
-    try:
-        bot_settings = json.loads(settings)
-        if check_bot_settings(bot_settings) \
-            and check_exchange_settings(settings) \
-            and check_env_settings(settings):
-            json.dump(
-                settings,
-                open("./bot_settings.json", "w")
-            )
-            return True
-        else:
-            return False
-    except FileNotFoundError:
-        logger.error("Settings file - bot_settings.json - not found")
-        return False
-        
-def get_bot_settings() -> dict | None:
-    try:
-        settings = json.loads(
-            open("./bot_settings.json", "r").read()
-        )
-    except FileNotFoundError:
-        logger.error("Settings file - bot_settings.json - not found")
-        return None
-    except json.JSONDecodeError:
-        logger.error("Error decoding settings file")
-        return None
-    else:
-        if check_bot_settings(settings) \
-            and check_exchange_settings(settings) \
-            and check_env_settings(settings):
-            return settings
-        else:
-            return None
-
-### Exchange Settings
-def check_exchange_settings(bot_settings: dict) -> bool:
-    """
-    Make sure the settings file include:
-        ```
-        "target_exchanges": [
-            {"exchange": "Synthetix", "is_target": true},
-            {"exchange": "Binance", "is_target": true},
-            ...
-        ```
-    and 
-        ```"
-        target_tokens": [
-            {"token": "BTC", "is_target": true},
-            {"token": "ETH", "is_target": true},
-            ...
-        ```
-    
-    TODO: Edit the values of valid_exchanges in case of errors.
-    """
-    valid_exchanges = ["Synthetix", "Binance", "ByBit", "HMX", "GMX", "OKX"]
-    valid_tokens = ['BTC', 'ETH', 'SNX', 'SOL', 'W', 'WIF', 'ARB', 'BNB', 'ENA', 'DOGE', 'AVAX', 'PENDLE', 'NEAR', 'AAVE', 'ATOM', 'LINK', 'UNI', 'LTC', 'OP', 'GMX', 'PEPE']
-    try:
-        exchange_settings = bot_settings["target_exchanges"]
-        for target_exchange in exchange_settings:
-            if target_exchange["exchange"] not in valid_exchanges:
-                return False
-            if type(target_exchange["is_target"]) is not bool:
-                return False
-    except KeyError as error:    # TODO: Remove print statements
-        print("Key error ", error)
-        return False
-    try:
-        token_settings = bot_settings["target_tokens"]
-        for token_setting in token_settings:
-            if token_setting["token"] not in valid_tokens:
-                return False
-            if type(token_setting["is_target"]) is not bool:
-                return False
-    except KeyError as error:
-        print("Key error ", error)
-        return False
-    
-    return True
-
-def set_exchange_settings(settings: json) -> bool:
-    try:
-        bot_settings = settings.load(settings)
-        if check_exchange_settings(bot_settings):
-            json.dump(
-                bot_settings, 
-                open("./bot_settings.json", "w")
-            )
-    except FileNotFoundError:
-        logger.error("Settings file - bot_settings.json - not found")
-        return False
-
-### Env Settings related to bot_settings.json
-def check_env_settings(env_settings: json) -> Tuple[bool, list]:
-    """
-    Validate that `["base_provider_rpc", "arbitrum_provider_rpc", "chain_id_base", "address"]` are present
-
-    Args:
-    settings (list): List of required environment variable names.
-
-    Returns:
-    tuple: bool
-    """
-    try:
-        required_vars = ["base_provider_rpc", "arbitrum_provider_rpc", "chain_id_base", "address"]
-        for env in env_settings:
-            if env not in required_vars:
-                return False
-    except KeyError as error:
-        logger.log("Error setting .env file", error)
-        return False
-    except Exception:
-        return False
-    finally:
-        return True
-
-def set_env_settings(settings: json) -> bool:
-    """
-    Eg: Required settings:
-    ```
-    ["base_provider_rpc": "https://sepolia.base.org",
-     "arbitrum_provider_rpc": "https://arb-mainnet.g.alchemy.com/v2/7MDAAJvIub6mc2uHF1VWx7-W68UBYoET",
-     "chain_id_base": 421614,
-     "address":"0x..."
-    ]
-    ```
-    """
-    try:
-        env_settings = settings["env_settings"] 
-        if check_env_settings(env_settings):
-            # Load existing .env file
-            dotenv_path = ".env"
-            load_dotenv()
-
-            set_key(dotenv_path, "BASE_PROVIDER_RPC", settings["base_provider_rpc"])
-            set_key(dotenv_path, "ARBITRUM_PROVIDER_RPC", settings["arbitrum_provider_rpc"])
-            set_key(dotenv_path, "CHAIN_ID_BASE", str(settings["chain_id_base"]))
-            set_key(dotenv_path, "ADDRESS", settings["address"])
-            
-            # Reload the environment variables
-            load_dotenv(dotenv_path, override=True)
-            return True
-        return False
-    except Exception as e:
-        print(f"Error setting environment variables: {str(e)}")
-        return False
-
-### Private and API key settings | NOT VISIBLE IN CLIENT
-def set_synthetix_config() -> bool:
-    print("synth config")
-
-def set_binance_config(api_key, api_secret) -> bool:
-    """
-        Sets .env file's `BINANCE_API_KEY` and `BINANCE_API_SECRET`
-    """
-    try:
-        binanceSettings = get_bot_settings["envSettings"]["BinanceSettings"]
-        binanceSettings["apiKey"] = api_key
-        binanceSettings["apiSecret"] = api_secret
-    except Exception as e:
-        logger.error("GlobalUtils - Failed to update binance config.")
-
-def set_bybit_config(api_key, api_secret) -> bool:
-    """
-    Sets .env file's `BINANCE_API_KEY` and `BINANCE_API_SECRET`
-    """
-    try:
-        byBit = get_bot_settings["envSettings"]["BinanceSettings"]
-        byBit["apiKey"] = api_key
-        byBit["apiSecret"] = api_secret
-    except Exception as e:
-        logger.error("GlobalUtils - Failed to update ByBit config.")
 
 ### Bot Logs
 def get_app_logs() -> str | bool:

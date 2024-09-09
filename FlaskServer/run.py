@@ -1,5 +1,4 @@
 from FlaskServer import create_app
-from flask_socketio import SocketIO, emit
 import logging
 from GlobalUtils.logger import logger, app_formatter, setup_topics
 from pubsub import pub
@@ -29,6 +28,9 @@ def opportunity_found_to_socketio(opportunity):
 def trade_logged_to_socketio(position_data):
     sio.emit(EventsDirectory.TRADE_LOGGED.value, position_data)
 
+def bot_stopped_to_socketio():
+    sio.emit("bot_stopped")
+
 # Subscribe to all topics and forward to SocketIO
 pub.subscribe(position_opened_to_socketio, EventsDirectory.POSITION_OPENED.value)
 pub.subscribe(position_closed_to_socketio, EventsDirectory.POSITION_CLOSED.value)
@@ -36,6 +38,8 @@ pub.subscribe(close_all_positions_to_socketio, EventsDirectory.CLOSE_ALL_POSITIO
 pub.subscribe(close_position_pair_to_socketio, EventsDirectory.CLOSE_POSITION_PAIR.value)
 pub.subscribe(opportunity_found_to_socketio, EventsDirectory.OPPORTUNITY_FOUND.value)
 pub.subscribe(trade_logged_to_socketio, EventsDirectory.TRADE_LOGGED.value)
+pub.subscribe(bot_stopped_to_socketio, "bot_stopped")
+
 
 
 # Custom handler for logging to the SocketIO

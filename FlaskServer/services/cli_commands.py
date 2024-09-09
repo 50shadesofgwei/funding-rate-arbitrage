@@ -1,34 +1,8 @@
-from flask import Blueprint, jsonify, request
 from flask import Blueprint, jsonify
-
-# Attempt to import the necessary modules
-try:
-    import Main.run as main_run
-except ImportError:
-    def main_run():
-        pass  # Mock function if Main.run is not found
-
-try:
-    import TxExecution.Synthetix.run as synthetix_run
-except ImportError:
-    def synthetix_run():
-        pass  # Mock function if TxExecution.Synthetix.run is not found
-
-try:
-    import TxExecution.HMX.run as hmx_run
-except ImportError:
-    def hmx_run():
-        pass  # Mock function if TxExecution.HMX.run is not found
-
-try:
-    import TxExecution.Master.run as master_run
-except ImportError:
-    def master_run():
-        pass  # Mock function if TxExecution.Master.run is not found
-
-api_routes = Blueprint('api_routes', __name__)
-
-# Define your routes here
+import Main.run as main_run
+import TxExecution.Synthetix.run as synthetix_run
+import TxExecution.Master.run as tx_master_run
+from pubsub import pub
 
 api_routes = Blueprint('api_routes', __name__)
 
@@ -36,9 +10,17 @@ api_routes = Blueprint('api_routes', __name__)
 @api_routes.route('/run', methods=['POST'])
 def run():
     '''Main.run:run'''
+    # TODO: Check bot-status from database
     main_run.run()
-    print("Running main...")
     return jsonify({"status": "Running..."})
+
+@api_routes.route('/stop', methods=['POST'])
+def stop():
+    '''
+        If bot is running transmit signal to stop the bot
+    '''
+    pub.sendMessage("stop_bot")
+    return jsonify({"status": "Signal transmitted"}), 200
 
 '''Main.run:demo'''
 @api_routes.route('/demo', methods=['POST'])
@@ -54,20 +36,9 @@ def deploy_collateral_synthetix():
     synthetix_run.main()
     return jsonify({"status": "Deploying collateral to Synthetix..."})
 
-# TxExecution.HMX.run:main
-@api_routes.route('/deploy-collateral-hmx', methods=['POST'])
-def deploy_collateral_hmx():
-    hmx_run.main()
-    return jsonify({"status": "Deploying collateral to HMX..."})
-
 # TxExecution.Master.run:main
-@api_routes.route('/close-position', methods=['POST'])
-def close_position():
-    master_run.main()
+@api_routes.route('/close-position/<id>', methods=['POST'])
+def close_position(id):
+    # Verify if the position is open
+    tx_master_run.run(id)
     return jsonify({"status": "Closing position..."})
-
-# TxExecution.Master.run:is_position_open
-@api_routes.route('/open-position', methods=['POST'])
-def open_position():
-    master_run.is_position_open()
-    return jsonify({"status": "Opening position..."})

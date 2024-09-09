@@ -2,6 +2,7 @@ from Backtesting.utils.backtestingUtils import *
 from Backtesting.Synthetix.SynthetixBacktesterUtils import *
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from GlobalUtils.globalUtils import *
+from APICaller.Synthetix.SynthetixUtils import GLOBAL_SYNTHETIX_CLIENT
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from APICaller.master.MasterUtils import TARGET_TOKENS
 from web3 import *
@@ -45,7 +46,7 @@ class SynthetixBacktester:
 
     def estimate_keeper_fees(self) -> float:
         gas_price = int(self.caller.client.web3.eth.gas_price)
-        eth_price = get_price_from_pyth(self.caller.client, 'ETH')
+        eth_price = get_price_from_pyth(self.caller.client, 'ETH', GLOBAL_SYNTHETIX_CLIENT)
         gwei_price = eth_price / 10**9
         estimated_keeper_fees_gwei = (gas_price * MULTICALL_GAS) / 10**9
         entry_gas = float(estimated_keeper_fees_gwei) * gwei_price
