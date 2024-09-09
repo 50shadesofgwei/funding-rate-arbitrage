@@ -1,10 +1,10 @@
-# Synthetix Funding Rate Arbitrage
-![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage/assets/111451828/eb931108-bdbb-4741-b2bc-def2de8e3370)
+# Funding Rate Arbitrage
+![Funding Rate Arbitrage Bot Template](https://github.com/50shadesofgwei/funding-rate-arbitrage/blob/main/Assets/Propuesta.png)
 > **Version 0.3.0**
 
 ![Static Badge](https://img.shields.io/badge/Telegram-blue?link=https%3A%2F%2Ft.me%2F%2BualID7ueKuJjMWJk) ![Static Badge](https://img.shields.io/badge/License-MIT-green)
 
-This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between various perps platforms. Current version focuses on Synthetix vs HMX pairs, detecting and executing upon the opportunities that it finds. HMX is on Arbitrum and Synthetix v3 is on Base, so you'll need some funds on both exchanges.
+This project serves as a template to help newer developers/traders start taking advantage of delta-neutral arbitrage opportunities between various perps platforms. Current version focuses on DEX-DEX pairs, detecting and executing upon the opportunities that it finds. GMX is on Arbitrum and Synthetix v3 is on Base, so you'll need some funds on both exchanges.
 
 Given that the repo is under active development, it is recommended that you run the bot on testnet for a while first to ensure that the configuration is correct before putting any capital at stake.
 
@@ -13,7 +13,7 @@ Given that the repo is under active development, it is recommended that you run 
 > *All code contained within this repository is distrubuted freely under the MIT License*
 
 ## Legal Disclaimer - Please Read
-> As mentioned above, this repository is under active development and has not yet been ran extensively in production. By cloning or forking the code and running it locally, you understand that you are running in-development code, and take on all responsibility for any loss of funds that are incurred via user error, as-of-yet-undiscovered bugs, or any other concievable reason. You should be comfortable running, interacting with and debugging the bot on testnet before considering any runs with real capital. This project is for educational purposes only. Any interested party should not construe any information or other material found in this repository as legal, tax, investment, financial, or other advice. Nothing contained here constitutes a solicitation, recommendation, endorsement, or offer by the repository creator, the Synthetix Protocol, or any third party service provider to buy or sell any securities or other financial instruments in the US, nor in any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of said jurisdiction. Under no circumstances will the repository creator or the Synthetix Protocol be held responsible or liable in any way for any claims, damages, losses, expenses, costs, or liabilities whatsoever, including, without limitation, any direct or indirect damages for loss of profits.
+> As mentioned above, this repository is under active development and has not yet been ran extensively in production. By cloning or forking the code and running it locally, you understand that you are running in-development code, and take on all responsibility for any loss of funds that are incurred via user error, as-of-yet-undiscovered bugs, or any other concievable reason. You should be comfortable running, interacting with and debugging the bot on testnet before considering any runs with real capital. This project is for educational purposes only. Any interested party should not construe any information or other material found in this repository as legal, tax, investment, financial, or other advice. Nothing contained here constitutes a solicitation, recommendation, endorsement, or offer by the repository creator, the Synthetix Protocol, or any third party service provider to buy or sell any securities or other financial instruments in the US, nor in any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of said jurisdiction. Under no circumstances will the repository creator or the Synthetix or GMX Protocols be held responsible or liable in any way for any claims, damages, losses, expenses, costs, or liabilities whatsoever, including, without limitation, any direct or indirect damages for loss of profits.
 
 ## Important Note!
 **In order to start running the bot, some beginner/intermediate programming knowledge is required.**
@@ -29,14 +29,14 @@ This repo is designed to be open source and as such we welcome any who may be in
 ## Getting Started
 
 To start, first clone the repo to your local machine using either:
-`git clone git@github.com:50shadesofgwei/SynthetixFundingRateArbitrage.git` if you have SSH keys set up on linked github account
+`git clone git@github.com:50shadesofgwei/funding-rate-arbitrage.git` if you have SSH keys set up on linked github account
 or alternatively
-`git clone https://github.com/50shadesofgwei/SynthetixFundingRateArbitrage.git`
+`git clone https://github.com/50shadesofgwei/funding-rate-arbitrage.git`
 if you don't.
 
 You will need the git package installed on you machine for this.
 
-Next you'll want to navigate to the project directory using `cd SynthetixFundingRateArbitrage`, then install project dependencies with `pip install -r requirements.txt`.
+Next you'll want to navigate to the project directory using `cd funding-rate-arbitrage`, then install project dependencies with `pip install -r requirements.txt`.
 To make sure you can run the project's commands directly from your terminal, run `pip install -e .`.
 
 After this, navigate to the .env file and input the necessary values. You will need:
@@ -79,11 +79,11 @@ The bot will now only target ETH opportunities.
 To switch between which exchanges are targeted, there is a similar array:
 ```python
 TARGET_EXCHANGES = [
+    {"exchange": "GMX", "is_target": True},
     {"exchange": "Synthetix", "is_target": True},
-    {"exchange": "HMX", "is_target": True},
 ]
 ```
-**It's currently recommended that you run with exchanges Synthetix and HMX.**
+**It's currently recommended that you run with exchanges GMX, Synthetix, and ByBit.**
 Note that some additional steps are required before executing trades, namely that a Synthetix perps account will have to be created and have some collateral deployed. The code for this is found in the next section.
 
 ## Testnet config
