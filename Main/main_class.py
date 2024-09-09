@@ -40,11 +40,25 @@ class Main:
             
     def start_search(self):
         try:
-            while True:
+            while self.running:
+                if len(self.queue) > 0:
+                    # close a position / open position (from the opportunity.json)
+                    pass    
                 if not self.position_controller.is_already_position_open():
                     self.search_for_opportunities()
                 time.sleep(30) 
+            logger.info("MainClass - Bot stopped.")
+            
         
         except Exception as e:
             logger.error(f"MainClass - An error occurred during start_search: {e}", exc_info=True)
+            if self.running:
+                pub.sendMessage("stop_bot")
+    
+    def stop_bot(self):
+        logger.info("MainClass - Recieved stop_bot signal.")
+        self.running = False
+        pub.sendMessage("bot_stopped")
+        logger.info("MainClass - Bot Stopped")
+        
 

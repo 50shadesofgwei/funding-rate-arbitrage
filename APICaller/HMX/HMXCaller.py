@@ -1,5 +1,6 @@
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
+from APICaller.HMX.HMXCallerUtils import GLOBAL_HMX_CLIENT
 
 class HMXCaller:
     def __init__(self):

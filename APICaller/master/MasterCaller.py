@@ -1,33 +1,30 @@
 from APICaller.Synthetix.SynthetixCaller import SynthetixCaller
 from APICaller.Binance.binanceCaller import BinanceCaller
 from APICaller.ByBit.ByBitCaller import ByBitCaller
-from APICaller.HMX.HMXCaller import HMXCaller
-from APICaller.OKX.okxCaller import OKXCaller
 from APICaller.GMX.GMXCaller import GMXCaller
+
 from APICaller.master.MasterUtils import get_all_target_token_lists, get_target_exchanges
 from GlobalUtils.logger import *
 
 class MasterCaller:
     def __init__(self):
         self.synthetix = SynthetixCaller()
-        self.binance = BinanceCaller()
         self.bybit = ByBitCaller()
-        self.hmx = HMXCaller()
+        self.binance = BinanceCaller()
         self.gmx = GMXCaller()
-        # self.okx = OKXCaller()
+
         self.target_token_list_by_exchange = get_all_target_token_lists()
         self.target_exchanges = get_target_exchanges()
         self.filtered_exchange_objects_and_tokens = self.filter_exchanges_and_tokens()
 
     def filter_exchanges_and_tokens(self):
         try:
+            """Creates None if not commented out"""
             all_exchanges = {
-                "Synthetix": (self.synthetix, self.target_token_list_by_exchange[0]),
-                "Binance": (self.binance, self.target_token_list_by_exchange[1]),
+                "GMX": (self.synthetix, self.target_token_list_by_exchange[4]),
                 "ByBit": (self.bybit, self.target_token_list_by_exchange[2]),
-                "HMX": (self.hmx, self.target_token_list_by_exchange[3]),
-                "GMX": (self.gmx, self.target_token_list_by_exchange[4]),
-                # "OKX": (self.okx, self.target_token_list_by_exchange[5])
+                "Synthetix": (self.synthetix, self.target_token_list_by_exchange[0]),
+                "Binance": (self.binance, self.target_token_list_by_exchange[1]),                
             }
 
             filtered_exchanges = {}

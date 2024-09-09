@@ -1,6 +1,5 @@
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import SynthetixPositionMonitor
 from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonitor
-from PositionMonitor.HMX.HMXPositionMonitor import HMXPositionMonitor
 from PositionMonitor.GMX.GMXPositionMonitor import GMXPositionMonitor
 from PositionMonitor.ByBit.ByBitPositionMonitor import ByBitPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
@@ -16,7 +15,6 @@ class MasterPositionMonitor():
     def __init__(self):
         self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
-        self.hmx = HMXPositionMonitor()
         self.gmx = GMXPositionMonitor()
         self.bybit = ByBitPositionMonitor()
         self.health_check_thread = None

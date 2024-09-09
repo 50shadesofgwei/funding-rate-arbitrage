@@ -5,33 +5,26 @@ import requests
 from decimal import Decimal, InvalidOperation
 from enum import Enum
 from GlobalUtils.logger import *
-from APICaller.Synthetix.SynthetixUtils import get_synthetix_client
-from APICaller.Binance.binanceUtils import get_binance_client
-from APICaller.HMX.HMXCallerUtils import get_HMX_client
-# from APICaller.OKX.okxUtils import get_okx_trading_data_client
-# from APICaller.OKX.okxUtils import get_okx_pub_client
-# from APICaller.OKX.okxUtils import get_okx_account_client
-# from APICaller.OKX.okxUtils import get_okx_trade_client
 
 import functools
 import re
 import time
 
+
+import functools
+import re
+import time
+
+
 load_dotenv()
 
+# app.log file path
+log_path = logger.handlers[0].__dict__["baseFilename"]
 NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 BLOCKS_PER_DAY_BASE = 43200
 BLOCKS_PER_HOUR_BASE = 1800
 
-GLOBAL_SYNTHETIX_CLIENT = get_synthetix_client()
-GLOBAL_BINANCE_CLIENT = get_binance_client()
-GLOBAL_HMX_CLIENT = get_HMX_client()
-
-# GLOBAL_OKX_PUBLIC_CLIENT = get_okx_pub_client()
-# GLOBAL_OKX_TRADING_DATA_CLIENT = get_okx_trading_data_client()
-# GLOBAL_OKX_ACCOUNT_CLIENT = get_okx_account_client()
-# GLOBAL_OKX_TRADE_CLIENT = get_okx_trade_client()
 
 class EventsDirectory(Enum):
     CLOSE_ALL_POSITIONS = "close_all_positions"
@@ -69,6 +62,8 @@ DECIMALS = {
 def get_decimals_for_symbol(symbol):
     return DECIMALS.get(symbol, None)
 
+
+# TODO: Check whether client is initialized or not before calling the function in MainClass
 def initialise_client() -> Web3:
     try:
         client = Web3(Web3.HTTPProvider(os.getenv('BASE_PROVIDER_RPC')))
@@ -89,9 +84,9 @@ def get_gas_price() -> float:
             return None
     return 0.0
 
-def get_price_from_pyth(symbol: str):
+def get_price_from_pyth(symbol: str, pyth_client):
     try:
-        response = GLOBAL_SYNTHETIX_CLIENT.pyth.get_price_from_symbols([symbol])
+        response = pyth_client.pyth.get_price_from_symbols([symbol])
         
         feed_id = next(iter(response['meta']))
         meta_data = response['meta'].get(feed_id, {})
@@ -108,10 +103,10 @@ def get_price_from_pyth(symbol: str):
         return None
 
 
-def calculate_transaction_cost_usd(total_gas: int) -> float:
+def calculate_transaction_cost_usd(total_gas: int, pyth_client) -> float:
     try:
         gas_price_gwei = get_gas_price()
-        eth_price_usd = get_price_from_pyth('ETH')
+        eth_price_usd = get_price_from_pyth('ETH', pyth_client)
         gas_cost_eth = (gas_price_gwei * total_gas) / Decimal('1e9')
         transaction_cost_usd = float(gas_cost_eth) * eth_price_usd
         return transaction_cost_usd
@@ -119,18 +114,18 @@ def calculate_transaction_cost_usd(total_gas: int) -> float:
         logger.error(f"GlobalUtils - Error calculating transaction cost: {e}")
     return 0.0
 
-def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float) -> float:
+def get_asset_amount_for_given_dollar_amount(asset: str, dollar_amount: float, pyth_client) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        asset_price = get_price_from_pyth(asset, pyth_client)
         asset_amount = dollar_amount / asset_price
         return asset_amount
     except ZeroDivisionError:
         logger.error(f"GlobalUtils - Error calculating asset amount for {asset}: Price is zero")
     return 0.0
 
-def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float) -> float:
+def get_dollar_amount_for_given_asset_amount(asset: str, asset_amount: float, pyth_client) -> float:
     try:
-        asset_price = get_price_from_pyth(asset)
+        asset_price = get_price_from_pyth(asset, pyth_client)
         dollar_amount = asset_amount * asset_price
         return dollar_amount
     except Exception as e:
@@ -240,4 +235,32 @@ def deco_retry(retry: int = 5, retry_sleep: int = 3):
         return wrapper
 
     return deco_func(retry) if callable(retry) else deco_func
+
+
+### Bot Logs
+def get_app_logs() -> str | bool:
+    # TODO: return logs as json (serializable) rather than str
+    try:
+        logs = open(log_path, "r").readlines()
+    except FileNotFoundError:
+        logger.error("Logs file - app.log - not found")
+        return False
+    except Exception as e:
+        logger.error(f"Error getting logs: {e}")
+        return False
+    else:
+        return logs
+
+def clear_logs() -> bool:
+    try:
+        with open(log_path, "w") as f:
+            f.write("")
+    except FileNotFoundError:
+        logger.error("Logs file - logs.txt - not found")
+        return False
+    except Exception as e:
+        logger.error(f"Error clearing logs: {e}")
+        return False
+    else:
+        return True
 

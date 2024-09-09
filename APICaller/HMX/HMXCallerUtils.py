@@ -41,3 +41,5 @@ def get_skew_scale_for_token(symbol: str) -> int:
     except Exception as e:
         logger.error(f'HMXCallerUtils - Failed to retrieve skew scale for symbol {symbol} from mapping. Error: {e}')
         return None
+
+GLOBAL_HMX_CLIENT = get_HMX_client()

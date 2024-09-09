@@ -13,10 +13,11 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
+            'project-run-ui = FlaskServer.run:run',
             'project-run = Main.run:run',
             'project-run-demo = Main.run:demo',
-            'deploy-collateral-synthetix = TxExecution.Synthetix.run:main',
-            'deploy-collateral-hmx = TxExecution.HMX.run:main',
+            'deploy--synthetix = TxExecution.Synthetix.run:main',
+            'deploy--hmx = TxExecution.HMX.run:main',
             'close-position-pair = TxExecution.Master.run:main',
             'is-position-open = TxExecution.Master.run:is_position_open'
         ],

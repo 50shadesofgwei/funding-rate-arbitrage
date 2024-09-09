@@ -24,7 +24,6 @@ class SynthetixPositionController:
                 account_id: int = self.get_default_account()
                 adjusted_trade_size: float = self.calculate_adjusted_trade_size(opportunity, is_long, trade_size)
                 market_name = str(opportunity['symbol'])
-
                 response = self.client.perps.commit_order(
                     size=adjusted_trade_size, 
                     market_name=market_name, 
@@ -42,7 +41,7 @@ class SynthetixPositionController:
             else:
                 logger.error("SynthetixPositionController - execute_trade called while position already open")
                 return None
-
+        # TODO: Add another exception for insufficient margin for the trade-size
         except Exception as e:
             logger.error(f"SynthetixPositionController - An error occurred while executing a trade for {market_name}: {e}", exc_info=True)
             return None
@@ -106,9 +105,7 @@ class SynthetixPositionController:
     def approve_and_deposit_collateral(self, token_address: str, amount: int):
         """
             Checks if Synthetix client's SUSD balance is greater than or equal to amount.
-
             Directly call `_add_collateral` if there is existing sUSD balance.
-
             If not:
             - approve spot market to spend collateral
             - wrap collateral
@@ -116,10 +113,8 @@ class SynthetixPositionController:
             - execute atomic order
             - approve collateral for perps market proxy
             - add collateral
-
             :param str token_address: An instance of the Synthetix class.
             :param int amount: Collateral to deposit to Perps account 
-
             :return: void
         """
         try:
@@ -127,8 +122,8 @@ class SynthetixPositionController:
 
             if susd_balance['balance'] >= amount:
                 self._add_collateral(amount)
-                time.sleep(1)
-            else:
+                time.sleep(1) 
+            else:          
                 market_id = self.client.spot.markets_by_name[f"sUSDC"]["market_id"]
                 wrapped_token = self.client.spot.markets_by_id[market_id]["contract"]
                 self._approve_spot_market_to_spend_collateral(token_address, amount)
@@ -219,7 +214,7 @@ class SynthetixPositionController:
     def _wrap_collateral(self, amount: int):
         try:
             market_id = self.client.spot.markets_by_name[f"sUSDC"]["market_id"]
-            wrap_tx = self.client.spot.wrap(amount, market_id, submit=True)
+            wrap_tx = self.client.spot.wrap(amount, market_name="sUSDC", submit=True)
             if is_transaction_hash(wrap_tx):
                 logger.info(f"SynthetixPositionController - Wrap tx executed successfully: {wrap_tx}")
 
@@ -346,4 +341,3 @@ class SynthetixPositionController:
         except Exception as e:
             logger.error(f"SynthetixPositionController - Error calculating premium for symbol {symbol}: {e}")
             return None
-

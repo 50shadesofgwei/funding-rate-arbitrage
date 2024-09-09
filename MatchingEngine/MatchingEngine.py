@@ -1,14 +1,22 @@
 from MatchingEngine.MatchingEngineUtils import *
 from GlobalUtils.logger import *
 
+
 class matchingEngine:
     def __init__(self):
         pass
     
     def find_arbitrage_opportunities_for_symbol(self, sorted_rates):
+        """
+            Finds arbitrage opportunities for a given symbol across different exchanges.
+
+            :param sorted_rates: List of dictionaries containing rate information for different exchanges.
+        """
         try:
             rates_by_exchange = {}
+
             exchanges = set(rate['exchange'] for rate in sorted_rates)
+
             for exchange in exchanges:
                 exchange_rates = [rate for rate in sorted_rates if rate['exchange'] == exchange]
                 rates_by_exchange[exchange] = {normalize_symbol(rate['symbol']): rate for rate in exchange_rates}
@@ -23,6 +31,15 @@ class matchingEngine:
                     continue
                 common_symbols = set(rates_by_exchange[ex1].keys()) & set(rates_by_exchange[ex2].keys())
                 for symbol in common_symbols:
+                    """Check if the symbol is present in both exchanges"""
+                    if not rates_by_exchange[ex1][symbol]:
+                        if not rates_by_exchange[ex2][symbol]:
+                            logger.error(f'MatchingEngine - Missing rate information for symbol: {symbol} in {ex1} and {ex2}.')
+                        else:
+                            logger.error(f'MatchingEngine - Missing rate information for symbol: {symbol} in {ex1}.')
+                        continue
+                    
+                    long_exchange = short_exchange = long_rate = short_rate = long_exchange_skew = short_exchange_skew = None
                     rate1 = float(rates_by_exchange[ex1][symbol]['funding_rate'])
                     rate2 = float(rates_by_exchange[ex2][symbol]['funding_rate'])
                     skew1 = rates_by_exchange[ex1][symbol]['skew_usd']
@@ -46,7 +63,7 @@ class matchingEngine:
                         long_rate, short_rate = rate1, rate2
                         long_exchange_skew, short_exchange_skew = skew1, skew2
                     
-                    if long_exchange is not None:
+                    if long_exchange is not None and short_exchange is not None:
                         arbitrage_opportunity = {
                             'long_exchange': long_exchange,
                             'short_exchange': short_exchange,

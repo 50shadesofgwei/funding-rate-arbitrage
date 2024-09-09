@@ -9,7 +9,6 @@ from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
 from APICaller.ByBit.ByBitCaller import ByBitCaller
-from APICaller.OKX.okxCaller import OKXCaller
 from gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.master.MasterUtils import get_target_exchanges
@@ -20,7 +19,6 @@ class ProfitabilityChecker:
     def __init__(self):
         self.position_controller = MasterPositionController()
         self.bybit_caller = ByBitCaller()
-        # self.okx_caller = OKXCaller()
         self.gmx_prices = {}
         self.gmx_open_interest = {}
 
@@ -50,7 +48,6 @@ class ProfitabilityChecker:
                         size_per_exchange,
                         exchange
                     )
-
                     if time_to_neutralize == None:
                         logger.error(f'CheckProfitability - NoneType returned while estimating time to neutralize rate.')
                         return None
