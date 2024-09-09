@@ -1,10 +1,10 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, after_this_request
 from GlobalUtils.logger import logger
 from typing import Dict, Any
 from APICaller.master.MasterUtils import get_target_exchanges
 import os, yaml
 from dotenv import set_key, find_dotenv, get_key, dotenv_values
-import json
+import subprocess, sys
 
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -130,6 +130,13 @@ def set_bot_settings_route():
             return jsonify(response), 400
     except Exception as error:
         return jsonify({"error": str(error)}), 500
+
+
+@settings_blueprint.route('/restart-bot', methods=['POST'])
+def restart_bot():
+    subprocess.Popen([sys.executable, sys.argv])
+    os._exit(0)
+
 ####################
 #  Settings f(x)   #
 ####################
@@ -203,7 +210,7 @@ def _check_gmx_config_file():
     '''
         Called before running the bot
     '''
-    if find_dotenv('config.yaml') == '':
+    if os.access(path='config.yaml', mode=os.R_OK) and os.access(path='config.yaml', mode=os.W_OK):
         logger.error("GlobalUtils - GMX config file not found")
         return False
     else:
@@ -221,7 +228,7 @@ def _create_gmx_config_file():
         'avalanche': 'api.avax-test.network',
     }
     yaml_config['chain_ids'] = {
-        'arbitrum': 42161,
+        'arbitrum': get_key(find_dotenv(), "CHAIN_ID_BASE"),
         'avalanche': '43113',
     }
     with open('config.yaml', 'w') as file:
@@ -306,3 +313,4 @@ def set_bot_settings(data: Dict[str, Any]):
 
     except Exception as error:
         return {"error": str(error)}
+

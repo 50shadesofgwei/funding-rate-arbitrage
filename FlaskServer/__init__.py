@@ -17,9 +17,7 @@ def create_app(test_config=None):
     
     app.register_blueprint(settings.settings_blueprint)
 
-
     if test_config is None:
-        # Default configurations
         app.config.from_mapping(
             SECRET_KEY=os.environ.get('FLASK_APP_SECRET_KEY'),
         )
