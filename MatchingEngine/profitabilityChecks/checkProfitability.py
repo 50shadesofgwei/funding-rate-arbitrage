@@ -3,14 +3,15 @@ from GlobalUtils.logger import *
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
-from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
-from MatchingEngine.profitabilityChecks.GMX.GMXCheckProfitabilityUtils import *
+# from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+# from MatchingEngine.profitabilityChecks.GMX.GMXCheckProfitabilityUtils import *
 from APICaller.HMX.HMXCallerUtils import *
 from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
 from APICaller.ByBit.ByBitCaller import ByBitCaller
+
 from gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
-from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
+# from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.master.MasterUtils import get_target_exchanges
 import json
 import os
@@ -31,9 +32,9 @@ class ProfitabilityChecker:
             best_opportunity = None
             max_profit = 0
             opportunities_with_profit = []
-            if 'GMX' in get_target_exchanges():
-                self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
-                self.gmx_open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(self.gmx_prices)
+            # if 'GMX' in get_target_exchanges():
+            #     self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
+            #     self.gmx_open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(self.gmx_prices)
 
             for opportunity in opportunities:
                 symbol = opportunity['symbol']
@@ -48,6 +49,7 @@ class ProfitabilityChecker:
                         size_per_exchange,
                         exchange
                     )
+
                     if time_to_neutralize == None:
                         logger.error(f'CheckProfitability - NoneType returned while estimating time to neutralize rate.')
                         return None
@@ -85,6 +87,7 @@ class ProfitabilityChecker:
 
         except Exception as e:
             logger.error(f'CheckProfitability - Failed to find most profitable opportunity. Error: {e}', exc_info=True)
+
 
     def estimate_profit_for_exchange(self, time_period_hours: float, size_usd: float, opportunity: dict, exchange: str) -> float:
         try:

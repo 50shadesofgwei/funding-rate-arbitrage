@@ -213,4 +213,3 @@ class TradeLogger:
             logger.error(f"TradeLogger - Error retrieving all trades. Error: {e}")
             return []
 
-        

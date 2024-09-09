@@ -6,7 +6,6 @@ import os
 from flask_socketio import SocketIO
 from FlaskServer.services import settings
 
-
 load_dotenv()
 
 # Function will be for setting up configurations for the Flask app

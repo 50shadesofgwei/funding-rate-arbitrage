@@ -42,5 +42,3 @@ def close_position(id):
     # Verify if the position is open
     tx_master_run.run(id)
     return jsonify({"status": "Closing position..."})
-
-

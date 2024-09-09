@@ -1,6 +1,7 @@
 from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.GMX.GMXPositionController import GMXPositionController
 
+
 from TxExecution.Master.MasterPositionControllerUtils import *
 
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
@@ -114,6 +115,9 @@ class MasterPositionController:
 
 
     def get_available_collateral_for_exchange(self, exchange: str) -> float:
+        """
+        Gets the `exchange_object` from `self` then calls the `get_available_collateral()` function
+        """
         try:
             exchange_object = getattr(self, exchange.lower(), None)
             if not callable(getattr(exchange_object, 'get_available_collateral', None)):
@@ -205,13 +209,12 @@ class MasterPositionController:
             except Exception as e:
                 logger.error(f'MasterPositionController:is_already_position_open - Error checking GMX position: {e}')
 
+
             positions_open = [
                 is_synthetix_position,
                 is_hmx_position,
                 is_binance_position,
                 is_bybit_position,
-                # is_okx_position
-                is_gmx_position
             ]
 
             if any(positions_open):

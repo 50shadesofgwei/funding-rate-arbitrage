@@ -314,3 +314,4 @@ def set_bot_settings(data: Dict[str, Any]):
     except Exception as error:
         return {"error": str(error)}
 
+
