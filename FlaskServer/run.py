@@ -59,7 +59,7 @@ logger.addHandler(socketio_handler)
 
 
 def run():
-    sio.run(app)
+    sio.run(app, port=6969)
 
 if __name__ == "__main__":
     run()
