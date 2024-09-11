@@ -44,10 +44,10 @@ def get_wallet_settings():
         Get Wallet Settings
     """
     wallet_settings = {}
-    wallet_settings['address'] = get_key('./env', "ADDRESS")
-    wallet_settings['base_provider_rpc'] = get_key('./env', "BASE_PROVIDER_RPC")
-    wallet_settings['arbitrum_provider_rpc'] = get_key('./env', "ARBITRUM_PROVIDER_RPC")
-    wallet_settings['chain_id_base'] = get_key('./env', "CHAIN_ID_BASE")
+    wallet_settings['address'] = get_key('./.env', "ADDRESS")
+    wallet_settings['base_provider_rpc'] = get_key('./.env', "BASE_PROVIDER_RPC")
+    wallet_settings['arbitrum_provider_rpc'] = get_key('./.env', "ARBITRUM_PROVIDER_RPC")
+    wallet_settings['chain_id_base'] = get_key('./.env', "CHAIN_ID_BASE")
     return jsonify(wallet_settings), 200
 
 
@@ -235,16 +235,16 @@ def _check_gmx_config_file():
 def _create_gmx_config_file():
     yaml_config = {}
     yaml_config['rpcs'] = {
-        'arbitrum': get_key('./env', "ARBITRUM_PROVIDER_RPC"),
+        'arbitrum': get_key('./.env', "ARBITRUM_PROVIDER_RPC"),
         'avalanche': 'api.avax-test.network',
     }
     yaml_config['chain_ids'] = {
-        'arbitrum': get_key('./env', "CHAIN_ID_BASE"),
+        'arbitrum': get_key('./.env', "CHAIN_ID_BASE"),
         'avalanche': '43113',
     }
 
-    yaml_config['private_key'] = get_key('./env', "PRIVATE_KEY")
-    yaml_config['user_wallet_address'] = get_key('./env', "ADDRESS")
+    yaml_config['private_key'] = get_key('./.env', "PRIVATE_KEY")
+    yaml_config['user_wallet_address'] = get_key('./.env', "ADDRESS")
 
     with open('config.yaml', 'w') as file:
         yaml.dump(yaml_config, file)
