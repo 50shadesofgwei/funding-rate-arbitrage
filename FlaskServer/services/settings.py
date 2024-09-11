@@ -138,7 +138,7 @@ def set_bot_settings_route():
 
 @settings_blueprint.route('/restart-bot', methods=['POST'])
 def restart_bot():
-    subprocess.Popen([sys.executable, sys.argv])
+    subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
     os._exit(0)
     return jsonify({"message": "Bot restarted successfully"}), 200
 
