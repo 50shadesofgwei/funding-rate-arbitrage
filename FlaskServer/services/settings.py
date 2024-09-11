@@ -8,7 +8,6 @@ import subprocess, sys
 
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
-
 @settings_blueprint.route('/find', methods=['GET'])
 def find_settings():
     if is_env_valid():
@@ -18,12 +17,12 @@ def find_settings():
     
 
 @settings_blueprint.route('/bot-settings/get', methods=['GET'])
-def get_bot_settings(): # TODO: Fix
+def get_bot_settings():
     """
-    Check if there is an existing `.env`:
-    1. If not generate a .env file:
-    
-    2. Front-end will do an onboarding experience.
+        Check if there is an existing `.env`:
+        1. If not generate a .env file:
+        
+        2. Front-end will do an onboarding experience.
     """
     try:
         settings = {
@@ -40,16 +39,17 @@ def get_bot_settings(): # TODO: Fix
 
 
 @settings_blueprint.route('/wallet-settings/get', methods=['GET'])
-def get_wallet_settings(): # TODO: Fix
+def get_wallet_settings():
     """
-    Get Wallet Settings
+        Get Wallet Settings
     """
     wallet_settings = {}
-    wallet_settings['address'] = get_key(find_dotenv(), "ADDRESS")
-    wallet_settings['base_provider_rpc'] = get_key(find_dotenv(), "BASE_PROVIDER_RPC")
-    wallet_settings['arbitrum_provider_rpc'] = get_key(find_dotenv(), "ARBITRUM_PROVIDER_RPC")
-    wallet_settings['chain_id_base'] = get_key(find_dotenv(), "CHAIN_ID_BASE")
+    wallet_settings['address'] = get_key('./env', "ADDRESS")
+    wallet_settings['base_provider_rpc'] = get_key('./env', "BASE_PROVIDER_RPC")
+    wallet_settings['arbitrum_provider_rpc'] = get_key('./env', "ARBITRUM_PROVIDER_RPC")
+    wallet_settings['chain_id_base'] = get_key('./env', "CHAIN_ID_BASE")
     return jsonify(wallet_settings), 200
+
 
 @settings_blueprint.route('/complete-onboarding', methods=['POST'])
 def complete_onboarding():
@@ -83,7 +83,9 @@ def complete_onboarding():
         except KeyError as e:
             return jsonify({"error": str(e)}), 400
 
-        # If all settings were successfully updated
+        # Update GMX Config File with new settings
+        _create_gmx_config_file()
+
         return jsonify({
             "status": "success",
             "message": "Onboarding completed successfully",
@@ -94,6 +96,7 @@ def complete_onboarding():
 
     except Exception as error:
         return jsonify({"error": str(error)}), 500
+
 
 @settings_blueprint.route('/wallet-settings/set', methods=['POST'])
 def set_wallet_settings_route():
@@ -118,6 +121,7 @@ def set_exchange_settings_route():
     except Exception as error:
         return jsonify({"error": str(error)}), 500
 
+
 @settings_blueprint.route('/bot-settings/set', methods=['POST'])
 def set_bot_settings_route():
     try:
@@ -136,6 +140,9 @@ def set_bot_settings_route():
 def restart_bot():
     subprocess.Popen([sys.executable, sys.argv])
     os._exit(0)
+    return jsonify({"message": "Bot restarted successfully"}), 200
+
+
 
 ####################
 #  Settings f(x)   #
@@ -180,6 +187,7 @@ def _check_bot_settings(bot_settings: dict) -> bool: # TODO: Fix
     else:
         return True
 
+
 def _check_exchange_settings(exchange_settings: dict) -> bool: # TODO: Fix
     try:
         for key, value in exchange_settings.items():
@@ -190,6 +198,7 @@ def _check_exchange_settings(exchange_settings: dict) -> bool: # TODO: Fix
         logger.error(f"Error checking exchange settings: {e}")
         return False
     return True
+
 
 def _check_wallet_settings(wallet_settings: dict) -> bool: # TODO: Fix make tests better
     try:
@@ -206,6 +215,7 @@ def _check_wallet_settings(wallet_settings: dict) -> bool: # TODO: Fix make test
         return False
     return True
 
+
 def _check_gmx_config_file():
     '''
         Called before running the bot
@@ -221,18 +231,24 @@ def _check_gmx_config_file():
             logger.error(f"GlobalUtils - Error creating GMX config file: {e}")
             return False
 
+
 def _create_gmx_config_file():
     yaml_config = {}
     yaml_config['rpcs'] = {
-        'arbitrum': get_key(find_dotenv(), "ARBITRUM_PROVIDER_RPC"),
+        'arbitrum': get_key('./env', "ARBITRUM_PROVIDER_RPC"),
         'avalanche': 'api.avax-test.network',
     }
     yaml_config['chain_ids'] = {
-        'arbitrum': get_key(find_dotenv(), "CHAIN_ID_BASE"),
+        'arbitrum': get_key('./env', "CHAIN_ID_BASE"),
         'avalanche': '43113',
     }
+
+    yaml_config['private_key'] = get_key('./env', "PRIVATE_KEY")
+    yaml_config['user_wallet_address'] = get_key('./env', "ADDRESS")
+
     with open('config.yaml', 'w') as file:
         yaml.dump(yaml_config, file)
+
 
 def set_wallet_settings(data: Dict[str, Any]):
     try:
@@ -256,6 +272,7 @@ def set_wallet_settings(data: Dict[str, Any]):
 
     except Exception as error:
         return {"error": str(error)}
+
 
 def set_exchange_settings(data: Dict[str, Any]):
     try:
@@ -283,6 +300,7 @@ def set_exchange_settings(data: Dict[str, Any]):
 
     except Exception as error:
         return {"error": str(error)}
+
 
 def set_bot_settings(data: Dict[str, Any]):
     try:
@@ -314,3 +332,9 @@ def set_bot_settings(data: Dict[str, Any]):
     except Exception as error:
         return {"error": str(error)}
 
+
+def get_bot_status():    
+    if is_env_valid():
+        status = get_key('./.env', "BOT_STATUS")
+        return jsonify({"status": status}), 200
+    return jsonify({"error": "Invalid Settings Configuration"}), 500

@@ -10,8 +10,8 @@ api_routes = Blueprint('api_routes', __name__)
 @api_routes.route('/run', methods=['POST'])
 def run():
     '''Main.run:run'''
-    # TODO: Check bot-status from database
     main_run.run()
+    
     return jsonify({"status": "Running..."})
 
 @api_routes.route('/stop', methods=['POST'])
@@ -42,5 +42,9 @@ def close_position(id):
     # Verify if the position is open
     tx_master_run.run(id)
     return jsonify({"status": "Closing position..."})
+
+
+def get_bot_status():
+    pass
 
 
