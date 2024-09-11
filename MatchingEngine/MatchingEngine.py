@@ -98,6 +98,7 @@ class matchingEngine:
                 sorted_rates = sort_funding_rates_by_value(rates)
                 if sorted_rates:
                     opportunities.extend(self.find_arbitrage_opportunities_for_symbol(sorted_rates))
+                
 
         except KeyError as ke:
             logger.error(f'MatchingEngine - KeyError - Missing key in data processing: {ke}')

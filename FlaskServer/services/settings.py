@@ -1,9 +1,8 @@
-from flask import Blueprint, jsonify, request, after_this_request
+from flask import Blueprint, jsonify, request
 from GlobalUtils.logger import logger
 from typing import Dict, Any
-from APICaller.master.MasterUtils import get_target_exchanges
 import os, yaml
-from dotenv import set_key, find_dotenv, get_key, dotenv_values
+from dotenv import set_key, get_key, dotenv_values
 import subprocess, sys
 
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')

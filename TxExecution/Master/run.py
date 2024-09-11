@@ -1,12 +1,12 @@
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+# from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 import argparse
 
 def run(args):
-    SynthetixMarketDirectory.initialize()
+    # SynthetixMarketDirectory.initialize()
     GMXMarketDirectory.initialize()
     x = MasterPositionController()
     y = TradeLogger()
@@ -21,6 +21,6 @@ def main():
 
 def is_position_open():
     x = MasterPositionController()
-    SynthetixMarketDirectory.initialize()
+    # SynthetixMarketDirectory.initialize()
     x.is_already_position_open()
 

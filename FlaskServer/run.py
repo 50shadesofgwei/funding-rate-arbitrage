@@ -41,6 +41,7 @@ pub.subscribe(trade_logged_to_socketio, EventsDirectory.TRADE_LOGGED.value)
 pub.subscribe(bot_stopped_to_socketio, "bot_stopped")
 
 
+
 # Custom handler for logging to the SocketIO
 class SocketIOHandler(logging.Handler):
     def __init__(self, socketio):

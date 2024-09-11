@@ -6,14 +6,13 @@ import os
 from flask_socketio import SocketIO
 from FlaskServer.services import settings
 
-
 load_dotenv()
 
 # Function will be for setting up configurations for the Flask app
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    CORS(app, resources={r"/*": {"origins": "https://main.dmep2akgaq1vh.amplifyapp.com/onboarding/"}})
-    socketio = SocketIO(app, cors_allowed_origins="https://main.dmep2akgaq1vh.amplifyapp.com/onboarding/")
+    CORS(app, resources={r"/*": {"origins": "https://main.dmep2akgaq1vh.amplifyapp.com/"}})
+    socketio = SocketIO(app, cors_allowed_origins="https://main.dmep2akgaq1vh.amplifyapp.com/")
     
     app.register_blueprint(settings.settings_blueprint)
 

@@ -8,7 +8,7 @@ from PositionMonitor.Master.MasterPositionMonitor import MasterPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+# from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
 
@@ -22,10 +22,11 @@ class Main:
         self.position_controller.subscribe_to_events()
         self.position_monitor = MasterPositionMonitor()
         self.trade_logger = TradeLogger()
-        SynthetixMarketDirectory.initialize()
+        # SynthetixMarketDirectory.initialize()
         GMXMarketDirectory.initialize()
     
     def search_for_opportunities(self):
+        
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
