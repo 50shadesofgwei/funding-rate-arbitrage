@@ -211,12 +211,14 @@ def _check_bot_settings(bot_settings: dict) -> bool: # TODO: Fix
         return True
 
 
-def _check_exchange_settings(exchange_settings: dict) -> bool: # TODO: Fix
+def _check_exchange_settings(exchange_settings: dict) -> bool:
+    """Currently only checks ByBit settings"""
     try:
-        for key, value in exchange_settings.items():
-            if key == "api_key" or key == "api_secret":
-                if len(value) < 10:
-                    return False
+        if exchange_settings["bybit"]["enabled"] == "true":
+            if len(exchange_settings["bybit"]["apiKey"]) < 10 or len(exchange_settings["bybit"]["apiSecret"]) < 15:
+                return False
+        else:
+            return False
     except Exception as e:
         logger.error(f"Error checking exchange settings: {e}")
         return False
@@ -227,9 +229,9 @@ def _check_wallet_settings(wallet_settings: dict) -> bool:
     try:
         if not web3.Web3.is_address(wallet_settings["wallet_address"]) or not re.match(r'^(0x)?[0-9a-fA-F]{64}$', wallet_settings["private_key"]):
             return False
-        if not _check_rpc_validity(wallet_settings["arbitrum_provider_rpc"]):
+        if not _check_rpc_validity(wallet_settings["arbitrum_provider_rpc"]) or not _check_rpc_validity(wallet_settings["base_provider_rpc"]):
             return False
-        if int(wallet_settings["chain_id_base"]) != 42161 or int(wallet_settings["chain_id_base"]) != 43113:
+        if int(wallet_settings["chain_id_base"]) != 42161 and int(wallet_settings["chain_id_base"]) != 421614:
             return False
         
     except Exception as e:
@@ -261,8 +263,8 @@ def _create_gmx_config_file():
         'avalanche': 'api.avax-test.network',
     }
     yaml_config['chain_ids'] = {
-        'arbitrum': get_key('./.env', "CHAIN_ID_BASE"),
-        'avalanche': '43113',
+        'arbitrum': int(get_key('./.env', "CHAIN_ID_BASE")),
+        'avalanche': 43113,
     }
 
     yaml_config['private_key'] = get_key('./.env', "PRIVATE_KEY")
@@ -270,6 +272,7 @@ def _create_gmx_config_file():
 
     with open('config.yaml', 'w') as file:
         yaml.dump(yaml_config, file)
+
 
 def _check_rpc_validity(rpc_url, polling_interval=0.5, max_retries=3):
     """
@@ -323,14 +326,15 @@ def set_wallet_settings(data: Dict[str, Any]):
             return {"error": "Invalid request body"}
 
         # Validate required fields
-        required_fields = ['address', 'arbitrum_rpc', 'network']
+        required_fields = ['address', 'arbitrum_rpc', 'base_rpc', 'network']
         if not all(field in data for field in required_fields):
             return {"error": "Missing required fields"}
 
         # Update .env file
-        set_key('.env', 'ADDRESS', data['address'])
-        set_key('.env', 'ARBITRUM_PROVIDER_RPC', data['arbitrum_rpc'])
-        set_key('.env', 'CHAIN_ID_BASE', str(data['network']))
+        set_key('.env', 'ADDRESS', data['address'], quote_mode='never')
+        set_key('.env', 'ARBITRUM_PROVIDER_RPC', data['arbitrum_rpc'], quote_mode='never')
+        set_key('.env', 'BASE_PROVIDER_RPC', data['base_rpc'], quote_mode='never')
+        set_key('.env', 'CHAIN_ID_BASE', str(data['network']), quote_mode='never')
 
         return {
             "status": "success",
@@ -356,9 +360,9 @@ def set_exchange_settings(data: Dict[str, Any]):
 
         # Update .env file
         for exchange in required_exchanges:
-            set_key('.env', f'{exchange.upper()}_API_KEY', data[exchange]['apiKey'])
-            set_key('.env', f'{exchange.upper()}_API_SECRET', data[exchange]['apiSecret'])
-            set_key('.env', f'{exchange.upper()}_ENABLED', str(data[exchange]['enabled']).lower())
+            set_key('.env', f'{exchange.upper()}_API_KEY', data[exchange]['apiKey'], quote_mode='never')
+            set_key('.env', f'{exchange.upper()}_API_SECRET', data[exchange]['apiSecret'], quote_mode='never')
+            set_key('.env', f'{exchange.upper()}_ENABLED', str(data[exchange]['enabled']).lower(), quote_mode='never')
 
         return {
             "status": "success",
@@ -389,7 +393,7 @@ def set_bot_settings(data: Dict[str, Any]):
         # Update .env file
         for field in required_fields:
             env_key = field.upper()
-            set_key('.env', env_key, str(data[field]))
+            set_key('.env', env_key, str(data[field]), quote_mode='never')
 
         return {
             "status": "success",

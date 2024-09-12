@@ -18,12 +18,18 @@ def create_app(test_config=None):
 
     if settings.is_env_valid() :
         print("Using full configurations")
-        from FlaskServer.services import cli_commands, trade_routes, log_routes
-        # Add Blueprints and routes
-        app.trade_logger = TradeLogger()
-        app.register_blueprint(cli_commands.api_routes)
-        app.register_blueprint(trade_routes.routes)
-        app.register_blueprint(log_routes.log_blueprint)
+        try:
+            from FlaskServer.services import cli_commands
+            from FlaskServer.services import trade_routes
+            from FlaskServer.services import log_routes
+            # Add Blueprints and routes
+            app.trade_logger = TradeLogger()
+            app.register_blueprint(cli_commands.api_routes)
+            app.register_blueprint(trade_routes.routes)
+            app.register_blueprint(log_routes.log_blueprint)
+        except Exception as e:
+            print(f"Error: {e}")
+
     elif test_config is not None:
         # Apply test configurations
         app.config.update(test_config)

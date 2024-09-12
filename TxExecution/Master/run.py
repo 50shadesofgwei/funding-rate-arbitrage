@@ -6,9 +6,9 @@ from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 import argparse
 
 def run(args):
-    # SynthetixMarketDirectory.initialize()
     GMXMarketDirectory.initialize()
     x = MasterPositionController()
+    """Make sure TradeLogger is initialized and initialized to pubsub events"""
     y = TradeLogger()
     exchanges = ['GMX', 'ByBit']
     x.close_position_pair(symbol=args.symbol, reason=PositionCloseReason.TEST.value, exchanges=exchanges)

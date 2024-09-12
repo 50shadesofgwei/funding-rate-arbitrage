@@ -1,9 +1,6 @@
 from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.GMX.GMXPositionController import GMXPositionController
-
-
 from TxExecution.Master.MasterPositionControllerUtils import *
-
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from APICaller.master.MasterUtils import get_target_exchanges
 from pubsub import pub

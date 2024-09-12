@@ -1,26 +1,36 @@
 from flask import Blueprint, jsonify
 import Main.run as main_run
-import TxExecution.Synthetix.run as synthetix_run
-import TxExecution.Master.run as tx_master_run
 from pubsub import pub
+from TxExecution.Master.MasterPositionController import MasterPositionController
+import threading
 
 api_routes = Blueprint('api_routes', __name__)
 
+bot_thread = None
+bot_running = False
 
 @api_routes.route('/run', methods=['POST'])
 def run():
     '''Main.run:run'''
-    main_run.run()
-    
-    return jsonify({"status": "Running..."})
+    global bot_thread, bot_running
+    if not bot_running:
+        bot_running = True
+        bot_thread = threading.Thread(target=main_run.run)
+        bot_thread.start()
+        return jsonify({"status": "Running..."}), 200
+    else:
+        return jsonify({"status": "Bot already running..."}), 200
+
 
 @api_routes.route('/stop', methods=['POST'])
 def stop():
-    '''
-        If bot is running transmit signal to stop the bot
-    '''
-    pub.sendMessage("stop_bot")
-    return jsonify({"status": "Signal transmitted"}), 200
+    global bot_running
+    if bot_running:
+        pub.sendMessage("stop_bot")
+        bot_running = False
+        return jsonify({"status": "Bot stopping..."})
+    else:
+        return jsonify({"status": "Bot is not running"})
 
 '''Main.run:demo'''
 @api_routes.route('/demo', methods=['POST'])
@@ -30,21 +40,16 @@ def demo():
     print("Running demo...")
     return jsonify({"status": "Running demo..."})
 
-# TxExecution.Synthetix.run:main
-@api_routes.route('/deploy-collateral-synthetix', methods=['POST'])
-def deploy_collateral_synthetix():
-    synthetix_run.main()
-    return jsonify({"status": "Deploying collateral to Synthetix..."})
 
 # TxExecution.Master.run:main
 @api_routes.route('/close-position/<id>', methods=['POST'])
 def close_position(id):
-    # Verify if the position is open
-    tx_master_run.run(id)
+    # symbol=args.symbol, reason=PositionCloseReason.TEST.value, exchanges=exchanges
+    MasterPositionController.run(id)
     return jsonify({"status": "Closing position..."})
 
 
-def get_bot_status():
-    pass
-
-
+@api_routes.route('/status', methods=['GET'])
+def status():
+    global bot_running
+    return jsonify({"status": "running" if bot_running else "stopped"})

@@ -148,7 +148,6 @@ class MasterPositionMonitor():
             return False
 
 
-
     def is_synthetix_funding_turning_against_trade_in_given_time(self, mins: int) -> bool:
         symbol = '' 
         try:
