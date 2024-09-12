@@ -11,23 +11,20 @@ load_dotenv()
 # Function will be for setting up configurations for the Flask app
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    CORS(app, resources={r"/*": {"origins": "https://main.dmep2akgaq1vh.amplifyapp.com/"}})
-    socketio = SocketIO(app, cors_allowed_origins="https://main.dmep2akgaq1vh.amplifyapp.com/")
+    CORS(app, resources={r"/*": {"origins": "https://main.dmep2akgaq1vh.amplifyapp.com"}})
+    socketio = SocketIO(app, cors_allowed_origins="https://main.dmep2akgaq1vh.amplifyapp.com")
     
     app.register_blueprint(settings.settings_blueprint)
 
-    if test_config is None:
-        app.config.from_mapping(
-            SECRET_KEY=os.environ.get('FLASK_APP_SECRET_KEY'),
-        )
-    elif settings.is_env_valid():
+    if settings.is_env_valid() :
+        print("Using full configurations")
         from FlaskServer.services import cli_commands, trade_routes, log_routes
         # Add Blueprints and routes
         app.trade_logger = TradeLogger()
         app.register_blueprint(cli_commands.api_routes)
         app.register_blueprint(trade_routes.routes)
         app.register_blueprint(log_routes.log_blueprint)
-    else:
+    elif test_config is not None:
         # Apply test configurations
         app.config.update(test_config)
     

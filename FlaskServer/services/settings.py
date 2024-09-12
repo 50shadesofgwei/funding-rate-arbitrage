@@ -3,7 +3,8 @@ from GlobalUtils.logger import logger
 from typing import Dict, Any
 import os, yaml
 from dotenv import set_key, get_key, dotenv_values
-import subprocess, sys
+import subprocess
+import web3, requests, time, re
 
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -142,19 +143,42 @@ def restart_bot():
     return jsonify({"message": "Bot restarted successfully"}), 200
 
 
-
-####################
-#  Settings f(x)   #
-####################
+###################
+#  Settings f(x)  #
+###################
 def is_env_valid() -> bool:
     try:
         if os.access(path='./.env', mode=os.R_OK) \
         and os.access(path='./.env', mode=os.W_OK):
             env_settings = dotenv_values('.env')
-            if _check_wallet_settings(env_settings):
-                return True
-            else:
-                return False
+            if _check_wallet_settings({
+                "wallet_address": env_settings["ADDRESS"],
+                "base_provider_rpc": env_settings["BASE_PROVIDER_RPC"],
+                "arbitrum_provider_rpc": env_settings["ARBITRUM_PROVIDER_RPC"],
+                "chain_id_base": env_settings["CHAIN_ID_BASE"],
+                "private_key": env_settings["PRIVATE_KEY"]
+            }):
+                if _check_exchange_settings({
+                    "bybit": {
+                        "apiKey": env_settings["BYBIT_API_KEY"],
+                        "apiSecret": env_settings["BYBIT_API_SECRET"],
+                        "enabled": env_settings["BYBIT_ENABLED"]
+                    },
+                    "binance": {
+                        "apiKey": env_settings["BINANCE_API_KEY"],
+                        "apiSecret": env_settings["BINANCE_API_SECRET"],
+                        "enabled": env_settings["BINANCE_ENABLED"]
+                    }
+                }):
+                    if _check_bot_settings(bot_settings={
+                        "max_allowable_percentage_away_from_liquidation_price": int(env_settings["MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE"]),
+                        "trade_leverage": int(env_settings["TRADE_LEVERAGE"]),
+                        "percentage_capital_per_trade": int(env_settings["PERCENTAGE_CAPITAL_PER_TRADE"]),
+                        "default_trade_duration_hours": int(env_settings["DEFAULT_TRADE_DURATION_HOURS"]),
+                        "default_trade_size_usd": int(env_settings["DEFAULT_TRADE_SIZE_USD"])
+                    }):
+                        return True
+            return False
         else:
             return False
     except Exception as e:
@@ -199,16 +223,15 @@ def _check_exchange_settings(exchange_settings: dict) -> bool: # TODO: Fix
     return True
 
 
-def _check_wallet_settings(wallet_settings: dict) -> bool: # TODO: Fix make tests better
+def _check_wallet_settings(wallet_settings: dict) -> bool:
     try:
-        if len(wallet_settings["wallet_address"]) < 10 or len(wallet_settings["wallet_private_key"]) < 10:
+        if not web3.Web3.is_address(wallet_settings["wallet_address"]) or not re.match(r'^(0x)?[0-9a-fA-F]{64}$', wallet_settings["private_key"]):
             return False
-        if len(wallet_settings["base_provider_rpc"]) < 10 or len(wallet_settings["arbitrum_provider_rpc"]) < 10:
+        if not _check_rpc_validity(wallet_settings["arbitrum_provider_rpc"]):
             return False
-        if len(wallet_settings["chain_id_base"]) < 1:
+        if int(wallet_settings["chain_id_base"]) != 42161 or int(wallet_settings["chain_id_base"]) != 43113:
             return False
-        if len(wallet_settings["chain_id_arbitrum"]) < 1:
-            return False
+        
     except Exception as e:
         logger.error(f"Error checking wallet settings: {e}")
         return False
@@ -247,6 +270,51 @@ def _create_gmx_config_file():
 
     with open('config.yaml', 'w') as file:
         yaml.dump(yaml_config, file)
+
+def _check_rpc_validity(rpc_url, polling_interval=0.5, max_retries=3):
+    """
+    Check the validity of an RPC endpoint by polling it.
+    
+    :param rpc_url: The URL of the RPC endpoint to check
+    :param polling_interval: Time in seconds between each poll attempt
+    :param max_retries: Maximum number of retry attempts before giving up
+    :return: True if the RPC is valid, False otherwise
+    """
+    retry_count = 0
+    
+    while retry_count < max_retries:
+        try:
+            # Prepare a simple JSON-RPC request
+            payload = {
+                "jsonrpc": "2.0",
+                "method": "eth_blockNumber",
+                "params": [],
+                "id": 1
+            }
+
+            # Send the request to the RPC endpoint
+            response = requests.post(rpc_url, json=payload, timeout=10)
+
+            # Check if the response is valid
+            if response.status_code == 200:
+                result = response.json()
+                if 'result' in result:
+                    return True
+                else:
+                    print(f"Invalid RPC response: {result}")
+            else:
+                print(f"Invalid response status code: {response.status_code}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error connecting to RPC: {e}")
+
+        retry_count += 1
+        if retry_count < max_retries:
+            print(f"Retrying in {polling_interval} seconds...")
+            time.sleep(polling_interval)
+
+    print(f"Max retries ({max_retries}) reached. RPC endpoint is not valid.")
+    return False
 
 
 def set_wallet_settings(data: Dict[str, Any]):
@@ -337,3 +405,4 @@ def get_bot_status():
         status = get_key('./.env', "BOT_STATUS")
         return jsonify({"status": status}), 200
     return jsonify({"error": "Invalid Settings Configuration"}), 500
+
