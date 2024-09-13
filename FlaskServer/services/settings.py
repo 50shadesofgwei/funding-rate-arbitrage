@@ -20,11 +20,11 @@ def find_settings():
 def get_bot_settings():
     try:
         settings = {
-            "max_allowable_percentage_away_from_liquidation_price": get_key('./.env', "MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE"),
-            "trade_leverage": get_key('./.env', "TRADE_LEVERAGE"),
-            "percentage_capital_per_trade": get_key('./.env', "PERCENTAGE_CAPITAL_PER_TRADE"),
-            "default_trade_duration_hours": get_key('./.env', "DEFAULT_TRADE_DURATION_HOURS"),
-            "default_trade_size_usd": get_key('./.env', "DEFAULT_TRADE_SIZE_USD")
+            "max_allowable_percentage_away_from_liquidation_price": int(get_key('./.env', "MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE")),
+            "trade_leverage": int(get_key('./.env', "TRADE_LEVERAGE")),
+            "percentage_capital_per_trade": int(get_key('./.env', "PERCENTAGE_CAPITAL_PER_TRADE")),
+            "default_trade_duration_hours": int(get_key('./.env', "DEFAULT_TRADE_DURATION_HOURS")),
+            "default_trade_size_usd": int(get_key('./.env', "DEFAULT_TRADE_SIZE_USD"))
         }
         return jsonify(settings), 200
     except Exception as e:
