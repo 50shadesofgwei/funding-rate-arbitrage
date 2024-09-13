@@ -18,12 +18,6 @@ def find_settings():
 
 @settings_blueprint.route('/bot-settings/get', methods=['GET'])
 def get_bot_settings():
-    """
-        Check if there is an existing `.env`:
-        1. If not generate a .env file:
-        
-        2. Front-end will do an onboarding experience.
-    """
     try:
         settings = {
             "max_allowable_percentage_away_from_liquidation_price": get_key('./.env', "MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE"),
@@ -50,6 +44,17 @@ def get_wallet_settings():
     wallet_settings['chain_id_base'] = get_key('./.env', "CHAIN_ID_BASE")
     return jsonify(wallet_settings), 200
 
+@settings_blueprint.route('/exchange-settings/get', methods=['GET'])
+def get_exchange_settings():
+    """
+        Get ByBit Exchange Settings
+    """
+    exchange_settings = {}
+    exchange_settings['bybit'] = {
+        "apiKey": get_key('./.env', "BYBIT_API_KEY"),
+        "apiSecret": get_key('./.env', "BYBIT_API_SECRET"),
+    }
+    return jsonify(exchange_settings), 200
 
 @settings_blueprint.route('/complete-onboarding', methods=['POST'])
 def complete_onboarding():
