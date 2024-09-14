@@ -35,6 +35,7 @@ class EventsDirectory(Enum):
     POSITION_OPENED = "position_opened"
     POSITION_CLOSED = "position_closed"
     TRADE_LOGGED = "trade_logged"
+    TRADE_EXECUTION_COMPLETED = "trade_execution_completed"
 
 DECIMALS = {
     "BTC": 8,

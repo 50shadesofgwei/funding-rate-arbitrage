@@ -11,6 +11,7 @@ class MasterPositionController:
     def __init__(self):
         self.bybit = ByBitPositionController()
         self.gmx = GMXPositionController()
+        self.is_executing_trade = False
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -20,6 +21,7 @@ class MasterPositionController:
         symbol: str = opportunity['symbol']
 
         try:
+            self.is_executing_trade = True
             if self.is_already_position_open():
                 logger.info("MasterPositionController - Position already open, skipping opportunity.")
                 return
@@ -66,18 +68,23 @@ class MasterPositionController:
         except Exception as e:
             logger.error(f"MasterPositionController:execute_trades - Failed to process trades for {symbol}. Error: {e}")
             self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=list(exchanges.values()))
+        finally:
+            pub.sendMessage(EventsDirectory.TRADE_EXECUTION_COMPLETED.value)
+            self.is_executing_trade = False
 
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
-        for exchange_name in exchanges:
-            try:
-                close_position_method = getattr(self, exchange_name.lower()).close_position
-                close_position_method(symbol=symbol, reason=reason)
-
-            except Exception as e:
-                logger.error(f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}")
-                return None
-
-        return True
+        try:
+            self.is_executing_trade = True
+            for exchange_name in exchanges:
+                try:
+                    close_position_method = getattr(self, exchange_name.lower()).close_position
+                    close_position_method(symbol=symbol, reason=reason)
+                except Exception as e:
+                    logger.error(f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}")
+                    return None
+            return True
+        finally:
+            self.is_executing_trade = False
 
 
     def subscribe_to_events(self):

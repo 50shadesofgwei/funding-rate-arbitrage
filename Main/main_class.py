@@ -11,6 +11,7 @@ from GlobalUtils.globalUtils import *
 # from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
+import threading
 
 class Main:
     def __init__(self):
@@ -24,14 +25,21 @@ class Main:
         self.trade_logger = TradeLogger()
         # SynthetixMarketDirectory.initialize()
         GMXMarketDirectory.initialize()
+        self.pause_event = threading.Event()
+        self.pause_event.set()
+        self.is_executing_trade = False
+        self.subscribe_to_events()
+    
+    def subscribe_to_events(self):
+        pub.subscribe(self.trade_execution_completed, EventsDirectory.TRADE_EXECUTION_COMPLETED.value)
     
     def search_for_opportunities(self):
-        
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
             opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities, is_demo=False)
             if opportunity is not None:
+                self.is_executing_trade = True
                 pub.sendMessage(EventsDirectory.OPPORTUNITY_FOUND.value, opportunity=opportunity)
             else:
                 logger.error(f"MainClass - Error while searching for opportunity with object {opportunity}")
@@ -42,13 +50,30 @@ class Main:
     def start_search(self):
         try:
             while True:
+                self.pause_event.wait()
                 if not self.position_controller.is_already_position_open():
                     self.search_for_opportunities()
                 time.sleep(30) 
             
         except Exception as e:
             logger.error(f"MainClass - An error occurred during start_search: {e}", exc_info=True)
-        
+    
+    def trade_execution_completed(self):
+        self.is_executing_trade = False
+
+    def pause(self):
+        if not self.is_executing_trade:
+            self.pause_event.clear()
+            return True
+        else:
+            return False
+    
+    def resume(self):
+        self.pause_event.set()
+    
+    def is_paused(self):
+        return not self.pause_event.is_set()
+
     def stop_bot(self):
         pub.sendMessage("bot_stopped")
         logger.info("Bot stopped")
