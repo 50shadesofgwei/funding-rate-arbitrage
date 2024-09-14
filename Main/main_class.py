@@ -11,7 +11,6 @@ from GlobalUtils.globalUtils import *
 # from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 import time
-import threading
 
 class Main:
     def __init__(self):
@@ -25,8 +24,7 @@ class Main:
         self.trade_logger = TradeLogger()
         # SynthetixMarketDirectory.initialize()
         GMXMarketDirectory.initialize()
-        self.pause_event = threading.Event()
-        self.pause_event.set()
+        self.bot_running = True
         self.is_executing_trade = False
         self.subscribe_to_events()
     
@@ -49,8 +47,7 @@ class Main:
             
     def start_search(self):
         try:
-            while True:
-                self.pause_event.wait()
+            while self.bot_running:
                 if not self.position_controller.is_already_position_open():
                     self.search_for_opportunities()
                 time.sleep(30) 
@@ -60,21 +57,3 @@ class Main:
     
     def trade_execution_completed(self):
         self.is_executing_trade = False
-
-    def pause(self):
-        if not self.is_executing_trade:
-            self.pause_event.clear()
-            return True
-        else:
-            return False
-    
-    def resume(self):
-        self.pause_event.set()
-    
-    def is_paused(self):
-        return not self.pause_event.is_set()
-
-    def stop_bot(self):
-        pub.sendMessage("bot_stopped")
-        logger.info("Bot stopped")
-        return True

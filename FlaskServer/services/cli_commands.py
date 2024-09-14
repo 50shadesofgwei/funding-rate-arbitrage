@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-import Main.run as main_run
-from pubsub import pub
+from Main.main_class import Main
+from Main.main_class_demo import Demo
 from TxExecution.Master.MasterPositionController import MasterPositionController
 import threading
 import json
@@ -9,52 +9,31 @@ api_routes = Blueprint('api_routes', __name__)
 
 bot_instance = None
 bot_thread = None
-bot_running = False
 
 @api_routes.route('/run', methods=['POST'])
-def run(): # TODO:  Check
-    '''Main.run:run'''
-    global bot_instance, bot_thread, bot_running
-    if not bot_running:
-        bot_running = True
-        bot_instance = main_run.Main()
+def run():
+    global bot_instance, bot_thread
+    if not bot_instance or not bot_thread or not bot_thread.is_alive():
+        bot_instance = Main()
         bot_thread = threading.Thread(target=bot_instance.start_search)
         bot_thread.start()
-        return jsonify({"status": "Running..."}), 200
+        return jsonify({"status": "Bot started"}), 200
     else:
-        return jsonify({"status": "Bot already running..."}), 200
+        return jsonify({"status": "Bot already running"}), 200
 
-
-@api_routes.route('/stop', methods=['POST']) # TODO:  Check
+@api_routes.route('/stop', methods=['POST'])
 def stop():
-    global bot_running, bot_instance
-    if bot_running:
-        pub.sendMessage("stop_bot")
-        bot_running = False
-        if bot_instance:
-            bot_instance.stop_bot()
-        return jsonify({"status": "Bot stopping..."})
-    else:
-        return jsonify({"status": "Bot is not running"})
-
-@api_routes.route('/pause', methods=['POST']) # TODO:  Check
-def pause():
-    global bot_running, bot_instance
-    if bot_running and bot_instance:
-        if not bot_instance.position_controller.is_executing_trade:
-            bot_instance.pause()
-            return jsonify({"status": "Bot paused"})
+    global bot_instance, bot_thread
+    if bot_instance and bot_thread and bot_thread.is_alive():
+        if bot_instance.is_executing_trade:
+            return jsonify({"status": "Bot is currently executing a trade. Try again later"}), 403
         else:
-            return jsonify({"status": "Bot is executing a trade"})
-
-@api_routes.route('/resume', methods=['POST'])
-def resume(): # TODO:  Check
-    global bot_running, bot_instance
-    if bot_running and bot_instance:
-        bot_instance.resume()
-        return jsonify({"status": "Bot resumed"})
+            bot_instance.bot_running = False
+            bot_thread.join()  # Wait for the thread to finish
+            return jsonify({"status": "Bot stopped successfully"}), 200
     else:
-        return jsonify({"status": "Bot is not running"})
+        return jsonify({"status": "Bot is not running"}), 400
+
 
 '''Main.run:demo'''
 @api_routes.route('/demo', methods=['POST'])
@@ -74,7 +53,7 @@ def demo(): # TODO:  Check
 
 # TxExecution.Master.run:main
 @api_routes.route('/close-position-pair', methods=['POST'])
-def close_position():
+def close_position(): # TODO: Check
     global bot_running, bot_instance
     if bot_running and bot_instance:
         data = request.json
