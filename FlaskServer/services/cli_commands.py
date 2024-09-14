@@ -74,7 +74,11 @@ def close_position(): # TODO: Check
 
 @api_routes.route('/status', methods=['GET'])
 def status():
-    global bot_running
+    global bot_instance
+    if bot_instance:
+        bot_running = bot_instance.bot_running
+    else:
+        bot_running = False
     return jsonify({"status": "running" if bot_running else "stopped"})
 
 @api_routes.route('/collateral/<exchange>', methods=['GET'])

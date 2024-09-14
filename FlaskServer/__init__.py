@@ -10,8 +10,8 @@ load_dotenv()
 # Function will be for setting up configurations for the Flask app
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    CORS(app, resources={r"/*": {"origins": "https://main.dmep2akgaq1vh.amplifyapp.com"}})
-    socketio = SocketIO(app, cors_allowed_origins="https://main.dmep2akgaq1vh.amplifyapp.com")
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}) # https://main.dmep2akgaq1vh.amplifyapp.com
+    socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
     
     app.register_blueprint(settings.settings_blueprint)
 
