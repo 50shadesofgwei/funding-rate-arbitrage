@@ -1,13 +1,12 @@
-from flask import Blueprint, jsonify, request, after_this_request
+from flask import Blueprint, jsonify, request
 from GlobalUtils.logger import logger
 from typing import Dict, Any
-from APICaller.master.MasterUtils import get_target_exchanges
 import os, yaml
-from dotenv import set_key, find_dotenv, get_key, dotenv_values
-import subprocess, sys
+from dotenv import set_key, get_key, dotenv_values
+import subprocess
+import web3, requests, time, re
 
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
-
 
 @settings_blueprint.route('/find', methods=['GET'])
 def find_settings():
@@ -18,20 +17,14 @@ def find_settings():
     
 
 @settings_blueprint.route('/bot-settings/get', methods=['GET'])
-def get_bot_settings(): # TODO: Fix
-    """
-    Check if there is an existing `.env`:
-    1. If not generate a .env file:
-    
-    2. Front-end will do an onboarding experience.
-    """
+def get_bot_settings():
     try:
         settings = {
-            "max_allowable_percentage_away_from_liquidation_price": get_key('./.env', "MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE"),
-            "trade_leverage": get_key('./.env', "TRADE_LEVERAGE"),
-            "percentage_capital_per_trade": get_key('./.env', "PERCENTAGE_CAPITAL_PER_TRADE"),
-            "default_trade_duration_hours": get_key('./.env', "DEFAULT_TRADE_DURATION_HOURS"),
-            "default_trade_size_usd": get_key('./.env', "DEFAULT_TRADE_SIZE_USD")
+            "max_allowable_percentage_away_from_liquidation_price": int(get_key('./.env', "MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE")),
+            "trade_leverage": int(get_key('./.env', "TRADE_LEVERAGE")),
+            "percentage_capital_per_trade": int(get_key('./.env', "PERCENTAGE_CAPITAL_PER_TRADE")),
+            "default_trade_duration_hours": int(get_key('./.env', "DEFAULT_TRADE_DURATION_HOURS")),
+            "default_trade_size_usd": int(get_key('./.env', "DEFAULT_TRADE_SIZE_USD"))
         }
         return jsonify(settings), 200
     except Exception as e:
@@ -40,16 +33,28 @@ def get_bot_settings(): # TODO: Fix
 
 
 @settings_blueprint.route('/wallet-settings/get', methods=['GET'])
-def get_wallet_settings(): # TODO: Fix
+def get_wallet_settings():
     """
-    Get Wallet Settings
+        Get Wallet Settings
     """
     wallet_settings = {}
-    wallet_settings['address'] = get_key(find_dotenv(), "ADDRESS")
-    wallet_settings['base_provider_rpc'] = get_key(find_dotenv(), "BASE_PROVIDER_RPC")
-    wallet_settings['arbitrum_provider_rpc'] = get_key(find_dotenv(), "ARBITRUM_PROVIDER_RPC")
-    wallet_settings['chain_id_base'] = get_key(find_dotenv(), "CHAIN_ID_BASE")
+    wallet_settings['address'] = get_key('./.env', "ADDRESS")
+    wallet_settings['base_provider_rpc'] = get_key('./.env', "BASE_PROVIDER_RPC")
+    wallet_settings['arbitrum_provider_rpc'] = get_key('./.env', "ARBITRUM_PROVIDER_RPC")
+    wallet_settings['chain_id_base'] = get_key('./.env', "CHAIN_ID_BASE")
     return jsonify(wallet_settings), 200
+
+@settings_blueprint.route('/exchange-settings/get', methods=['GET'])
+def get_exchange_settings():
+    """
+        Get ByBit Exchange Settings
+    """
+    exchange_settings = {}
+    exchange_settings['bybit'] = {
+        "apiKey": get_key('./.env', "BYBIT_API_KEY"),
+        "apiSecret": get_key('./.env', "BYBIT_API_SECRET"),
+    }
+    return jsonify(exchange_settings), 200
 
 @settings_blueprint.route('/complete-onboarding', methods=['POST'])
 def complete_onboarding():
@@ -83,7 +88,9 @@ def complete_onboarding():
         except KeyError as e:
             return jsonify({"error": str(e)}), 400
 
-        # If all settings were successfully updated
+        # Update GMX Config File with new settings
+        _create_gmx_config_file()
+
         return jsonify({
             "status": "success",
             "message": "Onboarding completed successfully",
@@ -94,6 +101,7 @@ def complete_onboarding():
 
     except Exception as error:
         return jsonify({"error": str(error)}), 500
+
 
 @settings_blueprint.route('/wallet-settings/set', methods=['POST'])
 def set_wallet_settings_route():
@@ -118,6 +126,7 @@ def set_exchange_settings_route():
     except Exception as error:
         return jsonify({"error": str(error)}), 500
 
+
 @settings_blueprint.route('/bot-settings/set', methods=['POST'])
 def set_bot_settings_route():
     try:
@@ -134,21 +143,47 @@ def set_bot_settings_route():
 
 @settings_blueprint.route('/restart-bot', methods=['POST'])
 def restart_bot():
-    subprocess.Popen([sys.executable, sys.argv])
+    subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
     os._exit(0)
+    return jsonify({"message": "Bot restarted successfully"}), 200
 
-####################
-#  Settings f(x)   #
-####################
+
+###################
+#  Settings f(x)  #
+###################
 def is_env_valid() -> bool:
     try:
         if os.access(path='./.env', mode=os.R_OK) \
         and os.access(path='./.env', mode=os.W_OK):
             env_settings = dotenv_values('.env')
-            if _check_wallet_settings(env_settings):
-                return True
-            else:
-                return False
+            if _check_wallet_settings({
+                "wallet_address": env_settings["ADDRESS"],
+                "base_provider_rpc": env_settings["BASE_PROVIDER_RPC"],
+                "arbitrum_provider_rpc": env_settings["ARBITRUM_PROVIDER_RPC"],
+                "chain_id_base": env_settings["CHAIN_ID_BASE"],
+                "private_key": env_settings["PRIVATE_KEY"]
+            }):
+                if _check_exchange_settings({
+                    "bybit": {
+                        "apiKey": env_settings["BYBIT_API_KEY"],
+                        "apiSecret": env_settings["BYBIT_API_SECRET"],
+                        "enabled": env_settings["BYBIT_ENABLED"]
+                    },
+                    "binance": {
+                        "apiKey": env_settings["BINANCE_API_KEY"],
+                        "apiSecret": env_settings["BINANCE_API_SECRET"],
+                        "enabled": env_settings["BINANCE_ENABLED"]
+                    }
+                }):
+                    if _check_bot_settings(bot_settings={
+                        "max_allowable_percentage_away_from_liquidation_price": int(env_settings["MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE"]),
+                        "trade_leverage": int(env_settings["TRADE_LEVERAGE"]),
+                        "percentage_capital_per_trade": int(env_settings["PERCENTAGE_CAPITAL_PER_TRADE"]),
+                        "default_trade_duration_hours": int(env_settings["DEFAULT_TRADE_DURATION_HOURS"]),
+                        "default_trade_size_usd": int(env_settings["DEFAULT_TRADE_SIZE_USD"])
+                    }):
+                        return True
+            return False
         else:
             return False
     except Exception as e:
@@ -180,31 +215,35 @@ def _check_bot_settings(bot_settings: dict) -> bool: # TODO: Fix
     else:
         return True
 
-def _check_exchange_settings(exchange_settings: dict) -> bool: # TODO: Fix
+
+def _check_exchange_settings(exchange_settings: dict) -> bool:
+    """Currently only checks ByBit settings"""
     try:
-        for key, value in exchange_settings.items():
-            if key == "api_key" or key == "api_secret":
-                if len(value) < 10:
-                    return False
+        if exchange_settings["bybit"]["enabled"] == "true":
+            if len(exchange_settings["bybit"]["apiKey"]) < 10 or len(exchange_settings["bybit"]["apiSecret"]) < 15:
+                return False
+        else:
+            return False
     except Exception as e:
         logger.error(f"Error checking exchange settings: {e}")
         return False
     return True
 
-def _check_wallet_settings(wallet_settings: dict) -> bool: # TODO: Fix make tests better
+
+def _check_wallet_settings(wallet_settings: dict) -> bool:
     try:
-        if len(wallet_settings["wallet_address"]) < 10 or len(wallet_settings["wallet_private_key"]) < 10:
+        if not web3.Web3.is_address(wallet_settings["wallet_address"]) or not re.match(r'^(0x)?[0-9a-fA-F]{64}$', wallet_settings["private_key"]):
             return False
-        if len(wallet_settings["base_provider_rpc"]) < 10 or len(wallet_settings["arbitrum_provider_rpc"]) < 10:
+        if not _check_rpc_validity(wallet_settings["arbitrum_provider_rpc"]) or not _check_rpc_validity(wallet_settings["base_provider_rpc"]):
             return False
-        if len(wallet_settings["chain_id_base"]) < 1:
+        if int(wallet_settings["chain_id_base"]) != 42161 and int(wallet_settings["chain_id_base"]) != 421614:
             return False
-        if len(wallet_settings["chain_id_arbitrum"]) < 1:
-            return False
+        
     except Exception as e:
         logger.error(f"Error checking wallet settings: {e}")
         return False
     return True
+
 
 def _check_gmx_config_file():
     '''
@@ -221,18 +260,70 @@ def _check_gmx_config_file():
             logger.error(f"GlobalUtils - Error creating GMX config file: {e}")
             return False
 
+
 def _create_gmx_config_file():
     yaml_config = {}
     yaml_config['rpcs'] = {
-        'arbitrum': get_key(find_dotenv(), "ARBITRUM_PROVIDER_RPC"),
+        'arbitrum': get_key('./.env', "ARBITRUM_PROVIDER_RPC"),
         'avalanche': 'api.avax-test.network',
     }
     yaml_config['chain_ids'] = {
-        'arbitrum': get_key(find_dotenv(), "CHAIN_ID_BASE"),
-        'avalanche': '43113',
+        'arbitrum': int(get_key('./.env', "CHAIN_ID_BASE")),
+        'avalanche': 43113,
     }
+
+    yaml_config['private_key'] = get_key('./.env', "PRIVATE_KEY")
+    yaml_config['user_wallet_address'] = get_key('./.env', "ADDRESS")
+
     with open('config.yaml', 'w') as file:
         yaml.dump(yaml_config, file)
+
+
+def _check_rpc_validity(rpc_url, polling_interval=0.5, max_retries=3):
+    """
+    Check the validity of an RPC endpoint by polling it.
+    
+    :param rpc_url: The URL of the RPC endpoint to check
+    :param polling_interval: Time in seconds between each poll attempt
+    :param max_retries: Maximum number of retry attempts before giving up
+    :return: True if the RPC is valid, False otherwise
+    """
+    retry_count = 0
+    
+    while retry_count < max_retries:
+        try:
+            # Prepare a simple JSON-RPC request
+            payload = {
+                "jsonrpc": "2.0",
+                "method": "eth_blockNumber",
+                "params": [],
+                "id": 1
+            }
+
+            # Send the request to the RPC endpoint
+            response = requests.post(rpc_url, json=payload, timeout=10)
+
+            # Check if the response is valid
+            if response.status_code == 200:
+                result = response.json()
+                if 'result' in result:
+                    return True
+                else:
+                    print(f"Invalid RPC response: {result}")
+            else:
+                print(f"Invalid response status code: {response.status_code}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error connecting to RPC: {e}")
+
+        retry_count += 1
+        if retry_count < max_retries:
+            print(f"Retrying in {polling_interval} seconds...")
+            time.sleep(polling_interval)
+
+    print(f"Max retries ({max_retries}) reached. RPC endpoint is not valid.")
+    return False
+
 
 def set_wallet_settings(data: Dict[str, Any]):
     try:
@@ -240,14 +331,15 @@ def set_wallet_settings(data: Dict[str, Any]):
             return {"error": "Invalid request body"}
 
         # Validate required fields
-        required_fields = ['address', 'arbitrum_rpc', 'network']
+        required_fields = ['address', 'arbitrum_rpc', 'base_rpc', 'network']
         if not all(field in data for field in required_fields):
             return {"error": "Missing required fields"}
 
         # Update .env file
-        set_key('.env', 'ADDRESS', data['address'])
-        set_key('.env', 'ARBITRUM_PROVIDER_RPC', data['arbitrum_rpc'])
-        set_key('.env', 'CHAIN_ID_BASE', str(data['network']))
+        set_key('.env', 'ADDRESS', data['address'], quote_mode='never')
+        set_key('.env', 'ARBITRUM_PROVIDER_RPC', data['arbitrum_rpc'], quote_mode='never')
+        set_key('.env', 'BASE_PROVIDER_RPC', data['base_rpc'], quote_mode='never')
+        set_key('.env', 'CHAIN_ID_BASE', str(data['network']), quote_mode='never')
 
         return {
             "status": "success",
@@ -256,6 +348,7 @@ def set_wallet_settings(data: Dict[str, Any]):
 
     except Exception as error:
         return {"error": str(error)}
+
 
 def set_exchange_settings(data: Dict[str, Any]):
     try:
@@ -272,9 +365,9 @@ def set_exchange_settings(data: Dict[str, Any]):
 
         # Update .env file
         for exchange in required_exchanges:
-            set_key('.env', f'{exchange.upper()}_API_KEY', data[exchange]['apiKey'])
-            set_key('.env', f'{exchange.upper()}_API_SECRET', data[exchange]['apiSecret'])
-            set_key('.env', f'{exchange.upper()}_ENABLED', str(data[exchange]['enabled']).lower())
+            set_key('.env', f'{exchange.upper()}_API_KEY', data[exchange]['apiKey'], quote_mode='never')
+            set_key('.env', f'{exchange.upper()}_API_SECRET', data[exchange]['apiSecret'], quote_mode='never')
+            set_key('.env', f'{exchange.upper()}_ENABLED', str(data[exchange]['enabled']).lower(), quote_mode='never')
 
         return {
             "status": "success",
@@ -283,6 +376,7 @@ def set_exchange_settings(data: Dict[str, Any]):
 
     except Exception as error:
         return {"error": str(error)}
+
 
 def set_bot_settings(data: Dict[str, Any]):
     try:
@@ -304,7 +398,7 @@ def set_bot_settings(data: Dict[str, Any]):
         # Update .env file
         for field in required_fields:
             env_key = field.upper()
-            set_key('.env', env_key, str(data[field]))
+            set_key('.env', env_key, str(data[field]), quote_mode='never')
 
         return {
             "status": "success",
@@ -314,4 +408,10 @@ def set_bot_settings(data: Dict[str, Any]):
     except Exception as error:
         return {"error": str(error)}
 
+
+def get_bot_status():    
+    if is_env_valid():
+        status = get_key('./.env', "BOT_STATUS")
+        return jsonify({"status": status}), 200
+    return jsonify({"error": "Invalid Settings Configuration"}), 500
 

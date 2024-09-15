@@ -2,7 +2,6 @@ from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMark
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
-from APICaller.Synthetix.SynthetixCaller import GLOBAL_SYNTHETIX_CLIENT # TODO - delete this
 
 
 def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, absolute_size_usd: float):

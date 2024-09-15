@@ -1,14 +1,14 @@
 from TxExecution.Master.MasterPositionController import MasterPositionController
 from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
-from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
-# from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+# from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
+from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 import argparse
 
 def run(args):
-    SynthetixMarketDirectory.initialize()
-    # GMXMarketDirectory.initialize()
+    GMXMarketDirectory.initialize()
     x = MasterPositionController()
+    """Make sure TradeLogger is initialized and initialized to pubsub events"""
     y = TradeLogger()
     exchanges = ['GMX', 'ByBit']
     x.close_position_pair(symbol=args.symbol, reason=PositionCloseReason.TEST.value, exchanges=exchanges)
@@ -21,6 +21,6 @@ def main():
 
 def is_position_open():
     x = MasterPositionController()
-    SynthetixMarketDirectory.initialize()
+    # SynthetixMarketDirectory.initialize()
     x.is_already_position_open()
 

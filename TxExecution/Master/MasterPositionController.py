@@ -1,19 +1,17 @@
 from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.GMX.GMXPositionController import GMXPositionController
-
-
 from TxExecution.Master.MasterPositionControllerUtils import *
-
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from APICaller.master.MasterUtils import get_target_exchanges
 from pubsub import pub
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-
+# TODO: Test is_executing_trade concurrency problems
 class MasterPositionController:
     def __init__(self):
         self.bybit = ByBitPositionController()
         self.gmx = GMXPositionController()
+        self.is_executing_trade = False
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -26,6 +24,8 @@ class MasterPositionController:
             if self.is_already_position_open():
                 logger.info("MasterPositionController - Position already open, skipping opportunity.")
                 return
+            
+            self.is_executing_trade = True
 
             trade_size = self.get_trade_size(opportunity)
             exchanges = {
@@ -68,19 +68,23 @@ class MasterPositionController:
 
         except Exception as e:
             logger.error(f"MasterPositionController:execute_trades - Failed to process trades for {symbol}. Error: {e}")
+            self.is_executing_trade = True
             self.close_position_pair(symbol=symbol, reason=PositionCloseReason.POSITION_OPEN_ERROR.value, exchanges=list(exchanges.values()))
+            self.is_executing_trade = False
+        finally:
+            pub.sendMessage(EventsDirectory.TRADE_EXECUTION_COMPLETED.value)
+            self.is_executing_trade = False
 
     def close_position_pair(self, symbol: str, reason: str, exchanges: list):
         for exchange_name in exchanges:
             try:
                 close_position_method = getattr(self, exchange_name.lower()).close_position
                 close_position_method(symbol=symbol, reason=reason)
-
             except Exception as e:
                 logger.error(f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}")
                 return None
 
-        return True
+
 
 
     def subscribe_to_events(self):
@@ -165,30 +169,29 @@ class MasterPositionController:
             is_bybit_position = False
 
             target_exchange_list = get_target_exchanges()
-            is_synthetix_target = 'Synthetix' in target_exchange_list
-            is_hmx_target = 'HMX' in target_exchange_list
-            is_binance_target = 'Binance' in target_exchange_list
+            # is_synthetix_target = 'Synthetix' in target_exchange_list
+            # is_hmx_target = 'HMX' in target_exchange_list
+            # is_binance_target = 'Binance' in target_exchange_list
             is_bybit_target = 'ByBit' in target_exchange_list
-            is_okx_target = 'OKX' in target_exchange_list
             is_gmx_target = 'GMX' in target_exchange_list
 
-            try:
-                if is_synthetix_target:
-                    is_synthetix_position = self.synthetix.is_already_position_open()
-            except Exception as e:
-                logger.error(f'MasterPositionController:is_already_position_open - Error checking Synthetix position: {e}')
+            # try:
+            #     if is_synthetix_target:
+            #         is_synthetix_position = self.synthetix.is_already_position_open()
+            # except Exception as e:
+            #     logger.error(f'MasterPositionController:is_already_position_open - Error checking Synthetix position: {e}')
 
-            try:
-                if is_hmx_target:
-                    is_hmx_position = self.hmx.is_already_position_open()
-            except Exception as e:
-                logger.error(f'MasterPositionController:is_already_position_open - Error checking HMX position: {e}')
+            # try:
+            #     if is_hmx_target:
+            #         is_hmx_position = self.hmx.is_already_position_open()
+            # except Exception as e:
+            #     logger.error(f'MasterPositionController:is_already_position_open - Error checking HMX position: {e}')
 
-            try:
-                if is_binance_target:
-                    is_binance_position = self.binance.is_already_position_open()
-            except Exception as e:
-                logger.error(f'MasterPositionController:is_already_position_open - Error checking Binance position: {e}')
+            # try:
+            #     if is_binance_target:
+            #         is_binance_position = self.binance.is_already_position_open()
+            # except Exception as e:
+            #     logger.error(f'MasterPositionController:is_already_position_open - Error checking Binance position: {e}')
 
             try:
                 if is_bybit_target:
@@ -196,12 +199,12 @@ class MasterPositionController:
             except Exception as e:
                 logger.error(f'MasterPositionController:is_already_position_open - Error checking HMX position: {e}')
 
-            try:
-                if is_okx_target:
-                    # is_okx_position = self.okx.is_already_position_open()
-                    pass
-            except Exception as e:
-                logger.error(f'MasterPositionController:is_already_position_open - Error checking OKX position: {e}')
+            # try:
+            #     if is_okx_target:
+            #         # is_okx_position = self.okx.is_already_position_open()
+            #         pass
+            # except Exception as e:
+            #     logger.error(f'MasterPositionController:is_already_position_open - Error checking OKX position: {e}')
 
             try:    
                 if is_gmx_target is not None:
@@ -211,14 +214,12 @@ class MasterPositionController:
 
 
             positions_open = [
-                is_synthetix_position,
-                is_hmx_position,
-                is_binance_position,
                 is_bybit_position,
+                is_gmx_position
             ]
 
             if any(positions_open):
-                logger.info(f"MasterPositionController - Position already open: SNX: {is_synthetix_position}, HMX: {is_hmx_position}, Binance: {is_binance_position}, ByBit: {is_bybit_position}, GMX: {is_gmx_position}")
+                logger.info(f"MasterPositionController - Position already open: ByBit: {is_bybit_position}, GMX: {is_gmx_position}")
                 return True
             else:
                 logger.info(f"MasterPositionController - No positions open.")

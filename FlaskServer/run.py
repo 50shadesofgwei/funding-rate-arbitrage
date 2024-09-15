@@ -28,8 +28,9 @@ def opportunity_found_to_socketio(opportunity):
 def trade_logged_to_socketio(position_data):
     sio.emit(EventsDirectory.TRADE_LOGGED.value, position_data)
 
-def bot_stopped_to_socketio():
-    sio.emit("bot_stopped")
+def demo_opportunity_to_socketio():
+    sio.emit("demo_opportunity")
+    print("Demo opportunity emitted")
 
 # Subscribe to all topics and forward to SocketIO
 pub.subscribe(position_opened_to_socketio, EventsDirectory.POSITION_OPENED.value)
@@ -38,7 +39,8 @@ pub.subscribe(close_all_positions_to_socketio, EventsDirectory.CLOSE_ALL_POSITIO
 pub.subscribe(close_position_pair_to_socketio, EventsDirectory.CLOSE_POSITION_PAIR.value)
 pub.subscribe(opportunity_found_to_socketio, EventsDirectory.OPPORTUNITY_FOUND.value)
 pub.subscribe(trade_logged_to_socketio, EventsDirectory.TRADE_LOGGED.value)
-pub.subscribe(bot_stopped_to_socketio, "bot_stopped")
+pub.subscribe(demo_opportunity_to_socketio, "demo_opportunity")
+
 
 
 
@@ -60,7 +62,7 @@ logger.addHandler(socketio_handler)
 
 
 def run():
-    sio.run(app)
+    sio.run(app, port=6969)
 
 if __name__ == "__main__":
     run()
