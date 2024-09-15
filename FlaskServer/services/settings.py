@@ -148,10 +148,10 @@ def restart_bot():
         subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
     elif sys.platform.startswith('darwin'):
         # macOS-specific code
-        subprocess.Popen([f"./venv/bin/python", "project-run-ui.py"])
+        subprocess.Popen([f"./venv/bin/project-run-ui"])
     else:
         # Linux or other Unix-like systems
-        subprocess.Popen([f"./venv/bin/python", "project-run-ui.py"])
+        subprocess.Popen([f"./venv/bin/project-run-ui"])
     os._exit(0)
     return jsonify({"status": "Bot restarted"}), 200
 
