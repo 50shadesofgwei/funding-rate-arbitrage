@@ -5,7 +5,7 @@ import os, yaml
 from dotenv import set_key, get_key, dotenv_values
 import subprocess
 import web3, requests, time, re
-
+import sys
 settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
 @settings_blueprint.route('/find', methods=['GET'])
@@ -143,9 +143,17 @@ def set_bot_settings_route():
 
 @settings_blueprint.route('/restart-bot', methods=['POST'])
 def restart_bot():
-    subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
+    if sys.platform.startswith('win'):
+        # Windows-specific code
+        subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
+    elif sys.platform.startswith('darwin'):
+        # macOS-specific code
+        subprocess.Popen([f"./venv/bin/python", "project-run-ui.py"])
+    else:
+        # Linux or other Unix-like systems
+        subprocess.Popen([f"./venv/bin/python", "project-run-ui.py"])
     os._exit(0)
-    return jsonify({"message": "Bot restarted successfully"}), 200
+    return jsonify({"status": "Bot restarted"}), 200
 
 
 ###################
