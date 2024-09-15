@@ -43,6 +43,7 @@ pub.subscribe(demo_opportunity_to_socketio, "demo_opportunity")
 
 
 
+
 # Custom handler for logging to the SocketIO
 class SocketIOHandler(logging.Handler):
     def __init__(self, socketio):
