@@ -10,6 +10,7 @@ from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from GlobalUtils.globalUtils import *
 # from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
+
 import time
 
 class Main:
@@ -30,8 +31,10 @@ class Main:
     
     def subscribe_to_events(self):
         pub.subscribe(self.trade_execution_completed, EventsDirectory.TRADE_EXECUTION_COMPLETED.value)
+
     
     def search_for_opportunities(self):
+        
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)

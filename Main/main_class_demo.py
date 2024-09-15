@@ -16,8 +16,8 @@ class Demo:
         self.caller = MasterCaller()
         self.matching_engine = matchingEngine()
         self.profitability_checker = ProfitabilityChecker()
-        # SynthetixMarketDirectory.initialize()
-        GMXMarketDirectory.initialize()
+        SynthetixMarketDirectory.initialize()
+        # GMXMarketDirectory.initialize()
     
     def search_for_opportunities(self):
         try:
