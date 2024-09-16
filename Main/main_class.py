@@ -24,7 +24,7 @@ class Main:
         self.trade_logger = TradeLogger()
         # SynthetixMarketDirectory.initialize()
         GMXMarketDirectory.initialize()
-        self.bot_running = True
+        self.bot_running = False
         self.is_executing_trade = False
         self.subscribe_to_events()
     
@@ -47,6 +47,7 @@ class Main:
             
     def start_search(self):
         try:
+            self.bot_running = True
             while self.bot_running:
                 if not self.position_controller.is_already_position_open():
                     self.search_for_opportunities()
