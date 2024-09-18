@@ -7,7 +7,7 @@ import threading
 import json
 import pubsub
 from GlobalUtils.logger import *
-
+import sys, os, subprocess
 api_routes = Blueprint('api_routes', __name__)
 
 # Bot Related variables
@@ -19,9 +19,6 @@ is_running = False
 demo_instance = Demo()
 demo_running = False
 
-# TxExecution.Master.run:main
-execution_instance = MasterPositionController()
-
 
 @api_routes.route('/run', methods=['POST'])
 def run():
@@ -30,16 +27,18 @@ def run():
         if not bot_instance.bot_running:
             if bot_thread:
                 if bot_thread.is_alive():
+                    print("Bot thread is still alive!")
                     return jsonify({"status": "Bot thread is still alive!"}), 403
-                else:    
-                    bot_thread = threading.Thread(target=bot_instance.start_search)
-                    bot_thread.start()
-                    is_running = True
+            else:
+                bot_thread = threading.Thread(target=bot_instance.start_search)
+                bot_thread.start()
+                is_running = True
                 return jsonify({"status": "Bot started"}), 200
         else:
+            print("Bot already running!")
             return jsonify({"status": "Bot already running"}), 403
     except Exception as e:
-        logger.error(f"Threading problem: {e}")
+        logger.error(f"FlaskServer - Threading problem: {e}")
         return jsonify({"status": str(e)}), 500
 @api_routes.route('/stop', methods=['POST'])
 def stop():
@@ -59,6 +58,23 @@ def stop():
     else:
         return jsonify({"status": "Bot is not running"}), 403
 
+@api_routes.route('/restart-bot', methods=['POST'])
+def restart_bot():
+    try:
+        global bot_instance, is_running
+        if sys.platform.startswith('win'):
+            # Windows-specific code
+            subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
+        elif sys.platform.startswith('darwin'):
+            # macOS-specific code
+            subprocess.Popen([f"./venv/bin/project-run-ui"])
+        else:
+            # Linux or other Unix-like systems
+            subprocess.Popen([f"./venv/bin/project-run-ui"])
+        os._exit(0)
+        return jsonify({"status": "Bot restarted"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 '''Main.run:demo'''
 @api_routes.route('/demo', methods=['POST'])
@@ -84,8 +100,8 @@ def demo(): # TODO: Check
 # TxExecution.Master.run:main
 @api_routes.route('/close-position-pair', methods=['POST'])
 def close_position(): # TODO: Check
-    global bot_running, bot_instance
-    if bot_running and bot_instance:
+    global is_running, bot_instance
+    if is_running:
         data = request.json
         symbol = data.get('symbol')
         reason = data.get('reason')

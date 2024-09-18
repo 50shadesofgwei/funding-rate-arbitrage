@@ -143,17 +143,20 @@ def set_bot_settings_route():
 
 @settings_blueprint.route('/restart-bot', methods=['POST'])
 def restart_bot():
-    if sys.platform.startswith('win'):
-        # Windows-specific code
-        subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
-    elif sys.platform.startswith('darwin'):
-        # macOS-specific code
-        subprocess.Popen([f"./venv/bin/project-run-ui"])
-    else:
-        # Linux or other Unix-like systems
-        subprocess.Popen([f"./venv/bin/project-run-ui"])
-    os._exit(0)
-    return jsonify({"status": "Bot restarted"}), 200
+    try:
+        if sys.platform.startswith('win'):
+            # Windows-specific code
+            subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
+        elif sys.platform.startswith('darwin'):
+            # macOS-specific code
+            subprocess.Popen([f"./venv/bin/project-run-ui"])
+        else:
+            # Linux or other Unix-like systems
+            subprocess.Popen([f"./venv/bin/project-run-ui"])
+        os._exit(0)
+        return jsonify({"status": "Bot restarted"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 ###################
