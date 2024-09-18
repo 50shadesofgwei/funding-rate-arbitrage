@@ -7,7 +7,6 @@ import threading
 import json
 import pubsub
 from GlobalUtils.logger import *
-import sys, os, subprocess
 api_routes = Blueprint('api_routes', __name__)
 
 # Bot Related variables
@@ -58,24 +57,6 @@ def stop():
     else:
         return jsonify({"status": "Bot is not running"}), 403
 
-@api_routes.route('/restart-bot', methods=['POST'])
-def restart_bot():
-    try:
-        global bot_instance, is_running
-        if sys.platform.startswith('win'):
-            # Windows-specific code
-            subprocess.Popen([f"./venv/Scripts/project-run-ui.exe"])
-        elif sys.platform.startswith('darwin'):
-            # macOS-specific code
-            subprocess.Popen([f"./venv/bin/project-run-ui"])
-        else:
-            # Linux or other Unix-like systems
-            subprocess.Popen([f"./venv/bin/project-run-ui"])
-        os._exit(0)
-        return jsonify({"status": "Bot restarted"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 '''Main.run:demo'''
 @api_routes.route('/demo', methods=['POST'])
 def demo(): # TODO: Check
@@ -120,17 +101,26 @@ def close_position(): # TODO: Check
 
 @api_routes.route('/status', methods=['GET'])
 def status():
-    global is_running
-    return jsonify({"status": "running" if is_running else "stopped"})
-
+    global is_running, demo_running, bot_instance
+    
+    status_info = {
+        "is_running": is_running,
+        "demo_running": demo_running,
+        "is_executing_trade": False
+    }
+    
+    if bot_instance:
+        status_info["is_executing_trade"] = bot_instance.is_executing_trade
+    
+    return jsonify(status_info)
 @api_routes.route('/collateral/<exchange>', methods=['GET'])
 def get_collateral(exchange):
     try:
-        collateral: float = execution_instance.get_available_collateral_for_exchange(exchange=exchange)
+        collateral: float = bot_instance.position_controller.get_available_collateral_for_exchange(exchange=exchange)
         return jsonify(collateral), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-    
+
 
 ######################
 # Internal Functions #
