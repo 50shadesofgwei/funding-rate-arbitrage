@@ -16,20 +16,24 @@ class Demo:
         self.caller = MasterCaller()
         self.matching_engine = matchingEngine()
         self.profitability_checker = ProfitabilityChecker()
-        SynthetixMarketDirectory.initialize()
-        # GMXMarketDirectory.initialize()
+        self.demo_running = False
+        # SynthetixMarketDirectory.initialize()
+        GMXMarketDirectory.initialize()
     
     def search_for_opportunities(self):
+        self.demo_running = True
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
             opportunities = self.profitability_checker.find_most_profitable_opportunity(opportunities, is_demo=True)
 
             with open('DEMO_opportunity_visualisations.json', 'w') as file:
-                json.dump(opportunities, file, indent=4)
+                json.dump(opportunities, file, indent=4) 
+            self.demo_running = False
 
         except Exception as e:
             logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)
+            self.demo_running = False
             
     def start_search(self):
         while True:
