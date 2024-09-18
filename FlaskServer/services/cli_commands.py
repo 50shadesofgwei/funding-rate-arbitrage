@@ -132,4 +132,4 @@ def get_demo_opportunities():
             return json.load(f)
     except Exception as e:
         return {"error": str(e)}
-    
+
