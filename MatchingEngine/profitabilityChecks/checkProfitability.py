@@ -10,7 +10,7 @@ from MatchingEngine.profitabilityChecks.HMX.HMXCheckProfitabilityUtils import *
 from MatchingEngine.profitabilityChecks.Synthetix.SynthetixCheckProfitabilityUtils import *
 from APICaller.ByBit.ByBitCaller import ByBitCaller
 from APICaller.OKX.okxCaller import OKXCaller
-from gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.master.MasterUtils import get_target_exchanges
 import json

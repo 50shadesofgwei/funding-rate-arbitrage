@@ -1,12 +1,12 @@
-from gmx_python_sdk.scripts.v2.gmx_utils import *
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.gmx_utils import *
 import hashlib
 from APICaller.GMX.GMXContractUtils import *
-from gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
-from gmx_python_sdk.scripts.v2.gmx_utils import (
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.gmx_utils import (
     get_reader_contract, get_datastore_contract,
     get_tokens_address_dict)
-from gmx_python_sdk.scripts.v2.get.get import GetData
-from gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get import GetData
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
 from decimal import Decimal
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 

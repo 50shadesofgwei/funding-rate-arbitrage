@@ -1,7 +1,7 @@
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from gmx_python_sdk.scripts.v2.gmx_utils import *
-from gmx_python_sdk.scripts.v2.get.get_markets import Markets
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.gmx_utils import *
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get_markets import Markets
 from decimal import Decimal, getcontext
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.GMX.GMXContractUtils import *
