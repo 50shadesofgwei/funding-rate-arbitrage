@@ -1,8 +1,8 @@
 from GlobalUtils.logger import logger
 import json
 from GlobalUtils.globalUtils import *
-from gmx_python_sdk.scripts.v2.get.get import GetData
-from gmx_python_sdk.scripts.v2.gmx_utils import *
+from  gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get import GetData
+from  gmx_python_sdk.gmx_python_sdk.scripts.v2.gmx_utils import *
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.GMX.GMXContractUtils import *
 

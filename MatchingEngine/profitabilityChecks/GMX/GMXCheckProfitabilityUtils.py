@@ -1,5 +1,5 @@
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
-from gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
+from  gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger

@@ -1,13 +1,13 @@
 from APICaller.GMX.GMXCallerUtils import *
 from GlobalUtils.globalUtils import *
 from TxExecution.GMX.GMXPositionControllerUtils import *
-from gmx_python_sdk.scripts.v2.order.order_argument_parser import (
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.order.order_argument_parser import (
     OrderArgumentParser
 )
-from gmx_python_sdk.scripts.v2.order.create_increase_order import IncreaseOrder
-from gmx_python_sdk.scripts.v2.order.create_decrease_order import DecreaseOrder
-from gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
-from gmx_python_sdk.scripts.v2.gmx_utils import *
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.order.create_increase_order import IncreaseOrder
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.order.create_decrease_order import DecreaseOrder
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.get.get_open_positions import GetOpenPositions
+from gmx_python_sdk.gmx_python_sdk.scripts.v2.gmx_utils import *
 from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 from APICaller.GMX.GMXContractUtils import *
 from TxExecution.GMX.GMXGetLiqPrice import get_liquidation_price
