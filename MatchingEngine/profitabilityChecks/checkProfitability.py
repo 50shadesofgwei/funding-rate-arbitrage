@@ -11,7 +11,7 @@ from MatchingEngine.profitabilityChecks.GMX.GMXCheckProfitabilityUtils import *
 from APICaller.ByBit.ByBitCaller import ByBitCaller
 
 from gmx_python_sdk.scripts.v2.get.get_oracle_prices import OraclePrices
-from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
+# from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.master.MasterUtils import get_target_exchanges
 import json
 import os
@@ -32,9 +32,9 @@ class ProfitabilityChecker:
             best_opportunity = None
             max_profit = 0
             opportunities_with_profit = []
-            if 'GMX' in get_target_exchanges():
-                self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
-                self.gmx_open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(self.gmx_prices)
+            # if 'GMX' in get_target_exchanges():
+            #     self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
+            #     self.gmx_open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(self.gmx_prices)
 
             for opportunity in opportunities:
                 symbol = opportunity['symbol']

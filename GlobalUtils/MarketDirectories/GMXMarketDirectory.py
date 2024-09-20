@@ -1,7 +1,7 @@
 from GlobalUtils.logger import logger
 import json
 from GlobalUtils.globalUtils import *
-from gmx_python_sdk.scripts.v2.get.get import GetData
+from gmx_python_sdk.scripts.v2.get.get import GetData, OraclePrices
 from gmx_python_sdk.scripts.v2.gmx_utils import *
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from APICaller.GMX.GMXContractUtils import *
@@ -51,6 +51,7 @@ class GMXMarketDirectory:
         try:
             mapper = []
             output_list = []
+            oracle_prices = OraclePrices(ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
 
             for market_key in cls._data_getter.markets.info:
                 symbol = cls._data_getter.markets.get_market_symbol(market_key)
@@ -65,6 +66,7 @@ class GMXMarketDirectory:
                 output = cls._data_getter._get_oracle_prices(
                 market_key,
                 index_token_address,
+                oracle_prices
             )
 
                 mapper.append(symbol)
