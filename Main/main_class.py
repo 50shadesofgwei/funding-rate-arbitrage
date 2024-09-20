@@ -37,7 +37,9 @@ class Main:
         
         try:
             funding_rates = self.caller.get_funding_rates()
+            logger.info(funding_rates)
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
+            logger.info(opportunities)
             opportunity = self.profitability_checker.find_most_profitable_opportunity(opportunities, is_demo=False)
             if opportunity is not None:
                 self.is_executing_trade = True

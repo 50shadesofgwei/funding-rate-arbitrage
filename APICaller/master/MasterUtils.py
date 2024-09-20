@@ -8,7 +8,7 @@ TARGET_TOKENS = [
     {"token": "W", "is_target": False},
     {"token": "WIF", "is_target": False},
     {"token": "ARB", "is_target": True},
-    {"token": "BNB", "is_target": True},
+    {"token": "BNB", "is_target": False},
     {"token": "ENA", "is_target": False},
     {"token": "DOGE", "is_target": True},
     {"token": "AVAX", "is_target": True},

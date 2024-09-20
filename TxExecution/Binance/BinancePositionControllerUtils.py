@@ -1,6 +1,7 @@
 from binance.enums import *
 from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
+from APICaller.Synthetix.SynthetixCaller import GLOBAL_SYNTHETIX_CLIENT
 
 ALL_MARKETS = [
     'ETHUSDT',
@@ -61,7 +62,7 @@ def parse_trade_data_from_response(response) -> dict:
 
 def calculate_adjusted_trade_size(opportunity, is_long: bool, trade_size: float, leverage_factor: int) -> float:
         try:
-            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size)
+            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size, GLOBAL_SYNTHETIX_CLIENT)
             trade_size_with_leverage = trade_size_in_asset * leverage_factor
             adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)
