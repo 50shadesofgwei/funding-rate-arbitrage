@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from GlobalUtils.logger import logger
 from typing import Dict, Any
 import os, yaml
-from dotenv import set_key, get_key, dotenv_values
+from dotenv import set_key, get_key, dotenv_values, load_dotenv
 import subprocess
 import web3, requests, time, re
 import sys
@@ -10,6 +10,7 @@ settings_blueprint = Blueprint('settings', __name__, url_prefix='/settings')
 
 @settings_blueprint.route('/find', methods=['GET'])
 def find_settings():
+    load_dotenv()
     if is_env_valid():
         return jsonify("valid"), 200
     else:

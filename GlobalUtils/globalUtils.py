@@ -68,6 +68,7 @@ def get_decimals_for_symbol(symbol):
 
 # TODO: Check whether client is initialized or not before calling the function in MainClass
 def initialise_client() -> Web3:
+    load_dotenv()
     try:
         client = Web3(Web3.HTTPProvider(os.getenv('BASE_PROVIDER_RPC')))
     except Exception as e:

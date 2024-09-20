@@ -18,7 +18,7 @@ class GMXMarketDirectory:
         try:
             if not cls._is_initialized:
                 cls._symbol_to_market_key_mapping = cls.build_symbol_to_market_id_mapping()
-                # cls.update_all_market_parameters()
+                cls.update_all_market_parameters()
                 cls._is_initialized = True
                 logger.info('GMXMarketDirectory - Markets Initialized')
                 with open(cls._file_path, 'r') as file:
