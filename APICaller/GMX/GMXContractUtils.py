@@ -1,6 +1,6 @@
-from gmx_python_sdk.scripts.v2.gmx_utils import *
-from gmx_python_sdk.scripts.v2.get.get import GetData
-from gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
+from  gmx_python_sdk.scripts.v2.gmx_utils import *
+from  gmx_python_sdk.scripts.v2.get.get import GetData
+from  gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from GlobalUtils.logger import logger
 from decimal import Decimal, getcontext
