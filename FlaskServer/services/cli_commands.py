@@ -112,7 +112,7 @@ def status():
     if bot_instance:
         status_info["is_executing_trade"] = bot_instance.is_executing_trade
     
-    return jsonify({status_info}), 200
+    return jsonify(status_info), 200
 @api_routes.route('/collateral/<exchange>', methods=['GET'])
 def get_collateral(exchange):
     try:

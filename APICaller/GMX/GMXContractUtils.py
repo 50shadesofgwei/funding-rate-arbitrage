@@ -279,7 +279,7 @@ def get_funding_factor(market: str) -> float:
         funding_factor_key_variable = funding_factor_key(market)
         funding_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(funding_factor_key_variable)
         funding_factor = funding_factor_func.call()
-        print(funding_factor)
+        # print(funding_factor)
         funding_factor = funding_factor / 10**30
 
         return funding_factor
