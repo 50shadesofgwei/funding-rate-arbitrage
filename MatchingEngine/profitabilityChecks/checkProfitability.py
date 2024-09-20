@@ -32,9 +32,9 @@ class ProfitabilityChecker:
             best_opportunity = None
             max_profit = 0
             opportunities_with_profit = []
-            # if 'GMX' in get_target_exchanges():
-            #     self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
-            #     self.gmx_open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(self.gmx_prices)
+            if 'GMX' in get_target_exchanges():
+                self.gmx_prices = OraclePrices(chain=ARBITRUM_CONFIG_OBJECT.chain).get_recent_prices()
+                self.gmx_open_interest = OpenInterest(ARBITRUM_CONFIG_OBJECT)._get_data_processing(self.gmx_prices)
 
             for opportunity in opportunities:
                 symbol = opportunity['symbol']
