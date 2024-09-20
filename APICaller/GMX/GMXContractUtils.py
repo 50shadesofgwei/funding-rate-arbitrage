@@ -1,6 +1,6 @@
-from gmx_python_sdk.scripts.v2.gmx_utils import *
-from gmx_python_sdk.scripts.v2.get.get import GetData
-from gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
+from  gmx_python_sdk.scripts.v2.gmx_utils import *
+from  gmx_python_sdk.scripts.v2.get.get import GetData
+from  gmx_python_sdk.scripts.v2.get.get_open_interest import OpenInterest
 from APICaller.GMX.GMXCallerUtils import ARBITRUM_CONFIG_OBJECT
 from GlobalUtils.logger import logger
 from decimal import Decimal, getcontext
@@ -279,7 +279,7 @@ def get_funding_factor(market: str) -> float:
         funding_factor_key_variable = funding_factor_key(market)
         funding_factor_func = DATASTORE_CONTRACT_OBJECT.functions.getUint(funding_factor_key_variable)
         funding_factor = funding_factor_func.call()
-        print(funding_factor)
+        # print(funding_factor)
         funding_factor = funding_factor / 10**30
 
         return funding_factor
