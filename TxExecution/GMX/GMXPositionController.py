@@ -12,6 +12,7 @@ from GlobalUtils.MarketDirectories.GMXMarketDirectory import GMXMarketDirectory
 from APICaller.GMX.GMXContractUtils import *
 from TxExecution.GMX.GMXGetLiqPrice import get_liquidation_price
 set_paths()
+from APICaller.Synthetix.SynthetixUtils import GLOBAL_SYNTHETIX_CLIENT
 
 
 class GMXPositionController:
@@ -73,7 +74,7 @@ class GMXPositionController:
                 return None
 
         except Exception as e:
-            logger.error(f'GMXPositionController - Failed to execute trade for symbol {symbol}. Error: {e}')
+            logger.error(f'GMXPositionController - Failed to execute trade for symbol {symbol}. Error: {e}', exc_info=True)
             return None
 
     def close_position(self, symbol: str, reason: str = None):
@@ -244,6 +245,7 @@ class GMXPositionController:
         try:
             symbol = opportunity['symbol']
             side = 'Long' if is_long else 'Short'
+            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, size_usd, GLOBAL_SYNTHETIX_CLIENT)
             liquidation_price = get_liquidation_price(
                 self.config,
                 symbol,
@@ -254,7 +256,7 @@ class GMXPositionController:
                 'exchange': 'GMX',
                 'symbol': symbol,
                 'side': side,
-                'size': size_usd,
+                'size_in_asset': size_in_asset,
                 'liquidation_price': liquidation_price
             }
         
