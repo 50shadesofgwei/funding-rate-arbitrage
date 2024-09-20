@@ -2,6 +2,7 @@ from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMark
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
 from MatchingEngine.profitabilityChecks.checkProfitabilityUtils import *
+from APICaller.Synthetix.SynthetixCaller import GLOBAL_SYNTHETIX_CLIENT
 
 
 def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, absolute_size_usd: float):
@@ -9,9 +10,9 @@ def estimate_time_to_neutralize_funding_rate_synthetix(opportunity: dict, absolu
             symbol = str(opportunity['symbol'])
             is_long = opportunity['long_exchange'] == 'Synthetix'
             skew_usd = float(opportunity['long_exchange_skew_usd']) if is_long else float(opportunity['short_exchange_skew_usd'])
-            skew_in_asset = get_asset_amount_for_given_dollar_amount(symbol, skew_usd)
+            skew_in_asset = get_asset_amount_for_given_dollar_amount(symbol, skew_usd, GLOBAL_SYNTHETIX_CLIENT)
 
-            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, absolute_size_usd)
+            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, absolute_size_usd, GLOBAL_SYNTHETIX_CLIENT)
             adjusted_size_in_asset = get_adjusted_size(size_in_asset, is_long)
 
 
@@ -47,9 +48,9 @@ def calculate_expected_funding_for_time_period_usd(opportunity: dict, is_long: b
     symbol = opportunity['symbol']
     try:
         skew_usd = opportunity['long_exchange_skew_usd'] if is_long else opportunity['short_exchange_skew_usd']
-        skew_in_asset = get_asset_amount_for_given_dollar_amount(symbol, skew_usd)
+        skew_in_asset = get_asset_amount_for_given_dollar_amount(symbol, skew_usd, GLOBAL_SYNTHETIX_CLIENT)
         adjusted_size_usd = get_adjusted_size(absolute_size_usd, is_long)
-        adjusted_size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, adjusted_size_usd)
+        adjusted_size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, adjusted_size_usd, GLOBAL_SYNTHETIX_CLIENT)
         initial_rate_8h = opportunity['long_exchange_funding_rate_8hr'] if is_long else opportunity['short_exchange_funding_rate_8hr']
         initial_rate_24h = initial_rate_8h * 3
         funding_velocity_24h = SynthetixMarketDirectory.calculate_new_funding_velocity(

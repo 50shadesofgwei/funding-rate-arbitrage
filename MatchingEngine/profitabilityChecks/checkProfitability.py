@@ -83,6 +83,8 @@ class ProfitabilityChecker:
             else:
                 with open('OrderedOpportunities.json', 'w') as file:
                     json.dump(opportunities_with_profit, file, indent=4)
+                
+                logger.error(f'best_opportunity before return statement = {best_opportunity}')
                 return best_opportunity
 
         except Exception as e:
@@ -317,8 +319,10 @@ class ProfitabilityChecker:
                 new_funding_velocity_24h,
                 initial_funding_rate_24h
             )
+            logger.info(f'total_funding = {total_funding}')
             
             total_fees = (opening_fee + price_impact + gas_fee_usd + closing_fee)
+            logger.info(f'total_fees = {total_fees}')
             profit_after_fees = total_funding - total_fees
 
             return profit_after_fees

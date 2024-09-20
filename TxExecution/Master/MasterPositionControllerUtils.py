@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from GlobalUtils.logger import logger
 from GlobalUtils.globalUtils import *
+from APICaller.Synthetix.SynthetixCaller import GLOBAL_SYNTHETIX_CLIENT
 
 load_dotenv()
 
@@ -46,7 +47,7 @@ def is_collateral_ratio_acceptable(collateral_amounts: dict, min_ratio=0.01):
 def calculate_adjusted_trade_size(opportunity: dict, is_long: bool, trade_size: float) -> float:
         try:
             leverage_factor = float(os.getenv('TRADE_LEVERAGE'))
-            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size)
+            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(opportunity['symbol'], trade_size, GLOBAL_SYNTHETIX_CLIENT)
             trade_size_with_leverage = trade_size_in_asset * leverage_factor
             adjusted_trade_size = adjust_trade_size_for_direction(trade_size_with_leverage, is_long)
             

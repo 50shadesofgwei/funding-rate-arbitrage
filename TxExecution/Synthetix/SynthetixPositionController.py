@@ -7,7 +7,7 @@ from GlobalUtils.logger import *
 from GlobalUtils.MarketDirectories.SynthetixMarketDirectory import SynthetixMarketDirectory
 import time
 import math
-from GlobalUtils.globalUtils import GLOBAL_SYNTHETIX_CLIENT
+from APICaller.Synthetix.SynthetixCaller import GLOBAL_SYNTHETIX_CLIENT
 
 class SynthetixPositionController:
     def __init__(self):
@@ -296,7 +296,7 @@ class SynthetixPositionController:
         try:
             symbol = opportunity['symbol']
             trade_size_with_leverage = trade_size * self.leverage_factor
-            trade_size_in_asset_with_leverage = get_asset_amount_for_given_dollar_amount(symbol, trade_size_with_leverage)
+            trade_size_in_asset_with_leverage = get_asset_amount_for_given_dollar_amount(symbol, trade_size_with_leverage, GLOBAL_SYNTHETIX_CLIENT)
             adjusted_trade_size_raw = adjust_trade_size_for_direction(trade_size_in_asset_with_leverage, is_long)
             adjusted_trade_size = round(adjusted_trade_size_raw, 3)
 
@@ -324,7 +324,7 @@ class SynthetixPositionController:
     def calculate_premium_usd(self, symbol: str, size_usd: float) -> float:
         try:
             market_id = SynthetixMarketDirectory.get_market_id(symbol)
-            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, size_usd)
+            size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, size_usd, GLOBAL_SYNTHETIX_CLIENT)
             quote_dict = self.client.perps.get_quote(size=size_in_asset, market_id=market_id)
             
             index_price = float(quote_dict['index_price'])

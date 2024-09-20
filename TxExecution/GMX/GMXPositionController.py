@@ -52,7 +52,7 @@ class GMXPositionController:
                 debug_mode=False
             )
 
-            time.sleep(10)
+            time.sleep(15)
             if self.was_position_opened_successfully(
                 symbol,
                 is_long
