@@ -43,7 +43,7 @@ class Main:
                 self.is_executing_trade = True
                 pub.sendMessage(EventsDirectory.OPPORTUNITY_FOUND.value, opportunity=opportunity)
             else:
-                logger.error(f"MainClass - Error while searching for opportunity with object {opportunity}")
+                logger.error(f"MainClass - Error while searching for opportunity with object {opportunity}", exc_info=True)
 
         except Exception as e:
             logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)
