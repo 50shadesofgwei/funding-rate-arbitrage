@@ -5,7 +5,8 @@ from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from flask_socketio import SocketIO
 from FlaskServer.services import settings
 
-load_dotenv(override=True)
+print("Loading .env file")
+load_dotenv(verbose=True, override=True)
 
 # Function will be for setting up configurations for the Flask app
 def create_app(test_config=None):

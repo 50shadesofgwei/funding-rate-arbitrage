@@ -22,6 +22,7 @@ class Demo:
     
     def search_for_opportunities(self):
         self.demo_running = True
+        print("Searching for opportunities: ", self.demo_running)
         try:
             funding_rates = self.caller.get_funding_rates()
             opportunities = self.matching_engine.find_delta_neutral_arbitrage_opportunities(funding_rates)
@@ -34,6 +35,8 @@ class Demo:
         except Exception as e:
             logger.error(f"MainClass - An error occurred during search_for_opportunities: {e}", exc_info=True)
             self.demo_running = False
+        print("Searching for opportunities: ", self.demo_running)
+
             
     def start_search(self):
         while True:
