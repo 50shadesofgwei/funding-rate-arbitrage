@@ -206,7 +206,7 @@ class TradeLogger:
                 query = '''SELECT * FROM trade_log;'''
                 cursor.execute(query)
                 positions = cursor.fetchall()
-                logger.info("TradeLogger - Retrieved all trades.")
+                # logger.info("TradeLogger - Retrieved all trades.")
 
                 return positions
         except sqlite3.Error as e:

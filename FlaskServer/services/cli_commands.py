@@ -15,8 +15,7 @@ bot_thread = None
 is_running = False
 
 # Demo Related variables
-demo_instance = Demo()
-demo_running = False
+demo_instance: Demo = Demo()
 
 
 @api_routes.route('/run', methods=['POST'])
@@ -32,6 +31,7 @@ def run():
                 bot_thread = threading.Thread(target=bot_instance.start_search)
                 bot_thread.start()
                 is_running = True
+                logger.info(f"FlaskServer - Bot started")
                 return jsonify({"status": "Bot started"}), 200
         else:
             print("Bot already running!")
@@ -49,7 +49,7 @@ def stop():
                 bot_thread.join()  # Wait for the thread to finish
                 is_running = False
                 logger.info("Bot stopped successfully")
-                return jsonify({"status": "Bot stopped successfully"}), 200
+                return jsonify({"status": "cli_commands - Bot stopped successfully"}), 200
             else:
                 return jsonify({"status": "Cannot stop the bot, it is executing a trade"}), 403
         else:
@@ -61,17 +61,11 @@ def stop():
 @api_routes.route('/demo', methods=['POST'])
 def demo(): # TODO: Check
     '''Main.run:demo'''
-    global bot_instance
-    if bot_instance:
-        if bot_instance.bot_running:
-            return jsonify({"status": "Temporarily stop the bot to run this function."}), 403
-        else:
-            # Run the demo
-            demo_instance = Demo()
-            demo_instance.search_for_opportunities()
-            pubsub.pub.sendMessage("demo_opportunity")
-            return jsonify({"status": "Demo ran"}), 200
+    global demo_instance
+    if demo_instance.demo_running:
+        return jsonify({"status": "Demo is already running."}), 403
     else:
+        # Run the demo
         demo_instance = Demo()
         demo_instance.search_for_opportunities()
         pubsub.pub.sendMessage("demo_opportunity")
@@ -101,11 +95,11 @@ def close_position(): # TODO: Check
 
 @api_routes.route('/status', methods=['GET'])
 def status():
-    global is_running, demo_running, bot_instance
+    global is_running, demo_instance, bot_instance
     
     status_info = {
         "is_running": is_running,
-        "demo_running": demo_running,
+        "demo_running": demo_instance.demo_running,
         "is_executing_trade": False
     }
     

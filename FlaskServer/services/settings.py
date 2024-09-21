@@ -207,19 +207,19 @@ def _check_bot_settings(bot_settings: dict) -> bool: # TODO: Fix
     try:
         settings = bot_settings
         if (settings['max_allowable_percentage_away_from_liquidation_price'] < 5)  or (settings['max_allowable_percentage_away_from_liquidation_price'] > 30):
-            logger.error("GlobalUtils - MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE must be between 5 and 30")
+            logger.error("Settings - MAX_ALLOWABLE_PERCENTAGE_AWAY_FROM_LIQUIDATION_PRICE must be between 5 and 30")
             return False
         if (settings['trade_leverage'] > 10 ):
-            logger.error("GlobalUtils - TRADE_LEVERAGE must be greater than 10")
+            logger.error("Settings - TRADE_LEVERAGE must be greater than 10")
             return False
         if (settings['percentage_capital_per_trade'] < 0 or settings['percentage_capital_per_trade'] > 100):
-            logger.error("GlobalUtils - PERCENTAGE_CAPITAL_PER_TRADE must be between 0 and 100")
+            logger.error("Settings - PERCENTAGE_CAPITAL_PER_TRADE must be between 0 and 100")
             return False
-        if (settings['default_trade_duration_hours'] < 6 or settings['default_trade_duration_hours'] > 24):
-            logger.error("GlobalUtils - DEFAULT_TRADE_DURATION_HOURS must be greater than 0")
+        if (settings['default_trade_duration_hours'] < 12 or settings['default_trade_duration_hours'] > 168):
+            logger.error("Settings - DEFAULT_TRADE_DURATION_HOURS must be between  and 100")
             return False
         if (settings['default_trade_size_usd'] < 50 or settings['default_trade_size_usd'] > 1_000_000):
-            logger.error("GlobalUtils - DEFAULT_TRADE_SIZE_USD must be between 50 and 1,000,000")
+            logger.error("Settings - DEFAULT_TRADE_SIZE_USD must be between 50 and 1,000,000")
             return False
     except KeyError:
         logger.error("KeyError: Check whether all required settings are present")
@@ -262,14 +262,14 @@ def _check_gmx_config_file():
         Called before running the bot
     '''
     if os.access(path='config.yaml', mode=os.R_OK) and os.access(path='config.yaml', mode=os.W_OK):
-        logger.error("GlobalUtils - GMX config file not found")
+        logger.error("Settings - GMX config file not found")
         return False
     else:
         try:
             _create_gmx_config_file()
             return True
         except Exception as e:
-            logger.error(f"GlobalUtils - Error creating GMX config file: {e}")
+            logger.error(f"Settings - Error creating GMX config file: {e}")
             return False
 
 
