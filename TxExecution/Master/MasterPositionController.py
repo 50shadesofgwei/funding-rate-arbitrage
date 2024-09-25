@@ -2,6 +2,7 @@ from TxExecution.ByBit.ByBitPositionController import ByBitPositionController
 from TxExecution.GMX.GMXPositionController import GMXPositionController
 from TxExecution.Master.MasterPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
+from PositionMonitor.TradeDatabase.TradeDatabase import TradeLogger
 from APICaller.master.MasterUtils import get_target_exchanges
 from pubsub import pub
 from GlobalUtils.logger import *
@@ -12,6 +13,7 @@ class MasterPositionController:
         self.bybit = ByBitPositionController()
         self.gmx = GMXPositionController()
         self.is_executing_trade = False
+        self.trade_logger = TradeLogger()
 
     #######################
     ### WRITE FUNCTIONS ###
@@ -75,14 +77,15 @@ class MasterPositionController:
             pub.sendMessage(EventsDirectory.TRADE_EXECUTION_COMPLETED.value)
             self.is_executing_trade = False
 
-    def close_position_pair(self, symbol: str, reason: str, exchanges: list):
-        for exchange_name in exchanges:
-            try:
-                close_position_method = getattr(self, exchange_name.lower()).close_position
-                close_position_method(symbol=symbol, reason=reason)
-            except Exception as e:
-                logger.error(f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}")
-                return None
+    def close_position_pair(self, symbol: str, reason: str, strategy_execution_id: str):
+        try:
+            exchanges = self.trade_logger.get_trade_pair_by_execution_id(strategy_execution_id)
+            for exchange_name in exchanges:
+                    close_position_method = getattr(self, exchange_name.lower()).close_position
+                    close_position_method(symbol=symbol, reason=reason)
+        except Exception as e:
+            logger.error(f"MasterPositionController - Failed to close position for {symbol} on {exchange_name}. Error: {e}")
+            return None
 
 
 
