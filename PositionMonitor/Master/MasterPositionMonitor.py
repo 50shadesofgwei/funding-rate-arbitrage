@@ -1,6 +1,5 @@
 from PositionMonitor.Synthetix.SynthetixPositionMonitor import SynthetixPositionMonitor
 from PositionMonitor.Binance.BinancePositionMonitor import BinancePositionMonitor
-from PositionMonitor.HMX.HMXPositionMonitor import HMXPositionMonitor
 from PositionMonitor.GMX.GMXPositionMonitor import GMXPositionMonitor
 from PositionMonitor.ByBit.ByBitPositionMonitor import ByBitPositionMonitor
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
@@ -16,7 +15,6 @@ class MasterPositionMonitor():
     def __init__(self):
         self.synthetix = SynthetixPositionMonitor()
         self.binance = BinancePositionMonitor()
-        self.hmx = HMXPositionMonitor()
         self.gmx = GMXPositionMonitor()
         self.bybit = ByBitPositionMonitor()
         self.health_check_thread = None
@@ -148,7 +146,6 @@ class MasterPositionMonitor():
         except Exception as e:
             logger.error(f"MasterPositionMonitor - Unexpected error in checking position delta: {e}")
             return False
-
 
 
     def is_synthetix_funding_turning_against_trade_in_given_time(self, mins: int) -> bool:

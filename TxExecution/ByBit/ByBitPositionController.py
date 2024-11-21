@@ -6,6 +6,7 @@ from GlobalUtils.globalUtils import *
 from GlobalUtils.logger import logger
 from TxExecution.ByBit.ByBitPositionControllerUtils import *
 from PositionMonitor.Master.MasterPositionMonitorUtils import PositionCloseReason
+from APICaller.Synthetix.SynthetixCaller import GLOBAL_SYNTHETIX_CLIENT
 
 
 load_dotenv()
@@ -27,7 +28,7 @@ class ByBitPositionController:
         try:
             symbol = opportunity['symbol']
             side = get_side(is_long)
-            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, trade_size)
+            trade_size_in_asset = get_asset_amount_for_given_dollar_amount(symbol, trade_size, pyth_client=GLOBAL_SYNTHETIX_CLIENT)
             trade_size_with_leverage = trade_size_in_asset * self.leverage
             full_symbol = symbol+'USDT'
             qty_step_raw = self.get_qty_step(full_symbol)
@@ -216,14 +217,13 @@ class ByBitPositionController:
             order_id = result.get('orderId', None)
             side = 'Long' if is_long else 'Short'
             size = float(truncated_value)
-            size_usd = get_dollar_amount_for_given_asset_amount(symbol, size)
             liquidation_price = self.get_liquidation_price(symbol)
 
             return {
                 'exchange': 'ByBit',
                 'symbol': symbol,
                 'side': side,
-                'size': size_usd,
+                'size_in_asset': size,
                 'order_id': order_id,
                 'liquidation_price': liquidation_price
             }

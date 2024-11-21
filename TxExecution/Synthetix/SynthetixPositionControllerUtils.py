@@ -6,8 +6,10 @@ def parse_trade_data_from_position_details(position_details: dict) -> dict:
     try:
         side = get_side(position_details['position']['position_size'])
         symbol = position_details['position']['symbol']
-        asset_price = get_price_from_pyth(symbol)
+        asset_price = get_price_from_pyth(symbol, pyth_client=GLOBAL_SYNTHETIX_CLIENT)
         liquidation_price = calculate_liquidation_price(position_details, asset_price)
+        if liquidation_price is None:
+            liquidation_price = 0
 
         trade_data = {
             "exchange": "Synthetix",

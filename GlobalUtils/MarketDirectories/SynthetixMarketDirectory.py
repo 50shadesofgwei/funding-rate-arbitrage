@@ -2,6 +2,7 @@ from web3 import *
 from dotenv import load_dotenv
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
+from APICaller.Synthetix.SynthetixUtils import GLOBAL_SYNTHETIX_CLIENT
 import json
 
 load_dotenv()

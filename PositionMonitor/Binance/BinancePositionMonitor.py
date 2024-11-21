@@ -1,6 +1,7 @@
 from PositionMonitor.Master.MasterPositionMonitorUtils import *
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
+from APICaller.Binance.binanceUtils import GLOBAL_BINANCE_CLIENT
 from binance.enums import *
 import sqlite3
 from dotenv import load_dotenv

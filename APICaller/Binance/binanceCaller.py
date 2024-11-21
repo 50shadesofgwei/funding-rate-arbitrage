@@ -1,6 +1,6 @@
 from GlobalUtils.logger import *
 from GlobalUtils.globalUtils import *
-from binance.enums import *
+from APICaller.Binance.binanceUtils import GLOBAL_BINANCE_CLIENT
 
 from dotenv import load_dotenv
 

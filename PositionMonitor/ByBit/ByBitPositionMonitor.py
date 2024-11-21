@@ -65,5 +65,5 @@ class ByBitPositionMonitor():
                 return open_positions is not None
 
         except Exception as e:
-            logger.error(f"ByBitPositionMonitor - Error while searching for open Binance positions: {e}")
+            logger.error(f"ByBitPositionMonitor - Error while searching for open ByBit positions: {e}")
             return None

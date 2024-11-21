@@ -1,5 +1,7 @@
 import os
 from GlobalUtils.globalUtils import *
+from APICaller.Synthetix.SynthetixUtils import GLOBAL_SYNTHETIX_CLIENT
+from APICaller.HMX.HMXCallerUtils import GLOBAL_HMX_CLIENT
 from GlobalUtils.logger import logger
 from TxExecution.HMX.HMXPositionControllerUtils import *
 from APICaller.master.MasterUtils import get_target_tokens_for_HMX
@@ -208,7 +210,7 @@ class HMXPositionController:
             response = self.client.public.get_market_info(market_index)
 
             pnl = position['pnl']
-            asset_price = get_price_from_pyth(symbol)
+            asset_price = get_price_from_pyth(symbol, pyth_client=GLOBAL_SYNTHETIX_CLIENT)
             available_collateral = self.get_available_collateral()
             available_collateral = available_collateral + pnl
             margin_details = response['margin']

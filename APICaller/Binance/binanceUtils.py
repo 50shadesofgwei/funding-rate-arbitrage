@@ -9,3 +9,5 @@ def get_binance_client() -> Binance:
     client = Binance(api_key, api_secret)
 
     return client
+
+GLOBAL_BINANCE_CLIENT = get_binance_client()   
