@@ -1,5 +1,5 @@
 # Synthetix Funding Rate Arbitrage
-![Banner](docs/assets/Propuesta.png)  
+![Banner](Assets/Propuesta.png)  
 **Version 0.3.0**  
 [![Telegram](https://img.shields.io/badge/Telegram-blue)](https://t.me/+ualID7ueKuJjMWJk) [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
