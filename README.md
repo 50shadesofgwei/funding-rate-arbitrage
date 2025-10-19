@@ -93,7 +93,7 @@ After you have some fUSDC, you can call the collateral deposit function by runni
 deploy-collateral 100 
 `
 
-For the Binance side, you will have to create an account and set of API keys [here](https://testnet.binancefuture.com/en/futures/BTCUSDT), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined upon initialisation of the Binance clients. By default they will target testnet and look like so:
+For the Binance side, you will have to create an account and set of API keys [here](https://demo.binance.com/en/my/settings/api-management), and use these keys in the .env file. Additionally, whether the Binance client is set to testnet or live trading is determined upon initialisation of the Binance clients. By default they will target testnet and look like so:
 
 ```python
 self.client = Client(api_key, api_secret, base_url="https://testnet.binancefuture.com")
